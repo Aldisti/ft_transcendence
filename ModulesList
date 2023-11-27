@@ -1,0 +1,36 @@
+Web
+10:	backend framework
+ 5:	frontend framework
+ 5:	backend database
+
+
+User management
+10:	user auth...
+10:	remote auth
+
+Gameplay
+10:	remote players
+10:	multiple players ?
+10:	another game
+ 5:	game customization
+10:	live chat
+
+IA-Algo
+10:	AI opponent
+ 5:	user/game stats
+
+Cybersecurity
+10:	2FA
+
+Devops
+ 5: monitoring system
+10:	microservices
+
+Graphics
+10:	3D techniques ?
+
+Accessibility
+ 5:	support all devices
+ 5:	browser compatibility
+ 5:	language support
+
