@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  django:
+    container_name: django
+    build:
+      context: ./django
+    image: trinity/django
+    restart: always
+    ports:
+      - "8000-8020:8000-8020"
+    volumes:
+      - django:/etc/develop
+    env_file:
+      - django/.env
+    networks:
+      - django-net
+
+volumes:
+  django:
+    name: "django"
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "/home/gpanico/Desktop/data/django"
+
+networks:
+  django-net:
+    name: "django-net"
