@@ -1,4 +1,51 @@
-.card
+.base
 {
-	box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+	width: 100svw;
+	height: 100svh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+#title
+{
+	width: 90%;
+	font-size: 70px;
+	text-align: start;
+}
+
+.loginForm
+{
+	background-image: url("https://img.freepik.com/free-vector/flat-design-pixel-art-cloud-illustration_23-2150209316.jpg?w=826&t=st=1701291138~exp=1701291738~hmac=1e328cea7b29308895219e7df4a72a787b8919b6cf1f96c87966a14530e6bd5e");
+	background-size: cover;
+	background-repeat: no-repeat;
+	color: black;
+	width: 40svw;
+	height: 50svh;
+	border-radius: 10px;
+	display: flex;
+	justify-content: space-between;
+	flex-direction: column;
+	align-items: center;
+	box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+	padding: 20px;
+}
+
+.line
+{
+	width: 90%;
+}
+
+.line input
+{
+	width: 100%;
+	border-radius: 7px;
+	font-size: 20px;
+}
+
+.linebtn
+{
+	width: 90%;
+	display: flex;
+	justify-content: space-between;
 }

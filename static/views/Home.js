@@ -6,9 +6,7 @@ export default class extends Aview{
     }
     getHtml(){
         return `
-        <div class="container">
-			<h1>Home</h1>
-        </div>
+            
         `
     }
 }

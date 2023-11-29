@@ -7,6 +7,18 @@
 
 *{
     box-sizing: border-box;
+    font-family: 'VT323', monospace !important;
+    font-weight: 900;
+}
+
+.navbar-brand
+{
+    font-size: 40px !important;
+}
+
+nav
+{
+    font-size: 30px;
 }
 
 #app

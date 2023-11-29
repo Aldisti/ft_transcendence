@@ -16,6 +16,7 @@ const Router =()=>{
 	if (matechedLocation == 0)
 		matechedLocation = new Routes[0].view;
 	document.querySelector("#app").innerHTML = matechedLocation.getHtml();
+	matechedLocation.setBackground();
 	
 	//setup the listener for submit button
 	if (matechedLocation.needListener)
