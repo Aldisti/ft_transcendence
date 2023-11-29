@@ -1,0 +1,16 @@
+:root {
+    --white: #F1FAEE;
+    --blue: #1D3557;
+    --light-blue: #A8DADC;
+    --red: #E63946;
+  }
+
+*{
+    box-sizing: border-box;
+}
+
+#app
+{
+    width: 100svw;
+    height: 100svh;
+}
