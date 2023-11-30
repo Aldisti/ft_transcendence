@@ -1,3 +1,21 @@
+.loginForm
+{
+	background-image: url("/imgs/login.png");
+	background-size: cover;
+	border: 2px solid black;
+	background-repeat: no-repeat;
+	color: white;
+	width: 40svw;
+	height: 50svh;
+	display: flex;
+	justify-content: space-between;
+	flex-direction: column;
+	align-items: center;
+	padding: 20px;
+	box-shadow: 15px 15px black;
+}
+
+
 .base
 {
 	width: 100svw;
@@ -14,21 +32,39 @@
 	text-align: start;
 }
 
-.loginForm
+.retroBtn
 {
-	background-image: url("https://img.freepik.com/free-vector/flat-design-pixel-art-cloud-illustration_23-2150209316.jpg?w=826&t=st=1701291138~exp=1701291738~hmac=1e328cea7b29308895219e7df4a72a787b8919b6cf1f96c87966a14530e6bd5e");
-	background-size: cover;
-	background-repeat: no-repeat;
-	color: black;
-	width: 40svw;
-	height: 50svh;
-	border-radius: 10px;
+	width: 20%;
+	height: 100%;
+	border: none;
 	display: flex;
-	justify-content: space-between;
-	flex-direction: column;
+	justify-content: center;
 	align-items: center;
-	box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
-	padding: 20px;
+	color: black;
+}
+
+
+.btnColor-yellow
+{
+	background-color: #ffb703;
+}
+
+.btnColor-green
+{
+	background-color: #5E794C;
+	color: white;
+	font-size: 20px;
+}
+
+.retroShade
+{
+	box-shadow: 7px 7px black;
+	transition: 0.2s;
+}
+
+.retroShade:hover
+{
+	box-shadow: 2px 2px black;
 }
 
 .line
@@ -39,13 +75,26 @@
 .line input
 {
 	width: 100%;
-	border-radius: 7px;
+	border: none;
 	font-size: 20px;
+	border: 2px solid black;
 }
 
 .linebtn
 {
 	width: 90%;
+	height: 4vh;
 	display: flex;
 	justify-content: space-between;
 }
+
+.loginForm h3
+{
+	text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+.loginForm h1
+{
+	text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+

@@ -1,16 +1,100 @@
 .signupForm
 {
-	background-image: url("https://img.freepik.com/free-vector/flat-pixel-art-summer-scene_23-2149457881.jpg?w=1380&t=st=1701291417~exp=1701292017~hmac=58a6bdcf130e030d4112fab6c49ef1702bf1a8a2e6c1e283113d19ee3d97297e");
+	background-image: url("/imgs/register.png");
 	background-size: cover;
 	background-repeat: no-repeat;
 	color: white;
 	width: 40svw;
-	height: 70svh;
-	border-radius: 10px;
+	height: 60svh;
+	border: 2px solid black;
 	display: flex;
 	justify-content: space-between;
 	flex-direction: column;
 	align-items: center;
 	box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
 	padding: 20px;
+	box-shadow: 15px 15px black;
 }
+
+.signupForm h3
+{
+	text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+.signupForm h1
+{
+	text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+.base
+{
+	width: 100svw;
+	height: 100svh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+#title
+{
+	width: 90%;
+	font-size: 70px;
+	text-align: start;
+}
+
+.retroBtn
+{
+	width: 20%;
+	height: 100%;
+	border: none;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: black;
+}
+
+
+.btnColor-yellow
+{
+	background-color: #ffb703;
+}
+
+.btnColor-green
+{
+	background-color: #5E794C;
+	color: white;
+	font-size: 20px;
+}
+
+.retroShade
+{
+	box-shadow: 7px 7px black;
+	transition: 0.2s;
+}
+
+.retroShade:hover
+{
+	box-shadow: 2px 2px black;
+}
+
+.line
+{
+	width: 90%;
+}
+
+.line input
+{
+	width: 100%;
+	border: none;
+	font-size: 20px;
+	border: 2px solid black;
+}
+
+.linebtn
+{
+	width: 90%;
+	height: 4vh;
+	display: flex;
+	justify-content: space-between;
+}
+
