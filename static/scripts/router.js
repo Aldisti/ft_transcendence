@@ -1,5 +1,5 @@
 import Router from "/scripts/mainRouterFunc.js"
-
+import * as styleH from "/scripts/styleSheetsHandling.js"
 
 const navigateTo = url => {
 	history.pushState(null, null, url);
@@ -18,4 +18,7 @@ document.addEventListener("click", (e)=>{
 //make the back key works
 window.addEventListener("popstate", Router);
 
-Router();
+addEventListener("DOMContentLoaded", (event) => {
+	styleH.loadStyles();
+	Router();
+});
