@@ -10,11 +10,9 @@ export default class extends Aview{
         <div class="base">
         <div class="firstLine retroShade">
             <div class="text">
-                <h1 class="title">Our Game</h1>
+                <h1 class="title">${this.language.home.firstTitle}</h1>
                 <p>
-                Welcome to our game development studio, where every pixel, every line of code, and every design choice is crafted with meticulous care and passion.
-
-                At our studio, we believe that creating extraordinary games requires an unwavering dedication to detail and a deep understanding of player experiences. Our team comprises visionary designers, talented programmers, and creative artists who collaborate seamlessly to bring captivating worlds to life.
+                    ${this.language.home.firstText}
                 </p>
             </div>
             <canvas id="padle">
@@ -26,11 +24,9 @@ export default class extends Aview{
             
         </canvas>
         <div class="text">
-            <h1 class="title">The Process</h1>
+            <h1 class="title">${this.language.home.secondTitle}</h1>
             <p>
-            From the inception of an idea to the final product, our games undergo a journey marked by precision and innovation. We delve into the core of storytelling, gameplay mechanics, and visual aesthetics to ensure that each aspect harmoniously complements the others, delivering an immersive and unforgettable gaming experience.
-
-            We meticulously design and iterate, pouring our creativity into every aspect of the game. Each element undergoes rigorous testing and refinement, guaranteeing a seamless and enjoyable experience for our players.
+                ${this.language.home.secondText}
             </p>
         </div>
     </div>

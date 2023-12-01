@@ -8,7 +8,10 @@
 *{
     box-sizing: border-box;
     font-family: 'VT323', monospace !important;
-    font-weight: 900;
+    font-weight: 500;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    font-size: 20px;
+    color: white;
 }
 
 body
@@ -19,11 +22,13 @@ body
 .navbar-brand
 {
     font-size: 40px !important;
+    color: white !important;
 }
 
-nav
+.nav-link
 {
     font-size: 30px;
+    color: white !important;
 }
 
 #app

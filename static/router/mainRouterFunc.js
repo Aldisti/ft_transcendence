@@ -24,16 +24,11 @@ const Router =()=>{
 		matechedLocation = new Routes[0].view;
 		fRoute = Routes[0];
 	}
+	matechedLocation.getLanguage();
 	styleH.enableStyleSheet(fRoute);
 	document.querySelector("#app").innerHTML = "";
 	setTimeout(() => {
 		document.querySelector("#app").innerHTML = matechedLocation.getHtml();
-		if (matechedLocation.needListener)
-		{
-			document.querySelector("#" + matechedLocation.listenerId).addEventListener("click", ()=>{
-				console.log(matechedLocation.getInput());
-			})
-		}
 		matechedLocation.setup();
 	}, 50);
 	

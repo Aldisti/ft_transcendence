@@ -4,8 +4,8 @@
 	background-size: cover;
 	background-repeat: no-repeat;
 	color: white;
-	width: 40svw;
-	height: 60svh;
+	width: 45svw;
+	height: 65svh;
 	border: 2px solid black;
 	display: flex;
 	justify-content: space-between;
@@ -14,6 +14,11 @@
 	box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
 	padding: 20px;
 	box-shadow: 15px 15px black;
+}
+
+.fileSelector
+{
+	border: none !important;
 }
 
 .signupForm h3
@@ -50,7 +55,7 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	color: black;
+	color: white;
 }
 
 
