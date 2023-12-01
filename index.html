@@ -7,6 +7,14 @@
     <link rel="stylesheet" href="/style/bootstrap.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script type="importmap">
+      {
+        "imports": {
+        "three": "/three/three.module.js",
+        "three/addons/": "/three/"
+        }
+      }
+      </script>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     <title>Document</title>
 </head>
@@ -38,7 +46,8 @@
       </nav>
     <div id="app">
     </div>
-    <script type="module" src="/scripts/router.js"></script>
+    <script type="module" src="/scripts/home3dModel.js"></script>
+    <script type="module" src="/router/router.js"></script>
     <script src="/scripts/bootstrap.bundle.min.js"></script>
 </body>
 </html>

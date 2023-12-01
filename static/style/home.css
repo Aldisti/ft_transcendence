@@ -1,0 +1,49 @@
+.base
+{
+    width: 100svw;
+    height: 90svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.firstLine, .secondLine
+{
+    display: flex;
+    justify-content: space-around;
+    width: 80%;
+    height: 45%;
+}
+
+.text
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    height: 100%;
+    font-size: 20px;
+}
+.retroShade
+{
+    border: 2px solid black;
+	box-shadow: 7px 7px black;
+	transition: 0.2s;
+    background-color: white;
+}
+
+.title
+{
+    width: 100%;
+    text-align: start;
+    font-size: 60px;
+}
+
+#padle, #ground
+{
+    width: 40% !important;
+    height: 100% !important;
+    background-color: white;
+}

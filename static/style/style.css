@@ -11,6 +11,11 @@
     font-weight: 900;
 }
 
+body
+{
+    margin: 0;
+}
+
 .navbar-brand
 {
     font-size: 40px !important;

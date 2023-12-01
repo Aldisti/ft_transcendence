@@ -36,7 +36,7 @@ export default class extends Aview{
 	   </div>
         `
     }
-	setBackground(){
+	setup(){
 		document.querySelector("#app").style.backgroundImage = "url('/imgs/backLogin.png')";
 		document.querySelector("#app").style.backgroundSize = "cover"
 		document.querySelector("#app").style.backgroundRepeat = "repeat"

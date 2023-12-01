@@ -15,4 +15,7 @@ export default class Aview{
             values[inp.name] = inp.value;
         return values;
     }
+    setup(){
+
+    }
 }
