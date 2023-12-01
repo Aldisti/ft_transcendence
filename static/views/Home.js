@@ -31,7 +31,6 @@ export default class extends Aview{
         </div>
     </div>
     </div>
-    <script src="/scripts/test.js"></script>
     `
     }
     setup(){

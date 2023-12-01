@@ -25,6 +25,7 @@ const Router =()=>{
 		fRoute = Routes[0];
 	}
 	matechedLocation.getLanguage();
+	console.log(matechedLocation.language)
 	styleH.enableStyleSheet(fRoute);
 	document.querySelector("#app").innerHTML = "";
 	setTimeout(() => {

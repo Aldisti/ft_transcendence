@@ -1,7 +1,8 @@
 import Router from "/router/mainRouterFunc.js"
 import * as styleH from "/router/styleSheetsHandling.js"
 
-localStorage.setItem("language", "en")
+if (localStorage.getItem("language") == null)
+	localStorage.setItem("language", "en")
 
 const navigateTo = url => {
 	history.pushState(null, null, url);

@@ -11,7 +11,7 @@
 .firstLine, .secondLine
 {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     width: 80%;
     height: 45%;
 }
@@ -22,9 +22,10 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 50%;
+    width: 60%;
     height: 100%;
     font-size: 20px;
+    padding: 30px;
 }
 .retroShade
 {

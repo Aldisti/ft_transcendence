@@ -20,7 +20,7 @@ class Obj{
         this.renderer = new THREE.WebGLRenderer({canvas: canv});
 
         //defining background color
-        this.scene.background = new THREE.Color(0xFFFFFFFF);
+        this.scene.background = new THREE.Color(0x226f54);
 
         //setting up controls and window size
         this.renderer.setSize( canv.clientWidth, canv.clientWidth);
