@@ -1,0 +1,68 @@
+.base
+{
+    width: 100svw;
+    height: fit-content;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.game
+{
+    position: relative;
+    width: 30svw;
+    height: 40svh;
+}
+
+.link
+{
+    position: relative;
+    margin-top: 2svh;
+    border: 2px solid white;
+    box-shadow: 15px 15px black;
+    transition: 0.4s;
+}
+
+.link:hover
+{
+    transform: scale(1.05);
+}
+
+.gameMode
+{
+    width: 10%;
+    height: 15%;
+    object-fit: contain;
+}
+
+.gameInfoCont
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 12;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.gameInfoLine
+{
+    display: flex;
+    flex-direction: column;
+}
+
+.overlay
+{ 
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    background: linear-gradient(transparent, transparent, #000000);
+}
