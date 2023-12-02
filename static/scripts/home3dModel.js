@@ -20,7 +20,7 @@ class Obj{
         this.renderer = new THREE.WebGLRenderer({canvas: canv});
 
         //defining background color
-        this.scene.background = new THREE.Color(0x226f54);
+        this.scene.background = new THREE.Color(0x000000);
 
         //setting up controls and window size
         this.renderer.setSize( canv.clientWidth, canv.clientWidth);
@@ -59,7 +59,7 @@ export default function startAnimation (){
     let groundCanv  = document.querySelector("#ground")
     // let wallCanv  = document.querySelector("#wall")
 
-    let padle = new Obj(padleCanv, "/models/pong.gltf", {x: Math.PI/2, y: Math.PI/4, z: 0});
+    let padle = new Obj(padleCanv, "/models/pong.gltf", {x: Math.PI/2, y: -Math.PI/4, z: 0});
     let ground = new Obj(groundCanv, "/models/ground.gltf", {x: Math.PI/4, y: 0, z: 0});
     // let wall = new Obj(wallCanv, "/wall.gltf", {x: 0, y: 0, z: 0});
     

@@ -1,0 +1,123 @@
+*{
+    font-family: Arial, Helvetica, sans-serif !important;
+    text-shadow: none !important;
+    color: black !important;
+}
+
+.loginForm
+{
+	background-size: cover;
+	border-radius: 10px;
+	background-repeat: no-repeat;
+	color: white;
+	width: 40svw;
+	height: 50svh;
+	display: flex;
+	justify-content: space-between;
+	flex-direction: column;
+	align-items: center;
+	padding: 20px;
+    box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;}
+
+
+.base
+{
+	width: 100svw;
+	height: 100svh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+#title
+{
+	width: 90%;
+	font-size: 70px;
+	text-align: start;
+}
+
+.retroBtn
+{
+	width: 20%;
+	height: 100%;
+	border: none;
+    border-radius: 6px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: white;
+    box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+    background-color: transparent !important;
+    transition: 0.7s;
+}
+
+.retroBtn:hover
+{
+    background-color: white !important;
+}
+
+
+.btnColor-yellow
+{
+	background-color: #ffb703;
+}
+
+.btnColor-green
+{
+	background-color: #5E794C;
+	color: white;
+	font-size: 20px;
+}
+
+.retroShade
+{
+    transition: 0.2s;
+}
+
+
+.line
+{
+	width: 90%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+    border-radius: 5px;
+	padding: 5px;
+    /* box-shadow: rgba(0, 0, 0, 0.45) 0px 25px 20px -20px; */
+}
+
+.line input
+{
+	width: 70%;
+    border: none;
+    background-color: transparent;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+    border-radius: 5px;
+	font-size: 25px;
+    outline: none;
+    transition: 0.7s;
+}
+
+input:hover
+{
+    background-color: white;
+}
+
+.linebtn
+{
+	width: 90%;
+	height: 4vh;
+	display: flex;
+	justify-content: space-between;
+}
+
+.loginForm h3
+{
+	text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+.loginForm h1
+{
+	text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+

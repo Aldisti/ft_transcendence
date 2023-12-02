@@ -4,6 +4,9 @@ import * as styleH from "/router/styleSheetsHandling.js"
 if (localStorage.getItem("language") == null)
 	localStorage.setItem("language", "en")
 
+if (localStorage.getItem("style") == null)
+	localStorage.setItem("style", "old")
+
 const navigateTo = url => {
 	history.pushState(null, null, url);
 	Router();
@@ -11,6 +14,14 @@ const navigateTo = url => {
 
 // define the behaviour when clicking links making them internal routing
 document.addEventListener("click", (e)=>{
+	if (e.target.id == "timeTravel")
+	{
+		if (localStorage.getItem("style") == "old")
+			localStorage.setItem("style", "modern")
+		else
+			localStorage.setItem("style", "old")
+		window.location.reload();
+	}
 	if (e.target.matches("[data-link]"))
 	{
 		e.preventDefault();

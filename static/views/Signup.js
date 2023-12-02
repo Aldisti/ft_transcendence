@@ -116,9 +116,15 @@ export default class extends Aview{
 		for (let inp of inputs)
 		{
 			if (this.errors[inp.name])
-				inp.parentNode.style.backgroundColor = "red"
+			{
+				inp.parentNode.classList.add("red")
+				inp.parentNode.classList.remove("green")
+			}
 			else
-			inp.parentNode.style.backgroundColor = "green"
+			{
+				inp.parentNode.classList.add("green")
+				inp.parentNode.classList.remove("red")
+			}
 		}
 		if (document.querySelector(".errors") != null && (this.errors.password || this.errors.confirmPassword))
 			document.querySelector(".errors").style.display = "flex";
@@ -160,7 +166,10 @@ export default class extends Aview{
 				console.log(this.field)
 			}
 		})
-		document.querySelector("#app").style.backgroundImage = "url('/imgs/backLogin.png')";
+		if (localStorage.getItem("style") == "modern")
+			document.querySelector("#app").style.backgroundImage = "url('https://c4.wallpaperflare.com/wallpaper/105/526/545/blur-gaussian-gradient-multicolor-wallpaper-preview.jpg')";
+		else
+			document.querySelector("#app").style.backgroundImage = "url('/imgs/backLogin.png')";
 		document.querySelector("#app").style.backgroundSize = "cover"
 		document.querySelector("#app").style.backgroundRepeat = "repeat"
 	}

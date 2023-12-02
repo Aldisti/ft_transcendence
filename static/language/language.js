@@ -2,8 +2,8 @@ let language = {
 	en: {
 		login: {
 			login: "Login",
-			name:	"Username",
-			password: "password",
+			name:	"Username: ",
+			password: "Password: ",
 			submit: "Submit!",
 			register: "Register!"
 		},
