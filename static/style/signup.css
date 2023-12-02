@@ -4,9 +4,8 @@
 	background-size: cover;
 	background-repeat: no-repeat;
 	color: white;
-	width: 45svw;
-	height: 65svh;
-	border: 2px solid black;
+	width: 55svw;
+	height: 70svh;
 	display: flex;
 	justify-content: space-between;
 	flex-direction: column;
@@ -73,7 +72,7 @@
 
 .retroShade
 {
-	box-shadow: 7px 7px black;
+	
 	transition: 0.2s;
 }
 
@@ -85,14 +84,83 @@
 .line
 {
 	width: 90%;
+	height: 8svh;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	box-shadow: 7px 7px black;
+	background-color: white;
+	border: 2px solid black;
+	padding: 5px;
+	transition: 0.3s;
+}
+
+.passwordSwitch, .confirmPasswordSwitch
+{
+	width: auto;
+	height: 80%;
+	border: 2px solid black;
+	border-left: none;
+	padding: 5px;
+	background-color: white;
+}
+
+.passwordSwitch:hover
+{
+	cursor: pointer;
+}
+.confirmPasswordSwitch:hover
+{
+	cursor: pointer;
+}
+
+.passwordSwitch img, .confirmPasswordSwitch img
+{
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.line h4
+{
+    width: 30%;
+	text-align: center;
+	margin: 0;
+}
+
+.errors
+{
+	width: 90%;
+	background-color: red;
+	box-shadow: 7px 7px black;
+	border: 2px solid black;
+	display: flex;
+	align-items: center;
+	justify-content: start;
+	padding: 20px;
+	display: none;
+}
+
+.errors ul
+{
+	margin: 0;
 }
 
 .line input
 {
-	width: 100%;
+	width: 70%;
+	height: 80%;
 	border: none;
-	font-size: 20px;
+	font-size: 25px;
 	border: 2px solid black;
+	outline: none;
+}
+
+.pass
+{
+	border-right: none !important;
+	color: black;
+	text-shadow: none;
 }
 
 .linebtn

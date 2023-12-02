@@ -1,10 +1,21 @@
 import Aview from "/views/abstractView.js";
+import register from"/API/register.js"
+import * as check from "/scripts/register.js"
 
 export default class extends Aview{
     constructor(){
 		super();
 		this.needListener	= true;
 		this.listenerId		= "signupBtn";
+		this.errors			= {
+			firstName: false,
+			lastName:  false,
+			username: false,
+			email: false,
+			password: false,
+			confirmPassword: false,
+			birthDate: false,
+		}
 		this.field			= {
 			firstName: "",
 			lastName: "",
@@ -18,24 +29,24 @@ export default class extends Aview{
 			<div class="signupForm">
 				<h1 id="title">${this.language.register.register}</h1>
 				<div class="line">
-					<h3>${this.language.register.firstName[0]}</h3>
+					<h4>${this.language.register.firstName[0]}</h4>
 					<input type="text" value="${this.field[this.language.register.firstName[1]]}" class="data retroShade" name="${this.language.register.firstName[1]}">
 				</div>
 				<div class="line">
-					<h3>${this.language.register.lastName[0]}</h3>
+					<h4>${this.language.register.lastName[0]}</h4>
 					<input type="text" value="${this.field[this.language.register.lastName[1]]}" class="data retroShade" name="${this.language.register.lastName[1]}">
 				</div>
 				<div class="line">
-					<h3>${this.language.register.username[0]}</h3>
+					<h4>${this.language.register.username[0]}</h4>
 					<input type="text" value="${this.field[this.language.register.username[1]]}" class="data retroShade" name="${this.language.register.username[1]}">
 				</div>
 				<div class="line">
-					<h3>${this.language.register.email[0]}</h3>
+					<h4>${this.language.register.email[0]}</h4>
 					<input type="email" value="${this.field[this.language.register.email[1]]}" class="data retroShade" name="${this.language.register.email[1]}">
 				</div>
 				<div class="linebtn">
 					<a class="retroShade retroBtn btnColor-yellow" href="/login" data-link>${this.language.register.login}</a>
-					<button id="nextBtn" class="signupBtn retroShade retroBtn btnColor-green">${this.language.register.next}</button>
+					<button id="setPassword" class="signupBtn retroShade retroBtn btnColor-green">${this.language.register.next}</button>
 				</div>
 			</div>
 	   </div>
@@ -47,51 +58,106 @@ export default class extends Aview{
 			<div class="signupForm">
 				<h1 id="title">${this.language.register.secondRegister}</h1>
 				<div class="line">
-					<h3>${this.language.register.password[0]}</h3>
-					<input type="password" class="data retroShade" name="${this.language.register.password[1]}">
+					<h4>${this.language.register.password[0]}</h4>
+					<input type="password" class="data pass" name="${this.language.register.password[1]}">
+					<div class="passwordSwitch">
+					<img src="/imgs/openEye.png" alt="">
+					</div>
 				</div>
 				<div class="line">
-					<h3>${this.language.register.confirmPassword[0]}</h3>
-					<input type="password" class="data retroShade" name="${this.language.register.confirmPassword[1]}">
+					<h4>${this.language.register.confirmPassword[0]}</h4>
+					<input type="password" class="data pass" name="${this.language.register.confirmPassword[1]}">
+					<div class="confirmPasswordSwitch">
+						<img src="/imgs/openEye.png" alt="">
+					</div>
 				</div>
-				<div class="line">
-					<h3>${this.language.register.birthDate[0]}</h3>
-					<input type="date" class="data" name="${this.language.register.birthDate[1]}">
-				</div>
-				<div class="line">
-					<h3>${this.language.register.profilePicture[0]}</h3>
-					<input type="file" class="data fileSelector" name="${this.language.register.profilePicture[1]}">
+				<div class="errors retroShade">
+					<ul>
+						<li>${this.language.register.errors[0]}</li>
+						<li>${this.language.register.errors[1]}</li>
+						<li>${this.language.register.errors[2]}</li>
+						<li>${this.language.register.errors[3]}</li>
+					</ul>
 				</div>
 				<div class="linebtn">
 					<a class="retroShade retroBtn btnColor-yellow" href="/login" data-link>${this.language.register.login}</a>
-					<button id="goBack" class="signupBtn retroShade retroBtn btnColor-green">${this.language.register.goBack}</button>
-					<button id="submit" class="signupBtn retroShade retroBtn btnColor-green">${this.language.register.submit}</button>
+					<button id="goFirst" class="signupBtn retroShade retroBtn btnColor-green">${this.language.register.goBack}</button>
+					<button id="last" class="signupBtn retroShade retroBtn btnColor-green">${this.language.register.submit}</button>
 				</div>
 			</div>
 	   </div>
         `
 	}
-	updateField(data){
-		let keys = Object.keys(data);
-		for (let key of keys)
-			this.field[key] = data[key];
+	getThirdForm(){
+		return `
+		<div class="base">
+			<div class="signupForm">
+				<h1 id="title">${this.language.register.thirdRegister}</h1>
+				<div class="line">
+					<h4>${this.language.register.birthDate[0]}</h4>
+					<input type="date" class="data" name="${this.language.register.birthDate[1]}">
+				</div>
+				<div class="line">
+					<h4>${this.language.register.profilePicture[0]}</h4>
+					<input type="file" class="data fileSelector" name="${this.language.register.profilePicture[1]}">
+				</div>
+				<div class="linebtn">
+					<a class="retroShade retroBtn btnColor-yellow" href="/login" data-link>${this.language.register.login}</a>
+					<button id="getSecond" class="signupBtn retroShade retroBtn btnColor-green">${this.language.register.goBack}</button>
+					<button id="submit" class="signupBtn retroShade retroBtn btnColor-green">${this.language.register.submit}</button>
+				</div>
+			</div>
+		</div>
+		`
+	}
+	setError(){
+		let inputs = document.querySelectorAll(".data");
+
+		for (let inp of inputs)
+		{
+			if (this.errors[inp.name])
+				inp.parentNode.style.backgroundColor = "red"
+			else
+			inp.parentNode.style.backgroundColor = "green"
+		}
+		if (document.querySelector(".errors") != null && (this.errors.password || this.errors.confirmPassword))
+			document.querySelector(".errors").style.display = "flex";
 	}
 	setup(){
 		document.addEventListener("click", (e)=>{
-			if (e.target.id == "nextBtn")
+			if (e.target.id == "setPassword")
 			{
 				this.updateField(this.getInput());
-				document.querySelector("#app").innerHTML = this.getSecondForm();
+				if (!check.firstCheck(this.field, this.errors)){
+					document.querySelector("#app").innerHTML = this.getSecondForm();
+					check.setupSwitchListener();
+				}
+				else
+					this.setError();
 			}
-			if (e.target.id == "goBack")
+			else if (e.target.id == "last")
+			{
+				this.updateField(this.getInput());
+				if (!check.checkPassword(this.field, this.errors))
+					document.querySelector("#app").innerHTML = this.getThirdForm();
+				else
+					this.setError();
+			}
+			else if (e.target.id == "getSecond")
+				document.querySelector("#app").innerHTML = this.getSecondForm();
+			else if (e.target.id == "goFirst")
 			{
 				document.querySelector("#app").innerHTML = this.getHtml();
 				this.field = {};
 			}
-			if (e.target.id == "submit")
+			else if (e.target.id == "submit")
 			{
 				this.updateField(this.getInput());
-				console.log(this.field)//call API
+				if (!check.lastCheck(this.field, this.errors))
+					register(this.field)
+				else				
+					this.setError();
+				console.log(this.field)
 			}
 		})
 		document.querySelector("#app").style.backgroundImage = "url('/imgs/backLogin.png')";

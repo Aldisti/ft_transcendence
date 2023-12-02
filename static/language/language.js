@@ -8,8 +8,9 @@ let language = {
 			register: "Register!"
 		},
 		register: {
-			register: "Register [1/2]",
-			secondRegister: "Register [2/2]",
+			register: "Register [1/3]",
+			secondRegister: "Register [2/3]",
+			thirdRegister: "Register [3/3]",
 			firstName:	["First Name:", "firstName"],
 			lastName:	["Last Name:", "lastName"],
 			birthDate: ["Birth Date:", "birthDate"],
@@ -18,6 +19,7 @@ let language = {
 			email: ["Email:", "email"],
 			password: ["Password:", "password"],
 			confirmPassword: ["Confirm password:", "confirmPassword"],
+			errors: ["Password must be at leat 8 character long", "Password must contain at least one special caracter", "Password must contain at least one number", "Password must contain at least one uppercase letter"],
 			next: "Next!",
 			goBack: "Go Back",
 			submit: "Submit!",
@@ -39,8 +41,9 @@ let language = {
 			register: "Register!"
 		},
 		register: {
-			register: "Registrazione [1/2]",
-			secondRegister: "Register [2/2]",
+			register: "Registrazione [1/3]",
+			secondRegister: "Register [2/3]",
+			thirdRegister: "Register [3/3]",
 			firstName:	["First Name:", "firstName"],
 			lastName:	["Last Name:", "lastName"],
 			birthDate: ["Birth Date:", "birthDate"],

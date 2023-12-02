@@ -1,11 +1,13 @@
 import Aview from "/views/abstractView.js";
-import language from "/language/language.js"
+import language from "/language/language.js";
+import login from"/API/login.js"
 
 export default class extends Aview{
     constructor(){
         super();
 		this.needListener	= true;
 		this.listenerId		= "loginBtn";
+		this.fiels			= {};
     }
     getHtml(){
         return `
@@ -30,9 +32,16 @@ export default class extends Aview{
     }
 	setup(){
 		window.addEventListener("click", (e)=>{
+			if (e.target.id == "loginBtn")
+			{
+				this.updateField(this.getInput());
+				console.log(this.field)//call API
+				login(this.field)
+			}
 		})
 		document.querySelector("#app").style.backgroundImage = "url('/imgs/backLogin.png')";
 		document.querySelector("#app").style.backgroundSize = "cover"
 		document.querySelector("#app").style.backgroundRepeat = "repeat"
 	}
+	
 }

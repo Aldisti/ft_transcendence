@@ -5,6 +5,7 @@ export default class Aview{
         this.needListener   = false;
         this.listenerId     = "";
         this.language = {};
+        this.field          = {};
     }
     getHtml(){
 
@@ -21,6 +22,11 @@ export default class Aview{
             values[inp.name] = inp.value;
         return values;
     }
+    updateField(data){
+		let keys = Object.keys(data);
+		for (let key of keys)
+			this.field[key] = data[key];
+	}
     setup(){
 
     }
