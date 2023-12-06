@@ -1,25 +1,25 @@
 export function setupSwitchListener(){
     document.querySelector(".passwordSwitch").addEventListener("click", (e)=>{
-        if (e.target.parentNode.parentNode.children[1].type == "password")
+        if (e.target.parentNode.parentNode.children[0].type == "password")
         {
-            e.target.parentNode.parentNode.children[1].type = "text";
+            e.target.parentNode.parentNode.children[0].type = "text";
             e.target.src = "/imgs/closedEye.png"
         }
         else
         {
-            e.target.parentNode.parentNode.children[1].type = "password";
+            e.target.parentNode.parentNode.children[0].type = "password";
             e.target.src = "/imgs/openEye.png"
         }
     })
     document.querySelector(".confirmPasswordSwitch").addEventListener("click", (e)=>{
-        if (e.target.parentNode.parentNode.children[1].type == "password")
+        if (e.target.parentNode.parentNode.children[0].type == "password")
         {
-            e.target.parentNode.parentNode.children[1].type = "text";
+            e.target.parentNode.parentNode.children[0].type = "text";
             e.target.src = "/imgs/closedEye.png"
         }
         else
         {
-            e.target.parentNode.parentNode.children[1].type = "password";
+            e.target.parentNode.parentNode.children[0].type = "password";
             e.target.src = "/imgs/openEye.png"
         }
     })

@@ -3,7 +3,7 @@
 	background-image: url("/imgs/register.png");
 	background-size: cover;
 	background-repeat: no-repeat;
-	color: white;
+	color: black;
 	width: 55svw;
 	height: 70svh;
 	display: flex;
@@ -20,14 +20,10 @@
 	border: none !important;
 }
 
-.signupForm h3
-{
-	text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-}
-
 .signupForm h1
 {
 	text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+	color: white;
 }
 
 .base
@@ -97,7 +93,7 @@
 
 .passwordSwitch, .confirmPasswordSwitch
 {
-	width: auto;
+	width: 20%;
 	height: 80%;
 	border: 2px solid black;
 	border-left: none;
@@ -114,11 +110,26 @@
 	cursor: pointer;
 }
 
+.passInput
+{
+	width: 65%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.passInput input
+{
+	width: 90% !important;
+}
+
+
 .passwordSwitch img, .confirmPasswordSwitch img
 {
 	width: 100%;
 	height: 100%;
-	object-fit: cover;
+	object-fit: contain;
 }
 
 .line h4

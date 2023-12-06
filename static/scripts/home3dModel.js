@@ -64,7 +64,7 @@ export default function startAnimation (){
     // let wall = new Obj(wallCanv, "/wall.gltf", {x: 0, y: 0, z: 0});
     
     let previousTime = 0;
-    const targetFrameRate = 60; // Target frame rate (in FPS)
+    const targetFrameRate = 30; // Target frame rate (in FPS)
     const frameInterval = 1000 / targetFrameRate; // Interval in milliseconds between frames
     function animate(currentTime) {
         const deltaTime = currentTime - previousTime;
@@ -73,7 +73,7 @@ export default function startAnimation (){
             padle.obj.rotation.z += 0.01;
         if (ground.obj != undefined)
             ground.obj.rotation.y += 0.01;
-        // if (wall.obj != undefined)
+        // if (wall.obj != server.js.jsed)
         //     wall.obj.rotation.y += 0.005;
         padle.controls.update();
         ground.controls.update();

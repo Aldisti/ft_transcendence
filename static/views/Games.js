@@ -42,14 +42,14 @@ export default class extends Aview{
         this.games          = {
             pong3d:{
                 name: "Pong 3D",
-                url: "/pong3d",
+                url: "/games/pongThreeD",
                 imgUrl: "/imgs/pongImg.png",
                 category: "Arcade",
                 multiplayer: true
             },
             pong:{
                 name: "Pong",
-                url: "/pong",
+                url: "/games/pongTwoD",
                 imgUrl: "/imgs/originalPong.webp",
                 category: "Arcade",
                 multiplayer: false

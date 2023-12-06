@@ -29,19 +29,19 @@ export default class extends Aview{
 			<div class="signupForm">
 				<h1 id="title">${this.language.register.register}</h1>
 				<div class="line">
-					<h4>${this.language.register.firstName[0]}</h4>
+					<h2>${this.language.register.firstName[0]}</h2>
 					<input type="text" value="${this.field[this.language.register.firstName[1]]}" class="data retroShade" name="${this.language.register.firstName[1]}">
 				</div>
 				<div class="line">
-					<h4>${this.language.register.lastName[0]}</h4>
+					<h2>${this.language.register.lastName[0]}</h2>
 					<input type="text" value="${this.field[this.language.register.lastName[1]]}" class="data retroShade" name="${this.language.register.lastName[1]}">
 				</div>
 				<div class="line">
-					<h4>${this.language.register.username[0]}</h4>
+					<h2>${this.language.register.username[0]}</h2>
 					<input type="text" value="${this.field[this.language.register.username[1]]}" class="data retroShade" name="${this.language.register.username[1]}">
 				</div>
 				<div class="line">
-					<h4>${this.language.register.email[0]}</h4>
+					<h2>${this.language.register.email[0]}</h2>
 					<input type="email" value="${this.field[this.language.register.email[1]]}" class="data retroShade" name="${this.language.register.email[1]}">
 				</div>
 				<div class="linebtn">
@@ -58,17 +58,21 @@ export default class extends Aview{
 			<div class="signupForm">
 				<h1 id="title">${this.language.register.secondRegister}</h1>
 				<div class="line">
-					<h4>${this.language.register.password[0]}</h4>
-					<input type="password" class="data pass" name="${this.language.register.password[1]}">
-					<div class="passwordSwitch">
-					<img src="/imgs/openEye.png" alt="">
+					<h2>${this.language.register.password[0]}</h2>
+					<div class="passInput">
+						<input type="password" class="data pass" name="${this.language.register.password[1]}">
+						<div class="passwordSwitch">
+						<img src="/imgs/openEye.png" alt="">
+						</div>
 					</div>
 				</div>
 				<div class="line">
-					<h4>${this.language.register.confirmPassword[0]}</h4>
-					<input type="password" class="data pass" name="${this.language.register.confirmPassword[1]}">
-					<div class="confirmPasswordSwitch">
-						<img src="/imgs/openEye.png" alt="">
+					<h2>${this.language.register.confirmPassword[0]}</h2>
+					<div class="passInput">
+						<input type="password" class="data pass" name="${this.language.register.confirmPassword[1]}">
+						<div class="confirmPasswordSwitch">
+							<img src="/imgs/openEye.png" alt="">
+						</div>
 					</div>
 				</div>
 				<div class="errors retroShade">
@@ -94,11 +98,11 @@ export default class extends Aview{
 			<div class="signupForm">
 				<h1 id="title">${this.language.register.thirdRegister}</h1>
 				<div class="line">
-					<h4>${this.language.register.birthDate[0]}</h4>
+					<h2>${this.language.register.birthDate[0]}</h2>
 					<input type="date" class="data" name="${this.language.register.birthDate[1]}">
 				</div>
 				<div class="line">
-					<h4>${this.language.register.profilePicture[0]}</h4>
+					<h2>${this.language.register.profilePicture[0]}</h2>
 					<input type="file" class="data fileSelector" name="${this.language.register.profilePicture[1]}">
 				</div>
 				<div class="linebtn">
@@ -115,15 +119,25 @@ export default class extends Aview{
 
 		for (let inp of inputs)
 		{
-			if (this.errors[inp.name])
+			if (this.errors[inp.name] && !inp.classList.contains("pass"))
 			{
 				inp.parentNode.classList.add("red")
 				inp.parentNode.classList.remove("green")
 			}
-			else
+			else if (!this.errors[inp.name] )
 			{
 				inp.parentNode.classList.add("green")
 				inp.parentNode.classList.remove("red")
+			}
+			else if (this.errors[inp.name] && inp.classList.contains("pass"))
+			{
+				inp.parentNode.parentNode.classList.add("red")
+				inp.parentNode.parentNode.classList.remove("green")
+			}
+			else
+			{
+				inp.parentNode.parentNode.classList.add("green")
+				inp.parentNode.parentNode.classList.remove("red")
 			}
 		}
 		if (document.querySelector(".errors") != null && (this.errors.password || this.errors.confirmPassword))

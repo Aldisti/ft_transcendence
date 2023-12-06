@@ -1,0 +1,20 @@
+body
+{
+    min-height: 100svh;
+    width: 100svw;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: 0;
+    background-color: black;
+}
+
+.p1Display, .p2Display
+{
+    color: white;
+}
+
+canvas
+{
+    background-color: black;
+}
