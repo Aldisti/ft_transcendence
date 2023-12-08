@@ -1,6 +1,7 @@
 import Aview from "/views/abstractView.js";
 import register from"/API/register.js"
 import * as check from "/scripts/register.js"
+import sha256 from "/scripts/crypto.js"
 
 export default class extends Aview{
     constructor(){
@@ -40,23 +41,19 @@ export default class extends Aview{
 					<h2>${this.language.register.username[0]}</h2>
 					<input type="text" value="${this.field[this.language.register.username[1]]}" class="data retroShade" name="${this.language.register.username[1]}">
 				</div>
-				<div class="line">
-					<h2>${this.language.register.email[0]}</h2>
-					<input type="email" value="${this.field[this.language.register.email[1]]}" class="data retroShade" name="${this.language.register.email[1]}">
-				</div>
 				<div class="linebtn">
 					<a class="retroShade retroBtn btnColor-yellow" href="/login" data-link>${this.language.register.login}</a>
-					<button id="setPassword" class="signupBtn retroShade retroBtn btnColor-green">${this.language.register.next}</button>
+					<button id="flow2" class="signupBtn retroShade retroBtn btnColor-green">${this.language.register.next}</button>
 				</div>
 			</div>
 	   </div>
         `
     }
-	getSecondForm(){
+	getThirdForm(){
 		return `
 		<div class="base">
 			<div class="signupForm">
-				<h1 id="title">${this.language.register.secondRegister}</h1>
+				<h1 id="title">${this.language.register.thirdRegister}</h1>
 				<div class="line">
 					<h2>${this.language.register.password[0]}</h2>
 					<div class="passInput">
@@ -85,18 +82,18 @@ export default class extends Aview{
 				</div>
 				<div class="linebtn">
 					<a class="retroShade retroBtn btnColor-yellow" href="/login" data-link>${this.language.register.login}</a>
-					<button id="goFirst" class="signupBtn retroShade retroBtn btnColor-green">${this.language.register.goBack}</button>
-					<button id="last" class="signupBtn retroShade retroBtn btnColor-green">${this.language.register.submit}</button>
+					<button id="goFlow2" class="signupBtn retroShade retroBtn btnColor-green">${this.language.register.goBack}</button>
+					<button id="submit" class="signupBtn retroShade retroBtn btnColor-green">${this.language.register.submit}</button>
 				</div>
 			</div>
 	   </div>
         `
 	}
-	getThirdForm(){
+	getSecondForm(){
 		return `
 		<div class="base">
 			<div class="signupForm">
-				<h1 id="title">${this.language.register.thirdRegister}</h1>
+				<h1 id="title">${this.language.register.secondRegister}</h1>
 				<div class="line">
 					<h2>${this.language.register.birthDate[0]}</h2>
 					<input type="date" class="data" name="${this.language.register.birthDate[1]}">
@@ -105,79 +102,58 @@ export default class extends Aview{
 					<h2>${this.language.register.profilePicture[0]}</h2>
 					<input type="file" class="data fileSelector" name="${this.language.register.profilePicture[1]}">
 				</div>
+				<div class="line">
+					<h2>${this.language.register.email[0]}</h2>
+					<input type="email" class="data retroShade" name="${this.language.register.email[1]}">
+				</div>
 				<div class="linebtn">
 					<a class="retroShade retroBtn btnColor-yellow" href="/login" data-link>${this.language.register.login}</a>
-					<button id="getSecond" class="signupBtn retroShade retroBtn btnColor-green">${this.language.register.goBack}</button>
-					<button id="submit" class="signupBtn retroShade retroBtn btnColor-green">${this.language.register.submit}</button>
+					<button id="goFlow1" class="signupBtn retroShade retroBtn btnColor-green">${this.language.register.goBack}</button>
+					<button id="flow3" class="signupBtn retroShade retroBtn btnColor-green">${this.language.register.next}</button>
 				</div>
 			</div>
 		</div>
 		`
 	}
-	setError(){
-		let inputs = document.querySelectorAll(".data");
-
-		for (let inp of inputs)
-		{
-			if (this.errors[inp.name] && !inp.classList.contains("pass"))
-			{
-				inp.parentNode.classList.add("red")
-				inp.parentNode.classList.remove("green")
-			}
-			else if (!this.errors[inp.name] )
-			{
-				inp.parentNode.classList.add("green")
-				inp.parentNode.classList.remove("red")
-			}
-			else if (this.errors[inp.name] && inp.classList.contains("pass"))
-			{
-				inp.parentNode.parentNode.classList.add("red")
-				inp.parentNode.parentNode.classList.remove("green")
-			}
-			else
-			{
-				inp.parentNode.parentNode.classList.add("green")
-				inp.parentNode.parentNode.classList.remove("red")
-			}
-		}
-		if (document.querySelector(".errors") != null && (this.errors.password || this.errors.confirmPassword))
-			document.querySelector(".errors").style.display = "flex";
-	}
 	setup(){
 		document.addEventListener("click", (e)=>{
-			if (e.target.id == "setPassword")
+			//go Next
+			if (e.target.id == "flow2")
 			{
 				this.updateField(this.getInput());
-				if (!check.firstCheck(this.field, this.errors)){
+				if (check.flow1Check(this.field, this.errors, document.querySelectorAll(".data")))
 					document.querySelector("#app").innerHTML = this.getSecondForm();
+			}
+			else if (e.target.id == "flow3")
+			{
+				this.updateField(this.getInput());
+				if (check.flow2Check(this.field, this.errors, document.querySelectorAll(".data")))
+				{
+					document.querySelector("#app").innerHTML = this.getThirdForm();
 					check.setupSwitchListener();
 				}
-				else
-					this.setError();
-			}
-			else if (e.target.id == "last")
-			{
-				this.updateField(this.getInput());
-				if (!check.checkPassword(this.field, this.errors))
-					document.querySelector("#app").innerHTML = this.getThirdForm();
-				else
-					this.setError();
-			}
-			else if (e.target.id == "getSecond")
-				document.querySelector("#app").innerHTML = this.getSecondForm();
-			else if (e.target.id == "goFirst")
-			{
-				document.querySelector("#app").innerHTML = this.getHtml();
-				this.field = {};
 			}
 			else if (e.target.id == "submit")
 			{
 				this.updateField(this.getInput());
-				if (!check.lastCheck(this.field, this.errors))
+				if (check.flow3Check(this.field, this.errors, document.querySelectorAll(".data")))
+				{
+					delete this.field.confirmPassword;
+					this.field.password = sha256(this.field.password);
+					console.log(this.field)
 					register(this.field)
-				else				
-					this.setError();
-				console.log(this.field)
+				}
+			}
+
+			//go Back
+			else if (e.target.id == "goFlow2")
+			{
+				document.querySelector("#app").innerHTML = this.getSecondForm();
+			}
+			else if (e.target.id == "goFlow1")
+			{
+				document.querySelector("#app").innerHTML = this.getHtml();
+				this.field = {};
 			}
 		})
 		if (localStorage.getItem("style") == "modern")

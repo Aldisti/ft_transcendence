@@ -6,10 +6,10 @@ import Obj from "/games/pong3d/modelsHelper.js"
 let leftCanvas  = document.querySelector("#botView")
 let rightCanvas = document.querySelector("#topView")
 
-leftCanvas.width = window.innerWidth / 2.5;
-leftCanvas.heigth = window.innerHeight / 2.5;
-rightCanvas.width = window.innerWidth / 2.5;
-rightCanvas.heigth = window.innerHeight / 2.5;
+leftCanvas.width = window.innerWidth / 2.3;
+leftCanvas.heigth = window.innerHeight / 2.3;
+rightCanvas.width = window.innerWidth / 2.3;
+rightCanvas.heigth = window.innerHeight / 2.3;
 
 //initializing 3D models
 let     gamePos = new StartingObjectPosition();

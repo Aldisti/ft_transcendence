@@ -70,8 +70,8 @@ class Ball{
 	start(){
 		this.started = true;
 		date = new Date().getTime() / 1000;
-		this.deltaX = Math.ceil(Math.random() * 10) % 2 == 0 ? 1 : -1;
-		this.deltaY = Math.ceil(Math.random() * 10) % 2 == 0 ? 1 : -1;
+		this.deltaX = Math.ceil(Math.random() * 10) % 2 == 0 ? 1 + Math.random() : -1 - Math.random();
+		this.deltaY = Math.ceil(Math.random() * 10) % 2 == 0 ? 1 + Math.random() : -1 - Math.random();
 	}
 	touchPadel(leftPadle, rightPadle){
 

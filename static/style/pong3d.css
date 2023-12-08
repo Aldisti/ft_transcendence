@@ -9,8 +9,8 @@
 
 .p1Display, .p2Display
 {
-    border: 2px solid black;
-    box-shadow: 15px 15px black;
+    border: 2px solid white;
+    box-shadow: 10px 10px black;
     color: white;
     text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
     background-color: #a3b18a;
@@ -19,11 +19,13 @@
 .playerOne, .playerTwo
 {
     background-color: #588157;
-    height: 60svh;
+    height: 65svh;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     padding: 40px;
+    border: 2px solid white;
+    box-shadow: 10px 10px black;
 }
 
 h1
@@ -33,7 +35,7 @@ h1
 
 canvas
 {
-    border: 2px solid black;
+    border: 2px solid white;
     box-shadow: 15px 15px black;
     background-color: black;
 }

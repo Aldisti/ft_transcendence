@@ -1,13 +1,14 @@
 import Aview from "/views/abstractView.js";
 import language from "/language/language.js";
 import login from"/API/login.js"
+import sha256 from "/scripts/crypto.js"
 
 export default class extends Aview{
     constructor(){
         super();
 		this.needListener	= true;
 		this.listenerId		= "loginBtn";
-		this.fiels			= {};
+		this.field			= {};
     }
     getHtml(){
         return `
@@ -36,6 +37,7 @@ export default class extends Aview{
 			{
 				this.updateField(this.getInput());
 				console.log(this.field)//call API
+				this.field.password = sha256(this.field.password)
 				login(this.field)
 			}
 		})

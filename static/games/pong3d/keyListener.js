@@ -62,8 +62,8 @@ export function keyDownListner(game){
         if (e.key == " ")
         {
             e.preventDefault();
-            game.deltaX = Math.round(Math.random() * 100) % 2 == 0 ? -0.8 : 0.8;
-            game.deltaZ = Math.round(Math.random() * 100) % 2 == 0 ? -0.8 : 0.8;
+            game.deltaX = Math.round(Math.random() * 100) % 2 == 0 ? -0.8 - Math.random(): 0.8 +  Math.random();
+            game.deltaZ = Math.round(Math.random() * 100) % 2 == 0 ? -0.8 - Math.random() : 0.8 + Math.random();
         }
     })
 }
