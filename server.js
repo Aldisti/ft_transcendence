@@ -23,7 +23,6 @@ app.post("/login", (req, res)=>{
 })
 
 app.post("/username/check", (req, res)=>{
-  console.log(req);
   if (req.body.username == "mpaterno")
     res.status(400);
   else

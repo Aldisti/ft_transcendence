@@ -1,5 +1,5 @@
 import Aview from "/views/abstractView.js";
-import animation from "/scripts/home3dModel.js"
+import animation from "/viewScripts/home/home3dModel.js"
 
 export default class extends Aview{
     constructor(){

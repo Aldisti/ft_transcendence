@@ -1,6 +1,6 @@
 import Aview from "/views/abstractView.js";
 import register from"/API/register.js"
-import * as check from "/scripts/register.js"
+import * as check from "/viewScripts/register/checks.js"
 import sha256 from "/scripts/crypto.js"
 
 export default class extends Aview{
@@ -9,13 +9,13 @@ export default class extends Aview{
 		this.needListener	= true;
 		this.listenerId		= "signupBtn";
 		this.errors			= {
-			firstName: false,
-			lastName:  false,
-			username: false,
-			email: false,
-			password: false,
-			confirmPassword: false,
-			birthDate: false,
+			firstName: {isValid: false, text: ""},
+			lastName:  {isValid: false, text: ""},
+			username: {isValid: false, text: ""},
+			email: {isValid: false, text: ""},
+			password: {isValid: false, text: ""},
+			confirmPassword: {isValid: false, text: ""},
+			birthDate: {isValid: false, text: ""},
 		}
 		this.field			= {
 			firstName: "",
@@ -30,18 +30,34 @@ export default class extends Aview{
 			<div class="signupForm">
 				<h1 id="title">${this.language.register.register}</h1>
 				<div class="line">
+				<div class="myTooltip">
+				?
+				<span id="firstName-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
+			  </div> 
 					<h2>${this.language.register.firstName[0]}</h2>
 					<input type="text" value="${this.field[this.language.register.firstName[1]]}" class="data retroShade" name="${this.language.register.firstName[1]}">
 				</div>
 				<div class="line">
+				<div class="myTooltip">
+				?
+				<span id="lastName-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
+			  </div> 
 					<h2>${this.language.register.lastName[0]}</h2>
 					<input type="text" value="${this.field[this.language.register.lastName[1]]}" class="data retroShade" name="${this.language.register.lastName[1]}">
 				</div>
 				<div class="line">
+				<div class="myTooltip">
+					?
+					<span id="username-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
+				  </div> 
 					<h2>${this.language.register.username[0]}</h2>
 					<input type="text" value="${this.field[this.language.register.username[1]]}" class="data retroShade" name="${this.language.register.username[1]}">
 				</div>
 				<div class="line">
+				<div class="myTooltip">
+					?
+					<span id="email-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
+				  </div> 
 					<h2>${this.language.register.email[0]}</h2>
 					<input type="email" class="data retroShade" name="${this.language.register.email[1]}">
 				</div>
