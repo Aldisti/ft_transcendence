@@ -41,6 +41,10 @@ export default class extends Aview{
 					<h2>${this.language.register.username[0]}</h2>
 					<input type="text" value="${this.field[this.language.register.username[1]]}" class="data retroShade" name="${this.language.register.username[1]}">
 				</div>
+				<div class="line">
+					<h2>${this.language.register.email[0]}</h2>
+					<input type="email" class="data retroShade" name="${this.language.register.email[1]}">
+				</div>
 				<div class="linebtn">
 					<a class="retroShade retroBtn btnColor-yellow" href="/login" data-link>${this.language.register.login}</a>
 					<button id="flow2" class="signupBtn retroShade retroBtn btnColor-green">${this.language.register.next}</button>
@@ -102,10 +106,6 @@ export default class extends Aview{
 					<h2>${this.language.register.profilePicture[0]}</h2>
 					<input type="file" class="data fileSelector" name="${this.language.register.profilePicture[1]}">
 				</div>
-				<div class="line">
-					<h2>${this.language.register.email[0]}</h2>
-					<input type="email" class="data retroShade" name="${this.language.register.email[1]}">
-				</div>
 				<div class="linebtn">
 					<a class="retroShade retroBtn btnColor-yellow" href="/login" data-link>${this.language.register.login}</a>
 					<button id="goFlow1" class="signupBtn retroShade retroBtn btnColor-green">${this.language.register.goBack}</button>
@@ -121,8 +121,10 @@ export default class extends Aview{
 			if (e.target.id == "flow2")
 			{
 				this.updateField(this.getInput());
-				if (check.flow1Check(this.field, this.errors, document.querySelectorAll(".data")))
-					document.querySelector("#app").innerHTML = this.getSecondForm();
+				check.flow1Check(this.field, this.errors, document.querySelectorAll(".data")).then((res)=>{
+					if (res)
+						document.querySelector("#app").innerHTML = this.getSecondForm();
+				})
 			}
 			else if (e.target.id == "flow3")
 			{

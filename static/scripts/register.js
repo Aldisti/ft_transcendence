@@ -1,3 +1,5 @@
+import * as isAlreadyRegistered from "/API/checkUser.js"
+
 export function setupSwitchListener(){
     document.querySelector(".passwordSwitch").addEventListener("click", (e)=>{
         if (e.target.parentNode.parentNode.children[0].type == "password")
@@ -77,26 +79,47 @@ function paintBoxes(list, errors)
     }
 }
 
-export function flow1Check(fields, errors, objList){
+function setSpecialErrors(status, errors, key, field){
+    if (status && field != "" && !(key == "email" && errors.email))
+        errors[key] = false;
+    else
+        errors[key] = true;
+}
+
+export async function flow1Check(fields, errors, objList){
+
+    //basic check for empty parameters
     for (let key of Object.keys(fields))
     {
-        if ((key == "firstName" || key == "lastName" || key == "username") && fields[key] == "")
+        if ((key == "firstName" || key == "lastName" || key == "username" || key == "email") && fields[key] == "")
             errors[key] = true;
         else
             errors[key] = false;
     }
-    paintBoxes(objList, errors)
+
+    //validate email with regex
+    emailValidator(fields.email, errors);
+
+    //asking server for email and user availability
+    let resUsername  = await isAlreadyRegistered.checkUser(fields.username);
+    let resEmail  = await isAlreadyRegistered.checkEmail(fields.email);
+
+    //setting error if needed
+    setSpecialErrors(resUsername, errors, "username", fields.username);
+    setSpecialErrors(resEmail, errors, "email", fields.email);
+    paintBoxes(objList, errors);
+
+    //defining returns
     for (let key of Object.keys(errors))
     {
         if (errors[key] == true)
-            return false;
+            return (false);
     }
     return (true);
 }
 
 export function flow2Check(fields, errors, objList){
     dateValidator(fields.birthDate, errors);
-    emailValidator(fields.email, errors);
     //space left for image check now empty
     paintBoxes(objList, errors)
     for (let key of Object.keys(errors))

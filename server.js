@@ -22,6 +22,23 @@ app.post("/login", (req, res)=>{
   res.send("ok")
 })
 
+app.post("/username/check", (req, res)=>{
+  console.log(req);
+  if (req.body.username == "mpaterno")
+    res.status(400);
+  else
+    res.status(200)
+  res.send();
+})
+app.post("/email/check", (req, res)=>{
+  console.log(req);
+  if (req.body.email == "mpaterno@test.it")
+    res.status(400);
+  else
+    res.status(200)
+  res.send();
+})
+
 app.post("/register", (req, res)=>{
   console.log("hey")
   console.log(req.body);
