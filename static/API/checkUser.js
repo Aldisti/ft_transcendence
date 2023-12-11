@@ -6,9 +6,7 @@ export async function checkUser(username){
         },
         body: JSON.stringify({username: username}),
     })
-    if (res.ok)
-        return (true);
-    return false;
+    return res;
 }
 
 export async function checkEmail(email){
@@ -19,7 +17,5 @@ export async function checkEmail(email){
         },
         body: JSON.stringify({email: email}),
     })
-    if (res.ok)
-        return (true);
-    return false;
+    return res;
 }

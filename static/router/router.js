@@ -3,6 +3,8 @@ import * as styleH from "/router/styleSheetsHandling.js"
 
 if (localStorage.getItem("language") == null)
 	localStorage.setItem("language", "en")
+else
+	document.querySelector("#languageSwitch").value = localStorage.getItem("language")
 
 if (localStorage.getItem("style") == null)
 	localStorage.setItem("style", "old")

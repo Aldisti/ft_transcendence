@@ -9,6 +9,11 @@
     box-sizing: border-box;
     font-family: 'VT323', monospace !important;
     font-weight: 500;
+    scrollbar-width: none;
+}
+
+*::-webkit-scrollbar{
+    display: none;
 }
 
 #timeTravel
@@ -33,8 +38,10 @@ select
     cursor: pointer;
 }
 
-body
+html, body
 {
+    width: 100svw;
+    min-height: 100svh;
     margin: 0;
 }
 
@@ -42,6 +49,10 @@ body
 {
     font-size: 40px !important;
     color: white !important;
+}
+
+.nav{
+    width: 100svw !important;
 }
 
 .nav-link
@@ -55,3 +66,4 @@ body
     width: 100svw;
     height: 100svh;
 }
+

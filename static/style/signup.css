@@ -4,8 +4,8 @@
 	background-size: cover;
 	background-repeat: no-repeat;
 	color: black;
-	width: 55svw;
-	height: 70svh;
+	width: 60svw;
+	height: 65svh;
 	display: flex;
 	justify-content: space-between;
 	flex-direction: column;
@@ -13,6 +13,12 @@
 	box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
 	padding: 20px;
 	box-shadow: 15px 15px black;
+	border: 2px solid black;
+}
+
+h2
+{
+	margin: 0;
 }
 
 .fileSelector
@@ -28,7 +34,7 @@
 
 .base
 {
-	width: 100svw;
+	width: 100vw;
 	height: 100svh;
 	display: flex;
 	justify-content: center;
@@ -51,6 +57,10 @@
 	justify-content: center;
 	align-items: center;
 	color: white;
+	box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+	font-size: 20px;
+	font-weight: bolder;
+	text-decoration: none;
 }
 
 
@@ -74,13 +84,13 @@
 
 .retroShade:hover
 {
-	box-shadow: 2px 2px black;
+	box-shadow: none;
 }
 
 .line
 {
-	width: 95%;
-	height: 8svh;
+	width: 90%;
+	height: 6svh;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;

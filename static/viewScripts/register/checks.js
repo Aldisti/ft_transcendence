@@ -32,9 +32,9 @@ export function setupSwitchListener(){
 
 function passwordValidator(password, errors, toBeTrue){
     if (password.length > 8 && password.length < 72 && password.match(/[0123456789]/) && password.match(/[!@#$%^&*()_+\-=ˆ\[\]{};:'",.<>?~]/) && password.match(/[QWERTYUIOPASDFGHJKLZXCVBNM]/) && password.match(/[qwertyuiopasdfghjklzxcvbnm]/))
-        errors[toBeTrue].isValid = false;
+        errors[toBeTrue].isNotValid = false;
     else
-        errors[toBeTrue].isValid = true;
+        errors[toBeTrue].isNotValid = true;
 }
 
 function dateValidator(date, errors)
@@ -42,9 +42,9 @@ function dateValidator(date, errors)
     const splitted = date.split("-");
 
     if (!(new Date(Number(splitted[0])+18, Number(splitted[1])-1, Number(splitted[2])) <= new Date()))
-        errors.birthDate.isValid = true;
+        errors[lan.register.birthDate[1]].isNotValid = true;
     else
-        errors.birthDate.isValid = false;
+        errors[lan.register.birthDate[1]].isNotValid = false;
 }
 
 function emailValidator(email, errors)
@@ -53,36 +53,38 @@ function emailValidator(email, errors)
 
     if (email.match(regExp))
     {
-        errors.email.isValid = false;
-        if (errors.email.text.indexOf(lan.register.flow1Errors[3]) != -1)
-            errors.email.text = errors.email.text.replace(`${lan.register.flow1Errors[3]}<br>`, "")
+        errors[lan.register.email[1]].isNotValid = false;
+        if (errors[lan.register.email[1]].text.indexOf(lan.register.flow1Errors[3]) != -1)
+            errors[lan.register.email[1]].text = errors[lan.register.email[1]].text.replace(`${lan.register.flow1Errors[3]}<br>`, "")
     }
     else
     {
-        errors.email.isValid = true;
-        if (errors.email.text.indexOf(lan.register.flow1Errors[3]) == -1 && email != "")
-            errors.email.text = lan.register.flow1Errors[3];
+        errors[lan.register.email[1]].isNotValid = true;
+        if (errors[lan.register.email[1]].text.indexOf(lan.register.flow1Errors[3]) == -1 && email != "")
+            errors[lan.register.email[1]].text = lan.register.flow1Errors[3];
     }
 }
 
 function doPaint(errors, key, obj)
 {
-    if (errors[key].isValid == true)
+    if (errors[key].isNotValid == true)
         obj.style.backgroundColor = "red";
     else
-        obj.style.backgroundColor = "green"
-    if ((key == "password" || key == "confirmPassword") && errors[key].isValid == true)
+        obj.style.backgroundColor = "white"
+    if ((key == lan.register.password[1] || key == lan.register.confirmPassword[1]) && errors[key].isNotValid == true)
         document.querySelector(".errors").style.display = "flex"
+    if (errors[key].isNotValid)
+        document.querySelector(`#${key}-tooltip`).innerHTML = errors[key].text;
 }
 
 
-function paintBoxes(list, errors)
+export function paintBoxes(list, errors)
 {
     for (let el of list)
     {
         for (let key of Object.keys(errors))
         {
-            if ((el.name == "password" && key == "password") || (el.name == "confirmPassword" && key == "confirmPassword"))
+            if ((el.name == lan.register.password[1] && key == lan.register.password[1]) || (el.name == lan.register.confirmPassword[1] && key == lan.register.confirmPassword[1]))
                 doPaint(errors, key, el.parentNode.parentNode)
             else if (el.name == key)
                 doPaint(errors, key, el.parentNode)
@@ -90,12 +92,12 @@ function paintBoxes(list, errors)
     }
 }
 
-function setSpecialErrors(status, errors, key, field){
-    if (status && field != "" && !(key == "email" && errors.email.isValid))
-        errors[key].isValid = false;
-    if (!status)
+function setSpecialErrors(res, errors, key, field){
+    if (res.status == 404 && field != "" && !(key == lan.register.email[1] && errors[lan.register.email[1]].isNotValid))
+        errors[key].isNotValid = false;
+    if (res.status == 200 && field != "")
     {
-        errors[key].isValid = true;
+        errors[key].isNotValid = true;
         if (errors[key].text.indexOf(`${key} ${lan.register.flow1Errors[1]}`) == -1)
             errors[key].text = `${key} ${lan.register.flow1Errors[1]}<br>`;
     }
@@ -118,71 +120,103 @@ function tooltipUpdater(errors){
     }
 }
 
+
+
+function usernameValidator(username, errors)
+{
+    let usernameReg = /^[A-Za-z0-9!?*@$~_-]{5,32}$/
+
+    if (!username.test(usernameReg))
+        errors[lan.register.username[1]].isNotValid = true;
+    else
+        errors[lan.register.username[1]].isNotValid = false;
+    console.log(!username.test(usernameReg))
+
+}
+function firstAndLastNameValidator(firstName, lastName, errors)
+{
+    let firstNameReg = /^[A-Za-z0-9 -]{1,32}$/
+    let lastNameReg = /^[A-Za-z0-9 -]{1,32}$/
+
+    if (!firstName.test(firstNameReg))
+        errors[lan.register.firstName[1]].isNotValid = true;
+    else
+        errors[lan.register.firstName[1]].isNotValid = false;
+    if (!lastName.test(lastNameReg))
+        errors[lan.register.lastName[1]].isNotValid = true;
+    else
+        errors[lan.register.lastName[1]].isNotValid = false;
+        console.log(!firstName.test(firstNameReg))
+        console.log(!lastName.test(lastNameReg))
+}
+
 export async function flow1Check(fields, errors, objList){
 
     //basic check for empty parameters
-    for (let key of Object.keys(fields))
+    for (let key of [lan.register.firstName[1], lan.register.lastName[1], lan.register.username[1], lan.register.email[1]])
     {
-        if ((key == "firstName" || key == "lastName" || key == "username" || key == "email") && fields[key] == "")
+        if (fields[key] == "")
         {
-            errors[key].isValid = true;
+            errors[key].isNotValid = true;
             if (errors[key].text.indexOf(`${lan.register.flow1Errors[0]}`) == -1)
                 errors[key].text = `${lan.register.flow1Errors[0]}<br>`;
         }
         else
         {
-            errors[key].isValid = false;
+            errors[key].isNotValid = false;
             errors[key].text = errors[key].text.replace(`${lan.register.flow1Errors[0]}<br>`, "");
         }
     }
 
     //validate email with regex
-    emailValidator(fields.email, errors);
+    emailValidator(fields[lan.register.email[1]], errors);
+    usernameValidator(fields[lan.register.username[1]], errors);
+    firstAndLastNameValidator(fields[lan.register.firstName[1]], fields[lan.register.lastName[1]], errors);
 
     //asking server for email and user availability
-    let resUsername  = await isAlreadyRegistered.checkUser(fields.username);
-    let resEmail  = await isAlreadyRegistered.checkEmail(fields.email);
+    let resUsername  = await isAlreadyRegistered.checkUser(fields[lan.register.username[1]]);
+    let resEmail  = await isAlreadyRegistered.checkEmail(fields[lan.register.email[1]]);
 
     //setting error if needed
-    setSpecialErrors(resUsername, errors, "username", fields.username);
-    setSpecialErrors(resEmail, errors, "email", fields.email);
+    setSpecialErrors(resUsername, errors, lan.register.username[1], fields[lan.register.username[1]]);
+    setSpecialErrors(resEmail, errors, lan.register.email[1], fields[lan.register.email[1]]);
     paintBoxes(objList, errors);
 
     tooltipUpdater(errors)
 
     //defining returns
-    for (let key of Object.keys(errors))
+    for (let key of [lan.register.firstName[1], lan.register.lastName[1], lan.register.username[1], lan.register.email[1]])
     {
-        if (errors[key].isValid == true)
+        if (errors[key].isNotValid == true)
             return (false);
     }
     return (true);
 }
 
 export function flow2Check(fields, errors, objList){
-    dateValidator(fields.birthDate, errors);
+    dateValidator(fields[lan.register.birthDate[1]], errors);
     //space left for image check now empty
     paintBoxes(objList, errors)
-    for (let key of Object.keys(errors))
+    for (let key of [lan.register.birthDate[1], lan.register.profilePicture[1]])
     {
-        if (errors[key].isValid == true)
+        if (errors[key].isNotValid == true)
             return false;
     }
     return (true);
 }
 
 export function flow3Check(fields, errors, objList){
-    passwordValidator(fields.password, errors, "password");
-    passwordValidator(fields.confirmPassword, errors, "confirmPassword");
-    if (fields.password != fields.confirmPassword)
+    passwordValidator(fields[lan.register.password[1]], errors, lan.register.password[1]);
+    passwordValidator(fields[lan.register.confirmPassword[1]], errors, lan.register.confirmPassword[1]);
+    if (fields[lan.register.password[1]] != fields[lan.register.confirmPassword[1]])
     {
-        errors.password.isValid = true;
-        errors.confirmPassword.isValid = true;
+        errors[lan.register.password[1]].isNotValid = true;
+        errors[lan.register.confirmPassword[1]].isNotValid = true;
     }
     paintBoxes(objList, errors)
-    for (let key of Object.keys(errors))
+    for (let key of [lan.register.password[1], lan.register.confirmPassword[1]])
     {
-        if (errors[key].isValid == true)
+        if (errors[key].isNotValid == true)
             return false;
     }
     return (true);

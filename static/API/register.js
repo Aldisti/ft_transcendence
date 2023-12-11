@@ -1,6 +1,6 @@
 export default async function registerAPI(data)
 {
-    const rest = fetch("http://localhost:4200/register", {
+    const rest = await fetch("http://localhost:4200/register", {
         method: "POST",
         headers:{
             "Content-Type": "application/json"
@@ -8,4 +8,6 @@ export default async function registerAPI(data)
         body: JSON.stringify(data),
     })
 
+    let body = await rest.json()
+    return (body);
 }
