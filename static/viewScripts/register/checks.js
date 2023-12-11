@@ -92,22 +92,6 @@ export function paintBoxes(list, errors)
     }
 }
 
-function setSpecialErrors(res, errors, key, field){
-    if (res.status == 404 && field != "" && !(key == lan.register.email[1] && errors[lan.register.email[1]].isNotValid))
-        errors[key].isNotValid = false;
-    if (res.status == 200 && field != "")
-    {
-        errors[key].isNotValid = true;
-        if (errors[key].text.indexOf(`${key} ${lan.register.flow1Errors[1]}`) == -1)
-            errors[key].text = `${key} ${lan.register.flow1Errors[1]}<br>`;
-    }
-    else
-    {
-        if (errors[key].text.indexOf(`${key} ${lan.register.flow1Errors[1]}`) != -1)
-            errors[key].text = errors[key].text.replace(`${key} ${lan.register.flow1Errors[1]}<br>`, "")
-    }
-}
-
 function tooltipUpdater(errors){
     let tooltips = document.querySelectorAll(".tooltiptext");
 
@@ -120,34 +104,90 @@ function tooltipUpdater(errors){
     }
 }
 
-
-
 function usernameValidator(username, errors)
 {
     let usernameReg = /^[A-Za-z0-9!?*@$~_-]{5,32}$/
-
-    if (!username.test(usernameReg))
+    
+    if (!usernameReg.test(username))
+    {
         errors[lan.register.username[1]].isNotValid = true;
+        errors[lan.register.username[1]].text = "bad character inserted. Allowed ones are: A-Za-z0-9!?*@$~_-";
+        return (false);
+    }
     else
+    {
         errors[lan.register.username[1]].isNotValid = false;
-    console.log(!username.test(usernameReg))
-
+    }
+    return (true);
 }
+
+function checkUsername(username, errors, res)
+{
+    if (res.status == 404 && username != "" && usernameValidator(username, errors))
+    {
+        errors[lan.register.username[1]].isNotValid = false;
+        errors[lan.register.username[1]].text = "";
+    }
+    if (res.status == 200)
+    {
+        errors[lan.register.username[1]].isNotValid = true;
+        if (errors[lan.register.username[1]].text.indexOf(`${lan.register.username[1]} ${lan.register.flow1Errors[1]}`) == -1)
+            errors[lan.register.username[1]].text = `${lan.register.username[1]} ${lan.register.flow1Errors[1]}<br>`;
+    }
+}
+
+function checkEmail(email, errors, res)
+{
+    if (res.status == 404 && email != "" && emailValidator(email, errors))
+    {
+        errors[lan.register.email[1]].isNotValid = false;
+        errors[lan.register.email[1]].text = "";
+    }
+    if (res.status == 200)
+    {
+        errors[lan.register.email[1]].isNotValid = true;
+        if (errors[lan.register.email[1]].text.indexOf(`${lan.register.email[1]} ${lan.register.flow1Errors[1]}`) == -1)
+            errors[lan.register.email[1]].text = `${lan.register.email[1]} ${lan.register.flow1Errors[1]}<br>`;
+    }
+}
+
+
+
 function firstAndLastNameValidator(firstName, lastName, errors)
 {
     let firstNameReg = /^[A-Za-z0-9 -]{1,32}$/
     let lastNameReg = /^[A-Za-z0-9 -]{1,32}$/
 
-    if (!firstName.test(firstNameReg))
+    if (!firstNameReg.test(firstName) && firstName != "")
+    {
         errors[lan.register.firstName[1]].isNotValid = true;
-    else
+        errors[lan.register.firstName[1]].text = "allowed character are: A-Za-z0-9 -"
+    }
+    else if (firstName != "")
+    {
         errors[lan.register.firstName[1]].isNotValid = false;
-    if (!lastName.test(lastNameReg))
+        errors[lan.register.firstName[1]].text = "Come back when you are in trouble"
+    }
+    if (!lastNameReg.test(lastName) && lastName != "")
+    {
         errors[lan.register.lastName[1]].isNotValid = true;
-    else
+        errors[lan.register.lastName[1]].text = "allowed character are: A-Za-z0-9 -"
+    }
+    else if (lastName != "")
+    {
         errors[lan.register.lastName[1]].isNotValid = false;
-        console.log(!firstName.test(firstNameReg))
-        console.log(!lastName.test(lastNameReg))
+        errors[lan.register.lastName[1]].text = "Come back when you are in trouble"
+    }
+    if (firstName == "")
+    {
+        errors[lan.register.firstName[1]].isNotValid = true;
+        errors[lan.register.firstName[1]].text = "cannot be blank"
+    }
+    if (lastName == "")
+    {
+        errors[lan.register.lastName[1]].isNotValid = true;
+        errors[lan.register.lastName[1]].text = "cannot be blank"
+    }
 }
 
 export async function flow1Check(fields, errors, objList){
@@ -170,19 +210,19 @@ export async function flow1Check(fields, errors, objList){
 
     //validate email with regex
     emailValidator(fields[lan.register.email[1]], errors);
-    usernameValidator(fields[lan.register.username[1]], errors);
-    firstAndLastNameValidator(fields[lan.register.firstName[1]], fields[lan.register.lastName[1]], errors);
 
     //asking server for email and user availability
     let resUsername  = await isAlreadyRegistered.checkUser(fields[lan.register.username[1]]);
     let resEmail  = await isAlreadyRegistered.checkEmail(fields[lan.register.email[1]]);
 
     //setting error if needed
-    setSpecialErrors(resUsername, errors, lan.register.username[1], fields[lan.register.username[1]]);
-    setSpecialErrors(resEmail, errors, lan.register.email[1], fields[lan.register.email[1]]);
+    checkUsername(fields[lan.register.username[1]], errors, resUsername);
+    checkEmail(fields[lan.register.email[1]], errors, resEmail);
+
+    firstAndLastNameValidator(fields[lan.register.firstName[1]], fields[lan.register.lastName[1]], errors);
+    tooltipUpdater(errors)
     paintBoxes(objList, errors);
 
-    tooltipUpdater(errors)
 
     //defining returns
     for (let key of [lan.register.firstName[1], lan.register.lastName[1], lan.register.username[1], lan.register.email[1]])
