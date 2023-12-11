@@ -128,7 +128,7 @@ export default class extends Aview{
 						<span id="${this.language.register.birthDate[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
 			  		</div> 
 					<h2>${this.language.register.birthDate[0]}</h2>
-					<input type="date" value="${this.field.birthDate}" class="data" name="${this.language.register.birthDate[1]}">
+					<input type="date" value="${this.field[this.language.register.birthDate[1]]}" class="data" name="${this.language.register.birthDate[1]}">
 				</div>
 				<div class="line">
 				<div class="myTooltip">

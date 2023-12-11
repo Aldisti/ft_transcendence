@@ -3,14 +3,14 @@ const path = require('path');
 var bodyParser = require('body-parser')
 
 let errors  = {
-  first_name: {isValid: false, text: ""},
-  last_name:  {isValid: false, text: ""},
-  username: {isValid: false, text: ""},
-  email: {isValid: false, text: ""},
-  password: {isValid: false, text: ""},
-  confirmPassword: {isValid: false, text: ""},
-  picture: {isValid: false, text: ""},
-  birthdate: {isValid: true, text: "sono tornatooooo"},
+  first_name: {isNotValid: true, text: "hey il nome ha qualcosa che non va"},
+  last_name:  {isNotValid: false, text: ""},
+  username: {isNotValid: true, text: "hey lo username ha qualcosa che non va"},
+  email: {isNotValid: false, text: ""},
+  password: {isNotValid: false, text: ""},
+  confirmPassword: {isNotValid: false, text: ""},
+  picture: {isNotValid: false, text: ""},
+  birthdate: {isNotValid: true, text: "sono tornatooooo"},
 }
 
 const app = express();
