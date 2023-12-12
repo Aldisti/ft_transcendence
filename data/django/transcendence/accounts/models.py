@@ -1,60 +1,13 @@
 from django.db import models
 from django.core import validators
-from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.base_user import AbstractBaseUser
 from accounts.utils import Roles
 from accounts.validators import validate_birthdate
-
-class CustomUserManager(BaseUserManager):
-    def create_user(self, username, email, password, **kwargs):
-        if not email:
-            raise ValueError("Missing email")
-        email = self.normalize_email(email)
-        user = self.model(username=username, email=email, **kwargs)
-        user.set_password(password)
-        user.full_clean()
-        user.save()
-        return user
-
-    def create_superuser(self, username, email, password, **kwargs):
-        kwargs.setdefault("active", True)
-        kwargs.setdefault("role", Roles.ADMIN)
-
-        if not kwargs.get("active") == True:
-            raise ValueError("active must be true")
-        if not kwargs.get("role") == Roles.ADMIN:
-            raise ValueError("admin must have admin role")
-        return self.create_user(username, email, password, **kwargs)
-
-    def add_user_info(self, username, **kwargs):
-        kwargs.setdefault("first_name", "")
-        kwargs.setdefault("last_name", "")
-        kwargs.setdefault("birthdate", None)
-        kwargs.setdefault("picture", None)
-        user = User.objects.get(pk=username)
-        user_info = UserInfo(user=user, **kwargs)
-        user_info.full_clean()
-        user_info.save()
-        return user_info
-
-    def update_user_info(self, username, **kwargs):
-        user = User.objects.get(pk=username)
-        user_info = user.user_info
-        user_info.first_name = kwargs.get("first_name", user_info.first_name)
-        user_info.last_name = kwargs.get("last_name", user_info.last_name)
-        user_info.birthdate = kwargs.get("birthdate", user_info.birthdate)
-        user_info.picture = kwargs.get("picture", user_info.picture)
-        user_info.full_clean()
-        user_info.save()
-        return user_info
+from accounts.managers import UserManager, UserInfoManager
 
 # Create your models here.
 
 class User(AbstractBaseUser):
-    ROLES_CHOICES = [
-        (Roles.ADMIN, "admin"),
-        (Roles.MOD, "mod"),
-        (Roles.USER, "user"),
-    ]
     username = models.CharField(
         db_column="username",
         max_length=32,
@@ -70,7 +23,7 @@ class User(AbstractBaseUser):
     role = models.CharField(
         db_column="role",
         max_length=1,
-        choices=ROLES_CHOICES,
+        choices=Roles.ROLES_CHOICES,
         default=Roles.USER,
     )
     active = models.BooleanField(
@@ -82,7 +35,7 @@ class User(AbstractBaseUser):
     USERNAME_FIELD = "username"
     EMAIL_FIELD = "email"
 
-    objects = CustomUserManager()
+    objects = UserManager()
 
     class Meta:
         db_table = "user"
@@ -126,6 +79,8 @@ class UserInfo(models.Model):
         recursive=True,
         blank=True,
     )
+
+    objects = UserInfoManager()
 
 
     class Meta:

@@ -1,6 +1,7 @@
 from datetime import date, timedelta
 from django.test import TestCase
 from accounts.models import User
+from accounts.models import UserInfo
 from accounts.utils import Roles
 from django.core.exceptions import ValidationError
 
@@ -11,6 +12,7 @@ class ModelUserTests(TestCase):
     def setUpTestData(cls):
         cls.username = "Giovanni!?*@$~_-"
         cls.invalid_username = "Giovanni#@#$!"
+        cls.short_username = "Gi"
         cls.email = "giovanni@gmail.com"
         cls.invalid_email = "giovannigmail.com"
         cls.password = "prova"
@@ -45,6 +47,9 @@ class ModelUserTests(TestCase):
         # checking creation with invalid username
         with self.assertRaises(ValidationError):
             User.objects.create_user(self.invalid_username, self.email, self.password)
+        # checking creation with short username
+        with self.assertRaises(ValidationError):
+            User.objects.create_user(self.short_username, self.email, self.password)
 
     def test_valid_superuser_creation(self):
         user = User.objects.create_superuser(self.username, self.email, self.password)
@@ -98,16 +103,16 @@ class ModelUserInfoTests(TestCase):
 
 
     def test_valid_user_info_create(self):
-        user_info = User.objects.add_user_info(self.user.username, first_name=self.first_name,
-                                               last_name=self.last_name, birthdate=self.birthdate,
-                                               picture=self.picture)
+        user_info = UserInfo.objects.create(self.user, first_name=self.first_name,
+                                            last_name=self.last_name, birthdate=self.birthdate,
+                                            picture=self.picture)
         self.assertEqual(user_info.first_name, self.first_name);
         self.assertEqual(user_info.last_name, self.last_name);
         self.assertEqual(user_info.birthdate, self.birthdate);
         self.assertEqual(user_info.picture, self.picture);
 
     def test_blank_user_info_create(self):
-        user_info = User.objects.add_user_info(self.user.username)
+        user_info = UserInfo.objects.create(self.user)
         self.assertEqual(user_info.first_name, "");
         self.assertEqual(user_info.last_name, "");
         self.assertEqual(user_info.birthdate, None);
@@ -116,40 +121,41 @@ class ModelUserInfoTests(TestCase):
     def test_invalid_user_info_create(self):
         # checking creation with invalid first_name
         with self.assertRaises(ValidationError):
-            User.objects.add_user_info(self.user.username, first_name=self.invalid_first_name)
+            UserInfo.objects.create(self.user, first_name=self.invalid_first_name)
         # checking creation with invalid last_name
         with self.assertRaises(ValidationError):
-            User.objects.add_user_info(self.user.username, first_name=self.invalid_last_name)
+            UserInfo.objects.create(self.user, first_name=self.invalid_last_name)
         # checking creation with birthdate less than 14
         with self.assertRaises(ValidationError):
-            User.objects.add_user_info(self.user.username, first_name=self.too_young_birthdate)
+            UserInfo.objects.create(self.user, first_name=self.too_young_birthdate)
         # checking creation with birthdate older than 1900/01/01
         with self.assertRaises(ValidationError):
-            User.objects.add_user_info(self.user.username, first_name=self.too_old_birthdate)
+            UserInfo.objects.create(self.user, first_name=self.too_old_birthdate)
 
     def test_valid_user_info_update(self):
-        user_info = User.objects.add_user_info(self.user.username)
-        user_info = User.objects.update_user_info(self.user.username,
-                                                  first_name=self.first_name,
-                                                  last_name=self.last_name,
-                                                  birthdate=self.birthdate,
-                                                  picture=self.picture)
+        user_info = UserInfo.objects.create(self.user)
+        user_info = UserInfo.objects.update_info(user_info,
+                                                 first_name=self.first_name,
+                                                 last_name=self.last_name,
+                                                 birthdate=self.birthdate,
+                                                 picture=self.picture
+        )
         self.assertEqual(user_info.first_name, self.first_name);
         self.assertEqual(user_info.last_name, self.last_name);
         self.assertEqual(user_info.birthdate, self.birthdate);
         self.assertEqual(user_info.picture, self.picture);
 
     def test_invalid_user_info_update(self):
-        user_info = User.objects.add_user_info(self.user.username)
+        user_info = UserInfo.objects.create(self.user)
         # checking creation with invalid first_name
         with self.assertRaises(ValidationError):
-            User.objects.update_user_info(self.user.username, first_name=self.invalid_first_name)
+            UserInfo.objects.update_info(user_info, first_name=self.invalid_first_name)
         # checking creation with invalid last_name
         with self.assertRaises(ValidationError):
-            User.objects.update_user_info(self.user.username, first_name=self.invalid_last_name)
+            UserInfo.objects.update_info(user_info, first_name=self.invalid_last_name)
         # checking creation with birthdate less than 14
         with self.assertRaises(ValidationError):
-            User.objects.update_user_info(self.user.username, first_name=self.too_young_birthdate)
+            UserInfo.objects.update_info(user_info, first_name=self.too_young_birthdate)
         # checking creation with birthdate older than 1900/01/01
         with self.assertRaises(ValidationError):
-            User.objects.update_user_info(self.user.username, first_name=self.too_old_birthdate)
+            UserInfo.objects.update_info(user_info, first_name=self.too_old_birthdate)
