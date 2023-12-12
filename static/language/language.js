@@ -11,6 +11,7 @@ let language = {
 			register: "Register [1/3]",
 			secondRegister: "Register [2/3]",
 			thirdRegister: "Register [3/3]",
+			//when translating better do it only on the first element
 			firstName:	["First Name:", "first_name"],
 			lastName:	["Last Name:", "last_name"],
 			birthDate: ["Birth Date:", "birthdate"],
@@ -19,7 +20,9 @@ let language = {
 			email: ["Email:", "email"],
 			password: ["Password:", "password"],
 			confirmPassword: ["Confirm password:", "confirmPassword"],
-			flow1Errors: ["Cannot be Blank", "already in use", "Come back when you are in trouble", "this is not a valid email..."],
+			//until here
+			flow1Errors: ["Cannot be Blank", "already in use", "Come back when you are in trouble", "this is not a valid email...", "bad character inserted. Allowed ones are: A-Za-z0-9!?*@$~_-", "allowed character are: A-Za-z0-9 -"],
+			flow2Errors: ["is the minimum age to be registered on our website", "Come back when you are in trouble"],
 			errors: ["Password must be at leat 8 character long", "Password must contain at least one special caracter", "Password must contain at least one number", "Password must contain at least one uppercase letter", "Password must contain at least one lower case letter"],
 			next: "Next!",
 			goBack: "Go Back",

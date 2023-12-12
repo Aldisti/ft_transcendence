@@ -148,7 +148,7 @@ export default class extends Aview{
 		`
 	}
 	setup(){
-		check.paintBoxes(document.querySelectorAll(".data"), this.errors)
+		check.showErrors(document.querySelectorAll(".data"), this.errors)
 		document.addEventListener("click", (e)=>{
 			//go Next
 			if (e.target.id == "flow2")
@@ -158,7 +158,7 @@ export default class extends Aview{
 					if (res)
 					{
 						document.querySelector("#app").innerHTML = this.getSecondForm();
-						check.paintBoxes(document.querySelectorAll(".data"), this.errors)	
+						check.showErrors(document.querySelectorAll(".data"), this.errors)	
 					}
 				})
 			}
@@ -191,13 +191,13 @@ export default class extends Aview{
 			{
 				console.log(this.errors)
 				document.querySelector("#app").innerHTML = this.getSecondForm();
-				check.paintBoxes(document.querySelectorAll(".data"), this.errors)
+				check.showErrors(document.querySelectorAll(".data"), this.errors)
 			}
 			else if (e.target.id == "goFlow1")
 			{
 				console.log(this.errors)
 				document.querySelector("#app").innerHTML = this.getHtml();
-				check.paintBoxes(document.querySelectorAll(".data"), this.errors)
+				check.showErrors(document.querySelectorAll(".data"), this.errors)
 			}
 		})
 		if (localStorage.getItem("style") == "modern")
