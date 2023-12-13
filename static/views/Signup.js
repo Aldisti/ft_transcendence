@@ -169,6 +169,18 @@ export default class extends Aview{
 			toSend.info[credential] = fields[credential];
 		return toSend
 	}
+	parseErrors(newErrors){
+		for (let key of Object.keys(newErrors.credentials))
+		{
+			this.errors[key].text = newErrors.credentials[key];
+			this.errors[key].isNotValid = true;
+		}
+		for (let key of Object.keys(newErrors.info))
+		{
+			this.errors[key].text = newErrors.info[key];
+			this.errors[key].isNotValid = true;
+		}
+	}
 	setup(){
 		check.showErrors(document.querySelectorAll(".data"), this.errors)
 		document.addEventListener("click", (e)=>{
@@ -201,8 +213,8 @@ export default class extends Aview{
 					this.field.password = sha256(this.field.password);
 					console.log(this.prepareSignUpObj(this.field))
 					register(this.prepareSignUpObj(this.field)).then((newErrors)=>{
-						console.log(newErrors);
-						this.errors = newErrors;
+						this.parseErrors(newErrors);
+						console.log(this.errors);
 					})
 				}
 			}

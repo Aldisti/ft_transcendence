@@ -3,16 +3,13 @@ const path = require('path');
 var bodyParser = require('body-parser')
 
 let errors  = {
-  first_name: {isNotValid: true, text: "hey il nome ha qualcosa che non va"},
-  last_name:  {isNotValid: false, text: ""},
-  username: {isNotValid: true, text: "hey lo username ha qualcosa che non va"},
-  email: {isNotValid: false, text: ""},
-  password: {isNotValid: false, text: ""},
-  picture: {isNotValid: false, text: ""},
-  birthdate: {isNotValid: true, text: "sono tornatooooo"},
-  user_info: {
-    first_name: "",
-    
+  credentials:{
+    first_name: "ciaooo",
+    last_name: "test"
+  },
+  info: {
+    birthdate: "data",
+    username: "ohoh"
   }
 }
 
