@@ -23,6 +23,30 @@ class UserManager(BaseUserManager):
             raise ValueError("admin must have admin role")
         return self.create_user(username, email, password, **kwargs)
 
+    def update_user_email(self, user, **kwargs):
+        email = kwargs.get("email", email.user)
+        password = kwargs.get("password", "")
+        if not user.check_password(password):
+            raise ValueError("invalid password")
+        if email == email.user:
+            raise ValueError("invalid email")
+        user.email = email
+        user.full_clean()
+        user.save()
+        return user
+
+    def update_user_password(self, user, **kwargs):
+        old_password = kwargs.get("old_password", "")
+        new_password = kwargs.get("new_password", old_password)
+        if not user.check_password(password):
+            raise ValueError("invalid password")
+        if new_password == old_password:
+            raise ValueError("invalid new password")
+        user.email = email
+        user.full_clean()
+        user.save()
+        return user
+
 
 class UserInfoManager(models.Manager):
     def create(self, user, **kwargs):

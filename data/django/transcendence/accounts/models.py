@@ -12,7 +12,7 @@ class User(AbstractBaseUser):
         db_column="username",
         max_length=32,
         primary_key=True,
-        validators=[validators.RegexValidator(regex="^[A-Za-z0-9!?*@$~_-]{5,32}$")],
+        validators=[validators.RegexValidator(regex="^[A-Za-z0-9!?*$~_-]{5,32}$")],
     )
     email = models.EmailField(
         db_column="email",
@@ -36,6 +36,7 @@ class User(AbstractBaseUser):
     EMAIL_FIELD = "email"
 
     objects = UserManager()
+
 
     class Meta:
         db_table = "user"
