@@ -1,44 +1,36 @@
 *{
     font-family: Arial, Helvetica, sans-serif !important;
     text-shadow: none !important;
-    color: black !important;
 }
 
 .signupForm
 {
-	background-size: cover;
-	background-repeat: no-repeat;
-	color: white;
-	width: 55svw;
-	height: 70svh;
+	background-color: white;
+	color: black;
+	width: 60svw;
+	height: 65svh;
 	display: flex;
 	justify-content: space-between;
 	flex-direction: column;
 	align-items: center;
-    border-radius: 20px;
 	padding: 20px;
-    box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
+	border-radius: 15px;
 }
 
+h2
+{
+	margin: 0;
+}
 
 .fileSelector
 {
 	border: none !important;
 }
 
-.signupForm h3
-{
-	text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-}
-
-.signupForm h1
-{
-	text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-}
 
 .base
 {
-	width: 100svw;
+	width: 100vw;
 	height: 100svh;
 	display: flex;
 	justify-content: center;
@@ -57,14 +49,15 @@
 	width: 20%;
 	height: 100%;
 	border: none;
-    border-radius: 6px;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	color: white;
-    box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
-    background-color: transparent !important;
-    transition: 0.7s;
+	box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+	font-size: 20px;
+	font-weight: bolder;
+	text-decoration: none;
+	border-radius: 10px;
 }
 
 
@@ -86,37 +79,38 @@
 	transition: 0.2s;
 }
 
+.retroShade:hover
+{
+	box-shadow: none;
+}
+
 .line
 {
 	width: 90%;
-    height: 8svh;
+	height: 6svh;
+	color: white;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-    border-radius: 5px;
+	border-radius: 10px;
+	background-color: #0A100D !important;
 	padding: 5px;
-    transition: 0.5s;
-    /* box-shadow: rgba(0, 0, 0, 0.45) 0px 25px 20px -20px; */
-}
-
-.red input
-{
-    background-color: crimson !important;
-}
-
-.green input
-{
-    background-color: green !important;
+	transition: 0.3s;
+	box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
 }
 
 .passwordSwitch, .confirmPasswordSwitch
 {
-	width: auto;
+	width: 10%;
 	height: 80%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 10px;
 	border-left: none;
 	padding: 5px;
-    border-radius: 5px;
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+	background-color: white;
+	margin-left: 20px;
 }
 
 .passwordSwitch:hover
@@ -128,11 +122,26 @@
 	cursor: pointer;
 }
 
+.passInput
+{
+	width: 65%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.passInput input
+{
+	width: 90% !important;
+}
+
+
 .passwordSwitch img, .confirmPasswordSwitch img
 {
 	width: 100%;
 	height: 100%;
-	object-fit: cover;
+	object-fit: contain;
 }
 
 .line h4
@@ -145,37 +154,32 @@
 .errors
 {
 	width: 90%;
-	background-color: crimson;
-    border-radius: 10px;
+	background-color: #A22C29;
+	border-radius: 15px;
 	display: flex;
 	align-items: center;
 	justify-content: start;
 	padding: 20px;
 	display: none;
+	color: white;
+	border: 3px solid black;
 }
 
 .errors ul
 {
 	margin: 0;
-    list-style-type: none;
+	list-style-type: none;
 }
 
 .line input
 {
 	width: 70%;
-    height: 80%;
-    border: none;
-    background-color: transparent;
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
-    border-radius: 5px;
+	height: 80%;
+	border: none;
 	font-size: 25px;
-    outline: none;
-    transition: 0.7s;
-}
-
-input:hover
-{
-    background-color: white;
+	border: 1px solid black;
+	outline: none;
+	border-radius: 7px;
 }
 
 .pass
@@ -183,6 +187,40 @@ input:hover
 	border-right: none !important;
 	color: black;
 	text-shadow: none;
+}
+
+#inpFile
+{
+	position: absolute;
+	left: -300svw;
+}
+
+#labelInpFile
+{
+	width: 70%;
+	height: 80%;
+	display: flex;
+	align-items: center;
+}
+
+#labelInpFile:hover
+{
+	cursor: pointer;
+}
+
+.fileIcon
+{
+	width: 10%;
+	height: 80%;
+	object-fit: contain;
+}
+
+.selectFileText
+{
+	display: flex;
+	align-items: flex-end;
+	height: 100%;
+	font-size: larger;
 }
 
 .linebtn
@@ -193,3 +231,66 @@ input:hover
 	justify-content: space-between;
 }
 
+.red
+{
+    background-color: red;
+}
+
+.green
+{
+    background-color: green;
+}
+
+ /* Tooltip container */
+ .myTooltip {
+	background-color: white;
+	width: 3svh;
+	height: 3svh;
+	border-radius: 50%;
+
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: black;
+  }
+  
+  /* Tooltip text */
+  .myTooltip .tooltiptext {
+	visibility: hidden;
+	width: 120px;
+	background-color: #555;
+	color: #fff;
+	text-align: center;
+	padding: 5px 0;
+	border-radius: 6px;
+  
+	/* Position the tooltip text */
+	position: absolute;
+	z-index: 1;
+	bottom: 125%;
+	left: 50%;
+	margin-left: -60px;
+  
+	/* Fade in tooltip */
+	opacity: 0;
+	transition: opacity 0.3s;
+  }
+  
+  /* Tooltip arrow */
+  .myTooltip .tooltiptext::after {
+	content: "";
+	position: absolute;
+	top: 100%;
+	left: 50%;
+	margin-left: -5px;
+	border-width: 5px;
+	border-style: solid;
+	border-color: #555 transparent transparent transparent;
+  }
+  
+  /* Show the tooltip text when you mouse over the tooltip container */
+  .myTooltip:hover .tooltiptext {
+	visibility: visible;
+	opacity: 1;
+  } 

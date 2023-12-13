@@ -74,9 +74,15 @@ function emailValidator(email, errors)
 function doPaint(errors, key, obj)
 {
     if (errors[key].isNotValid == true)
-        obj.style.backgroundColor = "red";
+    {
+        obj.style.backgroundColor = "#A22C29";
+        obj.style.color = "white" 
+    }
     else
-        obj.style.backgroundColor = "white"
+    {
+        obj.style.backgroundColor = "#a7c957"
+        obj.style.color = "black" 
+    }
     if ((key == lan.register.password[1] || key == lan.register.confirmPassword[1]) && errors[key].isNotValid == true)
         document.querySelector(".errors").style.display = "flex"
 }
@@ -91,9 +97,9 @@ export function showErrors(list, errors)
         for (let key of Object.keys(errors))
         {
             if ((el.name == lan.register.password[1] && key == lan.register.password[1]) || (el.name == lan.register.confirmPassword[1] && key == lan.register.confirmPassword[1]))
-                doPaint(errors, key, el.parentNode.parentNode)
+                doPaint(errors, key, el)
             else if (el.name == key)
-                doPaint(errors, key, el.parentNode)
+                doPaint(errors, key, el)
         }
     }
     for (let tooltip of tooltips)

@@ -8,9 +8,12 @@ let errors  = {
   username: {isNotValid: true, text: "hey lo username ha qualcosa che non va"},
   email: {isNotValid: false, text: ""},
   password: {isNotValid: false, text: ""},
-  confirmPassword: {isNotValid: false, text: ""},
   picture: {isNotValid: false, text: ""},
   birthdate: {isNotValid: true, text: "sono tornatooooo"},
+  user_info: {
+    first_name: "",
+    
+  }
 }
 
 const app = express();

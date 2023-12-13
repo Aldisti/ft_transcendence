@@ -136,7 +136,8 @@ export default class extends Aview{
 				<span id="${this.language.register.profilePicture[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
 			  </div> 
 					<h2>${this.language.register.profilePicture[0]}</h2>
-					<input type="file" class="data fileSelector" name="${this.language.register.profilePicture[1]}">
+					<label id="labelInpFile" for="inpFile"><span class="selectFileText">Select File</span><img class="fileIcon" src="/imgs/fileIcon.png"></label>
+					<input type="file" id="inpFile" class="data fileSelector" name="${this.language.register.profilePicture[1]}">
 				</div>
 				<div class="linebtn">
 					<a class="retroShade retroBtn btnColor-yellow" href="/login" data-link>${this.language.register.login}</a>
@@ -146,6 +147,27 @@ export default class extends Aview{
 			</div>
 		</div>
 		`
+	}
+
+	prepareSignUpObj(fields){
+		let toSend = {
+			credentials: {
+				[tempLan.register.username[1]]: "",
+				[tempLan.register.email[1]]: "",
+				[tempLan.register.password[1]]: ""
+			},
+			info: {
+				[tempLan.register.firstName[1]]: "",
+				[tempLan.register.lastName[1]]: "",
+				[tempLan.register.birthDate[1]]: "",
+			}
+		}
+
+		for (let credential of Object.keys(toSend.credentials))
+			toSend.credentials[credential] = fields[credential];
+		for (let credential of Object.keys(toSend.info))
+			toSend.info[credential] = fields[credential];
+		return toSend
 	}
 	setup(){
 		check.showErrors(document.querySelectorAll(".data"), this.errors)
@@ -176,10 +198,9 @@ export default class extends Aview{
 				this.updateField(this.getInput());
 				if (check.flow3Check(this.field, this.errors, document.querySelectorAll(".data")))
 				{
-					delete this.field.confirmPassword;
 					this.field.password = sha256(this.field.password);
-					console.log(this.field)
-					register(this.field).then((newErrors)=>{
+					console.log(this.prepareSignUpObj(this.field))
+					register(this.prepareSignUpObj(this.field)).then((newErrors)=>{
 						console.log(newErrors);
 						this.errors = newErrors;
 					})

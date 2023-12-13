@@ -152,7 +152,7 @@ h2
 .errors
 {
 	width: 90%;
-	background-color: red;
+	background-color: #A22C29;
 	box-shadow: 7px 7px black;
 	border: 2px solid black;
 	display: flex;
@@ -202,6 +202,40 @@ h2
     background-color: green;
 }
 
+#inpFile
+{
+	position: absolute;
+	left: -300svw;
+}
+
+#labelInpFile
+{
+	width: 70%;
+	height: 80%;
+	display: flex;
+	align-items: center;
+}
+
+#labelInpFile:hover
+{
+	cursor: pointer;
+}
+
+.fileIcon
+{
+	width: 10%;
+	height: 80%;
+	object-fit: contain;
+}
+
+.selectFileText
+{
+	display: flex;
+	align-items: flex-end;
+	height: 100%;
+	font-size: larger;
+}
+
  /* Tooltip container */
  .myTooltip {
 	padding: 10px;
@@ -209,7 +243,6 @@ h2
 	position: relative;
 	display: inline-block;
 	color: white;
-	border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
   }
   
   /* Tooltip text */
