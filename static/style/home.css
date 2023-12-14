@@ -1,7 +1,7 @@
 .base
 {
     width: 100svw;
-    height: 90svh;
+    height: 92svh;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
@@ -25,14 +25,13 @@
     width: 60%;
     height: 100%;
     padding: 30px;
-        font-size: 23px !important;
+    font-size: 23px !important;
     text-shadow: none !important;
     color: black !important; 
 }
 
 .text p
 {
-    font-size: 23px !important;
     text-shadow: none !important;
     color: black !important; 
 }

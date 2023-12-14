@@ -16,11 +16,11 @@ export default class extends Aview{
         	<div class="loginForm">
             	<h1 id="title">${this.language.login.login}</h1>
             	<div class="line">
-                	<h3>${language.en.login.name}</h3>
+                	<h4>${language.en.login.name}</h4>
                 	<input type="text" class="data retroShade" name="name">
             	</div>
             	<div class="line">
-                	<h3>${this.language.login.password}</h3>
+                	<h4>${this.language.login.password}</h4>
                 	<input type="password" class="data retroShade" name="password">
             	</div>
             	<div class="linebtn">
@@ -43,8 +43,8 @@ export default class extends Aview{
 		})
 		if (localStorage.getItem("style") == "modern")
 		document.querySelector("#app").style.backgroundImage = "url('https://c4.wallpaperflare.com/wallpaper/105/526/545/blur-gaussian-gradient-multicolor-wallpaper-preview.jpg')";
-		else
-			document.querySelector("#app").style.backgroundImage = "url('/imgs/backLogin.png')";
+		// else
+		// 	document.querySelector("#app").style.backgroundImage = "url('/imgs/backLogin.png')";
 		document.querySelector("#app").style.backgroundSize = "cover"
 		document.querySelector("#app").style.backgroundRepeat = "repeat"
 	}

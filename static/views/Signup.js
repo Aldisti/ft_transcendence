@@ -41,7 +41,7 @@ export default class extends Aview{
 				?
 				<span id="${this.language.register.firstName[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
 			  </div> 
-					<h2>${this.language.register.firstName[0]}</h2>
+					<h6>${this.language.register.firstName[0]}</h6>
 					<input type="text" value="${this.field[this.language.register.firstName[1]]}" class="data retroShade" name="${this.language.register.firstName[1]}">
 				</div>
 				<div class="line">
@@ -49,7 +49,7 @@ export default class extends Aview{
 				?
 				<span id="${this.language.register.lastName[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
 			  </div> 
-					<h2>${this.language.register.lastName[0]}</h2>
+					<h6>${this.language.register.lastName[0]}</h6>
 					<input type="text" value="${this.field[this.language.register.lastName[1]]}" class="data retroShade" name="${this.language.register.lastName[1]}">
 				</div>
 				<div class="line">
@@ -57,7 +57,7 @@ export default class extends Aview{
 					?
 					<span id="${this.language.register.username[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
 				  </div> 
-					<h2>${this.language.register.username[0]}</h2>
+					<h6>${this.language.register.username[0]}</h6>
 					<input type="text" value="${this.field[this.language.register.username[1]]}" class="data retroShade" name="${this.language.register.username[1]}">
 				</div>
 				<div class="line">
@@ -65,7 +65,7 @@ export default class extends Aview{
 					?
 					<span id="${this.language.register.email[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
 				  </div> 
-					<h2>${this.language.register.email[0]}</h2>
+					<h6>${this.language.register.email[0]}</h6>
 					<input type="email" class="data retroShade" value="${this.field.email}" name="${this.language.register.email[1]}">
 				</div>
 				<div class="linebtn">
@@ -82,7 +82,7 @@ export default class extends Aview{
 			<div class="signupForm">
 				<h1 id="title">${this.language.register.thirdRegister}</h1>
 				<div class="line">
-					<h2>${this.language.register.password[0]}</h2>
+					<h6>${this.language.register.password[0]}</h6>
 					<div class="passInput">
 						<input type="password" class="data pass" name="${this.language.register.password[1]}">
 						<div class="passwordSwitch">
@@ -91,7 +91,7 @@ export default class extends Aview{
 					</div>
 				</div>
 				<div class="line">
-					<h2>${this.language.register.confirmPassword[0]}</h2>
+					<h6>${this.language.register.confirmPassword[0]}</h6>
 					<div class="passInput">
 						<input type="password" class="data pass" name="${this.language.register.confirmPassword[1]}">
 						<div class="confirmPasswordSwitch">
@@ -127,7 +127,7 @@ export default class extends Aview{
 						?
 						<span id="${this.language.register.birthDate[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
 			  		</div> 
-					<h2>${this.language.register.birthDate[0]}</h2>
+					<h6>${this.language.register.birthDate[0]}</h6>
 					<input type="date" value="${this.field[this.language.register.birthDate[1]]}" class="data" name="${this.language.register.birthDate[1]}">
 				</div>
 				<div class="line">
@@ -135,7 +135,7 @@ export default class extends Aview{
 				?
 				<span id="${this.language.register.profilePicture[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
 			  </div> 
-					<h2>${this.language.register.profilePicture[0]}</h2>
+					<h6>${this.language.register.profilePicture[0]}</h6>
 					<label id="labelInpFile" for="inpFile"><span class="selectFileText">Select File</span><img class="fileIcon" src="/imgs/fileIcon.png"></label>
 					<input type="file" id="inpFile" class="data fileSelector" name="${this.language.register.profilePicture[1]}">
 				</div>
@@ -235,8 +235,8 @@ export default class extends Aview{
 		})
 		if (localStorage.getItem("style") == "modern")
 			document.querySelector("#app").style.backgroundImage = "url('https://c4.wallpaperflare.com/wallpaper/105/526/545/blur-gaussian-gradient-multicolor-wallpaper-preview.jpg')";
-		else
-			document.querySelector("#app").style.backgroundImage = "url('/imgs/backLogin.png')";
+		// else
+		// 	document.querySelector("#app").style.backgroundImage = "url('/imgs/backLogin.png')";
 		document.querySelector("#app").style.backgroundSize = "cover"
 		document.querySelector("#app").style.backgroundRepeat = "repeat"
 	}

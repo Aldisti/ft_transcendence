@@ -5,7 +5,7 @@
 	border: 2px solid black;
 	background-repeat: no-repeat;
 	color: white;
-	width: 40svw;
+	width: 55svw;
 	height: 50svh;
 	display: flex;
 	justify-content: space-between;
@@ -19,7 +19,7 @@
 .base
 {
 	width: 100svw;
-	height: 100svh;
+    height: 92svh;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -28,7 +28,6 @@
 #title
 {
 	width: 90%;
-	font-size: 70px;
 	text-align: start;
 }
 
@@ -42,7 +41,6 @@
 	align-items: center;
 	color: white;
 	box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
-	font-size: 20px;
 	font-weight: bolder;
 	text-decoration: none;
 }
@@ -60,8 +58,9 @@
 	font-size: 20px;
 }
 
-h3
+h4
 {
+	color: black;
 	margin: 0;
 }
 
@@ -104,10 +103,6 @@ h3
 	justify-content: space-between;
 }
 
-.loginForm h3
-{
-	text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-}
 
 .loginForm h1
 {

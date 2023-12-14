@@ -35,7 +35,7 @@ h2
 .base
 {
 	width: 100vw;
-	height: 100svh;
+    height: 92svh;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -44,7 +44,6 @@ h2
 #title
 {
 	width: 90%;
-	font-size: 70px;
 	text-align: start;
 }
 

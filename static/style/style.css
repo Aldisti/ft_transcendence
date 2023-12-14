@@ -7,7 +7,8 @@
 
 *{
     box-sizing: border-box;
-    font-family: 'VT323', monospace !important;
+    font-family: 'Press Start 2P', sans-serif;
+    font-size: 15px;
     font-weight: 500;
     scrollbar-width: none;
 }
@@ -55,6 +56,12 @@ html, body
     width: 100svw !important;
 }
 
+.navbar
+{
+    height: 8svh;
+}
+
+
 .nav-link
 {
     font-size: 30px;
@@ -64,6 +71,6 @@ html, body
 #app
 {
     width: 100svw;
-    height: 100svh;
+    height: 92svh;
 }
 
