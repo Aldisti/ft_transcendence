@@ -21,7 +21,7 @@ class UserSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             "password": {"write_only": True, "required": False},
             "username": {"validators": [RegexValidator("^[A-Za-z0-9!?*$~_-]{5,32}$")]},
-            "email": {"validators": [EmailValidator()]},
+            "email": {"required": False, "validators": [EmailValidator()]},
         }
 
 
@@ -52,6 +52,10 @@ class CompleteUserSerializer(serializers.Serializer):
         return updated_user
 
     def update_user_info(self, validated_data):
-        user_info = UserInfo.objects.get(pk=validated_data.get("credentials").get("username"))
-        updated_user_info = UserInfo.objects.update_user_info(user_info, **validated_data.get("info", {}))
+        try:
+            user_info = UserInfo.objects.get(pk=validated_data.get("credentials").get("username"))
+            updated_user_info = UserInfo.objects.update_info(user_info, **validated_data.get("info", {}))
+        except UserInfo.DoesNotExist:
+            user = User.objects.get(pk=validated_data.get("credentials").get("username"))
+            updated_user_info = UserInfo.objects.create(user, **validated_data.get("info", {}))
         return updated_user_info

@@ -42,7 +42,7 @@ class UserManager(BaseUserManager):
             raise ValueError("invalid password")
         if new_password == password:
             raise ValueError("invalid new password")
-        user.email = email
+        user.set_password(new_password)
         user.full_clean()
         user.save()
         return user
