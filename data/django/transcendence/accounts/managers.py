@@ -24,11 +24,11 @@ class UserManager(BaseUserManager):
         return self.create_user(username, email, password, **kwargs)
 
     def update_user_email(self, user, **kwargs):
-        email = kwargs.get("email", email.user)
+        email = kwargs.get("email", user.email)
         password = kwargs.get("password", "")
         if not user.check_password(password):
             raise ValueError("invalid password")
-        if email == email.user:
+        if email == user.email:
             raise ValueError("invalid email")
         user.email = email
         user.full_clean()
@@ -36,11 +36,11 @@ class UserManager(BaseUserManager):
         return user
 
     def update_user_password(self, user, **kwargs):
-        old_password = kwargs.get("old_password", "")
-        new_password = kwargs.get("new_password", old_password)
+        password = kwargs.get("password", "")
+        new_password = kwargs.get("new_password", password)
         if not user.check_password(password):
             raise ValueError("invalid password")
-        if new_password == old_password:
+        if new_password == password:
             raise ValueError("invalid new password")
         user.email = email
         user.full_clean()
