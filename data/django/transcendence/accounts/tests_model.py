@@ -10,26 +10,61 @@ from django.core.exceptions import ValidationError
 class ModelUserTests(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.username = "Giovanni!?*@$~_-"
+        cls.username = "gpanico"
+        cls.super_username = "admin"
         cls.invalid_username = "Giovanni#@#$!"
         cls.short_username = "Gi"
         cls.email = "giovanni@gmail.com"
+        cls.super_email = "admin@gmail.com"
+        cls.new_email = "giovanni2@gmail.com"
         cls.invalid_email = "giovannigmail.com"
         cls.password = "prova"
+        cls.new_password = "password"
+        cls.user = User.objects.create_user("gpanico", "giovanni@gmail.com", "prova")
+        cls.superuser = User.objects.create_superuser("admin", "admin@gmail.com", "prova")
 
     def test_valid_user_creation(self):
-        user = User.objects.create_user(self.username, self.email, self.password)
-        self.assertEqual(user.email, self.email)
-        self.assertEqual(user.username, self.username)
-        self.assertTrue(user.active)
-        self.assertEqual(user.role, Roles.USER)
+        self.assertEqual(self.user.email, self.email)
+        self.assertEqual(self.user.username, self.username)
+        self.assertTrue(self.user.active)
+        self.assertEqual(self.user.role, Roles.USER)
 
-    def test_user_delete(self):
-        user = User.objects.create_user(self.username, self.email, self.password)
-        user.delete()
-        with self.assertRaises(User.DoesNotExist):
-            User.objects.get(pk=self.username)
+    def test_email_update(self):
+        # not passing password to update function
+        with self.assertRaises(ValueError):
+            User.objects.update_user_email(self.user, email=self.new_email)
+        # not passing email to update function
+        with self.assertRaises(ValueError):
+            User.objects.update_user_email(self.user, password=self.password)
+        # passing the same email to update function
+        with self.assertRaises(ValueError):
+            User.objects.update_user_email(self.user, password=self.password, email=self.email)
+        # passing invalid email to update function
+        with self.assertRaises(ValidationError):
+            User.objects.update_user_email(self.user, password=self.password, email=self.invalid_email)
+        # passing invalid password to update function
+        with self.assertRaises(ValueError):
+            User.objects.update_user_email(self.user, password=self.new_password, email=self.new_email)
+        # passing new email to update function
+        self.user = User.objects.update_user_email(self.user, password=self.password, email=self.new_email)
+        self.assertEqual(self.user.email, self.new_email)
 
+    def test_password_update(self):
+        # not passing old password to update function
+        with self.assertRaises(ValueError):
+            User.objects.update_user_password(self.user, new_password=self.new_password)
+        # not passing new password to update function
+        with self.assertRaises(ValueError):
+            User.objects.update_user_password(self.user, password=self.password)
+        # passing the old password as new password to update function
+        with self.assertRaises(ValueError):
+            User.objects.update_user_password(self.user, password=self.password, new_password=self.password)
+        # passing invalid old password to update function
+        with self.assertRaises(ValueError):
+            User.objects.update_user_password(self.user, password=self.new_password, new_password=self.new_password)
+        # passing new password to update function
+        self.user = User.objects.update_user_password(self.user, password=self.password, new_password=self.new_password)
+        self.assertTrue(self.user.check_password(self.new_password))
 
     def test_invalid_user_creation(self):
         # checking creation without values
@@ -51,18 +86,21 @@ class ModelUserTests(TestCase):
         with self.assertRaises(ValidationError):
             User.objects.create_user(self.short_username, self.email, self.password)
 
-    def test_valid_superuser_creation(self):
-        user = User.objects.create_superuser(self.username, self.email, self.password)
-        self.assertEqual(user.email, self.email)
-        self.assertEqual(user.username, self.username)
-        self.assertTrue(user.active)
-        self.assertEqual(user.role, Roles.ADMIN)
-
-    def test_superuser_delete(self):
-        admin = User.objects.create_superuser(self.username, self.email, self.password)
-        admin.delete()
+    def test_user_delete(self):
+        self.user.delete()
         with self.assertRaises(User.DoesNotExist):
             User.objects.get(pk=self.username)
+
+    def test_valid_superuser_creation(self):
+        self.assertEqual(self.superuser.email, self.super_email)
+        self.assertEqual(self.superuser.username, self.super_username)
+        self.assertTrue(self.superuser.active)
+        self.assertEqual(self.superuser.role, Roles.ADMIN)
+
+    def test_superuser_delete(self):
+        self.superuser.delete()
+        with self.assertRaises(User.DoesNotExist):
+            User.objects.get(pk=self.super_username)
 
     def test_invalid_superuser_creation(self):
         # checking creation without values
@@ -70,22 +108,22 @@ class ModelUserTests(TestCase):
             User.objects.create_superuser()
         # checking creation with partial values
         with self.assertRaises(TypeError):
-            User.objects.create_superuser(email=self.email, username=self.username)
+            User.objects.create_superuser(email=self.super_email, username=self.super_username)
         # checking creation with invalid self.email
         with self.assertRaises(ValidationError):
-            User.objects.create_superuser(self.username, self.invalid_email, self.password)
+            User.objects.create_superuser(self.super_username, self.invalid_email, self.password)
         # checking creation with role user
         with self.assertRaises(ValueError):
-            User.objects.create_superuser(self.username, self.email, self.password, role=Roles.USER)
+            User.objects.create_superuser(self.super_username, self.super_email, self.password, role=Roles.USER)
         # checking creation with role mod
         with self.assertRaises(ValueError):
-            User.objects.create_superuser(self.username, self.email, self.password, role=Roles.MOD)
+            User.objects.create_superuser(self.super_username, self.super_email, self.password, role=Roles.MOD)
         # checking creation with blank username
         with self.assertRaises(ValidationError):
-            User.objects.create_superuser("", self.email, self.password)
+            User.objects.create_superuser("", self.super_email, self.password)
         # checking creation with invalid username
         with self.assertRaises(ValidationError):
-            User.objects.create_superuser(self.invalid_username, self.email, self.password)
+            User.objects.create_superuser(self.invalid_username, self.super_email, self.password)
 
 class ModelUserInfoTests(TestCase):
     @classmethod
