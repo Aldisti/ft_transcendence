@@ -13,6 +13,7 @@ rightCanvas.heigth = window.innerHeight / 2.3;
 
 //initializing 3D models
 let     gamePos = new StartingObjectPosition();
+
 export default class Game{
     constructor(){
         this.scene = new THREE.Scene();
