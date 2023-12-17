@@ -1,11 +1,13 @@
 from rest_framework import serializers
 from accounts.models import User, UserInfo
 
+
 class UserInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserInfo
         fields = ["first_name", "last_name", "birthdate", "picture", "date_joined"]
         read_only_fields = ["date_joined", "picture"]
+
 
 class UserSerializer(serializers.ModelSerializer):
 
@@ -18,6 +20,7 @@ class UserSerializer(serializers.ModelSerializer):
                 "required": False,
             },
         }
+
 
 class CompleteUserSerializer(serializers.Serializer):
     credentials = UserSerializer()

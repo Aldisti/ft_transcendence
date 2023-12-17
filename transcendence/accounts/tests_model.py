@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 
 # Create your tests here.
 
+
 class ModelUserTests(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -29,7 +30,6 @@ class ModelUserTests(TestCase):
         user.delete()
         with self.assertRaises(User.DoesNotExist):
             User.objects.get(pk=self.username)
-
 
     def test_invalid_user_creation(self):
         # checking creation without values
@@ -87,6 +87,7 @@ class ModelUserTests(TestCase):
         with self.assertRaises(ValidationError):
             User.objects.create_superuser(self.invalid_username, self.email, self.password)
 
+
 class ModelUserInfoTests(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -101,7 +102,6 @@ class ModelUserInfoTests(TestCase):
         cls.too_young_birthdate = today.replace(year=(today.year - 14)) + timedelta(days=1)
         cls.too_old_birthdate = date(1899, 12, 31)
 
-
     def test_valid_user_info_create(self):
         user_info = UserInfo.objects.create(self.user, first_name=self.first_name,
                                             last_name=self.last_name, birthdate=self.birthdate,
@@ -113,10 +113,10 @@ class ModelUserInfoTests(TestCase):
 
     def test_blank_user_info_create(self):
         user_info = UserInfo.objects.create(self.user)
-        self.assertEqual(user_info.first_name, "");
-        self.assertEqual(user_info.last_name, "");
-        self.assertEqual(user_info.birthdate, None);
-        self.assertEqual(user_info.picture, None);
+        self.assertEqual(user_info.first_name, "")
+        self.assertEqual(user_info.last_name, "")
+        self.assertEqual(user_info.birthdate, None)
+        self.assertEqual(user_info.picture, None)
 
     def test_invalid_user_info_create(self):
         # checking creation with invalid first_name
@@ -140,10 +140,10 @@ class ModelUserInfoTests(TestCase):
                                                  birthdate=self.birthdate,
                                                  picture=self.picture
         )
-        self.assertEqual(user_info.first_name, self.first_name);
-        self.assertEqual(user_info.last_name, self.last_name);
-        self.assertEqual(user_info.birthdate, self.birthdate);
-        self.assertEqual(user_info.picture, self.picture);
+        self.assertEqual(user_info.first_name, self.first_name)
+        self.assertEqual(user_info.last_name, self.last_name)
+        self.assertEqual(user_info.birthdate, self.birthdate)
+        self.assertEqual(user_info.picture, self.picture)
 
     def test_invalid_user_info_update(self):
         user_info = UserInfo.objects.create(self.user)
