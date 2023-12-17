@@ -82,6 +82,7 @@
 }
 .inputLine input
 {
+    border: 2px solid black;
     width: 60%;
     outline: none;
     transition: 0.6s;

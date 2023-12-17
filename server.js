@@ -8,8 +8,7 @@ let errors  = {
     last_name: "test"
   },
   info: {
-    birthdate: "data",
-    username: "ohoh"
+
   }
 }
 

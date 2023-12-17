@@ -1,5 +1,7 @@
 import * as controls from '/viewScripts/register/updateCheck.js'
 import Aview from "/views/abstractView.js";
+import updateInfoAPI from "/API/updateInfo.js"
+
 
 export default class extends Aview{
     constructor(){
@@ -102,12 +104,23 @@ export default class extends Aview{
             </div>
         `
     }
+    prepareForm(form){
+        let ret = {};
 
+        Object.keys(form).forEach((key)=>{
+            ret[key] = form[key].value;
+        })
+        return (ret);
+    }
     doChecks(form){
         let title = document.querySelector(".title");
 
-        if (title.classList.contains("info"))
-            controls.checkInfo(form, this.errors)
+        if (title.classList.contains("info") && controls.checkInfo(form, this.errors))
+            updateInfoAPI(this.prepareForm(form)).then((res)=>{
+                this.errors = res.info;
+                console.log(this.errors)
+                controls.checkInfo(form, this.errors)
+            })
         if (title.classList.contains("email"))
             console.log("email")
         if (title.classList.contains("password"))
@@ -135,7 +148,6 @@ export default class extends Aview{
             document.querySelector(".formSide").innerHTML = this.getProfilePictureForm();
         else if (e.target.classList.contains("submit"))
             this.collectData();
-
     }
     setup(){
         if (localStorage.getItem("style") == "modern")
