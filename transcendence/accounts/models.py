@@ -5,6 +5,7 @@ from accounts.utils import Roles
 from accounts.validators import validate_birthdate
 from accounts.managers import UserManager, UserInfoManager
 
+
 # Create your models here.
 
 class User(AbstractBaseUser):
@@ -37,13 +38,12 @@ class User(AbstractBaseUser):
 
     objects = UserManager()
 
-
     class Meta:
         db_table = "user"
 
-
     def __str__(self):
         return f"username: {self.username}, email: {self.email}, role: {self.role}"
+
 
 class UserInfo(models.Model):
     user = models.OneToOneField(
@@ -83,10 +83,8 @@ class UserInfo(models.Model):
 
     objects = UserInfoManager()
 
-
     class Meta:
         db_table = "user_info"
-
 
     def __str__(self):
         return f"user: {self.user.username}, first_name: {self.first_name}, last_name: {self.last_name}, joined:{self.date_joined}"
