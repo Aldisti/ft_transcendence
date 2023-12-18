@@ -78,11 +78,11 @@ WSGI_APPLICATION = 'transcendence.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'transcendence',
-        'USER': 'gpanico',
-        'PASSWORD': 'password',
-        'HOST': 'postgres',
-        'PORT': '5432',
+        'NAME': '$DB_NAME',
+        'USER': '$DB_USER',
+        'PASSWORD': '$DB_PASSWORD',
+        'HOST': '$DB_HOST',
+        'PORT': '$DB_PORT',
     }
 }
 

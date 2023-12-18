@@ -15,6 +15,24 @@ services:
       - django/.env
     networks:
       - django-net
+      - postgres-net
+    depends_on:
+      - postgres
+
+  postgres:
+    container_name: postgres
+    build:
+      context: ./postgres
+    image: trinity/postgres
+    restart: always
+    expose:
+      - "5432"
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    env_file:
+      - postgres/.env
+    networks:
+      - postgres-net
 
 volumes:
   django:
@@ -24,7 +42,17 @@ volumes:
       type: "none"
       o: "bind"
       device: "/home/gpanico/Desktop/data/django"
+  postgres:
+    name: "postgres"
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "/home/gpanico/Desktop/data/postgres"
 
 networks:
   django-net:
     name: "django-net"
+
+  postgres-net:
+    name: "postgres-net"
