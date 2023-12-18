@@ -76,6 +76,19 @@ function checkDate(obj, errMsg)
     return (flag);
 }
 
+function passwordValidator(password, obj, errors){
+    if (password.length > 8 && password.length < 72 && password.match(/[0123456789]/) && password.match(/[!@#$%^&*()_+\-=ˆ\[\]{};:'",.<>?~]/) && password.match(/[QWERTYUIOPASDFGHJKLZXCVBNM]/) && password.match(/[qwertyuiopasdfghjklzxcvbnm]/))
+    {
+        obj.style.backgroundColor = "#a7c957";
+        obj.style.color = "black";
+        return (true);
+    }
+    errors[obj.id] = true;
+    obj.style.backgroundColor = "#A22C29";
+    obj.style.color = "white"
+    return (false);
+}
+
 export function checkInfo(form, errors){
     let flag = true;
 
@@ -88,6 +101,32 @@ export function checkInfo(form, errors){
     return (flag);
 }
 
-export function checkPassword(){
+function passwordMatch(inputObj, confirmNewPass, newPass){
+    if (confirmNewPass != newPass)
+    {
+        inputObj.style.backgroundColor = "#A22C29";
+        inputObj.style.color = "white"
+        document.querySelector(`#${inputObj.id}-tooltip`).innerHTML = "password does not match";
+    }
+    else
+        document.querySelector(`#${inputObj.id}-tooltip`).innerHTML = lan.register.flow1Errors[2];
+}
 
+export function checkPassword(form, errors){
+    let oldPass = form[lan.update.oldPassword[1]].value;
+    let newPass = form[lan.update.newPassword[1]].value
+    let confirmNewPass = form[lan.update.confirmNewPassword[1]].value;
+
+    if (!passwordValidator(oldPass, document.querySelectorAll("input")[0], errors))
+        document.querySelector(".errors").style.display = "flex";
+    if (!passwordValidator(newPass, document.querySelectorAll("input")[1], errors))
+        document.querySelector(".errors").style.display = "flex";
+    if (!passwordValidator(confirmNewPass, document.querySelectorAll("input")[2], errors))
+        document.querySelector(".errors").style.display = "flex";
+
+    passwordMatch(document.querySelectorAll("input")[1], confirmNewPass, newPass);
+    passwordMatch(document.querySelectorAll("input")[2], confirmNewPass, newPass);
+    if (Object.keys(errors).length > 0)
+        return (false);
+    return (true);
 }

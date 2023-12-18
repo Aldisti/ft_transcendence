@@ -1,6 +1,8 @@
 import * as controls from '/viewScripts/register/updateCheck.js'
 import Aview from "/views/abstractView.js";
 import updateInfoAPI from "/API/updateInfo.js"
+import updatePasswordAPI from "/API/updatePassword.js"
+import sha256 from "/scripts/crypto.js"
 
 
 export default class extends Aview{
@@ -48,16 +50,46 @@ export default class extends Aview{
         return `
             <h4 class="title password">${this.language.update.passwordTitle}</h4>
             <div class="inputLine">
+                <div class="myTooltip">
+                    ?
+                    <span id="${this.language.update.oldPassword[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
+                </div> 
                 <label for="${this.language.update.oldPassword[1]}">${this.language.update.oldPassword[0]}</label>
-                <input class="inputData" type="password" id="${this.language.update.oldPassword[1]}">
+                <input class="inputData" type="password" id="${this.language.update.oldPassword[1]}" value="Marketto7M?">
+                <div class="switch">
+                    <img src="/imgs/openEye.png" alt="">
+                </div>
             </div>
             <div class="inputLine">
+                <div class="myTooltip">
+                    ?
+                    <span id="${this.language.update.newPassword[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
+                </div> 
                 <label for="${this.language.update.newPassword[1]}">${this.language.update.newPassword[0]}</label>
-                <input class="inputData" type="password" id="${this.language.update.newPassword[1]}">
+                <input class="inputData" type="password" id="${this.language.update.newPassword[1]}" value="Marketto7M?">
+                <div class="switch">
+                    <img src="/imgs/openEye.png" alt="">
+                </div>
             </div>
             <div class="inputLine">
+                <div class="myTooltip">
+                    ?
+                    <span id="${this.language.update.confirmNewPassword[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
+                </div> 
                 <label for="${this.language.update.confirmNewPassword[1]}">${this.language.update.confirmNewPassword[0]}</label>
-                <input class="inputData" type="password" id="${this.language.update.confirmNewPassword[1]}">
+                <input class="inputData" type="password" id="${this.language.update.confirmNewPassword[1]}" value="Marketto7M?">
+                <div class="switch">
+                    <img src="/imgs/openEye.png" alt="">
+                </div>
+            </div>
+            <div class="errors retroShade">
+                <ul>
+                    <li>${this.language.register.errors[0]}</li>
+                    <li>${this.language.register.errors[1]}</li>
+                    <li>${this.language.register.errors[2]}</li>
+                    <li>${this.language.register.errors[3]}</li>
+                    <li>${this.language.register.errors[4]}</li>
+                </ul>
             </div>
             <button class="submit">Submit!</button>
         `
@@ -104,30 +136,60 @@ export default class extends Aview{
             </div>
         `
     }
-    prepareForm(form){
-        let ret = {};
+
+    prepareInfoForm(form){
+        let ret = {user_info:{}};
 
         Object.keys(form).forEach((key)=>{
-            ret[key] = form[key].value;
+            ret.user_info[key] = form[key].value;
         })
+        console.log(ret)
         return (ret);
     }
+
+    preparePasswordForm(form){
+        console.log(form)
+        let ret = {
+            [this.language.update.oldPassword[1]]: sha256(form[this.language.update.oldPassword[1]].value),
+            [this.language.update.newPassword[1]]: sha256(form[this.language.update.newPassword[1]].value),
+        }
+        return (ret);
+    }
+
     doChecks(form){
         let title = document.querySelector(".title");
 
+        //will perfom check for general user info
         if (title.classList.contains("info") && controls.checkInfo(form, this.errors))
-            updateInfoAPI(this.prepareForm(form)).then((res)=>{
-                this.errors = res.info;
-                console.log(this.errors)
+        {
+            updateInfoAPI(this.prepareInfoForm(form)).then((res)=>{
+                this.errors = res.user_info;
                 controls.checkInfo(form, this.errors)
             })
+        }
+
+        //will perfom check for email
         if (title.classList.contains("email"))
             console.log("email")
-        if (title.classList.contains("password"))
-            console.log("password")
+
+        //will perfom check for password
+        if (title.classList.contains("password") && controls.checkPassword(form, this.errors))
+        {
+            updatePasswordAPI(this.preparePasswordForm(form)).then((res)=>{
+                if (!res.ok)
+                {
+                    document.querySelector(`#${this.language.update.oldPassword[1]}-tooltip`).innerHTML = this.language.update.passwordErrors[0];
+                    document.querySelectorAll("input")[0].style.backgroundColor = "#A22C29";
+                    document.querySelectorAll("input")[0].style.color = "white"
+                }
+            });
+        }
+        
+        //will perfom check for picture
         if (title.classList.contains("picture"))
             console.log("picture")
     }
+
     collectData(){
         let values = document.querySelectorAll(".inputData");
         let form = {};
@@ -137,18 +199,40 @@ export default class extends Aview{
             form[val.id] = val
         this.doChecks(form);
     }
+
     handleClick(e){
+        this.errors = {newPassword: "test"};
+
+        //will load the form to change password
         if (e.target.classList.contains("passwordForm"))
+        {
             document.querySelector(".formSide").innerHTML = this.getPasswordForm();
+            document.querySelectorAll(".switch").forEach((el)=>{
+                el.addEventListener("click", (e)=>{
+                    if (el.parentNode.querySelector("input").type == "text")
+                        el.parentNode.querySelector("input").type = "password";
+                    else
+                        el.parentNode.querySelector("input").type = "text";
+                })
+            })
+        }
+
+        //will load the form to change general user info
         else if (e.target.classList.contains("generalForm"))
             document.querySelector(".formSide").innerHTML = this.getGeneralForm();
+
+        //will load the form to change email
         else if (e.target.classList.contains("emailForm"))
             document.querySelector(".formSide").innerHTML = this.getEmailForm();
+
+        //will load the form to change picture
         else if (e.target.classList.contains("pictForm"))
             document.querySelector(".formSide").innerHTML = this.getProfilePictureForm();
+
         else if (e.target.classList.contains("submit"))
             this.collectData();
     }
+
     setup(){
         if (localStorage.getItem("style") == "modern")
         document.querySelector("#app").style.backgroundImage = "url('https://c4.wallpaperflare.com/wallpaper/105/526/545/blur-gaussian-gradient-multicolor-wallpaper-preview.jpg')";

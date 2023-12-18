@@ -46,9 +46,10 @@ let language = {
 			username: ["Username:", "username"],
 			profilePicture: ["Profile Picture:", "picture"],
 			email: ["Email:", "email"],
+			passwordErrors: ["password not correct"],
 			password: ["Password:", "password"],
 			oldPassword: ["Old Password:", "oldPassword"],
-			newPassword: ["Password:", "newPpassword"],
+			newPassword: ["New Password:", "newPassword"],
 			confirmNewPassword: ["Confirm password:", "confirmNewPassword"],
 		}
 	},

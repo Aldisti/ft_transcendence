@@ -7,8 +7,8 @@ let errors  = {
     first_name: "ciaooo",
     last_name: "test"
   },
-  info: {
-
+  user_info: {
+    first_name: "boh"
   }
 }
 
@@ -54,6 +54,14 @@ app.post("/register", (req, res)=>{
   res.status(200)
   res.send(errors);
 })
+
+app.post("/password", (req, res)=>{
+  console.log("hey")
+  console.log(req.body);
+  res.status(400)
+  res.send("hey");
+})
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
