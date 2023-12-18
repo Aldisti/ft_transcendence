@@ -66,6 +66,7 @@ class UserInfo(models.Model):
     )
     birthdate = models.DateField(
         db_column="birthdate",
+        null=True,
         blank=True,
         validators=[validate_birthdate],
     )
@@ -78,6 +79,7 @@ class UserInfo(models.Model):
         max_length=100,
         path="/tmp/images",
         recursive=True,
+        null=True,
         blank=True,
     )
 
