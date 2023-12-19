@@ -82,7 +82,6 @@ class UserInfoSerializerTests(TestCase):
         data = self.data
         for birthdate in self.invalid_dates:
             data["birthdate"] = birthdate
-            print(birthdate)
             serializer = UserInfoSerializer(data=data)
             self.assertFalse(serializer.is_valid())
             self.assertIn("birthdate", serializer.errors)
