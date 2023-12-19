@@ -3,10 +3,7 @@ const path = require('path');
 var bodyParser = require('body-parser')
 
 let errors  = {
-  credentials:{
-    first_name: "ciaooo",
-    last_name: "test"
-  },
+  username: "hahaha",
   user_info: {
     first_name: "boh"
   }

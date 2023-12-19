@@ -5,7 +5,7 @@
 	border: 2px solid black;
 	background-repeat: no-repeat;
 	color: white;
-	width: 55svw;
+	width: 40svw;
 	height: 50svh;
 	display: flex;
 	justify-content: space-between;
@@ -33,14 +33,15 @@
 
 .retroBtn
 {
-	width: 20%;
+	width: 40%;
 	height: 100%;
 	border: none;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	color: white;
-	box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+	border: 2px solid black;
+	box-shadow: 7px 7px black;
 	font-weight: bolder;
 	text-decoration: none;
 }
@@ -78,18 +79,19 @@ h4
 {
 	width: 90%;
 	display: flex;
+	flex-direction: column;
 	justify-content: space-between;
-	align-items: center;
+	align-items: flex-start;
 	box-shadow: 7px 7px black;
 	background-color: white;
 	border: 2px solid black;
-	padding: 5px;
+	padding: 10px;
 
 }
 
 .line input
 {
-	width: 70%;
+	width: 100%;
 	border: none;
 	font-size: 25px;
 	border: 2px solid black;
@@ -98,7 +100,7 @@ h4
 .linebtn
 {
 	width: 90%;
-	height: 4vh;
+	height: 5vh;
 	display: flex;
 	justify-content: space-between;
 }

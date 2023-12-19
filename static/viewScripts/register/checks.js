@@ -1,4 +1,4 @@
-import * as isAlreadyRegistered from "/API/checkUser.js"
+import * as API from "/API/APICall.js"
 import language from "/language/language.js"
 
 let lan = language[localStorage.getItem("language")];
@@ -135,7 +135,7 @@ async function checkUsername(username, errors)
 
     //first check the username with regex expression the if is ok ask to server to check availability
     if (usernameValidator(username, errors))
-        resUsername  = await isAlreadyRegistered.checkUser(username);
+        resUsername  = await API.checkForUsernameAvailability(username);
     else
         return ;
     if (resUsername.status == 404 && username != "" && usernameValidator(username, errors))
@@ -156,7 +156,7 @@ async function checkEmail(email, errors)
 
     //first check the email with regex expression the if is ok ask to server to check availability
     if (emailValidator(email, errors))
-        resEmail  = await isAlreadyRegistered.checkEmail(email);
+        resEmail  = await API.checkForEmailAvailability(email);
     else
         return ;
     if (resEmail.status == 404 && email != "" && emailValidator(email, errors))

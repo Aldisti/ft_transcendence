@@ -1,6 +1,6 @@
 import Aview from "/views/abstractView.js";
 import language from "/language/language.js";
-import login from"/API/login.js"
+import * as API from"/API/APICall.js"
 import sha256 from "/scripts/crypto.js"
 
 export default class extends Aview{
@@ -38,13 +38,13 @@ export default class extends Aview{
 				this.updateField(this.getInput());
 				console.log(this.field)//call API
 				this.field.password = sha256(this.field.password)
-				login(this.field)
+				API.login(this.field)
 			}
 		})
 		if (localStorage.getItem("style") == "modern")
 		document.querySelector("#app").style.backgroundImage = "url('https://c4.wallpaperflare.com/wallpaper/105/526/545/blur-gaussian-gradient-multicolor-wallpaper-preview.jpg')";
-		// else
-		// 	document.querySelector("#app").style.backgroundImage = "url('/imgs/backLogin.png')";
+		else
+			document.querySelector("#app").style.backgroundImage = "url('/imgs/backLogin.png')";
 		document.querySelector("#app").style.backgroundSize = "cover"
 		document.querySelector("#app").style.backgroundRepeat = "repeat"
 	}

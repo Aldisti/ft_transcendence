@@ -16,7 +16,7 @@ let language = {
 			lastName:	["Last Name:", "last_name"],
 			birthDate: ["Birth Date:", "birthdate"],
 			username: ["Username:", "username"],
-			profilePicture: ["Profile Picture:", "picture"],
+			profilePicture: ["Picture:", "picture"],
 			email: ["Email:", "email"],
 			password: ["Password:", "password"],
 			confirmPassword: ["Confirm password:", "confirmPassword"],
@@ -40,6 +40,7 @@ let language = {
 			generalTitle: "change General Info",
 			passwordTitle: "change Password",
 			pictureTitle: "change Profile Picture",
+			
 			firstName:	["First Name:", "first_name"],
 			lastName:	["Last Name:", "last_name"],
 			birthDate: ["Birth Date:", "birthdate"],

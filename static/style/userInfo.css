@@ -5,6 +5,20 @@
     display: flex;
 }
 
+.imageForm
+{
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    width: 50%;
+    height: 70%;
+    border: 2px solid black;
+    box-shadow: 15px 15px black;
+
+}
+
 .formLink
 {
     transition: 0.5s;
@@ -51,7 +65,7 @@
     width: 80%;
 }
 
-.formSide
+.formMenu
 {
     width: 70%;
     height: 100%;
@@ -74,6 +88,20 @@
     align-items: center;
     border: 2px solid black;
     box-shadow: 15px 15px black;
+}
+
+.inputLineFile
+{
+    background-color: white;
+    padding: 10px;
+    font-size: 20px;
+    width: 90%;
+    height: 8svh;
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    border: 2px solid black;
+    box-shadow: 7px 7px black;
 }
 
 .inputLine label
@@ -108,7 +136,7 @@
 	margin: 0;
 }
 
-.switch
+.passwordSwitch
 {
 	width: 5%;
 	height: 80%;
@@ -117,7 +145,7 @@
 	background-color: white;
 }
 
-.switch img
+.passwordSwitch img
 {
 	width: 100%;
 	height: 100%;
@@ -137,12 +165,12 @@
 
 .profilePict
 {
-    width: 40%;
-    height: 50%;
+    width: 90%;
+    height: 70%;
     padding: 10px;
     background-color: white;
     border: 2px solid black;
-    box-shadow: 15px 15px black;
+    box-shadow: 7px 7px black;
 }
 
 .profilePict img
@@ -160,7 +188,7 @@
 
 #labelInpFile
 {
-	width: 70%;
+	width: 100%;
 	height: 80%;
 	display: flex;
 	align-items: center;
@@ -188,7 +216,9 @@
 	display: flex;
 	align-items: flex-end;
 	height: 100%;
+    width: 100%;
 	font-size: larger;
+    margin-left: 20px;
 }
 
 .myTooltip {
