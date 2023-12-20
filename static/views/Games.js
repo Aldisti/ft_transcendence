@@ -14,18 +14,21 @@ function generateGamesLink(games)
     for (let key of Object.keys(games))
     {
         html += `<a class="link" href="${games[key].url}" data-link>
-                    <div class="overlay"></div>
+                    <div class="overlay">
+                        <div>
+                        <div class="gameInfoLine">
+                        <h1>
+                            ${games[key].name}
+                        </h1>
+                        <h3>
+                            Category: 
+                            ${games[key].category}
+                        </h3>
+                    </div>
+                        </div>
+                    </div>
                     <div class="gameInfoCont">
                         ${getGameModeIconHtml(games[key])}
-                        <div class="gameInfoLine">
-                            <h1>
-                                ${games[key].name}
-                            </h1>
-                            <h3>
-                                Category: 
-                                ${games[key].category}
-                            </h3>
-                        </div>
                     </div>
                     <div class="game" style="background-image: url(${games[key].imgUrl}); background-size: cover;">
                     </div>

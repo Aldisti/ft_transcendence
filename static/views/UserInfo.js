@@ -3,19 +3,19 @@ import Aview from "/views/abstractView.js";
 import * as API from "/API/APICall.js"
 import sha256 from "/scripts/crypto.js"
 
-
 export default class extends Aview{
     constructor(){
         super();
+        this.selectedForm = "info"
         this.errors = {};
     }
 
     getGeneralForm(){
         return `
-        <h4 class="title info">${this.language.update.generalTitle}</h4>
+        <div class="formContainer">
         <div class="inputLine">
             <label for="${this.language.update.username[1]}">${this.language.update.username[0]}</label>
-            <input class="inputData" type="text" id="${this.language.update.username[1]}" disabled="true">
+            <input class="inputData" type="text" value="mpaterno" id="${this.language.update.username[1]}" disabled="true">
         </div>
         <div class="inputLine">
             <div class="myTooltip">
@@ -42,20 +42,21 @@ export default class extends Aview{
             <input class="inputData" type="date" id="${this.language.update.birthDate[1]}">
         </div>
         <button class="submit">Submit!</button>
+        </div>
         `
     }
 
     getPasswordForm(){
         return `
-            <h4 class="title password">${this.language.update.passwordTitle}</h4>
+        <div class="formContainer">
             <div class="inputLine">
                 <div class="myTooltip">
                     ?
                     <span id="${this.language.update.oldPassword[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
                 </div> 
                 <label for="${this.language.update.oldPassword[1]}">${this.language.update.oldPassword[0]}</label>
-                <input class="inputData" type="password" id="${this.language.update.oldPassword[1]}" value="Marketto7M?">
-                <div class="passwordSwitch">
+                <input class="inputData" type="password" id="${this.language.update.oldPassword[1]}">
+                <div onclick="window.switchVisibility(this)" class="passwordSwitch">
                     <img src="/imgs/openEye.png" alt="">
                 </div>
             </div>
@@ -65,8 +66,8 @@ export default class extends Aview{
                     <span id="${this.language.update.newPassword[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
                 </div> 
                 <label for="${this.language.update.newPassword[1]}">${this.language.update.newPassword[0]}</label>
-                <input class="inputData" type="password" id="${this.language.update.newPassword[1]}" value="Marketto7M?">
-                <div class="passwordSwitch">
+                <input class="inputData" type="password" id="${this.language.update.newPassword[1]}">
+                <div onclick="window.switchVisibility(this)" class="passwordSwitch">
                     <img src="/imgs/openEye.png" alt="">
                 </div>
             </div>
@@ -76,8 +77,8 @@ export default class extends Aview{
                     <span id="${this.language.update.confirmNewPassword[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
                 </div> 
                 <label for="${this.language.update.confirmNewPassword[1]}">${this.language.update.confirmNewPassword[0]}</label>
-                <input class="inputData" type="password" id="${this.language.update.confirmNewPassword[1]}" value="Marketto7M?">
-                <div class="passwordSwitch">
+                <input class="inputData" type="password" id="${this.language.update.confirmNewPassword[1]}">
+                <div onclick="window.switchVisibility(this)" class="passwordSwitch">
                     <img src="/imgs/openEye.png" alt="">
                 </div>
             </div>
@@ -91,11 +92,12 @@ export default class extends Aview{
                 </ul>
             </div>
             <button class="submit">Submit!</button>
+            </div>
         `
     } 
     getEmailForm(){
         return `
-            <h4 class="title email">${this.language.update.emailTitle}</h4>
+        <div class="formContainer">
             <div class="inputLine">
                 <div class="myTooltip">
                     ?
@@ -109,11 +111,12 @@ export default class extends Aview{
                 <input class="inputData" type="password" id="${this.language.update.password[1]}">
             </div>
             <button class="submit">Submit!</button>
+        </div>
         `
     }
     getProfilePictureForm(){
         return `
-            <h4 class="title picture">${this.language.update.pictureTitle}</h4>
+        <div class="formContainer">
             <div class="imageForm">
                 <div class="profilePict">
                     <img src="https://media.sproutsocial.com/uploads/2022/06/profile-picture.jpeg">
@@ -124,16 +127,17 @@ export default class extends Aview{
                 </div>
             </div>
             <button class="submit">Submit!</button>
+            </div>
         ` 
     }
     getHtml(){
         return `
             <div class="userInfoContainer">
                 <div class="leftSide">
-                    <h4 class="formLink generalForm">${this.language.update.generalTitle}</h4>
-                    <h4 class="formLink passwordForm">${this.language.update.passwordTitle}</h4>
-                    <h4 class="formLink emailForm">${this.language.update.emailTitle}</h4>
-                    <h4 class="formLink pictForm">${this.language.update.pictureTitle}</h4>
+                    <h4 class="formLink info generalForm">${this.language.update.generalTitle}</h4>
+                    <h4 class="formLink password passwordForm">${this.language.update.passwordTitle}</h4>
+                    <h4 class="formLink email emailForm">${this.language.update.emailTitle}</h4>
+                    <h4 class="formLink picture pictForm">${this.language.update.pictureTitle}</h4>
                 </div>
                 <div class="formMenu">
 
@@ -173,7 +177,7 @@ export default class extends Aview{
         let title = document.querySelector(".title");
 
         //will perfom check for general user info
-        if (title.classList.contains("info") && controls.checkChangeInfoForm(form, this.errors))
+        if (this.selectedForm == "info" && controls.checkChangeInfoForm(form, this.errors))
         {
             API.updateInfo(this.prepareInfoForm(form)).then((res)=>{
                 this.errors = res.user_info;
@@ -182,7 +186,7 @@ export default class extends Aview{
         }
 
         //will perfom check for email
-        if (title.classList.contains("email") && await controls.checkChangeEmailForm(form, this.errors))
+        if (this.selectedForm == "email"&& await controls.checkChangeEmailForm(form, this.errors))
         {
             API.updateEmail(this.prepareEmailForm(form)).then((res)=>{
   
@@ -191,7 +195,7 @@ export default class extends Aview{
         }
 
         //will perfom check for password
-        if (title.classList.contains("password") && controls.checkChangePasswordForm(form, this.errors))
+        if (this.selectedForm == "password" && controls.checkChangePasswordForm(form, this.errors))
         {
             API.updatePassword(this.preparePasswordForm(form)).then((res)=>{
                 if (!res.ok)
@@ -204,7 +208,7 @@ export default class extends Aview{
         }
         
         //will perfom check for picture
-        if (title.classList.contains("picture"))
+        if (this.selectedForm == "picture")
             console.log("picture")
     }
 
@@ -224,30 +228,39 @@ export default class extends Aview{
         //will load the form to change password
         if (e.target.classList.contains("passwordForm"))
         {
+            this.selectedForm = "password";
             document.querySelector(".formMenu").innerHTML = this.getPasswordForm();
-
-            //setting up the listener for all passowrd visibility toggle
-            document.querySelectorAll(".passwordSwitch").forEach((el)=>{
-                el.addEventListener("click", (e)=>{
-                    if (el.parentNode.querySelector("input").type == "text")
-                        el.parentNode.querySelector("input").type = "password";
-                    else
-                        el.parentNode.querySelector("input").type = "text";
-                })
-            })
         }
 
         //will load the form to change general user info
         else if (e.target.classList.contains("generalForm"))
+        {
+            this.selectedForm = "info";
             document.querySelector(".formMenu").innerHTML = this.getGeneralForm();
+        }
 
         //will load the form to change email
         else if (e.target.classList.contains("emailForm"))
+        {
+            this.selectedForm = "email";
             document.querySelector(".formMenu").innerHTML = this.getEmailForm();
+        }
 
         //will load the form to change picture
         else if (e.target.classList.contains("pictForm"))
+        {
+            this.selectedForm = "picture";
             document.querySelector(".formMenu").innerHTML = this.getProfilePictureForm();
+        }
+    }
+
+    highlightFormMenu(formName){
+        document.querySelectorAll(".formLink").forEach(el=>{
+            el.style.backgroundColor = "#f0ead2";
+            el.style.color = "black";
+        })
+        document.querySelector(`.${formName}`).style.backgroundColor = "black";
+        document.querySelector(`.${formName}`).style.color = "white";
     }
 
     setup(){
@@ -258,11 +271,12 @@ export default class extends Aview{
         document.querySelector("#app").style.backgroundSize = "cover"
         document.querySelector("#app").style.backgroundRepeat = "repeat"
         document.querySelector(".formMenu").innerHTML = this.getGeneralForm();
-
+        this.highlightFormMenu(this.selectedForm)
         //setting the listener for click that will handle both the form change and the submit event performing the checks depending
         //on the current form
         document.addEventListener("click", (e)=>{
             this.changeForm(e);
+            this.highlightFormMenu(this.selectedForm)
             if (e.target.classList.contains("submit"))
                 this.performChecksAndSubmit(this.collectData());
         })
