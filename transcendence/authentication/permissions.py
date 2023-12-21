@@ -10,13 +10,11 @@ from accounts.utils import Roles
 class IsRole(BasePermission):
     roles = []
 
-    def has_permission(self, request, view):
+    # checks if the user role is present in 'roles'
+    def has_permission(self, request, view) -> bool:
         if request.auth is None or request.user is None:
             return False
-        role = request.user.role
-        if role is not None and role in self.roles:
-            return True
-        return False
+        return request.user.role in self.roles
 
 
 class IsUser(IsRole):
