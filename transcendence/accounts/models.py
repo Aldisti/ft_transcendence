@@ -39,7 +39,7 @@ class User(AbstractBaseUser):
     objects = UserManager()
 
     class Meta:
-        db_table = "user"
+        db_table = "user_auth"
 
     def __str__(self):
         return f"username: {self.username}, email: {self.email}, role: {self.role}"
