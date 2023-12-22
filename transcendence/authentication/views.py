@@ -1,8 +1,7 @@
-from django.views.decorators.csrf import csrf_exempt
-
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
+
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -10,7 +9,6 @@ from accounts.models import User
 from accounts.serializers import UserSerializer
 
 from authentication.serializers import MyTokenObtainPairSerializer
-from authentication.permissions import IsModerator
 
 
 # Create your views here.
