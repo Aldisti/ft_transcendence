@@ -39,7 +39,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'accounts',
+    # tmp for testing reasons
+    'corsheaders',
 ]
+
+REST_FRAMEWROK = {
+    'EXCEPTION_HANDLER': 'transcendence.accounts.exceptions.custom_exception_handler'
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -49,6 +55,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # tmp for testing reasons
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'transcendence.urls'
@@ -131,3 +140,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Authetication
 
 AUTH_USER_MODEL = "accounts.User"
+
+# tmp for testing reasons
+
+CORS_ALLOWED_ORIGINS = [
+    'http://192.168.137.211:8000',
+]
+
+CORS_ALLOW_ALL_ORIGINS = True
+APPEND_SLASH=False
