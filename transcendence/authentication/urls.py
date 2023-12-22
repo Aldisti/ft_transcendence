@@ -4,5 +4,5 @@ from authentication import views
 
 urlpatterns = [
     path('login/', views.login, name='login'),
-    path('user/', views.user, name='user'),
+    path('refresh/', views.refresh_token, name='refresh'),
 ]
