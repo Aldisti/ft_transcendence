@@ -216,3 +216,13 @@ class CompleteUserSerializerTests(TestCase):
         self.assertNotEqual(new_user.password, old_user.password)
         user = User.objects.get(pk=new_user.username)
         self.assertEqual(new_user, user)
+
+    def test_complete_user_serializer_invalid_update_password_method(self):
+        old_user = User.objects.create_user(**self.user_data)
+        serializer = CompleteUserSerializer()
+        data = self.data
+        with self.assertRaises(ValueError):
+            serializer.update_password(data)
+        data["new_password"] = self.user_data["password"]
+        with self.assertRaises(ValueError):
+            serializer.update_password(data)

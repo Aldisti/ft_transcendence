@@ -38,7 +38,7 @@ def refresh_token(request):
         token = RefreshToken(request.COOKIES.get('refresh_token'))
         return Response(
             {"access_token": str(token.access_token)},
-            status=status.HTTP_200_OK
+            status=status.HTTP_200_OK,
         )
     except TokenError:
         return Response("Invalid refresh token", status=status.HTTP_400_BAD_REQUEST)
