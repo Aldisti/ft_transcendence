@@ -1,9 +1,11 @@
 from django.db import models
 from django.core import validators
 from django.contrib.auth.base_user import AbstractBaseUser
+
 from accounts.utils import Roles
 from accounts.validators import validate_birthdate
 from accounts.managers import UserManager, UserInfoManager
+
 
 # Create your models here.
 
@@ -37,13 +39,12 @@ class User(AbstractBaseUser):
 
     objects = UserManager()
 
-
     class Meta:
-        db_table = "user"
-
+        db_table = "user_auth"
 
     def __str__(self):
         return f"username: {self.username}, email: {self.email}, role: {self.role}"
+
 
 class UserInfo(models.Model):
     user = models.OneToOneField(
@@ -66,6 +67,7 @@ class UserInfo(models.Model):
     )
     birthdate = models.DateField(
         db_column="birthdate",
+        null=True,
         blank=True,
         validators=[validate_birthdate],
     )
@@ -79,14 +81,13 @@ class UserInfo(models.Model):
         path="/tmp/images",
         recursive=True,
         blank=True,
+        null=True,
     )
 
     objects = UserInfoManager()
 
-
     class Meta:
         db_table = "user_info"
-
 
     def __str__(self):
         return f"user: {self.user.username}, first_name: {self.first_name}, last_name: {self.last_name}, joined:{self.date_joined}"

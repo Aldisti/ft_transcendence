@@ -54,13 +54,13 @@ class CompleteUserSerializer(serializers.ModelSerializer):
         return user
 
     def update_email(self, validated_data):
-        validated_data.pop("user_info")
+        validated_data.pop("user_info", {})
         user = User.objects.get(pk=validated_data.get("username"))
         updated_user = User.objects.update_user_email(user, **validated_data)
         return updated_user
 
     def update_password(self, validated_data):
-        validated_data.pop("user_info")
+        validated_data.pop("user_info", {})
         user = User.objects.get(pk=validated_data.get("username"))
         updated_user = User.objects.update_user_password(user, **validated_data)
         return updated_user

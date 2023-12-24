@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.generics import RetrieveDestroyAPIView, ListAPIView
 from rest_framework.exceptions import APIException
@@ -7,10 +7,13 @@ from rest_framework import filters
 from accounts.paginations import MyPageNumberPagination
 from accounts.serializers import CompleteUserSerializer
 from accounts.models import User
+from authentication.permissions import IsActualUser, IsAdmin
 
 # Create your views here.
 
+
 @api_view(['POST'])
+@permission_classes([])
 def registration(request):
     user_serializer = CompleteUserSerializer(data=request.data)
     if not user_serializer.is_valid():
@@ -19,8 +22,9 @@ def registration(request):
     serializer_response = CompleteUserSerializer(user)
     return Response(serializer_response.data, status=201)
 
-    
+
 class RetrieveDestroyUser(RetrieveDestroyAPIView):
+    permission_classes = [IsActualUser|IsAdmin]
     queryset = User.objects.all()
     serializer_class = CompleteUserSerializer
     lookup_field = "username"

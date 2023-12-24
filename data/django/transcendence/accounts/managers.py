@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.base_user import BaseUserManager
 from accounts.utils import Roles
 
+
 class UserManager(BaseUserManager):
     def create_user(self, username, email, password, **kwargs):
         if not email:
@@ -17,7 +18,7 @@ class UserManager(BaseUserManager):
         kwargs.setdefault("active", True)
         kwargs.setdefault("role", Roles.ADMIN)
 
-        if not kwargs.get("active") == True:
+        if not kwargs.get("active"):
             raise ValueError("active must be true")
         if not kwargs.get("role") == Roles.ADMIN:
             raise ValueError("admin must have admin role")
