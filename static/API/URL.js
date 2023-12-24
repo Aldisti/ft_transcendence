@@ -1,5 +1,5 @@
-let ip = "${ip}";
-let port = "${port}";
+let ip = "localhost";
+let port = "4200";
 
 export const availabilityCheck = {
     USERNAME: `http://${ip}:${port}/username/check`,

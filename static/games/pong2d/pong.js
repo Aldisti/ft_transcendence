@@ -70,25 +70,47 @@ class Ball{
 	start(){
 		this.started = true;
 		date = new Date().getTime() / 1000;
-		this.deltaX = Math.ceil(Math.random() * 10) % 2 == 0 ? 1 + Math.random() : -1 - Math.random();
-		this.deltaY = Math.ceil(Math.random() * 10) % 2 == 0 ? 1 + Math.random() : -1 - Math.random();
+		this.deltaX = Math.ceil(Math.random() * 10) % 2 == 0 ? 2.5 + Math.random() : -2.5 - Math.random();
+		this.deltaY = Math.ceil(Math.random() * 10) % 2 == 0 ? 2.5 + Math.random() : -2.5 - Math.random();
 	}
 	touchPadel(leftPadle, rightPadle){
-
+		let topSpeed = 8;
 		if (this.x + this.ballOffSet <= (leftPadle.x + leftPadle.widthP))
 		{
-			if (this.y>= leftPadle.y && this.y <= (leftPadle.y + leftPadle.lengthP))
+			if (this.y + this.ballSize >= leftPadle.y && this.y <= (leftPadle.y + leftPadle.lengthP))
 			{
-				this.deltaX *= -1;
+				this.deltaX *= -7;
+				if (this.deltaX > topSpeed)
+					this.deltaX = topSpeed;
+				else if (this.deltaX < -topSpeed)
+					this.deltaX = -topSpeed;
+				this.deltaY *= 7;
+				if (leftSpecial)
+					this.deltaY *= -7;
+				if (this.deltaY > topSpeed)
+					this.deltaY = topSpeed;
+				else if (this.deltaY < -topSpeed)
+					this.deltaY = -topSpeed;
 				return "none";
 			}
 			return "outLeft";
 		}
 		if (this.x + this.ballOffSet >= rightPadle.x)
 		{
-			if (this.y >= rightPadle.y && this.y <= (rightPadle.y + rightPadle.lengthP))
+			if (this.y + this.ballSize >= rightPadle.y && this.y <= (rightPadle.y + rightPadle.lengthP))
 			{
-				this.deltaX *= -1;
+				this.deltaX *= -7;
+				if (this.deltaX > topSpeed)
+					this.deltaX = topSpeed;
+				else if (this.deltaX < -topSpeed)
+					this.deltaX = -topSpeed;
+				this.deltaY *= 7;
+				if (rightSpecial)
+					this.deltaY *= -7;
+				if (this.deltaY > topSpeed)
+					this.deltaY = topSpeed;
+				else if (this.deltaY < -topSpeed)
+					this.deltaY = -topSpeed;
 				return "none";
 			}
 			return "outRight";
@@ -115,8 +137,10 @@ class Ball{
 			game.p1Score++;
 			game.updateScore(this);
 		}
-		this.deltaX *= 1.0005;
-		this.deltaY *= 1.0005;
+		if (this.deltaX > 3 || this.deltaX < -3)
+			this.deltaX *= 0.99599;
+		if (this.deltaY > 3 || this.deltaY < -3)
+			this.deltaY *= 0.99599;
 		this.x += this.deltaX;
 		this.y += this.deltaY;
 	}
@@ -134,6 +158,8 @@ let 	previousTime = 0;
 let 	date = new Date().getTime() / 1000;
 const 	targetFrameRate = 144; // Target frame rate (in FPS)
 const 	frameInterval = 1000 / targetFrameRate; // Interval in milliseconds between frames
+let		leftSpecial = false;
+let		rightSpecial = false;
 
 let leftPadleTInterval;
 let leftPadleBInterval;
@@ -166,7 +192,7 @@ window.addEventListener("keydown", (e)=>{
 		}
 		rightControlTop = true;
 		rightPadleTInterval = setInterval(()=>{
-			if ((rightY - toAdd) >= canvas.offsetTop )
+			if ((rightY - toAdd) >= canvas.offsetTop  - 10)
 				rightY -= toAdd;
 		}, 1)
 	}
@@ -179,7 +205,7 @@ window.addEventListener("keydown", (e)=>{
 		}
 		rightControlBot = true;
 		rightPadleBInterval = setInterval(()=>{
-			if ((rightY + toAdd) <= canvas.clientHeight + canvas.offsetTop - right.lengthP)
+			if ((rightY + toAdd) <= canvas.clientHeight + canvas.offsetTop - right.lengthP + 10)
 				rightY += toAdd;
 		}, 1)
 	}
@@ -192,7 +218,7 @@ window.addEventListener("keydown", (e)=>{
 		}
 		leftControlTop = true;
 		leftPadleTInterval = setInterval(()=>{
-			if ((leftY - toAdd) >= canvas.offsetTop)
+			if ((leftY - toAdd) >= canvas.offsetTop - 10)
 				leftY -= toAdd;
 		}, 1)
 	}
@@ -205,10 +231,14 @@ window.addEventListener("keydown", (e)=>{
 		}
 		leftControlBot = true;
 		leftPadleBInterval = setInterval(()=>{
-			if ((leftY + toAdd) <= canvas.clientHeight + canvas.offsetTop - right.lengthP)
+			if ((leftY + toAdd) <= canvas.clientHeight + canvas.offsetTop - right.lengthP + 10)
 				leftY += toAdd;
 		}, 1)
 	}
+	if (e.key == "a")
+		leftSpecial = true;
+	if (e.key == "p")
+		rightSpecial = true;
 })
 
     window.addEventListener("keyup", (e)=>{
@@ -232,6 +262,10 @@ window.addEventListener("keydown", (e)=>{
             clearInterval(rightPadleBInterval)
             rightControlBot = false;
         }
+		if (e.key == "a")
+			leftSpecial = false;
+		if (e.key == "p")
+			rightSpecial = false;
     })
 
 function animate(currentTime)
