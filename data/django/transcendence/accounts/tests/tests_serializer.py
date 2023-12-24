@@ -114,6 +114,7 @@ class CompleteUserSerializerTests(TestCase):
             "username": "tester",
             "email": "test@email.com",
             "password": "password",
+            "role": "U",
         }
         today = date.today()
         self.user_info_data = {
@@ -128,6 +129,7 @@ class CompleteUserSerializerTests(TestCase):
             "", "test@emailcom", "testemail.com", "testemailcom",
             "@email.com", "test@.com", "test@email.", "@."
         ]
+        self.invalid_roles = ["admin", "mod", "user", "adfa"]
         self.expected_user_fields = ["username", "email"]
 
     # passing all fields (even those not required) valid
@@ -160,6 +162,15 @@ class CompleteUserSerializerTests(TestCase):
             serializer = CompleteUserSerializer(data=data)
             self.assertFalse(serializer.is_valid())
             self.assertIn("username", serializer.errors)
+
+    # passing different types of invalid roles
+    def test_user_serializer_invalid_roles(self):
+        data = self.data
+        for role in self.invalid_roles:
+            data["role"] = role
+            serializer = CompleteUserSerializer(data=data)
+            self.assertFalse(serializer.is_valid())
+            self.assertIn("role", serializer.errors)
 
     # passing different invalid emails
     def test_complete_user_serializer_invalid_email(self):

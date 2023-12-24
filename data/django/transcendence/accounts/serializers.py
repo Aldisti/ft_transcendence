@@ -40,11 +40,12 @@ class CompleteUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["username", "email", "password", "new_password", "user_info"]
+        fields = ["username", "email", "password", "new_password", "user_info", "role"]
         extra_kwargs = {
             "password": {"write_only": True, "required": False},
             "username": {"validators": [RegexValidator("^[A-Za-z0-9!?*$~_-]{5,32}$")]},
             "email": {"required": False, "validators": [EmailValidator()]},
+            "role": {"write_only": True, "required": False}
         }
 
     def create(self, validated_data):

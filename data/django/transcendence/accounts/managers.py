@@ -8,6 +8,7 @@ class UserManager(BaseUserManager):
         if not email:
             raise ValueError("Missing email")
         email = self.normalize_email(email)
+        kwargs.pop("role", "")
         user = self.model(username=username, email=email, **kwargs)
         user.set_password(password)
         user.full_clean()

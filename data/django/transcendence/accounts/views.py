@@ -22,6 +22,13 @@ def registration(request):
     serializer_response = CompleteUserSerializer(user)
     return Response(serializer_response.data, status=201)
 
+#@api_view(['PATCH'])
+#@permission_classes([IsAdmin])
+#def make_mod(request):
+#    user_serializer = CompleteUserSerializer(data=request.data)
+#    if not user_serializer.is_valid():
+#        return Response(status=400)
+
 
 class RetrieveDestroyUser(RetrieveDestroyAPIView):
     permission_classes = [IsActualUser|IsAdmin]
