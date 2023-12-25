@@ -7,7 +7,7 @@ from rest_framework import filters
 from accounts.paginations import MyPageNumberPagination
 from accounts.serializers import CompleteUserSerializer
 from accounts.models import User
-from authentication.permissions import IsActualUser, IsAdmin
+from authentication.permissions import IsActualUser, IsAdmin, IsModerator
 
 # Create your views here.
 
@@ -22,12 +22,23 @@ def registration(request):
     serializer_response = CompleteUserSerializer(user)
     return Response(serializer_response.data, status=201)
 
-#@api_view(['PATCH'])
-#@permission_classes([IsAdmin])
-#def make_mod(request):
-#    user_serializer = CompleteUserSerializer(data=request.data)
-#    if not user_serializer.is_valid():
-#        return Response(status=400)
+@api_view(['PATCH'])
+@permission_classes([IsAdmin])
+def change_role(request):
+    user_serializer = CompleteUserSerializer(data=request.data)
+    if not user_serializer.is_valid():
+        return Response(status=400)
+    user = user_serializer.update_role(user_serializer.validated_data)
+    return Response({ "username": user.username, "new_role": user.role }, status=200)
+
+@api_view(['PATCH'])
+@permission_classes([IsModerator])
+def change_active(request):
+    user_serializer = CompleteUserSerializer(data=request.data)
+    if not user_serializer.is_valid():
+        return Response(status=400)
+    user = user_serializer.update_active(user_serializer.validated_data)
+    return Response({ "username": user.username, "banned": not user.active }, status=200)
 
 
 class RetrieveDestroyUser(RetrieveDestroyAPIView):
@@ -41,16 +52,7 @@ class ListUser(ListAPIView):
     queryset = User.objects.all()
     serializer_class = CompleteUserSerializer
     pagination_class = MyPageNumberPagination
-#    order_field = "username"
-#    order_type = "DESC"
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ["=username", "=email"]
     ordering_filters = ["username", "email"]
     ordering = ["username"]
-
-#    def get_queryset(self):
-#        order_field = self.request.query_params.get("field", self.order_field)
-#        order_type = self.request.query_params.get("type", self.order_type)
-#        order = ("" if order_type == "ASC" else "-") + order_field
-#        queryset = User.objects.all().order_by(order)
-#        return queryset

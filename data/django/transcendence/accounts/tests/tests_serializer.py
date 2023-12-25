@@ -129,7 +129,7 @@ class CompleteUserSerializerTests(TestCase):
             "", "test@emailcom", "testemail.com", "testemailcom",
             "@email.com", "test@.com", "test@email.", "@."
         ]
-        self.invalid_roles = ["admin", "mod", "user", "adfa"]
+        self.invalid_roles = ["admin", "mod", "user", "adfa", ""]
         self.expected_user_fields = ["username", "email"]
 
     # passing all fields (even those not required) valid
@@ -164,7 +164,7 @@ class CompleteUserSerializerTests(TestCase):
             self.assertIn("username", serializer.errors)
 
     # passing different types of invalid roles
-    def test_user_serializer_invalid_roles(self):
+    def test_complete_user_serializer_invalid_roles(self):
         data = self.data
         for role in self.invalid_roles:
             data["role"] = role
@@ -237,3 +237,41 @@ class CompleteUserSerializerTests(TestCase):
         data["new_password"] = self.user_data["password"]
         with self.assertRaises(ValueError):
             serializer.update_password(data)
+
+    def test_complete_user_serializer_valid_update_role_method(self):
+        old_user = User.objects.create_user(**self.user_data)
+        serializer = CompleteUserSerializer()
+        data = self.data
+        data["role"] = "M"
+        new_user = serializer.update_role(data)
+        self.assertNotEqual(new_user.role, old_user.role)
+        user = User.objects.get(pk=new_user.username)
+        self.assertEqual(new_user, user)
+
+    def test_complete_user_serializer_invalid_update_role_method(self):
+        old_user = User.objects.create_user(**self.user_data)
+        serializer = CompleteUserSerializer()
+        data = {}
+        for invalid_role in self.invalid_roles:
+            data["username"] = old_user.username
+            data["role"] = invalid_role
+            with self.assertRaises(ValueError):
+                serializer.update_role(data)
+
+    def test_complete_user_serializer_valid_update_active_method(self):
+        old_user = User.objects.create_user(**self.user_data)
+        serializer = CompleteUserSerializer()
+        data = self.data
+        new_user = serializer.update_active(data)
+        self.assertNotEqual(new_user.active, old_user.active)
+        user = User.objects.get(pk=new_user.username)
+        self.assertEqual(new_user, user)
+
+    def test_complete_user_serializera_invalid_update_active_method(self):
+        old_user = User.objects.create_user(**self.user_data)
+        serializer = CompleteUserSerializer()
+        data = self.data
+        data["role"] = "M"
+        new_user = serializer.update_role(data)
+        with self.assertRaises(ValueError):
+            serializer.update_active( {"username": new_user.username} )

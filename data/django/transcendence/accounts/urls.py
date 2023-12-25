@@ -4,6 +4,8 @@ from accounts import views
 
 urlpatterns = [
     path('register/', views.registration),
+    path('users/role/', views.change_role),
+    path('users/ban/', views.change_active),
     path('users/', views.ListUser.as_view()),
     path('users/<username>/', views.RetrieveDestroyUser.as_view()),
 ]

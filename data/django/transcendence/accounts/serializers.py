@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 from accounts.models import User, UserInfo
 from django.core.validators import RegexValidator, EmailValidator
 
@@ -76,3 +77,16 @@ class CompleteUserSerializer(serializers.ModelSerializer):
             user = User.objects.get(pk=username)
             updated_user_info = UserInfo.objects.create(user, **user_info_dic)
         return updated_user_info
+
+    def update_role(self, validated_data):
+        user_role = validated_data.pop("role", "")
+        username = validated_data.pop("username")
+        user = User.objects.get(pk=username)
+        updated_user = User.objects.update_user_role(user, user_role)
+        return updated_user
+
+    def update_active(self, validated_data):
+        username = validated_data.pop("username")
+        user = User.objects.get(pk=username)
+        updated_user = User.objects.update_user_active(user)
+        return updated_user

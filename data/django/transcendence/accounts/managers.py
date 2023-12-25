@@ -8,7 +8,8 @@ class UserManager(BaseUserManager):
         if not email:
             raise ValueError("Missing email")
         email = self.normalize_email(email)
-        kwargs.pop("role", "")
+        if kwargs.get("role") != Roles.ADMIN:
+            kwargs.pop("role", "")
         user = self.model(username=username, email=email, **kwargs)
         user.set_password(password)
         user.full_clean()
@@ -45,6 +46,22 @@ class UserManager(BaseUserManager):
         if new_password == password:
             raise ValueError("invalid new password")
         user.set_password(new_password)
+        user.full_clean()
+        user.save()
+        return user
+
+    def update_user_role(self, user, role):
+        if role != Roles.USER and role != Roles.MOD:
+            raise ValueError("Not valid role")
+        user.role = role
+        user.full_clean()
+        user.save()
+        return user
+
+    def update_user_active(self, user):
+        if user.role != Roles.USER:
+            raise ValueError("Cannot ban/unban mod or admin")
+        user.active = not user.active
         user.full_clean()
         user.save()
         return user
