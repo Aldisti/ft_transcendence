@@ -9,9 +9,14 @@ from accounts.models import User
 from accounts.serializers import UserSerializer
 
 from authentication.serializers import MyTokenObtainPairSerializer
+from authentication.models import JwtToken
 
 
-# Create your views here.
+@api_view(['POST'])
+def logout(request):
+    ref_token = RefreshToken(request.COOKIES.get('refresh_token'))
+    jwt_token = JwtToken.objects.create(ref_token)
+    return Response(str(jwt_token), status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
@@ -34,7 +39,10 @@ def login(request):
 @api_view(['POST'])
 @permission_classes([])
 def refresh_token(request):
+    ref_token = RefreshToken(request.COOKIES.get('refresh_token'))
     try:
+        if JwtToken.objects.filter(token=ref_token['csrf']).exists():
+            raise TokenError
         token = RefreshToken(request.COOKIES.get('refresh_token'))
         return Response(
             {"access_token": str(token.access_token)},
