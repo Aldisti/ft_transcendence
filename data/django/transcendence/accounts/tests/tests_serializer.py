@@ -2,6 +2,7 @@ from django.test import TestCase
 from accounts.models import User
 from accounts.serializers import UserSerializer, UserInfoSerializer, CompleteUserSerializer
 from accounts.validators import MIN_AGE
+from accounts.utils import Roles
 from datetime import date, timedelta
 
 
@@ -51,8 +52,10 @@ class UserSerializerTests(TestCase):
                     password=self.data["password"])
         user.full_clean()
         serializer = UserSerializer(user)
+        data = self.data
+        data["active"] = True
         for key, value in serializer.data.items():
-            self.assertEqual(value, self.data[key])
+            self.assertEqual(value, data[key])
 
 
 class UserInfoSerializerTests(TestCase):
@@ -114,7 +117,7 @@ class CompleteUserSerializerTests(TestCase):
             "username": "tester",
             "email": "test@email.com",
             "password": "password",
-            "role": "U",
+            "role": Roles.USER,
         }
         today = date.today()
         self.user_info_data = {
@@ -206,6 +209,10 @@ class CompleteUserSerializerTests(TestCase):
         data["new_password"] = "new_password"
         with self.assertRaises(TypeError):
             serializer.create(data)
+        data = self.user_data
+        data["banned"] = True
+        with self.assertRaises(TypeError):
+            serializer.create(data)
 
     def test_complete_user_serializer_valid_update_email_method(self):
         old_user = User.objects.create_user(**self.user_data)
@@ -242,7 +249,7 @@ class CompleteUserSerializerTests(TestCase):
         old_user = User.objects.create_user(**self.user_data)
         serializer = CompleteUserSerializer()
         data = self.data
-        data["role"] = "M"
+        data["role"] = Roles.MOD
         new_user = serializer.update_role(data)
         self.assertNotEqual(new_user.role, old_user.role)
         user = User.objects.get(pk=new_user.username)
@@ -262,16 +269,31 @@ class CompleteUserSerializerTests(TestCase):
         old_user = User.objects.create_user(**self.user_data)
         serializer = CompleteUserSerializer()
         data = self.data
+        data["banned"] = True
         new_user = serializer.update_active(data)
         self.assertNotEqual(new_user.active, old_user.active)
         user = User.objects.get(pk=new_user.username)
         self.assertEqual(new_user, user)
 
-    def test_complete_user_serializera_invalid_update_active_method(self):
+    def test_complete_user_serializer_invalid_update_active_method(self):
         old_user = User.objects.create_user(**self.user_data)
         serializer = CompleteUserSerializer()
         data = self.data
-        data["role"] = "M"
+        data["role"] = Roles.MOD
         new_user = serializer.update_role(data)
         with self.assertRaises(ValueError):
-            serializer.update_active( {"username": new_user.username} )
+            serializer.update_active( {"username": new_user.username, "banned": True} )
+
+    def test_complete_user_serializer_role_security_method(self):
+        data = self.data
+        data["role"] = Roles.ADMIN
+        serializer = CompleteUserSerializer(data=data)
+        self.assertTrue(serializer.is_valid())
+        user = serializer.create(serializer.validated_data)
+        self.assertEqual(user.username, self.data["username"])
+        self.assertEqual(user.email, self.data["email"])
+        self.assertEqual(user.role, Roles.USER)
+        user_info = user.user_info
+        self.assertEqual(user_info.first_name, self.user_info_data["first_name"])
+        self.assertEqual(user_info.last_name, self.user_info_data["last_name"])
+        self.assertEqual(user_info.birthdate, self.user_info_data["birthdate"])

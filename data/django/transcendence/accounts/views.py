@@ -25,6 +25,9 @@ def registration(request):
 @api_view(['PATCH'])
 @permission_classes([IsAdmin])
 def change_role(request):
+    """
+    Request: {"username": <username>, "role": <[U, M]>}
+    """
     user_serializer = CompleteUserSerializer(data=request.data)
     if not user_serializer.is_valid():
         return Response(status=400)
@@ -34,6 +37,9 @@ def change_role(request):
 @api_view(['PATCH'])
 @permission_classes([IsModerator])
 def change_active(request):
+    """
+    Request: {"username": <username>, "banned": <[True, False]>}
+    """
     user_serializer = CompleteUserSerializer(data=request.data)
     if not user_serializer.is_valid():
         return Response(status=400)

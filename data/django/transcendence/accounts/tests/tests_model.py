@@ -89,10 +89,10 @@ class ModelUserTests(TestCase):
 
     def test_user_active_update(self):
         # ban User
-        user = User.objects.update_user_active(self.user)
+        user = User.objects.update_user_active(self.user, banned=True)
         self.assertFalse(user.active)
         # sban User
-        user = User.objects.update_user_active(self.user)
+        user = User.objects.update_user_active(self.user, banned=False)
         self.assertTrue(user.active)
 
     def test_invalid_user_creation(self):
@@ -129,7 +129,7 @@ class ModelUserTests(TestCase):
     def test_superuser_active_update(self):
         # ban superuser
         with self.assertRaises(ValueError):
-            superuser = User.objects.update_user_active(self.superuser)
+            superuser = User.objects.update_user_active(self.superuser, banned=True)
 
     def test_superuser_delete(self):
         self.superuser.delete()

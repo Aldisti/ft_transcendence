@@ -58,10 +58,10 @@ class UserManager(BaseUserManager):
         user.save()
         return user
 
-    def update_user_active(self, user):
+    def update_user_active(self, user, banned):
         if user.role != Roles.USER:
             raise ValueError("Cannot ban/unban mod or admin")
-        user.active = not user.active
+        user.active = not banned
         user.full_clean()
         user.save()
         return user
