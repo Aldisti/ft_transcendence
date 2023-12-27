@@ -1,19 +1,19 @@
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import Token
 
 from django.db import models
 
+from transcendence.settings import TZ
+
 from datetime import datetime
-from pytz import timezone
-
-from transcendence.settings import TIME_ZONE
-
-
-TZ = timezone(TIME_ZONE)
 
 
 class JwtTokenManager(models.Manager):
-    def create(self, token: RefreshToken, **kwargs):
+    def create(self, token: Token, **kwargs):
+        if token is None:
+            raise ValueError("Token value cannot be None")
         expiry = datetime.fromtimestamp(token['exp'], tz=TZ)
+        if expiry < datetime.now(tz=TZ):
+            raise ValueError("Token's already expired")
         jwt_token = self.model(token=token['csrf'], exp=expiry)
         jwt_token.full_clean()
         jwt_token.save()
