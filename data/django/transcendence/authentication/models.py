@@ -20,6 +20,14 @@ class JwtTokenManager(models.Manager):
         return jwt_token
 
 
+# Query to delete all records expired
+# delete from <table> where <column> < now();
+# If you want to add an interval, e.g. you want to delete all records
+# before 2 days you can use 'interval'
+# delete from <table> where <column> < now() + interval '2 days';
+# In our case the query should be similar to the first case
+
+
 class JwtToken(models.Model):
     token = models.CharField(
         db_column="token",
