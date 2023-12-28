@@ -17,7 +17,7 @@ export default class extends Aview{
             	<h1 id="title">${this.language.login.login}</h1>
             	<div class="line">
                 	<h4>${language.en.login.name}</h4>
-                	<input type="text" class="data retroShade" name="name">
+                	<input type="text" class="data retroShade" name="username">
             	</div>
             	<div class="line">
                 	<h4>${this.language.login.password}</h4>
@@ -36,13 +36,15 @@ export default class extends Aview{
 			if (e.target.id == "loginBtn")
 			{
 				this.updateField(this.getInput());
-				console.log(this.field)//call API
-				this.field.password = sha256(this.field.password)
-				API.login(this.field)
+				// this.field.password = sha256(this.field.password)
+				this.field.password = this.field.password//for testing
+				API.login(this.field).then((res)=>{
+					console.log(window.getToken());
+				})
 			}
 		})
 		if (localStorage.getItem("style") == "modern")
-		document.querySelector("#app").style.backgroundImage = "url('https://c4.wallpaperflare.com/wallpaper/105/526/545/blur-gaussian-gradient-multicolor-wallpaper-preview.jpg')";
+			document.querySelector("#app").style.backgroundImage = "url('https://c4.wallpaperflare.com/wallpaper/105/526/545/blur-gaussian-gradient-multicolor-wallpaper-preview.jpg')";
 		else
 			document.querySelector("#app").style.backgroundImage = "url('/imgs/backLogin.png')";
 		document.querySelector("#app").style.backgroundSize = "cover"

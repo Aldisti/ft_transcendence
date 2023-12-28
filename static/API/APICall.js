@@ -24,14 +24,15 @@ export async function checkForEmailAvailability(email){
 
 export async function login(data)
 {
-    const rest = fetch(URL.userAction.LOGIN, {
+    const res = await fetch(URL.userAction.LOGIN, {
         method: "POST",
         headers:{
             "Content-Type": "application/json"
         },
         body: JSON.stringify(data),
     })
-
+    let token = await res.json();
+    window.getToken = window.setToken(token.access_token);
 }
 
 export async function register(data)

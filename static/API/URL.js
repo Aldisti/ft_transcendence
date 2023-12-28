@@ -1,5 +1,5 @@
-let ip = "localhost";
-let port = "4200";
+let ip = "79.23.135.142";
+let port = "8000";
 
 export const availabilityCheck = {
     USERNAME: `http://${ip}:${port}/username/check`,
@@ -7,9 +7,11 @@ export const availabilityCheck = {
 }
 
 export const userAction = {
-    LOGIN:  `http://${ip}:${port}/login`,
+    LOGIN:  `http://${ip}:${port}/auth/login/`,
     REGISTER:  `http://${ip}:${port}/register`,
     UPDATE_INFO:  `http://${ip}:${port}/register`,
     UPDATE_EMAIL:  `http://${ip}:${port}/register`,
     UPDATE_PASSWORD:  `http://${ip}:${port}/password`,
+
+    TEST: `http://${ip}:${port}/users`
 }
