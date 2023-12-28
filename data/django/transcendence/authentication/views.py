@@ -29,7 +29,7 @@ def login(request):
         user = User.objects.get(pk=user_serializer.validated_data['username'])
         if user.check_password(user_serializer.validated_data['password']):
             if not user.active:
-                return Response("User banned", status=status.HTTP_400_BAD_REQUEST)
+                return Response("User isn't active", status=status.HTTP_400_BAD_REQUEST)
             token = MyTokenObtainPairSerializer.get_token(user)
             response = Response(
                 {"access_token": str(token.access_token)},
