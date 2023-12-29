@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.core.mail import send_mail
+from django.conf import settings
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.generics import RetrieveDestroyAPIView, ListAPIView
@@ -19,6 +21,12 @@ def registration(request):
     if not user_serializer.is_valid():
         return Response(status=400)
     user = user_serializer.create(user_serializer.validated_data)
+    #send_mail(
+    #        subject="Registration",
+    #        message=f"Thank {user.username} for joining our community",
+    #        from_email=settings.EMAIL_HOST_USER,
+    #        recipient_list=[user.email]
+    #        )
     serializer_response = CompleteUserSerializer(user)
     return Response(serializer_response.data, status=201)
 

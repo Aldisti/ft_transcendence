@@ -33,6 +33,11 @@ class User(AbstractBaseUser):
         db_comment="False when user is banned",
         default=True,
     )
+    verified = models.BooleanField(
+        db_column="verified",
+        db_comment="True when email is verified",
+        default=False,
+    )
 
     USERNAME_FIELD = "username"
     EMAIL_FIELD = "email"

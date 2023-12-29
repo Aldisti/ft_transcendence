@@ -10,6 +10,7 @@ class UserManager(BaseUserManager):
         email = self.normalize_email(email)
         if kwargs.get("role") != Roles.ADMIN:
             kwargs.pop("role", "")
+            kwargs["verified"] = False
         user = self.model(username=username, email=email, **kwargs)
         user.set_password(password)
         user.full_clean()
@@ -18,10 +19,13 @@ class UserManager(BaseUserManager):
 
     def create_superuser(self, username, email, password, **kwargs):
         kwargs.setdefault("active", True)
+        kwargs.setdefault("verified", True)
         kwargs.setdefault("role", Roles.ADMIN)
 
         if not kwargs.get("active"):
             raise ValueError("active must be true")
+        if not kwargs.get("verified"):
+            raise ValueError("verified must be true")
         if not kwargs.get("role") == Roles.ADMIN:
             raise ValueError("admin must have admin role")
         return self.create_user(username, email, password, **kwargs)

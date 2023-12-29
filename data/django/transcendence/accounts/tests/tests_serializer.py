@@ -54,6 +54,7 @@ class UserSerializerTests(TestCase):
         serializer = UserSerializer(user)
         data = self.data
         data["active"] = True
+        data["verified"] = False
         for key, value in serializer.data.items():
             self.assertEqual(value, data[key])
 

@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'accounts',
     'authentication',
+    'email_manager',
     # tmp for testing reasons
     'corsheaders',
 ]
@@ -183,9 +184,14 @@ AUTH_USER_MODEL = "accounts.User"
 
 # tmp for testing reasons
 
-CORS_ALLOWED_ORIGINS = [
-    'http://192.168.137.211:8000',
-]
-
 CORS_ALLOW_ALL_ORIGINS = True
 APPEND_SLASH=False
+
+# email
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = environ['EMAIL_HOST']
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = environ['EMAIL_HOST_USER']
+EMAIL_HOST_PASSWORD = environ['EMAIL_HOST_PASSWORD']
