@@ -70,6 +70,14 @@ class ModelUserTests(TestCase):
         self.user = User.objects.update_user_password(self.user, password=self.password, new_password=self.new_password)
         self.assertTrue(self.user.check_password(self.new_password))
 
+    def test_password_reset(self):
+        # passing blank new password to reset function
+        with self.assertRaises(ValueError):
+            User.objects.update_user_password(self.user, password="")
+        # passing new password to reset function
+        self.user = User.objects.reset_user_password(self.user, password=self.new_password)
+        self.assertTrue(self.user.check_password(self.new_password))
+
     def test_role_update(self):
         # passing invalid role
         with self.assertRaises(ValueError):

@@ -62,7 +62,7 @@ class ListUser(ListAPIView):
     queryset = User.objects.all()
     serializer_class = CompleteUserSerializer
     pagination_class = MyPageNumberPagination
-    #permission_classes = []
+    permission_classes = []
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ["=username", "=email"]
     ordering_filters = ["username", "email"]

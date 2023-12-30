@@ -26,6 +26,19 @@ class UserTokensManger(models.Manager):
         user_tokens.save()
         return user_tokens
 
+    def clear_password_token(self, user_tokens):
+        user_tokens.password_token = ""
+        user_tokens.full_clean()
+        user_tokens.save()
+        return user_tokens
+
+    def generate_password_token(self, user_tokens):
+        token = uuid4()
+        user_tokens.password_token = str(token)
+        user_tokens.full_clean()
+        user_tokens.save()
+        return user_tokens
+
 
 # Create your models here.
 
@@ -40,6 +53,13 @@ class UserTokens(models.Model):
     )
     email_token = models.CharField(
         db_column="email_token",
+        max_length=36,
+        blank=True,
+        default="",
+        validators=[validators.MinLengthValidator(36, message="Too short token")]
+    )
+    password_token = models.CharField(
+        db_column="password_token",
         max_length=36,
         blank=True,
         default="",

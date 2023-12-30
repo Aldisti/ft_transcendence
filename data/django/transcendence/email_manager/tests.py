@@ -43,3 +43,15 @@ class UserTokensTests(TestCase):
         user_tokens = UserTokens.objects.clear_email_token(user_tokens)
         self.assertEqual(user_tokens.email_token, "")
 
+    def test_generate_password_token(self):
+        user_tokens = UserTokens.objects.create(user=self.user)
+        user_tokens = UserTokens.objects.generate_password_token(user_tokens)
+        self.assertEqual(len(user_tokens.password_token), 36)
+        # test if the uuid is well formed
+        UUID(user_tokens.password_token)
+
+    def test_clear_password_token(self):
+        user_tokens = UserTokens.objects.create(user=self.user)
+        user_tokens = UserTokens.objects.generate_password_token(user_tokens)
+        user_tokens = UserTokens.objects.clear_password_token(user_tokens)
+        self.assertEqual(user_tokens.password_token, "")

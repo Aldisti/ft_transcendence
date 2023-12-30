@@ -54,6 +54,14 @@ class UserManager(BaseUserManager):
         user.save()
         return user
 
+    def reset_user_password(self, user, password):
+        if password == "":
+            raise ValueError("invalid new password")
+        user.set_password(password)
+        user.full_clean()
+        user.save()
+        return user
+
     def update_user_role(self, user, role):
         if role != Roles.USER and role != Roles.MOD:
             raise ValueError("Not valid role")
