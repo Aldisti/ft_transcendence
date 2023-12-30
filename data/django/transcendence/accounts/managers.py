@@ -70,6 +70,14 @@ class UserManager(BaseUserManager):
         user.save()
         return user
 
+    def update_user_verified(self, user, verified):
+        if user.role == Roles.ADMIN:
+            raise ValueError("Cannot change admin's verification")
+        user.verified = verified
+        user.full_clean()
+        user.save()
+        return user
+
 
 class UserInfoManager(models.Manager):
     def create(self, user, **kwargs):

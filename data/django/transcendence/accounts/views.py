@@ -9,6 +9,7 @@ from rest_framework import filters
 from accounts.paginations import MyPageNumberPagination
 from accounts.serializers import CompleteUserSerializer
 from accounts.models import User
+from email_manager.email_sender import send_verification_email
 from authentication.permissions import IsActualUser, IsAdmin, IsModerator
 
 # Create your views here.
@@ -21,12 +22,7 @@ def registration(request):
     if not user_serializer.is_valid():
         return Response(status=400)
     user = user_serializer.create(user_serializer.validated_data)
-    #send_mail(
-    #        subject="Registration",
-    #        message=f"Thank {user.username} for joining our community",
-    #        from_email=settings.EMAIL_HOST_USER,
-    #        recipient_list=[user.email]
-    #        )
+    send_verification_email(user=user)
     serializer_response = CompleteUserSerializer(user)
     return Response(serializer_response.data, status=201)
 
@@ -66,6 +62,7 @@ class ListUser(ListAPIView):
     queryset = User.objects.all()
     serializer_class = CompleteUserSerializer
     pagination_class = MyPageNumberPagination
+    #permission_classes = []
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ["=username", "=email"]
     ordering_filters = ["username", "email"]

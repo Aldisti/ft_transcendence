@@ -44,6 +44,7 @@ class User(AbstractBaseUser):
 
     objects = UserManager()
 
+
     class Meta:
         db_table = "user_auth"
 
@@ -90,6 +91,7 @@ class UserInfo(models.Model):
     )
 
     objects = UserInfoManager()
+
 
     class Meta:
         db_table = "user_info"
