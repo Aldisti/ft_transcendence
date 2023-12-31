@@ -12,16 +12,16 @@ class IsRole(BasePermission):
 
     # checks if the user role is present in 'roles'
     def has_permission(self, request, view) -> bool:
-        if request.auth is None or request.user is None:
-            return False
-        return request.user.role in self.roles
+        if request.user.is_authenticated:
+            return request.user.role in self.roles
+        return False
 
 
 class IsActualUser(BasePermission):
     def has_permission(self, request, view) -> bool:
-        if request.auth is None or request.user is None:
-            return False
-        return request.user.username == view.kwargs['username']
+        if request.user.is_authenticated:
+            return request.user.username == view.kwargs['username']
+        return False
 
 
 class IsUser(IsRole):
