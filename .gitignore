@@ -8,6 +8,8 @@ Pipfile*
 **/Pipfile
 **/Pipfile/*
 srcs/docker-compose.yml
+**/migrations
+**/migrations/*
 .*~
 .**~
 
