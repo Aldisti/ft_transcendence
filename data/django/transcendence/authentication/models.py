@@ -45,3 +45,4 @@ class JwtToken(models.Model):
 
     def __str__(self) -> str:
         return f"token: {self.token}, exp: {self.exp}"
+

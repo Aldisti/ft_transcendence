@@ -21,6 +21,8 @@ class ModelUserTests(TestCase):
         cls.invalid_email = "giovannigmail.com"
         cls.password = "prova"
         cls.new_password = "password"
+        cls.invalid_role = "dafds"
+        cls.role = "M"
         cls.user = User.objects.create_user("gpanico", "giovanni@gmail.com", "prova")
         cls.superuser = User.objects.create_superuser("admin", "admin@gmail.com", "prova")
 
@@ -28,6 +30,7 @@ class ModelUserTests(TestCase):
         self.assertEqual(self.user.email, self.email)
         self.assertEqual(self.user.username, self.username)
         self.assertTrue(self.user.active)
+        self.assertFalse(self.user.verified)
         self.assertEqual(self.user.role, Roles.USER)
 
     def test_email_update(self):
@@ -67,6 +70,45 @@ class ModelUserTests(TestCase):
         self.user = User.objects.update_user_password(self.user, password=self.password, new_password=self.new_password)
         self.assertTrue(self.user.check_password(self.new_password))
 
+    def test_password_reset(self):
+        # passing blank new password to reset function
+        with self.assertRaises(ValueError):
+            User.objects.update_user_password(self.user, password="")
+        # passing new password to reset function
+        self.user = User.objects.reset_user_password(self.user, password=self.new_password)
+        self.assertTrue(self.user.check_password(self.new_password))
+
+    def test_role_update(self):
+        # passing invalid role
+        with self.assertRaises(ValueError):
+            User.objects.update_user_role(self.user, role=self.invalid_role)
+        # passing blank role
+        with self.assertRaises(ValueError):
+            User.objects.update_user_role(self.user, role="")
+        # passing the same role
+        old_role = self.user.role
+        user = User.objects.update_user_role(self.user, role=old_role)
+        self.assertEqual(old_role, user.role)
+        # passing valid role
+        user = User.objects.update_user_role(self.user, role=self.role)
+        self.assertEqual(self.role, user.role)
+        # passing the old role
+        user = User.objects.update_user_role(self.user, role=old_role)
+        self.assertEqual(old_role, user.role)
+
+    def test_user_active_update(self):
+        # ban User
+        user = User.objects.update_user_active(self.user, banned=True)
+        self.assertFalse(user.active)
+        # sban User
+        user = User.objects.update_user_active(self.user, banned=False)
+        self.assertTrue(user.active)
+
+    def test_user_verified_update(self):
+        # User verification
+        user = User.objects.update_user_verified(self.user, verified=True)
+        self.assertTrue(user.verified)
+
     def test_invalid_user_creation(self):
         # checking creation without values
         with self.assertRaises(TypeError):
@@ -96,7 +138,18 @@ class ModelUserTests(TestCase):
         self.assertEqual(self.superuser.email, self.super_email)
         self.assertEqual(self.superuser.username, self.super_username)
         self.assertTrue(self.superuser.active)
+        self.assertTrue(self.superuser.verified)
         self.assertEqual(self.superuser.role, Roles.ADMIN)
+
+    def test_superuser_active_update(self):
+        # ban superuser
+        with self.assertRaises(ValueError):
+            superuser = User.objects.update_user_active(self.superuser, banned=True)
+
+    def test_superuser_verified_update(self):
+        # change superuser verification
+        with self.assertRaises(ValueError):
+            superuser = User.objects.update_user_verified(self.superuser, verified=False)
 
     def test_superuser_delete(self):
         self.superuser.delete()

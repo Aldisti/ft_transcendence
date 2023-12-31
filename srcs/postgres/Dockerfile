@@ -10,4 +10,3 @@ RUN touch /var/log/query.log
 RUN chmod 0644 /etc/cron.d/query-cron
 RUN chmod 0754 /usr/local/bin/query.sh
 RUN crontab /etc/cron.d/query-cron
-

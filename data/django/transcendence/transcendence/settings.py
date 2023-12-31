@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'accounts',
     'authentication',
+    'email_manager',
     # tmp for testing reasons
     'corsheaders',
 ]
@@ -65,8 +66,8 @@ MIDDLEWARE = [
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTStatelessUserAuthentication",
-        # "rest_framework_simplejwt.authentication.JWTAuthentication",
+        # "rest_framework_simplejwt.authentication.JWTStatelessUserAuthentication",
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     'DEFAULT_PERMISSION_CLASSES': [
         'authentication.permissions.IsUser',
@@ -83,7 +84,7 @@ REST_FRAMEWORK = {
 # https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=3),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 
     "ALGORITHM": "HS256",
@@ -191,9 +192,14 @@ AUTH_USER_MODEL = "accounts.User"
 
 # tmp for testing reasons
 
-CORS_ALLOWED_ORIGINS = [
-    'http://192.168.137.211:8000',
-]
-
 CORS_ALLOW_ALL_ORIGINS = True
-APPEND_SLASH = False
+APPEND_SLASH=False
+
+# email
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = environ['EMAIL_HOST']
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = environ['EMAIL_HOST_USER']
+EMAIL_HOST_PASSWORD = environ['EMAIL_HOST_PASSWORD']

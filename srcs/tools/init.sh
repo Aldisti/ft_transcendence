@@ -58,4 +58,3 @@ if [ ! -f "$ENV_FILE" ]; then
 	touch "$ENV_FILE"
 fi
 create_env
-
