@@ -67,3 +67,4 @@ class ListUser(ListAPIView):
     search_fields = ["=username", "=email"]
     ordering_filters = ["username", "email"]
     ordering = ["username"]
+

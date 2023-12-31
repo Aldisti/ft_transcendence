@@ -15,6 +15,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     new_password = serializers.CharField(max_length=128, required=False, write_only=True)
 
+
     class Meta:
         model = User
         fields = ["username", "email", "password", "new_password", "active", "verified"]
@@ -82,6 +83,7 @@ class CompleteUserSerializer(serializers.ModelSerializer):
             user = User.objects.get(pk=username)
             updated_user_info = UserInfo.objects.create(user, **user_info_dic)
         return updated_user_info
+
 
     def update_role(self, validated_data):
         user_role = validated_data.pop("role", "")

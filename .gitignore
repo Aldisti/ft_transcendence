@@ -1,9 +1,16 @@
 # our
 *.swp
 **.swp
-./srcs/docker-compose.yml
+.idea
+.vscode
+Pipfile
+Pipfile*
+**/Pipfile
+**/Pipfile/*
+srcs/docker-compose.yml
 .*~
 .**~
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

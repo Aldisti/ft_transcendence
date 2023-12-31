@@ -17,7 +17,7 @@ class IsRole(BasePermission):
     # checks if the user role is present in 'roles'
     def has_permission(self, request, view) -> bool:
         user = request.user
-        if request.auth is None or user is None:
+        if not user.is_authenticated:
             return False
         if not user.active:
             self.message = "This account has been banned"
@@ -31,7 +31,7 @@ class IsRole(BasePermission):
 class IsActualUser(BasePermission):
     def has_permission(self, request, view) -> bool:
         user = request.user
-        if request.auth is None or user is None:
+        if not user.is_authenticated:
             return False
         if not user.active:
             self.message = "This account has been banned"

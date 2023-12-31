@@ -86,7 +86,6 @@ class UserManager(BaseUserManager):
         user.save()
         return user
 
-
 class UserInfoManager(models.Manager):
     def create(self, user, **kwargs):
         kwargs.setdefault("first_name", "")

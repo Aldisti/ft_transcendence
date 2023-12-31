@@ -7,7 +7,7 @@ $(NAME): init
 	@docker compose -f $(COMPOSE) --env-file $(ENV_FILE) up
 
 init:
-	./srcs/tools/init.sh
+	@./srcs/tools/init.sh
 
 all: $(NAME)
 
