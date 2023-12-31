@@ -7,7 +7,8 @@ ENV_FILE="./srcs/.env"
 
 ENV_VARS=("PROJECT_NAME" "DB_NAME" \
 	"DB_USER" "DB_PASSWORD" \
-	"DB_HOST" "DB_PORT" "PGDATA")
+	"DB_HOST" "DB_PORT" "PGDATA" \
+	"EMAIL_HOST" "EMAIL_HOST_USER" "EMAIL_HOST_PASSWORD")
 
 
 create_env() {
@@ -17,6 +18,9 @@ create_env() {
 	DB_HOST="postgres"
 	DB_PORT="5432"
 	PGDATA="/var/lib/postgresql/data/pgdata"
+	EMAIL_HOST="smtp.gmail.com"
+	EMAIL_HOST_USER="transcendence.trinity@gmail.com"
+	EMAIL_HOST_PASSWORD="awmvotojcdvmdwge"
 
 	for var in ${ENV_VARS[@]}; do
 		tmp="$(grep $var= $ENV_FILE | cut -d '=' -f2-)"
