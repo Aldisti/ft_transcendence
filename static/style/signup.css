@@ -5,7 +5,7 @@
 	background-repeat: no-repeat;
 	color: black;
 	width: 60svw;
-	height: 65svh;
+	height: 75svh;
 	display: flex;
 	justify-content: space-between;
 	flex-direction: column;
@@ -16,7 +16,7 @@
 	border: 2px solid black;
 }
 
-h2, h5
+h2, h3
 {
 	margin: 0;
 }
@@ -49,7 +49,7 @@ h2, h5
 
 .retroBtn
 {
-	width: 30%;
+	width: fit-content;
 	height: 100%;
 	border: none;
 	display: flex;
@@ -58,7 +58,7 @@ h2, h5
 	color: white;
 	border: 2px solid black;
 	box-shadow: 7px 7px black;
-	font-size: 20px;
+	font-size: 18px;
 	font-weight: bolder;
 	text-decoration: none;
 }
@@ -87,13 +87,22 @@ h2, h5
 	box-shadow: none;
 }
 
+.f-line
+{
+	display: flex;
+	justify-content: flex-start;
+	align-items: flex-end;
+	gap: 10px;
+}
+
 .line
 {
 	width: 90%;
-	height: 6svh;
+	height: 12svh;
 	display: flex;
-	justify-content: space-between;
-	align-items: center;
+	flex-direction: column;
+	justify-content: space-around;
+	align-items: flex-start;
 	box-shadow: 7px 7px black;
 	background-color: white;
 	border: 2px solid black;
@@ -125,8 +134,8 @@ h2, h5
 
 .passInput
 {
-	width: 65%;
-	height: 100%;
+	width: 100%;
+	height: 50%;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -135,6 +144,7 @@ h2, h5
 .passInput input
 {
 	width: 90% !important;
+	height: 80% !important;
 }
 
 
@@ -172,8 +182,8 @@ h2, h5
 
 .line input
 {
-	width: 70%;
-	height: 80%;
+	width: 100%;
+	height: 50%;
 	border: none;
 	font-size: 25px;
 	border: 2px solid black;
@@ -241,6 +251,7 @@ h2, h5
 
  /* Tooltip container */
  .myTooltip {
+	margin: 3px;
 	padding: 10px;
 	background-color: #000;
 	position: relative;
@@ -287,3 +298,26 @@ h2, h5
 	visibility: visible;
 	opacity: 1;
   } 
+
+ @media only screen and (max-width: 900px){
+	.signupForm
+	{
+		width: 90svw;
+	}
+	.line
+	{
+		width: 98%;
+	}
+	.linebtn
+	{
+		width: 95%;
+	}
+	.retroBtn
+	{
+		font-size: 10px;
+	}
+	input
+	{
+		font-size: 20px;
+	}
+}

@@ -3,6 +3,7 @@ import * as styleH from "/router/styleSheetsHandling.js"
 import Spinner from "/views/Spinner.js"
 
 let fRoute = 0;
+let cloneDocument = document.cloneNode(true);
 
 const Router =()=>{
 	let matechedLocation = 0;

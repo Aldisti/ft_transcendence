@@ -56,3 +56,44 @@
     height: 100% !important;
     background-color: white;
 }
+
+@media screen and (max-width: 900px) {
+    .title
+    {
+        color: white;
+    }
+    .base
+    {
+        height: fit-content;
+    }
+    .text
+    {
+        width: 100%;
+        padding: 15px;
+    }
+    .firstLine, .secondLine
+    {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        background-color: black;
+        width: 100%;
+        height: 95%;
+    }
+    .secondLine
+    {
+        flex-direction: column-reverse;
+    }
+    .text p
+    {
+        width: 100%;
+        color: white !important;
+    }
+    #padle, #ground
+    {
+        width: 100% !important;
+        height: 30% !important;
+        background-color: white;
+    }
+}

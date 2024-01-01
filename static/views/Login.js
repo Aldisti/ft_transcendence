@@ -21,7 +21,12 @@ export default class extends Aview{
             	</div>
             	<div class="line">
                 	<h4>${this.language.login.password}</h4>
-                	<input type="password" class="data retroShade" name="password">
+					<div class="passInp">
+						<input size="small" type="password" class="data retroShade" name="password">
+                    	<div onclick="window.switchVisibility(this)" class="passwordSwitch">
+                    	    <img src="/imgs/openEye.png" alt="">
+                    	</div>
+                	</div>
             	</div>
             	<div class="linebtn">
                 	<a class="retroBtn retroShade btnColor-yellow" href="/signup" data-link>${this.language.login.register}</a>

@@ -73,3 +73,11 @@
     flex-direction: column;
     justify-content: flex-end;
 }
+@media screen and (max-width: 900px) {
+    .game
+    {
+        position: relative;
+        width: 90svw;
+        height: 40svh;
+    }
+}

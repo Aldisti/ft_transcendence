@@ -18,27 +18,33 @@ export default class extends Aview{
             <input class="inputData" type="text" value="mpaterno" id="${this.language.update.username[1]}" disabled="true">
         </div>
         <div class="inputLine">
-            <div class="myTooltip">
-                ?
-                <span id="${this.language.update.firstName[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
+            <div class="f-line">
+                <div class="myTooltip">
+                    ?
+                    <span id="${this.language.update.firstName[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
+                </div> 
+                <label for="${this.language.update.firstName[1]}">${this.language.update.firstName[0]}</label>
             </div> 
-            <label for="${this.language.update.firstName[1]}">${this.language.update.firstName[0]}</label>
             <input class="inputData" type="text" id="${this.language.update.firstName[1]}">
         </div>
         <div class="inputLine">
-            <div class="myTooltip">
-                ?
-                <span id="${this.language.update.lastName[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
+            <div class="f-line">
+                <div class="myTooltip">
+                    ?
+                    <span id="${this.language.update.lastName[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
+                </div> 
+                <label for="${this.language.update.lastName[1]}">${this.language.update.lastName[0]}</label>
             </div> 
-            <label for="${this.language.update.lastName[1]}">${this.language.update.lastName[0]}</label>
             <input class="inputData" type="text" id="${this.language.update.lastName[1]}">
         </div>
         <div class="inputLine">
-            <div class="myTooltip">
-                ?
-                <span id="${this.language.update.birthDate[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
+            <div class="f-line">
+                <div class="myTooltip">
+                    ?
+                    <span id="${this.language.update.birthDate[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
+                </div> 
+                <label for="${this.language.update.birthDate[1]}">${this.language.update.birthDate[0]}</label>
             </div> 
-            <label for="${this.language.update.birthDate[1]}">${this.language.update.birthDate[0]}</label>
             <input class="inputData" type="date" id="${this.language.update.birthDate[1]}">
         </div>
         <button class="submit">Submit!</button>
@@ -50,36 +56,49 @@ export default class extends Aview{
         return `
         <div class="formContainer">
             <div class="inputLine">
-                <div class="myTooltip">
-                    ?
-                    <span id="${this.language.update.oldPassword[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
+                <div class="f-line">
+                    <div class="myTooltip">
+                        ?
+                        <span id="${this.language.update.oldPassword[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
+                    </div> 
+                    <label for="${this.language.update.oldPassword[1]}">${this.language.update.oldPassword[0]}</label>
                 </div> 
-                <label for="${this.language.update.oldPassword[1]}">${this.language.update.oldPassword[0]}</label>
-                <input class="inputData" type="password" id="${this.language.update.oldPassword[1]}">
-                <div onclick="window.switchVisibility(this)" class="passwordSwitch">
-                    <img src="/imgs/openEye.png" alt="">
+                <div class="passInp">
+                    <input size="small" class="inputData" type="password" id="${this.language.update.oldPassword[1]}">
+                    <div onclick="window.switchVisibility(this)" class="passwordSwitch">
+                        <img src="/imgs/openEye.png" alt="">
+                    </div>
+                </div>
+
+            </div>
+            <div class="inputLine">
+                <div class="f-line">
+                    <div class="myTooltip">
+                        ?
+                        <span id="${this.language.update.newPassword[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
+                    </div> 
+                    <label for="${this.language.update.newPassword[1]}">${this.language.update.newPassword[0]}</label>
+                </div> 
+                <div class="passInp">
+                    <input size="small" class="inputData" type="password" id="${this.language.update.newPassword[1]}">
+                    <div onclick="window.switchVisibility(this)" class="passwordSwitch">
+                        <img src="/imgs/openEye.png" alt="">
+                    </div>
                 </div>
             </div>
             <div class="inputLine">
-                <div class="myTooltip">
-                    ?
-                    <span id="${this.language.update.newPassword[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
+                <div class="f-line">
+                    <div class="myTooltip">
+                        ?
+                        <span id="${this.language.update.confirmNewPassword[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
+                    </div> 
+                    <label for="${this.language.update.confirmNewPassword[1]}">${this.language.update.confirmNewPassword[0]}</label>
                 </div> 
-                <label for="${this.language.update.newPassword[1]}">${this.language.update.newPassword[0]}</label>
-                <input class="inputData" type="password" id="${this.language.update.newPassword[1]}">
-                <div onclick="window.switchVisibility(this)" class="passwordSwitch">
-                    <img src="/imgs/openEye.png" alt="">
-                </div>
-            </div>
-            <div class="inputLine">
-                <div class="myTooltip">
-                    ?
-                    <span id="${this.language.update.confirmNewPassword[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
-                </div> 
-                <label for="${this.language.update.confirmNewPassword[1]}">${this.language.update.confirmNewPassword[0]}</label>
-                <input class="inputData" type="password" id="${this.language.update.confirmNewPassword[1]}">
-                <div onclick="window.switchVisibility(this)" class="passwordSwitch">
-                    <img src="/imgs/openEye.png" alt="">
+                <div class="passInp">
+                    <input size="small" class="inputData" type="password" id="${this.language.update.confirmNewPassword[1]}">
+                    <div onclick="window.switchVisibility(this)" class="passwordSwitch">
+                        <img src="/imgs/openEye.png" alt="">
+                    </div>
                 </div>
             </div>
             <div class="errors retroShade">
@@ -99,16 +118,23 @@ export default class extends Aview{
         return `
         <div class="formContainer">
             <div class="inputLine">
-                <div class="myTooltip">
-                    ?
-                    <span id="${this.language.update.email[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
+                <div class="f-line">
+                    <div class="myTooltip">
+                        ?
+                        <span id="${this.language.update.email[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
+                    </div> 
+                    <label for="${this.language.update.email[1]}">${this.language.update.email[0]}</label>
                 </div> 
-                <label for="${this.language.update.email[1]}">${this.language.update.email[0]}</label>
                 <input class="inputData" type="text" id="${this.language.update.email[1]}">
             </div>
             <div class="inputLine">
                 <label for="${this.language.update.password[1]}">${this.language.update.password[0]}</label>
-                <input class="inputData" type="password" id="${this.language.update.password[1]}">
+                <div class="passInp">
+                    <input size="small" class="inputData" type="password" id="${this.language.update.password[1]}">
+                    <div onclick="window.switchVisibility(this)" class="passwordSwitch">
+                        <img src="/imgs/openEye.png" alt="">
+                    </div>
+                </div>
             </div>
             <button class="submit">Submit!</button>
         </div>
@@ -138,6 +164,9 @@ export default class extends Aview{
                     <h4 class="formLink password passwordForm">${this.language.update.passwordTitle}</h4>
                     <h4 class="formLink email emailForm">${this.language.update.emailTitle}</h4>
                     <h4 class="formLink picture pictForm">${this.language.update.pictureTitle}</h4>
+                </div>
+                <div class="handle">
+                >
                 </div>
                 <div class="formMenu">
 
@@ -274,7 +303,28 @@ export default class extends Aview{
         this.highlightFormMenu(this.selectedForm)
         //setting the listener for click that will handle both the form change and the submit event performing the checks depending
         //on the current form
-        document.addEventListener("click", (e)=>{
+        this.listeners.push([document, document.cloneNode(true)]);
+        document.querySelector(".userInfoContainer").addEventListener("click", (e)=>{
+            if (e.target.classList.contains("handle"))
+            {
+                if (document.querySelector(".handle").classList.contains("open"))
+                {
+                    console.log("hey");
+                    document.querySelector(".handle").classList.remove("open");
+                    document.querySelector(".handle").style.transform = `translateX(0)`;
+                    document.querySelector(".handle").innerHTML = ">";
+                    document.querySelector(".leftSide").style.transform = `translateX(-${document.querySelector(".leftSide").clientWidth}px)`;
+                }
+                else
+                {
+                    console.log(`translateX(${document.querySelector(".leftSide").clientWidth}px)`)
+                    document.querySelector(".handle").classList.add("open");
+                    document.querySelector(".handle").style.transform = `translateX(${document.querySelector(".leftSide").clientWidth}px)`;
+                    document.querySelector(".handle").innerHTML = "<";
+                    document.querySelector(".leftSide").style.transform = "translateX(0)";
+                }
+                return ;
+            }
             this.changeForm(e);
             this.highlightFormMenu(this.selectedForm)
             if (e.target.classList.contains("submit"))

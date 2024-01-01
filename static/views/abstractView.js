@@ -6,6 +6,7 @@ export default class Aview{
         this.listenerId     = "";
         this.language = {};
         this.field          = {};
+        this.listeners = [];
     }
     getHtml(){
 
