@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bottone con Link</title>
+</head>
+<body>
+
+    <button onclick="apriLink()">Apri Link</button>
+
+    <script>
+        function apriLink() {
+            // Sostituisci 'URL_DEL_TUO_LINK' con l'URL effettivo che vuoi aprire
+            let linkDaAprire = '{{ api }}?client_id={{ client_id }}&redirect_uri={{ redirect_uri }}&state={{ state }}&response_type={{ response_type }}';
+            window.open(linkDaAprire, '_blank');
+        }
+    </script>
+
+</body>
+</html>

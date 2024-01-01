@@ -11,10 +11,10 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+from os import environ
 
 from datetime import timedelta
 from pytz import timezone
-from os import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,6 +25,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-&1ve_f1=v5e9=n$(u=@dfjxh)a93!&#39qi9f2atxuqn%mafyj'
+
+# HTTPS
+# SECURE_SSL_REDIRECT = True
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -186,7 +191,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Authetication
+# Authentication
 
 AUTH_USER_MODEL = "accounts.User"
 
@@ -203,3 +208,16 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = environ['EMAIL_HOST_USER']
 EMAIL_HOST_PASSWORD = environ['EMAIL_HOST_PASSWORD']
+
+# OAuth2.0
+
+API = "https://api.intra.42.fr/oauth/authorize"
+API_URL = "https://api.intra.42.fr/oauth/token"
+API_INFO = "https://api.intra.42.fr/v2/me"
+
+CLIENT_ID = "u-s4t2ud-eff0cd3d5bfca5625c1acb7d97431e26ec2965c19596f83a6e2428d0870432d0"
+CLIENT_SECRET = "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"
+RESPONSE_TYPE = "code"
+
+REDIRECT_URI = "http://localhost:8000/auth/redirect"
+REDIRECT_HOME = "http://localhost:8000/auth/home"

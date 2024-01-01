@@ -19,12 +19,12 @@ class IsRole(BasePermission):
         user = request.user
         if not user.is_authenticated:
             return False
-        if not user.active:
-            self.message = "This account has been banned"
-            return False
-        if not user.verified:
-            self.message = "Account not yet verified"
-            return False
+        # if not user.active:
+        #     self.message = "This account has been banned"
+        #     return False
+        # if not user.verified:
+        #     self.message = "Account not yet verified"
+        #     return False
         return user.role in self.roles
 
 
@@ -33,12 +33,12 @@ class IsActualUser(BasePermission):
         user = request.user
         if not user.is_authenticated:
             return False
-        if not user.active:
-            self.message = "This account has been banned"
-            return False
-        if not user.verified:
-            self.message = "Account not yet verified"
-            return False
+        # if not user.active:
+        #     self.message = "This account has been banned"
+        #     return False
+        # if not user.verified:
+        #     self.message = "Account not yet verified"
+        #     return False
         return user.username == view.kwargs['username']
 
 
