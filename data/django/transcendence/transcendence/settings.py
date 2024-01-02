@@ -220,4 +220,3 @@ CLIENT_SECRET = "s-s4t2ud-e68aaa1c654087d4081982c6455ca49cacfea1b062cffb8e5ff943
 RESPONSE_TYPE = "code"
 
 REDIRECT_URI = "http://localhost:8000/auth/redirect"
-REDIRECT_HOME = "http://localhost:8000/auth/home"

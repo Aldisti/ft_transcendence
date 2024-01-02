@@ -1,11 +1,3 @@
 
-from random import SystemRandom
-from base64 import b64encode
-
-SPRING = SystemRandom()
-
-
-def generate_token(size: int) -> str:
-    return SPRING.randbytes(size).hex()
-    # encoded = b64encode(SPRING.randbytes(size))
-    # return str(encoded, encoding='utf-8')
+def shrink_dict(dictionary: dict, white_list: list | tuple) -> dict:
+    return {key: dictionary[key] for key in white_list}
