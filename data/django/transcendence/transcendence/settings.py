@@ -198,7 +198,7 @@ AUTH_USER_MODEL = "accounts.User"
 # tmp for testing reasons
 
 CORS_ALLOW_ALL_ORIGINS = True
-APPEND_SLASH=False
+APPEND_SLASH = False
 
 # email
 
@@ -209,14 +209,7 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = environ['EMAIL_HOST_USER']
 EMAIL_HOST_PASSWORD = environ['EMAIL_HOST_PASSWORD']
 
-# OAuth2.0
+# Oauth2
 
-API = "https://api.intra.42.fr/oauth/authorize"
-API_URL = "https://api.intra.42.fr/oauth/token"
-API_INFO = "https://api.intra.42.fr/v2/me"
-
-CLIENT_ID = "u-s4t2ud-eff0cd3d5bfca5625c1acb7d97431e26ec2965c19596f83a6e2428d0870432d0"
-CLIENT_SECRET = "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"
-RESPONSE_TYPE = "code"
-
-REDIRECT_URI = "http://localhost:8000/auth/redirect"
+# CLIENT_ID = environ['CLIENT_ID']
+# CLIENT_SECRET = environ['CLIENT_SECRET']

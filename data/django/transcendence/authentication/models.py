@@ -1,3 +1,4 @@
+from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import Token
 
 from django.db import models
@@ -10,10 +11,10 @@ from datetime import datetime
 class JwtTokenManager(models.Manager):
     def create(self, token: Token, **kwargs):
         if token is None or 'csrf' not in token.payload:
-            raise ValueError("Token cannot be None")
+            raise TokenError("token cannot be None")
         expiry = datetime.fromtimestamp(token['exp'], tz=TZ)
         if expiry < datetime.now(tz=TZ):
-            raise ValueError("Token's already expired")
+            raise TokenError("token already expired")
         jwt_token = self.model(token=token['csrf'], exp=expiry)
         jwt_token.full_clean()
         jwt_token.save()

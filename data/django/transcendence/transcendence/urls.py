@@ -19,5 +19,6 @@ from django.urls import path, include
 urlpatterns = [
     path('', include('accounts.urls')),
     path('auth/', include('authentication.urls')),
-    path('tokens/', include('email_manager.urls'))
+    path('oauth2/', include('oauth2.urls')),
+    path('tokens/', include('email_manager.urls')),
 ]
