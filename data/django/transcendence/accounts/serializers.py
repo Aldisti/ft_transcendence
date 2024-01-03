@@ -4,6 +4,19 @@ from accounts.models import User, UserInfo
 from django.core.validators import RegexValidator, EmailValidator
 
 
+class UploadImageSerializer(serializers.Serializer):
+    username = serializers.CharField(validators=[RegexValidator("^[A-Za-z0-9!?*$~_-]{5,32}$")])
+    image = serializers.FileField(max_length=50)
+
+    def save_image(self, validated_data):
+        username = validated_data["username"]
+        image = validated_data["image"]
+        user = User.objects.get(pk=username)
+        user_info = UserInfo.objects.get(pk=user)
+        user_info = UserInfo.objects.update_info(user_info, picture=image)
+        return user_info
+
+
 class UserInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserInfo
@@ -98,3 +111,5 @@ class CompleteUserSerializer(serializers.ModelSerializer):
         user = User.objects.get(pk=username)
         updated_user = User.objects.update_user_active(user, banned)
         return updated_user
+
+#    def update_image(self, validated_data):

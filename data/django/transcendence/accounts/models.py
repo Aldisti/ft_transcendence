@@ -51,6 +51,9 @@ class User(AbstractBaseUser):
     def __str__(self):
         return f"username: {self.username}, email: {self.email}, role: {self.role}"
 
+def upload_user_picture(instance, filename):
+    return f"{instance.user.username}_{filename}"
+
 
 class UserInfo(models.Model):
     user = models.OneToOneField(
@@ -81,11 +84,10 @@ class UserInfo(models.Model):
         db_column="date_joined",
         auto_now_add=True,
     )
-    picture = models.FilePathField(
+    picture = models.FileField(
         db_column="picture",
         max_length=100,
-        path="/tmp/images",
-        recursive=True,
+        upload_to=upload_user_picture,
         blank=True,
         null=True,
     )

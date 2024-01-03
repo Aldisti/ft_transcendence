@@ -7,17 +7,40 @@ from rest_framework.generics import RetrieveDestroyAPIView, ListAPIView
 from rest_framework.exceptions import APIException
 from rest_framework import filters
 from accounts.paginations import MyPageNumberPagination
-from accounts.serializers import CompleteUserSerializer
+from accounts.serializers import CompleteUserSerializer, UploadImageSerializer
 from accounts.models import User
 from email_manager.email_sender import send_verification_email
 from authentication.permissions import IsActualUser, IsAdmin, IsModerator
 
-# Create your views here.
+import logging
 
+logger = logging.getLogger(__name__)
+
+# Create your views here.
 
 @api_view(['POST'])
 @permission_classes([])
+def upload_profile_picture(request):
+    upload_image_serializer = UploadImageSerializer(data=request.data)
+    if not upload_image_serializer.is_valid():
+        return Response(status=400)
+    upload_image_serializer.save_image(upload_image_serializer.validated_data)
+    return Response({"message": "Profile picture uploaded"}, status=200)
+
+
+@api_view(['GET', 'POST'])
+@permission_classes([])
 def registration(request):
+    #logger.warning("debugger")
+    #logger.warning(f"request.data: {request.data}")
+    #test_serializer = TestSerializer(data=request.data)
+    #if test_serializer.is_valid():
+    #    logger.warning(f"test_serializer.data: {test_serializer.validated_data}")
+    #    test = test_serializer.save()
+    #    logger.warning(f"test.image.path: {test.image.path}")
+    #    return Response(test_serializer.data, status=200)
+    #else:
+    #    return Response(status=500)
     user_serializer = CompleteUserSerializer(data=request.data)
     if not user_serializer.is_valid():
         return Response(status=400)
@@ -62,7 +85,7 @@ class ListUser(ListAPIView):
     queryset = User.objects.all()
     serializer_class = CompleteUserSerializer
     pagination_class = MyPageNumberPagination
-    #permission_classes = []
+    permission_classes = []
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ["=username", "=email"]
     ordering_filters = ["username", "email"]
