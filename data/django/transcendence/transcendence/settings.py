@@ -85,6 +85,8 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_THROTTLE_RATES": {
         "auth": "6/minute",
+        "low_load": "60/minute",
+        "medium_load": "20/minute",
     }
 }
 

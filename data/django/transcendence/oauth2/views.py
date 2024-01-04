@@ -20,16 +20,19 @@ import requests
 
 class IntraCallback(APIView):
     permission_classes = []
-    throttle_scope = 'auth'
+    throttle_scope = 'medium_load'
 
     def get(self, request) -> Response:
         request_body = USER_INFO_DATA.copy()
         request_body['code'] = request.GET.get('code')
         request_body['state'] = request.GET.get('state')
+        if unquote(request_body['state']) != request.COOKIES.get('state_token'):
+            return Response('invalid state, csrf suspected', status=status.HTTP_403_FORBIDDEN)
         api_response = requests.post(INTRA_TOKEN, json=request_body)
         if api_response.status_code != 200:
             return Response(f"api error: {api_response.status_code}", status=500)
         response = Response('received authorization', status=200)
+        response.set_cookie('state_token', 'deleted', max_age=0)
         response.set_cookie(
             key='api_token',
             value=api_response.json()['access_token'],
@@ -43,7 +46,7 @@ class IntraCallback(APIView):
 
 class IntraUrl(APIView):
     permission_classes = []
-    throttle_scope = 'auth'
+    throttle_scope = 'low_load'
 
     def get(self, request) -> Response:
         state = b64encode(SystemRandom().randbytes(64)).decode('utf-8')
@@ -52,7 +55,16 @@ class IntraUrl(APIView):
                f"redirect_uri={quote(INTRA_REDIRECT_URI)}&"
                f"response_type={RESPONSE_TYPE}&"
                f"state={quote(state)}")
-        return Response({'url': url}, status=200)
+        response = Response({'url': url}, status=200)
+        response.set_cookie(
+            key='state_token',
+            value=state,
+            max_age=7200,
+            secure=False,
+            httponly=False,
+            samesite=None,
+        )
+        return response
 
 
 @api_view(['POST'])

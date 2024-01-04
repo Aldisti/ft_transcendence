@@ -1,5 +1,5 @@
 
-from urllib.parse import quote
+from urllib.parse import quote, unquote
 
 # 42Intra APIs
 INTRA_AUTH = "https://api.intra.42.fr/oauth/authorize"
