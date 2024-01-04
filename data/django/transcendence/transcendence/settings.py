@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'accounts',
     'authentication',
     'email_manager',
+    'oauth2',
     # tmp for testing reasons
     'corsheaders',
 ]
@@ -74,14 +75,16 @@ REST_FRAMEWORK = {
         # "rest_framework_simplejwt.authentication.JWTStatelessUserAuthentication",
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
-    'DEFAULT_PERMISSION_CLASSES': [
-        'authentication.permissions.IsUser',
+    "DEFAULT_PERMISSION_CLASSES": [
+        "authentication.permissions.IsUser",
     ],
-    'DEFAULT_THROTTLE_CLASSES': [
-        'rest_framework.throttling.ScopedRateThrottle'
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.ScopedRateThrottle",
+        "authentication.throttles.AnonAuthThrottle",
+        "authentication.throttles.UserAuthThrottle",
     ],
-    'DEFAULT_THROTTLE_RATES': {
-        'auth': '6/minute',
+    "DEFAULT_THROTTLE_RATES": {
+        "auth": "6/minute",
     }
 }
 
@@ -95,8 +98,8 @@ SIMPLE_JWT = {
     "ALGORITHM": "HS256",
     "SIGNING_KEY": SECRET_KEY,
     "VERIFYING_KEY": "",
-    "AUDIENCE": None,
-    "ISSUER": "transcendence-trinity",
+    "AUDIENCE": "localhost",
+    "ISSUER": "localhost",
 
     "AUTH_HEADER_TYPES": ("Bearer",),
     "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
