@@ -208,3 +208,4 @@ EMAIL_HOST_PASSWORD = environ['EMAIL_HOST_PASSWORD']
 
 MEDIA_ROOT = "/etc/develop/images/"
 MEDIA_URL = "/media/"
+FILE_UPLOAD_PERMISSIONS = 0o644

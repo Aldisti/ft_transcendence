@@ -1,7 +1,10 @@
 from django.db import models
 from django.contrib.auth.base_user import BaseUserManager
 from accounts.utils import Roles
+from django.core.files.storage import default_storage
+import logging
 
+logger = logging.getLogger(__name__)
 
 class UserManager(BaseUserManager):
     def create_user(self, username, email, password, **kwargs):
@@ -102,6 +105,15 @@ class UserInfoManager(models.Manager):
         user_info.last_name = kwargs.get("last_name", user_info.last_name)
         user_info.birthdate = kwargs.get("birthdate", user_info.birthdate)
         user_info.picture = kwargs.get("picture", user_info.picture)
+        user_info.full_clean()
+        user_info.save()
+        return user_info
+
+    def update_picture(self, user_info, picture):
+        if user_info.picture.name != "":
+            logger.warning(f"found path: {user_info.picture.path}")
+            default_storage.delete(user_info.picture.path)
+        user_info.picture = picture
         user_info.full_clean()
         user_info.save()
         return user_info

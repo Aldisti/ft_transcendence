@@ -28,19 +28,9 @@ def upload_profile_picture(request):
     return Response({"message": "Profile picture uploaded"}, status=200)
 
 
-@api_view(['GET', 'POST'])
+@api_view(['POST'])
 @permission_classes([])
 def registration(request):
-    #logger.warning("debugger")
-    #logger.warning(f"request.data: {request.data}")
-    #test_serializer = TestSerializer(data=request.data)
-    #if test_serializer.is_valid():
-    #    logger.warning(f"test_serializer.data: {test_serializer.validated_data}")
-    #    test = test_serializer.save()
-    #    logger.warning(f"test.image.path: {test.image.path}")
-    #    return Response(test_serializer.data, status=200)
-    #else:
-    #    return Response(status=500)
     user_serializer = CompleteUserSerializer(data=request.data)
     if not user_serializer.is_valid():
         return Response(status=400)
@@ -76,6 +66,7 @@ def change_active(request):
 
 class RetrieveDestroyUser(RetrieveDestroyAPIView):
     permission_classes = [IsActualUser|IsAdmin]
+    #permission_classes = []
     queryset = User.objects.all()
     serializer_class = CompleteUserSerializer
     lookup_field = "username"
@@ -90,4 +81,3 @@ class ListUser(ListAPIView):
     search_fields = ["=username", "=email"]
     ordering_filters = ["username", "email"]
     ordering = ["username"]
-

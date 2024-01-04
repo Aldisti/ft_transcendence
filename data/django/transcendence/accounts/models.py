@@ -1,11 +1,16 @@
 from django.db import models
 from django.core import validators
+from django.core.files.storage import default_storage
 from django.contrib.auth.base_user import AbstractBaseUser
+from django.dispatch import receiver
 
 from accounts.utils import Roles
 from accounts.validators import validate_birthdate
 from accounts.managers import UserManager, UserInfoManager
 
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Create your models here.
 
@@ -56,6 +61,12 @@ def upload_user_picture(instance, filename):
 
 
 class UserInfo(models.Model):
+
+
+    class Meta:
+        db_table = "user_info"
+
+
     user = models.OneToOneField(
         to=User,
         on_delete=models.CASCADE,
@@ -94,9 +105,12 @@ class UserInfo(models.Model):
 
     objects = UserInfoManager()
 
-
-    class Meta:
-        db_table = "user_info"
+    @receiver(models.signals.pre_delete, sender=User)
+    def image_delete(sender, **kwargs):
+        logger.warning("My image delete at model level")
+        instance = kwargs.get("instance", None)
+        if instance != None and instance.user_info.picture.name != "":
+            default_storage.delete(instance.user_info.picture.path)
 
     def __str__(self):
         return f"user: {self.user.username}, first_name: {self.first_name}, last_name: {self.last_name}, joined:{self.date_joined}"

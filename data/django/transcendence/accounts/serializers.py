@@ -2,6 +2,10 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from accounts.models import User, UserInfo
 from django.core.validators import RegexValidator, EmailValidator
+from django.core.files.storage import default_storage
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class UploadImageSerializer(serializers.Serializer):
@@ -13,7 +17,7 @@ class UploadImageSerializer(serializers.Serializer):
         image = validated_data["image"]
         user = User.objects.get(pk=username)
         user_info = UserInfo.objects.get(pk=user)
-        user_info = UserInfo.objects.update_info(user_info, picture=image)
+        user_info = UserInfo.objects.update_picture(user_info, picture=image)
         return user_info
 
 
