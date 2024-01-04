@@ -20,20 +20,22 @@ class IsRole(BasePermission):
         user = request.user
         if not user.is_authenticated:
             return False
-        # if not user.active:
-        #     self.message = "This account has been banned"
-        #     return False
+        if not user.active:
+            self.message = "This account has been banned"
+            return False
         return user.role in self.roles
 
 
 class IsActualUser(BasePermission):
+    message = "user is not actual user"
+
     def has_permission(self, request, view) -> bool:
         user = request.user
         if not user.is_authenticated:
             return False
-        # if not user.active:
-        #     self.message = "This account has been banned"
-        #     return False
+        if not user.active:
+            self.message = "This account has been banned"
+            return False
         return user.username == view.kwargs['username']
 
 
