@@ -9,7 +9,7 @@ from datetime import datetime
 
 
 class JwtTokenManager(models.Manager):
-    def create(self, token: Token, **kwargs):
+    def create(self, token: Token):
         if token is None or 'csrf' not in token.payload:
             raise TokenError("token cannot be None")
         expiry = datetime.fromtimestamp(token['exp'], tz=TZ)

@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .serializers import MyTokenObtainPairSerializer
+from .serializers import TokenPairSerializer
 from .models import JwtToken
 
 from accounts.models import User
@@ -46,7 +46,7 @@ class LoginView(APIView):
             if user.check_password(user_serializer.validated_data['password']):
                 if not user.active:
                     return Response("user isn't active", status=status.HTTP_400_BAD_REQUEST)
-                refresh_token = MyTokenObtainPairSerializer.get_token(user)
+                refresh_token = TokenPairSerializer.get_token(user)
                 exp = datetime.fromtimestamp(refresh_token['exp'], tz=TZ) - datetime.now(tz=TZ)
                 response = Response({'access_token': str(refresh_token.access_token)}, status=200)
                 response.set_cookie(

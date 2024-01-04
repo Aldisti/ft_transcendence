@@ -1,7 +1,7 @@
 from django.test import TestCase
 
 from authentication.models import JwtToken
-from authentication.serializers import MyTokenObtainPairSerializer
+from authentication.serializers import TokenPairSerializer
 
 from accounts.models import User
 
@@ -19,9 +19,9 @@ class JwtTokenManagerTests(TestCase):
             password="password",
         )
         cls.user = user
-        token = MyTokenObtainPairSerializer.get_token(user)
+        token = TokenPairSerializer.get_token(user)
         cls.token = token
-        invalid_token = MyTokenObtainPairSerializer.get_token(user)
+        invalid_token = TokenPairSerializer.get_token(user)
         invalid_token.set_exp(
             from_time=datetime.now(tz=TZ) - timedelta(days=2),
             lifetime=timedelta(days=1)

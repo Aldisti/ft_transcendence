@@ -5,7 +5,7 @@ from random import SystemRandom
 from base64 import b64encode
 
 
-class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+class TokenPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user) -> Token:
         token = super().get_token(user)
