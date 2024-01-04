@@ -53,18 +53,3 @@ class GetIntraUrlTests(TestCase):
     def test_wrong_link_url_creation(self):
         response = self.client.get('/oauth2/intra/url/wrong_case/')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
-
-class IntraCallbackTests(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.user = User.objects.create_user(
-            'tester',
-            'test@email.com',
-            'password'
-        )
-        cls.factory = APIRequestFactory()
-
-    # def test_link_callback_success(self):
-    #     request = self.factory.get('/oauth2/intra/callback/login/')
-    #     force_authenticate(request, user=self.user)

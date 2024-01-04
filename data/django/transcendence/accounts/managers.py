@@ -7,6 +7,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class UserManager(BaseUserManager):
     def create_user(self, username, email, password, **kwargs):
         if not email:
@@ -89,6 +90,7 @@ class UserManager(BaseUserManager):
         user.full_clean()
         user.save()
         return user
+
 
 class UserInfoManager(models.Manager):
     def create(self, user, **kwargs):

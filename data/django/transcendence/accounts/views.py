@@ -16,6 +16,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 # Create your views here.
 
 @api_view(['POST'])
@@ -39,6 +40,7 @@ def registration(request):
     serializer_response = CompleteUserSerializer(user)
     return Response(serializer_response.data, status=201)
 
+
 @api_view(['PATCH'])
 @permission_classes([IsAdmin])
 def change_role(request):
@@ -49,7 +51,8 @@ def change_role(request):
     if not user_serializer.is_valid():
         return Response(status=400)
     user = user_serializer.update_role(user_serializer.validated_data)
-    return Response({ "username": user.username, "new_role": user.role }, status=200)
+    return Response({"username": user.username, "new_role": user.role}, status=200)
+
 
 @api_view(['PATCH'])
 @permission_classes([IsModerator])
@@ -61,11 +64,11 @@ def change_active(request):
     if not user_serializer.is_valid():
         return Response(status=400)
     user = user_serializer.update_active(user_serializer.validated_data)
-    return Response({ "username": user.username, "banned": not user.active }, status=200)
+    return Response({"username": user.username, "banned": not user.active}, status=200)
 
 
 class RetrieveDestroyUser(RetrieveDestroyAPIView):
-    #permission_classes = [IsActualUser|IsAdmin]
+    # permission_classes = [IsActualUser|IsAdmin]
     permission_classes = []
     queryset = User.objects.all()
     serializer_class = CompleteUserSerializer

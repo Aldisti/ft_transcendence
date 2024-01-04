@@ -12,6 +12,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 # Create your models here.
 
 class User(AbstractBaseUser):
@@ -49,23 +50,20 @@ class User(AbstractBaseUser):
 
     objects = UserManager()
 
-    
     class Meta:
         db_table = "user_auth"
 
     def __str__(self):
         return f"username: {self.username}, email: {self.email}, role: {self.role}"
 
+
 def upload_user_picture(instance, filename):
     return f"{instance.user.username}_{filename}"
 
 
 class UserInfo(models.Model):
-
-
     class Meta:
         db_table = "user_info"
-
 
     user = models.OneToOneField(
         to=User,
