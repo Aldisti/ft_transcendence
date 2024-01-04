@@ -11,10 +11,10 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+from os import environ
 
 from datetime import timedelta
 from pytz import timezone
-from os import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,6 +25,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-&1ve_f1=v5e9=n$(u=@dfjxh)a93!&#39qi9f2atxuqn%mafyj'
+
+# HTTPS
+# SECURE_SSL_REDIRECT = True
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -45,6 +50,7 @@ INSTALLED_APPS = [
     'accounts',
     'authentication',
     'email_manager',
+    'oauth2',
     # tmp for testing reasons
     'corsheaders',
 ]
@@ -69,14 +75,18 @@ REST_FRAMEWORK = {
         # "rest_framework_simplejwt.authentication.JWTStatelessUserAuthentication",
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
-    'DEFAULT_PERMISSION_CLASSES': [
-        'authentication.permissions.IsUser',
+    "DEFAULT_PERMISSION_CLASSES": [
+        "authentication.permissions.IsUser",
     ],
-    'DEFAULT_THROTTLE_CLASSES': [
-        'rest_framework.throttling.ScopedRateThrottle'
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.ScopedRateThrottle",
+        "authentication.throttles.AnonAuthThrottle",
+        "authentication.throttles.UserAuthThrottle",
     ],
-    'DEFAULT_THROTTLE_RATES': {
-        'auth': '6/minute',
+    "DEFAULT_THROTTLE_RATES": {
+        "auth": "6/minute",
+        "low_load": "60/minute",
+        "medium_load": "20/minute",
     }
 }
 
@@ -90,8 +100,8 @@ SIMPLE_JWT = {
     "ALGORITHM": "HS256",
     "SIGNING_KEY": SECRET_KEY,
     "VERIFYING_KEY": "",
-    "AUDIENCE": None,
-    "ISSUER": "transcendence-trinity",
+    "AUDIENCE": "localhost",
+    "ISSUER": "localhost",
 
     "AUTH_HEADER_TYPES": ("Bearer",),
     "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
@@ -188,14 +198,14 @@ DEFAULT_USER_IMAGE = "default.jpeg"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Authetication
+# Authentication
 
 AUTH_USER_MODEL = "accounts.User"
 
 # tmp for testing reasons
 
 CORS_ALLOW_ALL_ORIGINS = True
-APPEND_SLASH=False
+APPEND_SLASH = False
 
 # email
 
@@ -211,3 +221,4 @@ EMAIL_HOST_PASSWORD = environ['EMAIL_HOST_PASSWORD']
 MEDIA_ROOT = "/etc/develop/images/"
 MEDIA_URL = "/media/"
 FILE_UPLOAD_PERMISSIONS = 0o644
+

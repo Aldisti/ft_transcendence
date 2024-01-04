@@ -1,21 +1,14 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.tokens import Token
 
 from random import SystemRandom
 from base64 import b64encode
 
 
-SPRING = SystemRandom()
-
-
-def generate_token() -> str:
-    encoded = b64encode(SPRING.randbytes(24))
-    return str(encoded, encoding='utf-8')
-
-
-class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+class TokenPairSerializer(TokenObtainPairSerializer):
     @classmethod
-    def get_token(cls, user):
+    def get_token(cls, user) -> Token:
         token = super().get_token(user)
         token['role'] = user.role
-        token['csrf'] = generate_token()
+        token['csrf'] = b64encode(SystemRandom().randbytes(24)).decode('utf-8')
         return token
