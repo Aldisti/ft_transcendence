@@ -65,8 +65,8 @@ def change_active(request):
 
 
 class RetrieveDestroyUser(RetrieveDestroyAPIView):
-    permission_classes = [IsActualUser|IsAdmin]
-    #permission_classes = []
+    #permission_classes = [IsActualUser|IsAdmin]
+    permission_classes = []
     queryset = User.objects.all()
     serializer_class = CompleteUserSerializer
     lookup_field = "username"

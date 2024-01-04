@@ -107,6 +107,11 @@ class UserInfo(models.Model):
 
     @receiver(models.signals.pre_delete, sender=User)
     def image_delete(sender, **kwargs):
+        """
+        The on_delete=CASCADE doesn't call the delete function of the related model,
+        but send the pre_delete and post_delete signals.
+        This function catches the pre_delete signal in order to delete the profile image
+        """
         logger.warning("My image delete at model level")
         instance = kwargs.get("instance", None)
         if instance != None and instance.user_info.picture.name != "":

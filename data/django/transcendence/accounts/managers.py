@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.base_user import BaseUserManager
 from accounts.utils import Roles
 from django.core.files.storage import default_storage
+from django.conf import settings
 import logging
 
 logger = logging.getLogger(__name__)
