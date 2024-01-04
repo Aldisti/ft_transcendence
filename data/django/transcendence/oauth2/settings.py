@@ -20,6 +20,7 @@ GOOGLE_CLIENT_SECRET = "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"
 # 42Intra redirect URIs
 INTRA_LOGIN_REDIRECT_URI = "http://localhost:8000/oauth2/intra/login/callback/"
 INTRA_LINK_REDIRECT_URI = "http://localhost:8000/oauth2/intra/link/callback/"
+INTRA_REDIRECT_URI = "http://localhost:8000/oauth2/intra/callback/"
 
 # Google redirect URIs
 GOOGLE_REDIRECT_URI = "http://localhost:8000/oauth2/google/callback/"
@@ -37,7 +38,7 @@ USER_INFO_DATA = {
     'grant_type': GRANT_TYPE,
     'client_id': INTRA_CLIENT_ID,
     'client_secret': INTRA_CLIENT_SECRET,
-    # 'redirect_uri': INTRA_LOGIN_REDIRECT_URI,
+    'redirect_uri': INTRA_REDIRECT_URI,
 }
 
 INTRA_USER_DATA = ['login', 'email', 'first_name', 'last_name']

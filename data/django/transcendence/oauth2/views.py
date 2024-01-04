@@ -1,15 +1,14 @@
-
+from django.core.exceptions import ValidationError
 from rest_framework import status
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, throttle_classes
 from rest_framework.response import Response
 
-from oauth2.info import *
-from oauth2 import requests as rq
+from oauth2.settings import *
 from oauth2.utils import shrink_dict
+from oauth2.models import UserIntra
 
-from authentication.serializers import MyTokenObtainPairSerializer
-
-from accounts.models import User
+from authentication.serializers import TokenPairSerializer as Tokens
+from authentication.throttles import AnonAuthThrottle, UserAuthThrottle
 
 from transcendence.settings import TZ
 
@@ -21,52 +20,78 @@ import requests
 
 @api_view(['GET'])
 @permission_classes([])
-def callback(request):
+@throttle_classes([AnonAuthThrottle])
+def intra_callback(request) -> Response:
     request_body = USER_INFO_DATA.copy()
     request_body['code'] = request.GET.get('code')
     request_body['state'] = request.GET.get('state')
-    # try:
-    #     data = rq.request('POST', API_TOKEN, body=request_body)
-    #     request_headers = {'Authorization': f"Bearer {data.get('access_token')}"}
-    #     data = rq.request('GET', API_USER_INFO, headers=request_headers)
-    # except rq.APIException as e:
-    #     return Response(e.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    api_response = requests.post(API_TOKEN, json=request_body)
+    api_response = requests.post(INTRA_TOKEN, json=request_body)
     if api_response.status_code != 200:
-        return Response(f"api failed {api_response.status_code}",
-                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    request_headers = {'Authorization': f"Bearer {api_response.json().get('access_token')}"}
-    api_response = requests.get(API_USER_INFO, headers=request_headers)
+        return Response(f"api error: {api_response.status_code}", status=500)
+    response = Response('received authorization', status=200)
+    response.set_cookie(
+        key='api_token',
+        value=api_response.json()['access_token'],
+        max_age=api_response.json()['expires_in'],
+        secure=False,
+        httponly=False,
+        samesite=None,
+    )
+    return response
+
+
+@api_view(['GET'])
+@permission_classes([])
+@throttle_classes([AnonAuthThrottle | UserAuthThrottle])
+def get_intra_url(request) -> Response:
+    state = b64encode(SystemRandom().randbytes(64)).decode('utf-8')
+    url = (f"{INTRA_AUTH}?"
+           f"client_id={INTRA_CLIENT_ID}&"
+           f"redirect_uri={quote(INTRA_REDIRECT_URI)}&"
+           f"response_type={RESPONSE_TYPE}&"
+           f"state={quote(state)}")
+    return Response({'url': url}, status=200)
+
+
+@api_view(['POST'])
+def intra_link(request) -> Response:
+    headers = {'Authorization': f"Bearer {request.COOKIES['api_token']}"}
+    api_response = requests.get(INTRA_USER_INFO, headers=headers)
     if api_response.status_code != 200:
-        return Response(f"api failed {api_response.status_code}",
-                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    data = api_response.json()
-    data['username'] = data.pop('login')
-    data = shrink_dict(data, API_USER_DATA)
-    if User.objects.filter(username=data['username']).exists():
-        user = User.objects.get(pk=data['username'])
-        refresh_token = MyTokenObtainPairSerializer.get_token(user)
+        return Response(f"api error: {api_response.status_code}", status=500)
+    # data = shrink_dict(api_response.json(), INTRA_USER_DATA)
+    data = {k: api_response.json()[k] for k in ['login', 'email']}
+    del api_response
+    try:
+        UserIntra.objects.create(user=request.user, name=data['login'], email=data['email'])
+        return Response('user linked', status=200)
+    except ValidationError:
+        return Response('user already linked', status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([])
+def intra_login(request) -> Response:
+    headers = {'Authorization': f"Bearer {request.COOKIES['api_token']}"}
+    api_response = requests.get(INTRA_USER_INFO, headers=headers)
+    if api_response.status_code != 200:
+        return Response(f"api error: {api_response.status_code}", status=500)
+    # data = shrink_dict(api_response.json(), INTRA_USER_DATA)
+    data = {k: api_response.json()[k] for k in ['login', 'email']}
+    del api_response
+    user_intra = UserIntra.objects.get(pk=data['login'], email=data['email'])
+    if user_intra is not None:
+        refresh_token = Tokens.get_token(user_intra.user)
         exp = datetime.fromtimestamp(refresh_token['exp'], tz=TZ) - datetime.now(tz=TZ)
-        response = Response({'access_token': str(refresh_token.access_token)}, status=200)
+        response = Response({'access_token': f"Bearer {str(refresh_token.access_token)}"}, status=200)
+        response.set_cookie('api_token', 'deleted', max_age=0)
         response.set_cookie(
             key='refresh_token',
             value=str(refresh_token),
-            max_age=exp.seconds,
+            max_age=exp,
             secure=False,
             httponly=False,
             samesite=None,
         )
         return response
-    return Response(data, status=200)
-
-
-@api_view(['GET'])
-@permission_classes([])
-def get_url(request):
-    state = b64encode(SystemRandom().randbytes(64)).decode('utf-8')
-    url = (f"{API_AUTH}?"
-           f"client_id={CLIENT_ID}&"
-           f"redirect_uri={quote(REDIRECT_URI)}&"
-           f"response_type={RESPONSE_TYPE}&"
-           f"state={quote(state)}")
-    return Response({'url': url}, status=200)
+    return Response('invalid credentials', status=status.HTTP_400_BAD_REQUEST)
