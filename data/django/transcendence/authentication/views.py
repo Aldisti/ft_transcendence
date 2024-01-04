@@ -57,6 +57,7 @@ class LoginView(APIView):
                     httponly=False,
                     samesite=None,
                 )
+                response.headers["Access-Control-Allow-Credentials"] = "true"
                 return response
         return Response("invalid username or password", status=status.HTTP_400_BAD_REQUEST)
 
