@@ -4,6 +4,7 @@ from accounts import views
 
 urlpatterns = [
     path('register/', views.registration, name="api-register"),
+    path('users/image/upload/', views.upload_profile_picture, name="api-upload"),
     path('users/role/', views.change_role, name="api-change-role"),
     path('users/ban/', views.change_active, name="api-change-active"),
     path('users/', views.ListUser.as_view(), name="user-list"),

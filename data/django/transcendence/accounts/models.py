@@ -1,11 +1,16 @@
 from django.db import models
 from django.core import validators
+from django.core.files.storage import default_storage
 from django.contrib.auth.base_user import AbstractBaseUser
+from django.dispatch import receiver
 
 from accounts.utils import Roles
 from accounts.validators import validate_birthdate
 from accounts.managers import UserManager, UserInfoManager
 
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Create your models here.
 
@@ -51,8 +56,17 @@ class User(AbstractBaseUser):
     def __str__(self):
         return f"username: {self.username}, email: {self.email}, role: {self.role}"
 
+def upload_user_picture(instance, filename):
+    return f"{instance.user.username}_{filename}"
+
 
 class UserInfo(models.Model):
+
+
+    class Meta:
+        db_table = "user_info"
+
+
     user = models.OneToOneField(
         to=User,
         on_delete=models.CASCADE,
@@ -81,20 +95,27 @@ class UserInfo(models.Model):
         db_column="date_joined",
         auto_now_add=True,
     )
-    picture = models.FilePathField(
+    picture = models.FileField(
         db_column="picture",
         max_length=100,
-        path="/tmp/images",
-        recursive=True,
+        upload_to=upload_user_picture,
         blank=True,
         null=True,
     )
 
     objects = UserInfoManager()
 
-
-    class Meta:
-        db_table = "user_info"
+    @receiver(models.signals.pre_delete, sender=User)
+    def image_delete(sender, **kwargs):
+        """
+        The on_delete=CASCADE doesn't call the delete function of the related model,
+        but send the pre_delete and post_delete signals.
+        This function catches the pre_delete signal in order to delete the profile image
+        """
+        logger.warning("My image delete at model level")
+        instance = kwargs.get("instance", None)
+        if instance != None and instance.user_info.picture.name != "":
+            default_storage.delete(instance.user_info.picture.path)
 
     def __str__(self):
         return f"user: {self.user.username}, first_name: {self.first_name}, last_name: {self.last_name}, joined:{self.date_joined}"
