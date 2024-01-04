@@ -1,6 +1,6 @@
 from django.core.exceptions import ValidationError
 from rest_framework import status
-from rest_framework.decorators import api_view, permission_classes, throttle_classes
+from rest_framework.decorators import APIView, api_view, permission_classes, throttle_classes
 from rest_framework.response import Response
 
 from oauth2.settings import *
@@ -18,42 +18,45 @@ from base64 import b64encode
 import requests
 
 
-@api_view(['GET'])
-@permission_classes([])
-@throttle_classes([AnonAuthThrottle])
-def intra_callback(request) -> Response:
-    request_body = USER_INFO_DATA.copy()
-    request_body['code'] = request.GET.get('code')
-    request_body['state'] = request.GET.get('state')
-    api_response = requests.post(INTRA_TOKEN, json=request_body)
-    if api_response.status_code != 200:
-        return Response(f"api error: {api_response.status_code}", status=500)
-    response = Response('received authorization', status=200)
-    response.set_cookie(
-        key='api_token',
-        value=api_response.json()['access_token'],
-        max_age=api_response.json()['expires_in'],
-        secure=False,
-        httponly=False,
-        samesite=None,
-    )
-    return response
+class IntraCallback(APIView):
+    permission_classes = []
+    throttle_scope = 'auth'
+
+    def get(self, request) -> Response:
+        request_body = USER_INFO_DATA.copy()
+        request_body['code'] = request.GET.get('code')
+        request_body['state'] = request.GET.get('state')
+        api_response = requests.post(INTRA_TOKEN, json=request_body)
+        if api_response.status_code != 200:
+            return Response(f"api error: {api_response.status_code}", status=500)
+        response = Response('received authorization', status=200)
+        response.set_cookie(
+            key='api_token',
+            value=api_response.json()['access_token'],
+            max_age=api_response.json()['expires_in'],
+            secure=False,
+            httponly=False,
+            samesite=None,
+        )
+        return response
 
 
-@api_view(['GET'])
-@permission_classes([])
-@throttle_classes([AnonAuthThrottle | UserAuthThrottle])
-def get_intra_url(request) -> Response:
-    state = b64encode(SystemRandom().randbytes(64)).decode('utf-8')
-    url = (f"{INTRA_AUTH}?"
-           f"client_id={INTRA_CLIENT_ID}&"
-           f"redirect_uri={quote(INTRA_REDIRECT_URI)}&"
-           f"response_type={RESPONSE_TYPE}&"
-           f"state={quote(state)}")
-    return Response({'url': url}, status=200)
+class IntraUrl(APIView):
+    permission_classes = []
+    throttle_scope = 'auth'
+
+    def get(self, request) -> Response:
+        state = b64encode(SystemRandom().randbytes(64)).decode('utf-8')
+        url = (f"{INTRA_AUTH}?"
+               f"client_id={INTRA_CLIENT_ID}&"
+               f"redirect_uri={quote(INTRA_REDIRECT_URI)}&"
+               f"response_type={RESPONSE_TYPE}&"
+               f"state={quote(state)}")
+        return Response({'url': url}, status=200)
 
 
 @api_view(['POST'])
+@throttle_classes([UserAuthThrottle])
 def intra_link(request) -> Response:
     headers = {'Authorization': f"Bearer {request.COOKIES['api_token']}"}
     api_response = requests.get(INTRA_USER_INFO, headers=headers)
@@ -71,6 +74,7 @@ def intra_link(request) -> Response:
 
 @api_view(['POST'])
 @permission_classes([])
+@throttle_classes([AnonAuthThrottle])
 def intra_login(request) -> Response:
     headers = {'Authorization': f"Bearer {request.COOKIES['api_token']}"}
     api_response = requests.get(INTRA_USER_INFO, headers=headers)
