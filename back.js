@@ -56,6 +56,12 @@ app.post("/email/check", (req, res)=>{
   res.send();
 })
 
+app.get('/test/logout', (req, res)=>{
+  console.log("ho fatto logout");
+  res.status(200);
+  res.send("ok")
+})
+
 app.get("/users", (req, res)=>{
   console.log("test")
   res.status(200)

@@ -138,12 +138,12 @@ async function checkUsername(username, errors)
         resUsername  = await API.checkForUsernameAvailability(username);
     else
         return ;
-    if (resUsername.status == 404 && username != "" && usernameValidator(username, errors))
+    if (resUsername && username != "" && usernameValidator(username, errors))
     {
         errors[lan.register.username[1]].isNotValid = false;
         errors[lan.register.username[1]].text = "";
     }
-    if (resUsername.status == 200)
+    if (!resUsername)
     {
         errors[lan.register.username[1]].isNotValid = true;
         errors[lan.register.username[1]].text = `${lan.register.username[1]} ${lan.register.flow1Errors[1]}`;
@@ -159,12 +159,12 @@ async function checkEmail(email, errors)
         resEmail  = await API.checkForEmailAvailability(email);
     else
         return ;
-    if (resEmail.status == 404 && email != "" && emailValidator(email, errors))
+    if (resEmail && email != "" && emailValidator(email, errors))
     {
         errors[lan.register.email[1]].isNotValid = false;
         errors[lan.register.email[1]].text = "";
     }
-    if (resEmail.status == 200)
+    if (!resEmail)
     {
         errors[lan.register.email[1]].isNotValid = true;
         errors[lan.register.email[1]].text = `${lan.register.email[1]} ${lan.register.flow1Errors[1]}`;

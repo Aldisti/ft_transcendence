@@ -68,3 +68,30 @@ html, body
     width: 100svw;
     height: 94svh;
 }
+
+.account
+{
+    width: 15%;
+    height: 7svh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.account img
+{
+    width: 5svh;
+    height: 5svh;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+@media screen and (max-width: 900px) {
+    .account
+    {
+        flex-direction: row-reverse;
+        width: fit-content;
+    }
+    
+}

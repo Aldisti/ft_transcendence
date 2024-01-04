@@ -1,25 +1,23 @@
 import * as URL from "/API/URL.js"
 
 export async function checkForUsernameAvailability(username){
-    const res = await fetch(URL.availabilityCheck.USERNAME, {
-        method: "POST",
-        headers:{
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({username: username}),
+    const res = await fetch(`${URL.availabilityCheck.USERNAME}?search=${username}`, {
+        method: "GET",
     })
-    return res;
+    let temp = await res.json()
+    if (temp.count == 0)
+        return (true);
+    return (false)
 }
 
 export async function checkForEmailAvailability(email){
-    const res = await fetch(URL.availabilityCheck.EMAIL, {
-        method: "POST",
-        headers:{
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({email: email}),
+    const res = await fetch(`${URL.availabilityCheck.EMAIL}?search=${email}`, {
+        method: "GET",
     })
-    return res;
+    let temp = await res.json()
+    if (temp.count == 0)
+        return (true);
+    return (false)
 }
 
 export async function login(data)
@@ -30,6 +28,16 @@ export async function login(data)
             "Content-Type": "application/json"
         },
         body: JSON.stringify(data),
+    })
+    let token = await res.json();
+    window.getToken = window.setToken(token.access_token);
+}
+
+export async function refreshToken()
+{
+    const res = await fetch(URL.userAction.REFRESH_TOKEN, {
+        method: "POST",
+        credentials: 'include',
     })
     let token = await res.json();
     window.getToken = window.setToken(token.access_token);
@@ -86,4 +94,28 @@ export async function updateEmail(data)
         body: JSON.stringify(data),
     })
 	return (rest);
+}
+
+export async function logout()
+{
+    const res = await fetch(URL.userAction.LOGOUT, {
+        method: "GET",
+    });
+    if (res.ok)
+        return (true);
+    return (false);
+}
+
+export async function getIntraUrl()
+{
+    const res = await fetch(URL.general.INTRA_URL, {
+        method: "GET",
+    });
+    console.log(res)
+    if (res.ok)
+    {
+        let temp = await res.json();
+        return (temp.url);
+    }
+    return ("");
 }

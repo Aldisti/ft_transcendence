@@ -1,14 +1,20 @@
-let ip = "localhost";
+let ip = "82.53.216.34";
 let port = "8000";
 
 export const availabilityCheck = {
-    USERNAME: `http://${ip}:${port}/username/check`,
-    EMAIL: `http://${ip}:${port}/email/check`,
+    USERNAME: `http://${ip}:${port}/users/`,
+    EMAIL: `http://${ip}:${port}/users/`,
+}
+
+export const general = {
+    INTRA_URL:  `http://${ip}:${port}/oauth2/intra/url/`,
 }
 
 export const userAction = {
+    REFRESH_TOKEN: `http://${ip}:${port}/auth/refresh/`,
     LOGIN:  `http://${ip}:${port}/auth/login/`,
-    REGISTER:  `http://${ip}:${port}/register`,
+    LOGOUT: `http://${ip}:${port}/auth/logout`,
+    REGISTER:  `http://${ip}:${port}/register/`,
     UPDATE_INFO:  `http://${ip}:${port}/register`,
     UPDATE_EMAIL:  `http://${ip}:${port}/register`,
     UPDATE_PASSWORD:  `http://${ip}:${port}/password`,

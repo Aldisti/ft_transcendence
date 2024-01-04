@@ -5,7 +5,8 @@ let language = {
 			name:	"Username: ",
 			password: "Password: ",
 			submit: "Submit!",
-			register: "Register!"
+			register: "Register!",
+			intraLogin: "Login with 42",
 		},
 		register: {
 			register: "Register [1/3]",
@@ -40,6 +41,9 @@ let language = {
 			generalTitle: "change General Info",
 			passwordTitle: "change Password",
 			pictureTitle: "change Profile Picture",
+			logout: "Logout",
+			confirmLogout: "are you sure that you want to perform logout?",
+			logoutError: "something went wrong try again...",
 			
 			firstName:	["First Name:", "first_name"],
 			lastName:	["Last Name:", "last_name"],

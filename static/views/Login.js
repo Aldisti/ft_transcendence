@@ -30,6 +30,7 @@ export default class extends Aview{
             	</div>
             	<div class="linebtn">
                 	<a class="retroBtn retroShade btnColor-yellow" href="/signup" data-link>${this.language.login.register}</a>
+                	<a class="retroBtn intraBtn retroShade btnColor-blue" href="#">${this.language.login.intraLogin}</a>
                 	<button id="loginBtn" class="retroBtn retroShade btnColor-green">${this.language.login.submit}</button>
             	</div>
         	</div>
@@ -37,6 +38,9 @@ export default class extends Aview{
         `
     }
 	setup(){
+		API.getIntraUrl().then((url)=>{
+			document.querySelector(".intraBtn").href = url;
+		})
 		window.addEventListener("click", (e)=>{
 			if (e.target.id == "loginBtn")
 			{

@@ -164,6 +164,7 @@ export default class extends Aview{
                     <h4 class="formLink password passwordForm">${this.language.update.passwordTitle}</h4>
                     <h4 class="formLink email emailForm">${this.language.update.emailTitle}</h4>
                     <h4 class="formLink picture pictForm">${this.language.update.pictureTitle}</h4>
+                    <h4 class="formLink picture logout">${this.language.update.logout}</h4>
                 </div>
                 <div class="handle">
                 >
@@ -280,6 +281,21 @@ export default class extends Aview{
         {
             this.selectedForm = "picture";
             document.querySelector(".formMenu").innerHTML = this.getProfilePictureForm();
+        }
+        
+        //will load the form to change picture
+        else if (e.target.classList.contains("logout"))
+        {
+            this.selectedForm = "logout";
+            if (!confirm(this.language.update.confirmLogout))
+                return ;
+            API.logout().then((res)=>{
+                console.log(res)
+                if (res)
+                    window.location.href = "http://localhost:4200/";
+                else
+                    alert(this.language.update.logoutError);
+            })
         }
     }
 
