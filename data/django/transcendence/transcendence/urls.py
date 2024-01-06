@@ -22,6 +22,7 @@ urlpatterns = [
     path('', include('accounts.urls')),
     path('auth/', include('authentication.urls')),
     path('oauth2/', include('oauth2.urls')),
+    path('2fa/', include('two_factor_auth.urls')),
     path('tokens/', include('email_manager.urls')),
 ]
 

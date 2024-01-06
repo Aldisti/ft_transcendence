@@ -6,12 +6,15 @@ RUN apt install gettext -y
 
 RUN pip install django
 RUN pip install djangorestframework
+# for jwt
 RUN pip install djangorestframework-simplejwt
 # postgres connection
 RUN pip install psycopg
 # for testing reasons
 RUN pip install httpie
 RUN pip install django-cors-headers
+# for two factor authentication
+RUN pip install pyotp
 
 RUN mkdir /etc/develop
 

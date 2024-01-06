@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'authentication',
     'email_manager',
     'oauth2',
+    'two_factor_auth',
     # tmp for testing reasons
     'corsheaders',
 ]
