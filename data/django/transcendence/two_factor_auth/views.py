@@ -146,7 +146,10 @@ def validate_activate(request) -> Response:
             'message': "2fa activation process not started yet"
         }, status=400)
     if not validation_status:
-        return Response(data={'message': 'invalid code'}, status=400)
+        user_tfa = UserTFA.objects.generate_url_token(user_tfa)
+        return Response(
+            data={'message': 'invalid code', 'url_token': user_tfa.url_token},
+            status=400)
     user_tfa = UserTFA.objects.delete_url_token(user_tfa)
     UserTFA.objects.activate(user_tfa)
     return Response(data={'message': '2fa activated'}, status=200)
