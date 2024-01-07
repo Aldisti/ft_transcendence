@@ -12,3 +12,15 @@ class AnonAuthThrottle(AnonRateThrottle):
 
 class UserAuthThrottle(UserRateThrottle):
     scope = 'auth'
+
+
+class HighLoadThrottle(UserRateThrottle):
+    scope = 'high_load'
+
+
+class MediumLoadThrottle(UserRateThrottle):
+    scope = 'medium_load'
+
+
+class LowLoadThrottle(UserRateThrottle):
+    scope = 'low_load'

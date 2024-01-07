@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from two_factor_auth.models import UserTFA
 from .serializers import TokenPairSerializer
 from .models import JwtToken
 
@@ -40,25 +41,34 @@ class LoginView(APIView):
     permission_classes = []
 
     def post(self, request) -> Response:
+        error_response = Response(data={'message': 'invalid username or password'},status=400)
         user_serializer = UserSerializer(data=request.data)
-        if user_serializer.is_valid():
-            user = User.objects.get(pk=user_serializer.validated_data['username'])
-            if user.check_password(user_serializer.validated_data['password']):
-                if not user.active:
-                    return Response("user isn't active", status=status.HTTP_400_BAD_REQUEST)
-                refresh_token = TokenPairSerializer.get_token(user)
-                exp = datetime.fromtimestamp(refresh_token['exp'], tz=TZ) - datetime.now(tz=TZ)
-                response = Response({'access_token': str(refresh_token.access_token)}, status=200)
-                response.set_cookie(
-                    key='refresh_token',
-                    value=str(refresh_token),
-                    max_age=exp.seconds,
-                    secure=False,
-                    httponly=False,
-                    samesite=None,
-                )
-                return response
-        return Response("invalid username or password", status=status.HTTP_400_BAD_REQUEST)
+        if not user_serializer.is_valid():
+            return error_response
+        user = User.objects.get(pk=user_serializer.validated_data['username'])
+        if not user.check_password(user_serializer.validated_data['password']):
+            return error_response
+        if not user.active:
+            return Response({'message': "user isn't active"}, status=400)
+        if user.user_tfa.type in UserTFA.TYPES.values():
+            user_tfa = UserTFA.objects.generate_url_token(user.user_tfa)
+            return Response(data={
+                'message': 'complete 2fa login',
+                'url_token': user_tfa.url_token,
+                '2fa_type': user_tfa.type,
+            }, status=200)
+        refresh_token = TokenPairSerializer.get_token(user)
+        exp = datetime.fromtimestamp(refresh_token['exp'], tz=TZ) - datetime.now(tz=TZ)
+        response = Response({'access_token': str(refresh_token.access_token)}, status=200)
+        response.set_cookie(
+            key='refresh_token',
+            value=str(refresh_token),
+            max_age=exp.seconds,
+            secure=False,
+            httponly=False,
+            samesite=None,
+        )
+        return response
 
 
 class RefreshView(APIView):
