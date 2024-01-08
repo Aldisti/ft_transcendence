@@ -1,3 +1,4 @@
+import Router from "/router/mainRouterFunc.js"
 import * as URL from "/API/URL.js"
 
 export async function checkForUsernameAvailability(username){
@@ -31,6 +32,13 @@ export async function login(data)
     })
     let token = await res.json();
     window.getToken = window.setToken(token.access_token);
+    if (res.ok)
+    {
+        localStorage.setItem("username", data.username);
+        history.pushState(null, null, "/home");
+        Router();
+        window.location.reload();
+    }
 }
 
 export async function refreshToken()
@@ -52,9 +60,17 @@ export async function register(data)
         },
         body: JSON.stringify(data),
     })
-
-    let body = await rest.json()
-    return (body);
+    if (res.ok)
+    {
+        history.pushState(null, null, "/home");
+        Router();
+        return ({});
+    }
+    else
+    {
+        let body = await rest.json()
+        return (body);
+    }
 }
 
 export async function updateInfo(data)
@@ -102,7 +118,10 @@ export async function logout()
         method: "GET",
     });
     if (res.ok)
+    {
+        localStorage.removeItem("username")
         return (true);
+    }
     return (false);
 }
 

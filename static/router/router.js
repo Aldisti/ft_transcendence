@@ -16,7 +16,7 @@ const navigateTo = url => {
 
 // define the behaviour when clicking links making them internal routing
 document.addEventListener("click", (e)=>{
-	if (e.target.id == "timeTravel")
+	if (e.target.id == "timeTravel" || e.target.parentNode.id == "timeTravel")
 	{
 		if (localStorage.getItem("style") == "old")
 			localStorage.setItem("style", "modern")

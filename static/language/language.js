@@ -7,7 +7,7 @@ let language = {
 			games: "Games",
 			changeLanguage: "Change Language",
 			changeStyle: "Change Style",
-			accountMenu: "Account Info"
+			accountMenu: "Account"
 		},
 		login: {
 			login: "Login",
@@ -75,7 +75,7 @@ let language = {
 			games: "Giochi",
 			changeLanguage: "Cambia Lingua",
 			changeStyle: "Cambia Stile",
-			accountMenu: "Informazioni Account"
+			accountMenu: "Account"
 		},
 		login: {
 		  login: "Accesso",

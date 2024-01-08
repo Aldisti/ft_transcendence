@@ -56,6 +56,15 @@ app.post("/email/check", (req, res)=>{
   res.send();
 })
 
+app.post("/auth/login/", (req, res)=>{
+  console.log(req.body)
+  res.json({access_token: "ciaooo"}).status(200).send()
+})
+app.get("/auth/logout/", (req, res)=>{
+
+  res.status(200).send()
+})
+
 app.get('/test/logout', (req, res)=>{
   console.log("ho fatto logout");
   res.status(200);

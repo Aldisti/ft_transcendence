@@ -1,4 +1,4 @@
-let ip = "82.53.216.34";
+let ip = "localhost";
 let port = "8000";
 
 export const availabilityCheck = {

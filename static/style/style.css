@@ -17,7 +17,7 @@
     display: none;
 }
 
-#timeTravel
+#clock
 {
     width: 5svh;
     height: 5svh;
@@ -28,7 +28,7 @@
 
 }
 
-#timeTravel:hover
+#timeTravel:hover > #clock
 {
     transform: rotate(360deg);
     cursor: pointer;
@@ -97,6 +97,11 @@ html, body
     justify-content: space-between;
     align-items: center;
     gap: 10px;
+}
+
+.dropdown-menu li p
+{
+    margin: 0;
 }
 
 @media screen and (max-width: 900px) {

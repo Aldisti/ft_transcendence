@@ -1,7 +1,8 @@
-import * as controls from '/viewScripts/userInfo/updateCheck.js'
+import * as controls from '/viewScripts/userInfo/updateCheck.js';
+import Router from "/router/mainRouterFunc.js"
 import Aview from "/views/abstractView.js";
-import * as API from "/API/APICall.js"
-import sha256 from "/scripts/crypto.js"
+import * as API from "/API/APICall.js";
+import sha256 from "/scripts/crypto.js";
 
 export default class extends Aview{
     constructor(){
@@ -292,7 +293,11 @@ export default class extends Aview{
             API.logout().then((res)=>{
                 console.log(res)
                 if (res)
-                    window.location.href = "http://localhost:4200/";
+                {
+                    history.pushState(null, null, "/home");
+                    Router();
+                    window.location.reload();
+                }
                 else
                     alert(this.language.update.logoutError);
             })
