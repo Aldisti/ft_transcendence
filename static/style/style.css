@@ -28,11 +28,6 @@
 
 }
 
-select
-{
-    font-size: 30px !important;
-}
-
 #timeTravel:hover
 {
     transform: rotate(360deg);
@@ -44,6 +39,7 @@ html, body
     width: 100svw;
     min-height: 100svh;
     margin: 0;
+    position: relative;
 }
 
 .navbar-brand
@@ -71,9 +67,9 @@ html, body
 
 .account
 {
-    width: 15%;
+    width: fit-content;
     height: 7svh;
-    display: flex;
+    display: flex !important;
     justify-content: center;
     align-items: center;
     gap: 10px;
@@ -85,6 +81,22 @@ html, body
     height: 5svh;
     object-fit: cover;
     border-radius: 50%;
+}
+
+.dropdown-menu
+{
+    background-color: black !important;
+}
+
+.dropdown-menu li
+{
+    display: flex;
+    color: white;
+    margin: 10px;
+    white-space: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
 }
 
 @media screen and (max-width: 900px) {
