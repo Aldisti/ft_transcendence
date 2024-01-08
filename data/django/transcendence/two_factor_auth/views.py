@@ -16,7 +16,7 @@ from datetime import datetime
 import pyotp
 
 
-class StatusView(APIView):
+class ManageView(APIView):
     throttle_classes = [LowLoadThrottle]
 
     def get(self, request) -> Response:
