@@ -24,10 +24,13 @@ document.addEventListener("click", (e)=>{
 			localStorage.setItem("style", "old")
 		window.location.reload();
 	}
-	if (e.target.matches("[data-link]"))
+	if (e.target.matches("[data-link]") || e.target.parentNode.matches("[data-link]"))
 	{
 		e.preventDefault();
-		navigateTo(e.target.href);
+		if (e.target.parentNode.matches("[data-link]"))
+			navigateTo(e.target.parentNode.href);
+		else
+			navigateTo(e.target.href);
 	}
 })
 

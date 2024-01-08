@@ -66,12 +66,12 @@ h2, h3
 
 .btnColor-yellow
 {
-	background-color: #ffb703;
+	background-color: var(--bs-warning);
 }
 
 .btnColor-green
 {
-	background-color: #5E794C;
+	background-color: var(--bs-success);
 	color: white;
 	font-size: 20px;
 }
@@ -165,7 +165,7 @@ h2, h3
 .errors
 {
 	width: 90%;
-	background-color: #A22C29;
+	background-color: var(--bs-danger);
 	box-shadow: 7px 7px black;
 	border: 2px solid black;
 	display: flex;

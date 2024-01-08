@@ -73,6 +73,8 @@ html, body
     justify-content: center;
     align-items: center;
     gap: 10px;
+    border-radius: 0px !important;
+    border: 2px solid white !important;
 }
 
 .account img
@@ -80,12 +82,7 @@ html, body
     width: 5svh;
     height: 5svh;
     object-fit: cover;
-    border-radius: 50%;
-}
-
-.dropdown-menu
-{
-    background-color: black !important;
+    border: 2px solid black;
 }
 
 .dropdown-menu li
@@ -97,6 +94,11 @@ html, body
     justify-content: space-between;
     align-items: center;
     gap: 10px;
+}
+
+.account span
+{
+    width: fit-content;
 }
 
 .dropdown-menu li p

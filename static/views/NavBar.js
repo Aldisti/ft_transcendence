@@ -5,7 +5,7 @@ let language = allLanguage[localStorage.getItem("language")];
 document.querySelector("#navbar").innerHTML = `
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark" >
     <div class="container-fluid">
-      <a class="navbar-brand" href="/home" data-link>Trascendence</a>
+      <a class="navbar-brand" href="/home" data-link>TRANSCENDENCE</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -30,7 +30,7 @@ document.querySelector("#navbar").innerHTML = `
             </span>
             <img src="https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg" alt="">
           </button>
-          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
+          <ul class="dropdown-menu dropdown-menu-end bg-dark" aria-labelledby="dropdownMenuButton1">
             <li>
             ${language.navbar.changeLanguage}
               <select name="language" id="languageSwitch">

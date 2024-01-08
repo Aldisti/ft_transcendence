@@ -62,6 +62,7 @@ export async function register(data)
     })
     if (res.ok)
     {
+        localStorage.setItem("username", data.username)
         history.pushState(null, null, "/home");
         Router();
         return ({});

@@ -159,8 +159,8 @@ export default class extends Aview{
     }
     getHtml(){
         return `
-            <div class="userInfoContainer">
-                <div class="leftSide">
+            <div class="userInfoContainer bg-lg">
+                <div class="leftSide bg-dark">
                     <h4 class="formLink info generalForm">${this.language.update.generalTitle}</h4>
                     <h4 class="formLink password passwordForm">${this.language.update.passwordTitle}</h4>
                     <h4 class="formLink email emailForm">${this.language.update.emailTitle}</h4>
@@ -309,7 +309,7 @@ export default class extends Aview{
             el.style.backgroundColor = "#f0ead2";
             el.style.color = "black";
         })
-        document.querySelector(`.${formName}`).style.backgroundColor = "black";
+        document.querySelector(`.${formName}`).style.backgroundColor = "var(--bs-danger)";
         document.querySelector(`.${formName}`).style.color = "white";
     }
 
