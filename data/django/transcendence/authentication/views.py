@@ -54,7 +54,7 @@ class LoginView(APIView):
             user_tfa = UserTFA.objects.generate_url_token(user.user_tfa)
             return Response(data={
                 'message': 'complete 2fa login',
-                'url_token': user_tfa.url_token,
+                'token': user_tfa.token,
                 '2fa_type': user_tfa.type,
             }, status=200)
         refresh_token = TokenPairSerializer.get_token(user)

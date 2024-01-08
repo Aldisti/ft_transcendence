@@ -4,6 +4,7 @@ from rest_framework.response import Response
 
 from django.core.exceptions import ValidationError
 
+from email_manager.models import UserTokens
 from two_factor_auth.models import UserTFA
 
 from authentication.throttles import HighLoadThrottle, MediumLoadThrottle, LowLoadThrottle
@@ -37,9 +38,11 @@ class ManageView(APIView):
             return Response(data={'message': 'invalid tfa_type'}, status=400)
         user_tfa = request.user.user_tfa
         try:
-            UserTFA.objects.activating(user_tfa, type=tfa_type)
+            user_tfa = UserTFA.objects.activating(user_tfa, type=tfa_type)
         except ValidationError as e:
             return Response(data={'message': e.message}, status=400)
+        if user_tfa.type == UserTFA.A_EMAIL:
+            return Response(data={'message': 'email sent'}, status=200)
         uri = (pyotp.totp.TOTP(user_tfa.otp_token)
                .provisioning_uri(name=user_tfa.user.email, issuer_name='Transcendence'))
         return Response({'uri': uri, 'token': user_tfa.otp_token}, status=200)
@@ -67,7 +70,7 @@ class ManageView(APIView):
 @permission_classes([])
 @throttle_classes([HighLoadThrottle])
 def validate_login(request) -> Response:
-    url_token = request.query_params.get('url_token', None)
+    url_token = request.query_params.get('token', None)
     code = request.data.get('code', None)
     if url_token is None or code is None:
         return Response(data={'message': 'invalid token or code'}, status=400)
@@ -84,7 +87,7 @@ def validate_login(request) -> Response:
     if not validation_status:
         user_tfa = UserTFA.objects.generate_url_token(user_tfa)
         return Response(
-            data={'message': 'invalid code', 'url_token': user_tfa.url_token},
+            data={'message': 'invalid code', 'token': user_tfa.url_token},
             status=400)
     user_tfa = UserTFA.objects.delete_url_token(user_tfa)
 
@@ -106,16 +109,16 @@ def validate_login(request) -> Response:
 @permission_classes([])
 @throttle_classes([HighLoadThrottle])
 def validate_recover(request) -> Response:
-    url_token = request.query_params.get('url_token', None)
+    url_token = request.query_params.get('token', None)
     code = request.data.get('code', None)
     if url_token is None or code is None:
         return Response(data={'message': 'invalid token or code'}, status=400)
 
     user_tfa = UserTFA.objects.get(url_token=url_token)
-    if user_tfa.type == UserTFA.SOFTWARE:
+    if user_tfa.type == UserTFA.EMAIL:
         validation_status = (pyotp.TOTP(user_tfa.otp_token, interval=300)
                              .verify(code, for_time=datetime.now(tz=TZ)))
-    elif user_tfa.type == UserTFA.EMAIL:
+    elif user_tfa.type == UserTFA.SOFTWARE:
         validation_status = (pyotp.TOTP(user_tfa.otp_token)
                              .verify(code, for_time=datetime.now(tz=TZ), valid_window=1))
     else:
@@ -123,11 +126,11 @@ def validate_recover(request) -> Response:
     if not validation_status:
         user_tfa = UserTFA.objects.generate_url_token(user_tfa)
         return Response(
-            data={'message': 'invalid code', 'url_token': user_tfa.url_token},
+            data={'message': 'invalid code', 'token': user_tfa.url_token},
             status=400)
     user_tfa = UserTFA.objects.delete_url_token(user_tfa)
-    # TODO make the user change password
-    return Response(data={'message': 'ok'}, status=200)
+    user_tokens = UserTokens.objects.generate_password_token(user_tfa.user.user_tokens)
+    return Response(data={'token': user_tokens.password_token}, status=200)
 
 
 @api_view(['POST'])
@@ -137,7 +140,7 @@ def validate_activate(request) -> Response:
     user_tfa = request.user.user_tfa
     if user_tfa.type == UserTFA.A_EMAIL:
         validation_status = (pyotp.TOTP(user_tfa.otp_token, interval=300)
-                             .verify(code, for_time=datetime.now(tz=TZ)))
+                             .verify(code, for_time=datetime.now(tz=TZ), valid_window=1))
     elif user_tfa.type == UserTFA.A_SOFTWARE:
         validation_status = (pyotp.TOTP(user_tfa.otp_token)
                              .verify(code, for_time=datetime.now(tz=TZ), valid_window=1))
@@ -147,9 +150,7 @@ def validate_activate(request) -> Response:
         }, status=400)
     if not validation_status:
         user_tfa = UserTFA.objects.generate_url_token(user_tfa)
-        return Response(
-            data={'message': 'invalid code', 'url_token': user_tfa.url_token},
-            status=400)
+        return Response(data={'message': 'invalid code'}, status=400)
     user_tfa = UserTFA.objects.delete_url_token(user_tfa)
     UserTFA.objects.activate(user_tfa)
     return Response(data={'message': '2fa activated'}, status=200)
