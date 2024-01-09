@@ -24,6 +24,7 @@ export async function checkForEmailAvailability(email) {
 export async function login(data) {
     const res = await fetch(URL.userAction.LOGIN, {
         method: "POST",
+        credentials: "include",
         headers: {
             "Content-Type": "application/json"
         },
@@ -51,6 +52,7 @@ export async function refreshToken() {
     }
     let token = await res.json();
     localStorage.setItem("token", token.access_token);
+    return (res);
 }
 
 export async function register(data) {
@@ -109,13 +111,12 @@ export async function updateEmail(data) {
 }
 
 export async function logout(recursionProtection) {
-    console.log(window.getToken);
     const res = await fetch(URL.userAction.LOGOUT, {
         method: "GET",
+        credentials: "include",
         headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`
         },
-        credentials: "include"
     });
     if (res.status == 401 && recursionProtection) {
         refreshToken().then(res => {

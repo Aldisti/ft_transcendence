@@ -17,7 +17,11 @@ function generateAccessToken(username) {
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:4200',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true, // Enable credentials (cookies, authorization headers, etc.)
+}));
 
 
 // parse application/json
