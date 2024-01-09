@@ -46,9 +46,7 @@ export default class extends Aview {
                 this.updateField(this.getInput());
                 this.field.password = sha256(this.field.password)
                     // this.field.password = this.field.password //for testing
-                API.login(this.field).then((res) => {
-                    console.log(window.getToken());
-                })
+                API.login(this.field);
             }
         })
         if (localStorage.getItem("style") == "modern")

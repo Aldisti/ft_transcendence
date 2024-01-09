@@ -17,7 +17,10 @@ function generateAccessToken(username) {
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:4200', // Replace with your frontend URL
+    credentials: true, // This will allow credentials like cookies
+  }));
 
 
 // parse application/json
@@ -84,11 +87,11 @@ app.get("/users/", (req, res) => {
     console.log("test")
     res.status(200)
     res.json({
-        results: [{
+        results: [{user_info: {
             first_name: "test",
             last_name: "last test",
             birthdate: "1998-07-07"
-        }]
+        }}]
     });
     // res.json({
     //     first_name: "test",

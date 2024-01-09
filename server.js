@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const jwt = require('jsonwebtoken');
+const cors = require('cors');
 var bodyParser = require('body-parser')
 
 let errors = {
@@ -21,26 +22,16 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 // parse application/json
 app.use(bodyParser.json())
+app.use(cors({
+    origin: 'http://localhost:8000', // Replace with your frontend URL
+    credentials: true, // This will allow credentials like cookies
+  }));
 const PORT = process.env.PORT || 4200;
 
 app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "./index.html"))
 })
 
-app.post("/login", (req, res) => {
-    console.log("hey")
-    console.log(req.body.username);
-    console.log(generateAccessToken(req.body.username))
-    res.cookie('jwt', generateAccessToken("test"), {
-        // Options for the cookie
-        httpOnly: true,
-        maxAge: 3600000, // Expires in 1 hour (in milliseconds)
-        // Other options like secure, domain, path, etc. can be set here
-    });
-    res.json({ "jwt": generateAccessToken(req.body.username) })
-    res.status(200)
-    res.send();
-})
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

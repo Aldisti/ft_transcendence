@@ -12,8 +12,8 @@ export default class extends Aview {
     }
 
     async getGeneralForm() {
-        API.getUserInfo().then(res => {
-            let toReturn = `
+        API.getUserInfo(1).then(res => {
+            document.querySelector(".formMenu").innerHTML = `
                 <div class="formContainer">
                 <div class="inputLine">
                     <label for="${this.language.update.username[1]}">${this.language.update.username[0]}</label>
@@ -51,8 +51,7 @@ export default class extends Aview {
                 </div>
                 <button class="submit">Submit!</button>
                 </div>
-                `
-            return toReturn;
+            `
         })
     }
 
@@ -265,9 +264,7 @@ export default class extends Aview {
         //will load the form to change general user info
         else if (e.target.classList.contains("generalForm")) {
             this.selectedForm = "info";
-            this.getGeneralForm().then(res => {
-                document.querySelector(".formMenu").innerHTML = res;
-            })
+            this.getGeneralForm();
         }
 
         //will load the form to change email
@@ -301,18 +298,22 @@ export default class extends Aview {
     }
 
     setup() {
-        if (localStorage.getItem("style") == "modern")
+        //defining background
+        if (localStorage.getItem("style") == "modern"){
             document.querySelector("#app").style.backgroundImage = "url('https://c4.wallpaperflare.com/wallpaper/105/526/545/blur-gaussian-gradient-multicolor-wallpaper-preview.jpg')";
-        else
+        }
+        else{
             document.querySelector("#app").style.backgroundImage = "url('/imgs/backLogin.png')";
+        }
         document.querySelector("#app").style.backgroundSize = "cover"
         document.querySelector("#app").style.backgroundRepeat = "repeat"
-        this.getGeneralForm().then(res => {
-            document.querySelector(".formMenu").innerHTML = res;
-        })
+
+        //precompiling first form with known info
+        this.getGeneralForm();
+
+        //defining the start menu item that need to be highlighted
         this.highlightFormMenu(this.selectedForm)
-            //setting the listener for click that will handle both the form change and the submit event performing the checks depending
-            //on the current form
+
         this.listeners.push([document, document.cloneNode(true)]);
         document.querySelector(".userInfoContainer").addEventListener("click", (e) => {
             if (e.target.classList.contains("handle")) {

@@ -22,7 +22,7 @@ export async function checkForEmailAvailability(email) {
 }
 
 export async function getUserInfo(recursionProtection) {
-    const res = await fetch(`${URL.general.USER_INFO}?search=${localStorage.getItem("username")}`, {
+    const res = await fetch(`${URL.general.USER_INFO}`, {
         method: "GET",
         headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`
@@ -42,7 +42,7 @@ export async function getUserInfo(recursionProtection) {
     }
     if (res.ok) {
         let jsonBody = await res.json();
-        return (jsonBody.results[0].userInfo);
+        return (jsonBody.results[0].user_info);
     }
     return ({});
 }
@@ -50,7 +50,7 @@ export async function getUserInfo(recursionProtection) {
 export async function login(data) {
     const res = await fetch(URL.userAction.LOGIN, {
         method: "POST",
-        credentials: "include",
+        // credentials: "include",
         headers: {
             "Content-Type": "application/json"
         },
