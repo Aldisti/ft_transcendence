@@ -1,7 +1,7 @@
 import Router from "/router/mainRouterFunc.js"
 import * as URL from "/API/URL.js"
 
-export async function checkForUsernameAvailability(username){
+export async function checkForUsernameAvailability(username) {
     const res = await fetch(`${URL.availabilityCheck.USERNAME}?search=${username}`, {
         method: "GET",
     })
@@ -11,7 +11,21 @@ export async function checkForUsernameAvailability(username){
     return (false)
 }
 
-export async function checkForEmailAvailability(email){
+export async function refreshToken() {
+    const res = fetch(API.REFRESH_TOKEN, {
+        method: "POST",
+        headers: {
+            credentials: "include"
+        }
+    })
+    if (!res.ok) {
+        history.pushState(null, null, "/login");
+        Router();
+        window.location.reload();
+    }
+}
+
+export async function checkForEmailAvailability(email) {
     const res = await fetch(`${URL.availabilityCheck.EMAIL}?search=${email}`, {
         method: "GET",
     })
@@ -21,28 +35,25 @@ export async function checkForEmailAvailability(email){
     return (false)
 }
 
-export async function login(data)
-{
+export async function login(data) {
     const res = await fetch(URL.userAction.LOGIN, {
         method: "POST",
-        headers:{
+        headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(data),
     })
-    let token = await res.json();
-    window.getToken = window.setToken(token.access_token);
-    if (res.ok)
-    {
+    if (res.ok) {
         localStorage.setItem("username", data.username);
         history.pushState(null, null, "/home");
         Router();
         window.location.reload();
     }
+    let token = await res.json();
+    window.getToken = window.setToken(token.access_token);
 }
 
-export async function refreshToken()
-{
+export async function refreshToken() {
     const res = await fetch(URL.userAction.REFRESH_TOKEN, {
         method: "POST",
         credentials: 'include',
@@ -51,34 +62,29 @@ export async function refreshToken()
     window.getToken = window.setToken(token.access_token);
 }
 
-export async function register(data)
-{
+export async function register(data) {
     const rest = await fetch(URL.userAction.REGISTER, {
         method: "POST",
-        headers:{
+        headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(data),
     })
-    if (res.ok)
-    {
+    if (res.ok) {
         localStorage.setItem("username", data.username)
         history.pushState(null, null, "/home");
         Router();
         return ({});
-    }
-    else
-    {
+    } else {
         let body = await rest.json()
         return (body);
     }
 }
 
-export async function updateInfo(data)
-{
+export async function updateInfo(data) {
     const rest = await fetch(URL.userAction.UPDATE_INFO, {
         method: "POST",
-        headers:{
+        headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(data),
@@ -88,52 +94,53 @@ export async function updateInfo(data)
     return (body);
 }
 
-export async function updatePassword(data)
-{
+export async function updatePassword(data) {
     const rest = await fetch(URL.userAction.UPDATE_PASSWORD, {
         method: "POST",
-        headers:{
+        headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(data),
     })
-	return (rest);
+    return (rest);
 }
 
 
-export async function updateEmail(data)
-{
+export async function updateEmail(data) {
     const rest = await fetch(URL.userAction.UPDATE_EMAIL, {
         method: "POST",
-        headers:{
+        headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(data),
     })
-	return (rest);
+    return (rest);
 }
 
-export async function logout()
-{
+export async function logout() {
     const res = await fetch(URL.userAction.LOGOUT, {
         method: "GET",
+        headers: {
+            Authorization: `Bearer ${window}`
+        }
     });
-    if (res.ok)
-    {
+    if (res.status == 401) {
+        refreshToken();
+        logout();
+    }
+    if (res.ok) {
         localStorage.removeItem("username")
         return (true);
     }
     return (false);
 }
 
-export async function getIntraUrl()
-{
+export async function getIntraUrl() {
     const res = await fetch(URL.general.INTRA_URL, {
         method: "GET",
     });
     console.log(res)
-    if (res.ok)
-    {
+    if (res.ok) {
         let temp = await res.json();
         return (temp.url);
     }
