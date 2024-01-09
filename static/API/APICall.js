@@ -89,7 +89,7 @@ export async function register(data) {
         },
         body: JSON.stringify(data),
     })
-    if (res.ok) {
+    if (res.status == 201) {
         localStorage.setItem("username", data.username)
         history.pushState(null, null, "/home");
         Router();
