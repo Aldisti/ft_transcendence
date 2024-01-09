@@ -50,7 +50,7 @@ def password_reset(request):
         return Response({"message": "Token not found"}, status=404)
     password = request.data.get("password", "")
     if password == "":
-        return Respose({"message" "Invalid password"}, status=400)
+        return Response({"message" "Invalid password"}, status=400)
     user = User.objects.reset_user_password(user, password)
     user_tokens = UserTokens.objects.clear_password_token(user_tokens)
     # TODO: redirect to login page

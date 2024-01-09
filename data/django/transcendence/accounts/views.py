@@ -9,6 +9,7 @@ from rest_framework import filters
 from accounts.paginations import MyPageNumberPagination
 from accounts.serializers import CompleteUserSerializer, UploadImageSerializer
 from accounts.models import User
+from accounts.validators import image_validator
 from email_manager.email_sender import send_verification_email
 from authentication.permissions import IsActualUser, IsAdmin, IsModerator
 
@@ -25,13 +26,17 @@ def upload_profile_picture(request):
     upload_image_serializer = UploadImageSerializer(data=request.data)
     if not upload_image_serializer.is_valid():
         return Response(status=400)
-    upload_image_serializer.save_image(upload_image_serializer.validated_data)
+    #upload_image_serializer.save_image(upload_image_serializer.validated_data)
     return Response({"message": "Profile picture uploaded"}, status=200)
 
 
-@api_view(['POST'])
+@api_view(['GET', 'POST'])
 @permission_classes([])
 def registration(request):
+    #file = request.FILES['file']
+    #logger.warning(f"type(file): {type(file)}")
+    #image_validator(file)
+    #return Response(status=200)
     user_serializer = CompleteUserSerializer(data=request.data)
     if not user_serializer.is_valid():
         return Response(status=400)

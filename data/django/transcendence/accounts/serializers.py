@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from accounts.models import User, UserInfo
+from accounts.validators import image_validator
 from django.core.validators import RegexValidator, EmailValidator
 from django.core.files.storage import default_storage
 import logging
@@ -10,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 class UploadImageSerializer(serializers.Serializer):
     username = serializers.CharField(validators=[RegexValidator("^[A-Za-z0-9!?*$~_-]{5,32}$")])
-    image = serializers.FileField(max_length=50)
+    image = serializers.FileField(max_length=50, validators=[image_validator])
 
     def save_image(self, validated_data):
         username = validated_data["username"]

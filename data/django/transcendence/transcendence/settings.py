@@ -222,3 +222,13 @@ MEDIA_ROOT = "/etc/develop/images/"
 MEDIA_URL = "/media/"
 FILE_UPLOAD_PERMISSIONS = 0o644
 
+# validation
+
+MIN_AGE = 14
+
+# images
+
+MAX_SIZE = 1_000_000
+ALLOWED_EXT = ["jpg", "jpeg", "png", "gif"]
+ALLOWED_TYPES = ["jpeg", "png", "gif"]
+FILE_CATEGORY = "image"
