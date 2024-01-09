@@ -17,11 +17,7 @@ function generateAccessToken(username) {
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cors({
-    origin: 'http://localhost:4200',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true, // Enable credentials (cookies, authorization headers, etc.)
-}));
+app.use(cors());
 
 
 // parse application/json
@@ -72,16 +68,26 @@ app.get("/auth/logout/", (req, res) => {
     res.status(200).send()
 })
 
+app.post('/updateInfo/', (req, res) => {
+    console.log(req.body);
+    res.status(200).json({}).send();
+})
+
+
 app.get('/test/logout', (req, res) => {
     console.log("ho fatto logout");
     res.status(200);
     res.send("ok")
 })
 
-app.get("/users", (req, res) => {
+app.get("/users/", (req, res) => {
     console.log("test")
     res.status(200)
-    res.json({ test: "test" });
+    res.json({
+        first_name: "test",
+        last_name: "last test",
+        birthdate: "1998-07-07"
+    });
     res.send();
 })
 

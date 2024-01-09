@@ -11,12 +11,13 @@ export default class extends Aview {
         this.errors = {};
     }
 
-    getGeneralForm() {
+    async getGeneralForm() {
+        let obj = await API.getUserInfo();
         return `
         <div class="formContainer">
         <div class="inputLine">
             <label for="${this.language.update.username[1]}">${this.language.update.username[0]}</label>
-            <input class="inputData" type="text" value="mpaterno" id="${this.language.update.username[1]}" disabled="true">
+            <input class="inputData" type="text" value="${localStorage.getItem("username")}" id="${this.language.update.username[1]}" disabled="true">
         </div>
         <div class="inputLine">
             <div class="f-line">
@@ -26,7 +27,7 @@ export default class extends Aview {
                 </div> 
                 <label for="${this.language.update.firstName[1]}">${this.language.update.firstName[0]}</label>
             </div> 
-            <input class="inputData" type="text" id="${this.language.update.firstName[1]}">
+            <input class="inputData" value="${obj.first_name}" type="text" id="${this.language.update.firstName[1]}">
         </div>
         <div class="inputLine">
             <div class="f-line">
@@ -36,7 +37,7 @@ export default class extends Aview {
                 </div> 
                 <label for="${this.language.update.lastName[1]}">${this.language.update.lastName[0]}</label>
             </div> 
-            <input class="inputData" type="text" id="${this.language.update.lastName[1]}">
+            <input value="${obj.last_name}" class="inputData" type="text" id="${this.language.update.lastName[1]}">
         </div>
         <div class="inputLine">
             <div class="f-line">
@@ -46,7 +47,7 @@ export default class extends Aview {
                 </div> 
                 <label for="${this.language.update.birthDate[1]}">${this.language.update.birthDate[0]}</label>
             </div> 
-            <input class="inputData" type="date" id="${this.language.update.birthDate[1]}">
+            <input value="${obj.birthdate}" class="inputData" type="date" id="${this.language.update.birthDate[1]}">
         </div>
         <button class="submit">Submit!</button>
         </div>
@@ -176,17 +177,6 @@ export default class extends Aview {
             </div>
         `
     }
-
-    prepareInfoForm(form) {
-        let ret = { user_info: {} };
-
-        Object.keys(form).forEach((key) => {
-            ret.user_info[key] = form[key].value;
-        })
-        console.log(ret)
-        return (ret);
-    }
-
     preparePasswordForm(form) {
         console.log(form)
         let ret = {
@@ -209,9 +199,12 @@ export default class extends Aview {
 
         //will perfom check for general user info
         if (this.selectedForm == "info" && controls.checkChangeInfoForm(form, this.errors)) {
-            API.updateInfo(this.prepareInfoForm(form)).then((res) => {
+            API.updateInfo(form, 1).then((res) => {
+                console.log(res);
+                if (res == {})
+                    return;
                 this.errors = res.user_info;
-                controls.checkInfo(form, this.errors)
+                controls.checkChangeInfoForm(form, this.errors);
             })
         }
 
@@ -261,7 +254,9 @@ export default class extends Aview {
         //will load the form to change general user info
         else if (e.target.classList.contains("generalForm")) {
             this.selectedForm = "info";
-            document.querySelector(".formMenu").innerHTML = this.getGeneralForm();
+            this.getGeneralForm().then(res => {
+                document.querySelector(".formMenu").innerHTML = res;
+            })
         }
 
         //will load the form to change email
@@ -301,7 +296,9 @@ export default class extends Aview {
             document.querySelector("#app").style.backgroundImage = "url('/imgs/backLogin.png')";
         document.querySelector("#app").style.backgroundSize = "cover"
         document.querySelector("#app").style.backgroundRepeat = "repeat"
-        document.querySelector(".formMenu").innerHTML = this.getGeneralForm();
+        this.getGeneralForm().then(res => {
+            document.querySelector(".formMenu").innerHTML = res;
+        })
         this.highlightFormMenu(this.selectedForm)
             //setting the listener for click that will handle both the form change and the submit event performing the checks depending
             //on the current form

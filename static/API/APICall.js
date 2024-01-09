@@ -21,6 +21,34 @@ export async function checkForEmailAvailability(email) {
     return (false)
 }
 
+export async function getUserInfo(recursionProtection) {
+    const res = await fetch(`${URL.general.USER_INFO}?search=${localStorage.getItem("username")}`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("username")}`
+        },
+        credentials: "include",
+    })
+    if (res.status == 401 && recursionProtection) {
+        refreshToken().then(res => {
+            if (res.ok) {
+                getUserInfo(0);
+                return;
+            } else {
+                history.pushState(null, null, "/home");
+                Router();
+                window.location.reload();
+            }
+        })
+    }
+    if (res.ok) {
+        let jsonBody = await res.json();
+        console.log(jsonBody)
+        return (jsonBody);
+    }
+    return ({});
+}
+
 export async function login(data) {
     const res = await fetch(URL.userAction.LOGIN, {
         method: "POST",
@@ -74,16 +102,29 @@ export async function register(data) {
     }
 }
 
-export async function updateInfo(data) {
-    const rest = await fetch(URL.userAction.UPDATE_INFO, {
+export async function updateInfo(data, recursionProtection) {
+    const res = await fetch(URL.userAction.UPDATE_INFO, {
         method: "POST",
+        credentials: "include",
         headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "application/json"
         },
         body: JSON.stringify(data),
     })
-
-    let body = await rest.json()
+    if (res.ok) {
+        history.pushState(null, null, "/home");
+        Router();
+        window.location.reload();
+        return ({});
+    }
+    if (res.status == 401 && recursionProtection) {
+        refreshToken().then(res => {
+            if (res.ok)
+                updateInfo(data, 0);
+        })
+    }
+    let body = await res.json()
     return (body);
 }
 

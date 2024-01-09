@@ -8,6 +8,7 @@ export const availabilityCheck = {
 
 export const general = {
     INTRA_URL: `http://${ip}:${port}/oauth2/intra/url/`,
+    USER_INFO: `http://${ip}:${port}/users/`,
 }
 
 export const userAction = {
@@ -15,7 +16,7 @@ export const userAction = {
     LOGIN: `http://${ip}:${port}/auth/login/`,
     LOGOUT: `http://${ip}:${port}/auth/logout/`,
     REGISTER: `http://${ip}:${port}/register/`,
-    UPDATE_INFO: `http://${ip}:${port}/register`,
+    UPDATE_INFO: `http://${ip}:${port}/users/info/update/`,
     UPDATE_EMAIL: `http://${ip}:${port}/register`,
     UPDATE_PASSWORD: `http://${ip}:${port}/password`,
 
