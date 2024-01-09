@@ -74,11 +74,10 @@ def intra_link(request) -> Response:
     api_response = requests.get(INTRA_USER_INFO, headers=headers)
     if api_response.status_code != 200:
         return Response(f"api error: {api_response.status_code}", status=500)
-    # data = shrink_dict(api_response.json(), INTRA_USER_DATA)
-    data = {k: api_response.json()[k] for k in ['login', 'email']}
+    name, email = api_response.json()['login'], api_response.json()['email']
     del api_response
     try:
-        UserIntra.objects.create(user=request.user, name=data['login'], email=data['email'])
+        UserIntra.objects.create(user=request.user, name=name, email=email)
         return Response('user linked', status=200)
     except ValidationError:
         return Response('user already linked', status=status.HTTP_400_BAD_REQUEST)
@@ -92,10 +91,9 @@ def intra_login(request) -> Response:
     api_response = requests.get(INTRA_USER_INFO, headers=headers)
     if api_response.status_code != 200:
         return Response(f"api error: {api_response.status_code}", status=500)
-    # data = shrink_dict(api_response.json(), INTRA_USER_DATA)
-    data = {k: api_response.json()[k] for k in ['login', 'email']}
+    name, email = api_response.json()['login'], api_response.json()['email']
     del api_response
-    user_intra = UserIntra.objects.get(pk=data['login'], email=data['email'])
+    user_intra = UserIntra.objects.get(pk=name, email=email)
     if user_intra is not None:
         refresh_token = Tokens.get_token(user_intra.user)
         exp = datetime.fromtimestamp(refresh_token['exp'], tz=TZ) - datetime.now(tz=TZ)

@@ -1,10 +1,15 @@
 from uuid import UUID, uuid4
+
+from pyotp import TOTP
+
 from accounts.models import User
 from email_manager.models import UserTokens
 from django.core.mail import send_mail
 from django.conf import settings
 from django.urls import reverse
 from django.template import loader
+
+from two_factor_auth.models import UserTFA
 
 
 def send_verification_email(user: User):
@@ -80,4 +85,32 @@ def send_password_email(user: User):
         html_message=email_message,
         from_email=settings.EMAIL_HOST_USER,
         recipient_list=[user.email]
+    )
+
+
+def send_tfa_code_email(user_tfa: UserTFA) -> None:
+    # generate message
+    title = "OTP code"
+    head = f"Dear {user_tfa.user.username},\nthis is your otp code\n"
+    body = head + "Please insert it in 5 minutes"
+    code = TOTP(user_tfa.otp_token, interval=300).now()
+    company = "Trinity"
+
+    # email_message = generate_email(title, body, url, company)
+    template = loader.get_template("otp_email.html")
+    context = {
+        "title": title,
+        "body": body,
+        "code": code,
+        "company": company,
+    }
+    email_message = template.render(context)
+
+    # send mail
+    send_mail(
+        subject="OTP code",
+        message="",
+        html_message=email_message,
+        from_email=settings.EMAIL_HOST_USER,
+        recipient_list=[user_tfa.user.email]
     )

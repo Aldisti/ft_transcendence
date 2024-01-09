@@ -3,10 +3,9 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.exceptions import APIException
 from email_manager.models import UserTokens
-from email_manager.email_sender import send_password_email
+from email_manager.email_sender import send_password_email, send_tfa_code_email
 from accounts.models import User
-
-# Create your views here.
+from two_factor_auth.models import UserTFA
 
 
 @api_view(['GET'])
@@ -25,6 +24,7 @@ def email_token_validation(request):
     # TODO: redirect to login page
     return Response(status=200)
 
+
 @api_view(['POST'])
 @permission_classes([])
 def password_recovery(request):
@@ -34,8 +34,13 @@ def password_recovery(request):
         user = User.objects.get(pk=username)
     except User.DoesNotExist:
         return Response({"message": "User not found"}, status=404)
+    user_tfa = user.user_tfa
+    if user_tfa.type in UserTFA.TYPES.values():
+        user_tfa = UserTFA.objects.generate_url_token(user_tfa)
+        return Response(data={'token': user_tfa.url_token}, status=200)
     send_password_email(user)
     return Response(status=200)
+
 
 @api_view(['POST'])
 @permission_classes([])
@@ -55,3 +60,17 @@ def password_reset(request):
     user_tokens = UserTokens.objects.clear_password_token(user_tokens)
     # TODO: redirect to login page
     return Response(status=200)
+
+
+@api_view(['GET'])
+@permission_classes([])
+def send_otp_code(request) -> Response:
+    if request.user is not None:
+        user_tfa = request.user.user_tfa
+    else:
+        url_token = request.query_params.get("token")
+        user_tfa = UserTFA.objects.get(url_token=url_token)
+    if user_tfa.type not in UserTFA.TYPES.keys() and user_tfa.type not in UserTFA.TYPES.values():
+        return Response(data={'message': 'user 2fa not active'}, status=400)
+    send_tfa_code_email(user_tfa)
+    return Response(data={'message': 'ok'}, status=200)

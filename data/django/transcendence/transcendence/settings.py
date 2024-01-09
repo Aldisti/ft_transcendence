@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'authentication',
     'email_manager',
     'oauth2',
+    'two_factor_auth',
     # tmp for testing reasons
     'corsheaders',
 ]
@@ -84,10 +85,11 @@ REST_FRAMEWORK = {
         "authentication.throttles.UserAuthThrottle",
     ],
     "DEFAULT_THROTTLE_RATES": {
-        "auth": "6/minute",
+        "auth": "30/minute",
+        "high_load": "10/minute",
+        "medium_load": "30/minute",
         "low_load": "60/minute",
-        "medium_load": "20/minute",
-    }
+}
 }
 
 # Django SimpleJWT
