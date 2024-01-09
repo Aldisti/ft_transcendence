@@ -113,7 +113,7 @@ class UserInfoManager(models.Manager):
         return user_info
 
     def update_picture(self, user_info, picture):
-        if user_info.picture.name != "":
+        if user_info.picture.__str__() != "":
             logger.warning(f"found path: {user_info.picture.path}")
             default_storage.delete(user_info.picture.path)
         user_info.picture = picture
