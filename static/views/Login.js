@@ -1,16 +1,16 @@
 import Aview from "/views/abstractView.js";
 import language from "/language/language.js";
-import * as API from"/API/APICall.js"
+import * as API from "/API/APICall.js"
 import sha256 from "/scripts/crypto.js"
 
-export default class extends Aview{
-    constructor(){
+export default class extends Aview {
+    constructor() {
         super();
-		this.needListener	= true;
-		this.listenerId		= "loginBtn";
-		this.field			= {};
+        this.needListener = true;
+        this.listenerId = "loginBtn";
+        this.field = {};
     }
-    getHtml(){
+    getHtml() {
         return `
 		<div class="base">
         	<div class="loginForm">
@@ -37,27 +37,26 @@ export default class extends Aview{
    		</div>
         `
     }
-	setup(){
-		API.getIntraUrl().then((url)=>{
-			document.querySelector(".intraBtn").href = url;
-		})
-		window.addEventListener("click", (e)=>{
-			if (e.target.id == "loginBtn")
-			{
-				this.updateField(this.getInput());
-				// this.field.password = sha256(this.field.password)
-				this.field.password = this.field.password//for testing
-				API.login(this.field).then((res)=>{
-					console.log(window.getToken());
-				})
-			}
-		})
-		if (localStorage.getItem("style") == "modern")
-			document.querySelector("#app").style.backgroundImage = "url('https://c4.wallpaperflare.com/wallpaper/105/526/545/blur-gaussian-gradient-multicolor-wallpaper-preview.jpg')";
-		else
-			document.querySelector("#app").style.backgroundImage = "url('/imgs/backLogin.png')";
-		document.querySelector("#app").style.backgroundSize = "cover"
-		document.querySelector("#app").style.backgroundRepeat = "repeat"
-	}
-	
+    setup() {
+        API.getIntraUrl().then((url) => {
+            document.querySelector(".intraBtn").href = url;
+        })
+        window.addEventListener("click", (e) => {
+            if (e.target.id == "loginBtn") {
+                this.updateField(this.getInput());
+                this.field.password = sha256(this.field.password)
+                    // this.field.password = this.field.password //for testing
+                API.login(this.field).then((res) => {
+                    console.log(window.getToken());
+                })
+            }
+        })
+        if (localStorage.getItem("style") == "modern")
+            document.querySelector("#app").style.backgroundImage = "url('https://c4.wallpaperflare.com/wallpaper/105/526/545/blur-gaussian-gradient-multicolor-wallpaper-preview.jpg')";
+        else
+            document.querySelector("#app").style.backgroundImage = "url('/imgs/backLogin.png')";
+        document.querySelector("#app").style.backgroundSize = "cover"
+        document.querySelector("#app").style.backgroundRepeat = "repeat"
+    }
+
 }

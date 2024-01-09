@@ -108,23 +108,31 @@ export async function updateEmail(data) {
     return (rest);
 }
 
-export async function logout() {
+export async function logout(recursionProtection) {
     console.log(window.getToken);
     const res = await fetch(URL.userAction.LOGOUT, {
         method: "GET",
         headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`
-        }
+        },
+        credentials: "include"
     });
-    if (res.status == 401) {
-        refreshToken();
-        logout();
+    if (res.status == 401 && recursionProtection) {
+        refreshToken().then(res => {
+            if (res.ok)
+                logout(0);
+        })
+        return;
     }
     if (res.ok) {
-        localStorage.removeItem("username")
-        return (true);
+        localStorage.removeItem("username");
+        history.pushState(null, null, "/home");
+        Router();
+        window.location.reload();
+        return;
     }
-    return (false);
+    alert("Something went wrong retry...");
+    return;
 }
 
 export async function getIntraUrl() {

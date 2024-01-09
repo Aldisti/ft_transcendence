@@ -4,14 +4,14 @@ import Aview from "/views/abstractView.js";
 import * as API from "/API/APICall.js";
 import sha256 from "/scripts/crypto.js";
 
-export default class extends Aview{
-    constructor(){
+export default class extends Aview {
+    constructor() {
         super();
         this.selectedForm = "info"
         this.errors = {};
     }
 
-    getGeneralForm(){
+    getGeneralForm() {
         return `
         <div class="formContainer">
         <div class="inputLine">
@@ -53,7 +53,7 @@ export default class extends Aview{
         `
     }
 
-    getPasswordForm(){
+    getPasswordForm() {
         return `
         <div class="formContainer">
             <div class="inputLine">
@@ -114,8 +114,8 @@ export default class extends Aview{
             <button class="submit">Submit!</button>
             </div>
         `
-    } 
-    getEmailForm(){
+    }
+    getEmailForm() {
         return `
         <div class="formContainer">
             <div class="inputLine">
@@ -141,7 +141,7 @@ export default class extends Aview{
         </div>
         `
     }
-    getProfilePictureForm(){
+    getProfilePictureForm() {
         return `
         <div class="formContainer">
             <div class="imageForm">
@@ -155,9 +155,9 @@ export default class extends Aview{
             </div>
             <button class="submit">Submit!</button>
             </div>
-        ` 
+        `
     }
-    getHtml(){
+    getHtml() {
         return `
             <div class="userInfoContainer bg-lg">
                 <div class="leftSide bg-dark">
@@ -177,17 +177,17 @@ export default class extends Aview{
         `
     }
 
-    prepareInfoForm(form){
-        let ret = {user_info:{}};
+    prepareInfoForm(form) {
+        let ret = { user_info: {} };
 
-        Object.keys(form).forEach((key)=>{
+        Object.keys(form).forEach((key) => {
             ret.user_info[key] = form[key].value;
         })
         console.log(ret)
         return (ret);
     }
 
-    preparePasswordForm(form){
+    preparePasswordForm(form) {
         console.log(form)
         let ret = {
             [this.language.update.oldPassword[1]]: sha256(form[this.language.update.oldPassword[1]].value),
@@ -196,7 +196,7 @@ export default class extends Aview{
         return (ret);
     }
 
-    prepareEmailForm(form){
+    prepareEmailForm(form) {
         let ret = {
             [this.language.update.email[1]]: form[this.language.update.email[1]].value,
             [this.language.update.password[1]]: sha256(form[this.language.update.password[1]].value),
@@ -204,46 +204,42 @@ export default class extends Aview{
         return (ret);
     }
 
-    async performChecksAndSubmit(form){
+    async performChecksAndSubmit(form) {
         let title = document.querySelector(".title");
 
         //will perfom check for general user info
-        if (this.selectedForm == "info" && controls.checkChangeInfoForm(form, this.errors))
-        {
-            API.updateInfo(this.prepareInfoForm(form)).then((res)=>{
+        if (this.selectedForm == "info" && controls.checkChangeInfoForm(form, this.errors)) {
+            API.updateInfo(this.prepareInfoForm(form)).then((res) => {
                 this.errors = res.user_info;
                 controls.checkInfo(form, this.errors)
             })
         }
 
         //will perfom check for email
-        if (this.selectedForm == "email"&& await controls.checkChangeEmailForm(form, this.errors))
-        {
-            API.updateEmail(this.prepareEmailForm(form)).then((res)=>{
-  
+        if (this.selectedForm == "email" && await controls.checkChangeEmailForm(form, this.errors)) {
+            API.updateEmail(this.prepareEmailForm(form)).then((res) => {
+
 
             })
         }
 
         //will perfom check for password
-        if (this.selectedForm == "password" && controls.checkChangePasswordForm(form, this.errors))
-        {
-            API.updatePassword(this.preparePasswordForm(form)).then((res)=>{
-                if (!res.ok)
-                {
+        if (this.selectedForm == "password" && controls.checkChangePasswordForm(form, this.errors)) {
+            API.updatePassword(this.preparePasswordForm(form)).then((res) => {
+                if (!res.ok) {
                     document.querySelector(`#${this.language.update.oldPassword[1]}-tooltip`).innerHTML = this.language.update.passwordErrors[0];
                     document.querySelectorAll("input")[0].style.backgroundColor = "#A22C29";
                     document.querySelectorAll("input")[0].style.color = "white"
                 }
             });
         }
-        
+
         //will perfom check for picture
         if (this.selectedForm == "picture")
             console.log("picture")
     }
 
-    collectData(){
+    collectData() {
         let values = document.querySelectorAll(".inputData");
         let form = {};
         this.errors = {};
@@ -253,59 +249,44 @@ export default class extends Aview{
         return (form);
     }
 
-    changeForm(e){
-        this.errors = {newPassword: "test"};
+    changeForm(e) {
+        this.errors = { newPassword: "test" };
 
         //will load the form to change password
-        if (e.target.classList.contains("passwordForm"))
-        {
+        if (e.target.classList.contains("passwordForm")) {
             this.selectedForm = "password";
             document.querySelector(".formMenu").innerHTML = this.getPasswordForm();
         }
 
         //will load the form to change general user info
-        else if (e.target.classList.contains("generalForm"))
-        {
+        else if (e.target.classList.contains("generalForm")) {
             this.selectedForm = "info";
             document.querySelector(".formMenu").innerHTML = this.getGeneralForm();
         }
 
         //will load the form to change email
-        else if (e.target.classList.contains("emailForm"))
-        {
+        else if (e.target.classList.contains("emailForm")) {
             this.selectedForm = "email";
             document.querySelector(".formMenu").innerHTML = this.getEmailForm();
         }
 
         //will load the form to change picture
-        else if (e.target.classList.contains("pictForm"))
-        {
+        else if (e.target.classList.contains("pictForm")) {
             this.selectedForm = "picture";
             document.querySelector(".formMenu").innerHTML = this.getProfilePictureForm();
         }
-        
+
         //will load the form to change picture
-        else if (e.target.classList.contains("logout"))
-        {
+        else if (e.target.classList.contains("logout")) {
             this.selectedForm = "logout";
             if (!confirm(this.language.update.confirmLogout))
-                return ;
-            API.logout().then((res)=>{
-                console.log(res)
-                if (res)
-                {
-                    history.pushState(null, null, "/home");
-                    Router();
-                    window.location.reload();
-                }
-                else
-                    alert(this.language.update.logoutError);
-            })
+                return;
+            API.logout(1)
         }
     }
 
-    highlightFormMenu(formName){
-        document.querySelectorAll(".formLink").forEach(el=>{
+    highlightFormMenu(formName) {
+        document.querySelectorAll(".formLink").forEach(el => {
             el.style.backgroundColor = "#f0ead2";
             el.style.color = "black";
         })
@@ -313,38 +294,34 @@ export default class extends Aview{
         document.querySelector(`.${formName}`).style.color = "white";
     }
 
-    setup(){
+    setup() {
         if (localStorage.getItem("style") == "modern")
             document.querySelector("#app").style.backgroundImage = "url('https://c4.wallpaperflare.com/wallpaper/105/526/545/blur-gaussian-gradient-multicolor-wallpaper-preview.jpg')";
         else
-        	document.querySelector("#app").style.backgroundImage = "url('/imgs/backLogin.png')";
+            document.querySelector("#app").style.backgroundImage = "url('/imgs/backLogin.png')";
         document.querySelector("#app").style.backgroundSize = "cover"
         document.querySelector("#app").style.backgroundRepeat = "repeat"
         document.querySelector(".formMenu").innerHTML = this.getGeneralForm();
         this.highlightFormMenu(this.selectedForm)
-        //setting the listener for click that will handle both the form change and the submit event performing the checks depending
-        //on the current form
+            //setting the listener for click that will handle both the form change and the submit event performing the checks depending
+            //on the current form
         this.listeners.push([document, document.cloneNode(true)]);
-        document.querySelector(".userInfoContainer").addEventListener("click", (e)=>{
-            if (e.target.classList.contains("handle"))
-            {
-                if (document.querySelector(".handle").classList.contains("open"))
-                {
+        document.querySelector(".userInfoContainer").addEventListener("click", (e) => {
+            if (e.target.classList.contains("handle")) {
+                if (document.querySelector(".handle").classList.contains("open")) {
                     console.log("hey");
                     document.querySelector(".handle").classList.remove("open");
                     document.querySelector(".handle").style.transform = `translateX(0)`;
                     document.querySelector(".handle").innerHTML = ">";
                     document.querySelector(".leftSide").style.transform = `translateX(-${document.querySelector(".leftSide").clientWidth}px)`;
-                }
-                else
-                {
+                } else {
                     console.log(`translateX(${document.querySelector(".leftSide").clientWidth}px)`)
                     document.querySelector(".handle").classList.add("open");
                     document.querySelector(".handle").style.transform = `translateX(${document.querySelector(".leftSide").clientWidth}px)`;
                     document.querySelector(".handle").innerHTML = "<";
                     document.querySelector(".leftSide").style.transform = "translateX(0)";
                 }
-                return ;
+                return;
             }
             this.changeForm(e);
             this.highlightFormMenu(this.selectedForm)
