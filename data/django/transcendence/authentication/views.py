@@ -71,6 +71,7 @@ class LoginView(APIView):
         return response
 
 
+
 class RefreshView(APIView):
     throttle_scope = 'auth'
     permission_classes = []
