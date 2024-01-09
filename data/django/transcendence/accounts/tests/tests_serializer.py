@@ -4,6 +4,7 @@ from accounts.models import User
 from accounts.serializers import UserSerializer, UserInfoSerializer, CompleteUserSerializer
 from accounts.utils import Roles
 from datetime import date, timedelta
+from django.conf import settings
 
 
 class UserSerializerTests(TestCase):

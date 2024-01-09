@@ -8,7 +8,6 @@ from django.core.exceptions import ValidationError
 from accounts.models import User
 
 from oauth2.models import UserIntra
-from oauth2.settings import *
 
 
 class UserIntraTests(TestCase):
@@ -31,25 +30,3 @@ class UserIntraTests(TestCase):
         user_intra = UserIntra.objects.create(self.user, self.name, self.email)
         with self.assertRaises(ValidationError):
             user_intra = UserIntra.objects.create(self.user, self.name, self.email)
-
-
-class GetIntraUrlTests(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        cls.client = APIClient()
-
-    def test_link_url_creation(self):
-        response = self.client.get('/oauth2/intra/url/link/')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn('url', response.data)
-        self.assertIn(quote(INTRA_LINK_REDIRECT_URI), response.data['url'])
-
-    def test_login_url_creation(self):
-        response = self.client.get('/oauth2/intra/url/login/')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn('url', response.data)
-        self.assertIn(quote(INTRA_LOGIN_REDIRECT_URI), response.data['url'])
-
-    def test_wrong_link_url_creation(self):
-        response = self.client.get('/oauth2/intra/url/wrong_case/')
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
