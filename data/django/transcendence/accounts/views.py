@@ -26,7 +26,7 @@ def upload_profile_picture(request):
     upload_image_serializer = UploadImageSerializer(data=request.data)
     if not upload_image_serializer.is_valid():
         return Response(status=400)
-    #upload_image_serializer.save_image(upload_image_serializer.validated_data)
+    upload_image_serializer.save_image(upload_image_serializer.validated_data)
     return Response({"message": "Profile picture uploaded"}, status=200)
 
 
