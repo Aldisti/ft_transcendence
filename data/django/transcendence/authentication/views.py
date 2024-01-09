@@ -1,6 +1,6 @@
 
 from rest_framework import status
-from rest_framework.decorators import APIView
+from rest_framework.decorators import APIView, api_view, permission_classes
 from rest_framework.response import Response
 
 from rest_framework_simplejwt.exceptions import TokenError
@@ -17,11 +17,15 @@ from transcendence.settings import TZ
 
 from datetime import datetime
 
+import logging
+
+logger = logging.getLogger()
 
 class LogoutView(APIView):
     throttle_scope = 'auth'
 
-    def post(self, request) -> Response:
+    def get(self, request) -> Response:
+        logger.warning(f"token: {request.COOKIES}")
         refresh_token = RefreshToken(request.COOKIES.get('refresh_token'))
         try:
             JwtToken.objects.create(refresh_token)
@@ -98,22 +102,18 @@ class RefreshView(APIView):
             return response
 
 
-# @api_view(['GET', 'POST'])
-# @permission_classes([])
-# def test(request):
-#     data = {
-#         'username': 'aldisti',
-#         'first_name': 'Alessandro',
-#         'last_name': 'Di Stefano',
-#         'email': 'aldisti@student.42roma.it',
-#         'password': 'password',
-#         'id': 131904,
-#         'pool_year': 2022,
-#     }
-#     serializer = CompleteUserSerializer(data=data)
-#     if serializer.is_valid():
-#         user = serializer.create(serializer.validated_data)
-#         user.save()
-#     else:
-#         return Response("invalid data", status=status.HTTP_400_BAD_REQUEST)
-#     return Response(f'user created {user.username}', status=200)
+#@api_view(['GET', 'POST'])
+#@permission_classes([])
+#def test(request):
+#    response = Response({"access_token": "prova"})
+#    response.set_cookie(
+#            "test_token",
+#            "prova",
+#            max_age=1000000,
+#            secure=False,
+#            httponly=False,
+#            samesite=None,
+#            )
+#    return response
+
+

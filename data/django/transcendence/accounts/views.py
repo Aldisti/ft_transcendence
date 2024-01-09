@@ -7,8 +7,8 @@ from rest_framework.generics import RetrieveDestroyAPIView, ListAPIView
 from rest_framework.exceptions import APIException
 from rest_framework import filters
 from accounts.paginations import MyPageNumberPagination
-from accounts.serializers import CompleteUserSerializer, UploadImageSerializer
-from accounts.models import User
+from accounts.serializers import CompleteUserSerializer, UploadImageSerializer, UserInfoSerializer
+from accounts.models import User, UserInfo
 from accounts.validators import image_validator
 from email_manager.email_sender import send_verification_email
 from authentication.permissions import IsActualUser, IsAdmin, IsModerator
@@ -70,6 +70,19 @@ def change_active(request):
         return Response(status=400)
     user = user_serializer.update_active(user_serializer.validated_data)
     return Response({"username": user.username, "banned": not user.active}, status=200)
+
+@api_view(['PUT'])
+#@permission_classes([IsUser])
+def update_user_info(request):
+    """
+    Request: {"first_name": <first_name>, etc...}
+    """
+
+    user_info_serializer = UserInfoSerializer(data=request.data)
+    user_info_serializer.is_valid(raise_exception=True)
+    user_info = request.user.user_info
+    updated_user_info = UserInfo.objects.update_info(user_info, **user_info_serializer.validated_data)
+    return Response(UserInfoSerializer(updated_user_info).data, status=200)
 
 
 class RetrieveDestroyUser(RetrieveDestroyAPIView):

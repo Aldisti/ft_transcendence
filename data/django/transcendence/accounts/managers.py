@@ -107,7 +107,7 @@ class UserInfoManager(models.Manager):
         user_info.first_name = kwargs.get("first_name", user_info.first_name)
         user_info.last_name = kwargs.get("last_name", user_info.last_name)
         user_info.birthdate = kwargs.get("birthdate", user_info.birthdate)
-        user_info.picture = kwargs.get("picture", user_info.picture)
+        #user_info.picture = kwargs.get("picture", user_info.picture)
         user_info.full_clean()
         user_info.save()
         return user_info

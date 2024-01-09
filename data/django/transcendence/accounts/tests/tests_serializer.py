@@ -1,7 +1,7 @@
 from django.test import TestCase
+from django.conf import settings
 from accounts.models import User
 from accounts.serializers import UserSerializer, UserInfoSerializer, CompleteUserSerializer
-from accounts.validators import MIN_AGE
 from accounts.utils import Roles
 from datetime import date, timedelta
 
@@ -73,7 +73,7 @@ class UserInfoSerializerTests(TestCase):
             today.replace(year=1899),
             today,
             today + timedelta(days=1),
-            today.replace(year=(today.year - MIN_AGE)) + timedelta(days=1),
+            today.replace(year=(today.year - settings.MIN_AGE)) + timedelta(days=1),
         ]
 
     # passing all fields valid
