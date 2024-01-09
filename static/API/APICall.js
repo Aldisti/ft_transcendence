@@ -11,20 +11,6 @@ export async function checkForUsernameAvailability(username) {
     return (false)
 }
 
-export async function refreshToken() {
-    const res = fetch(API.REFRESH_TOKEN, {
-        method: "POST",
-        headers: {
-            credentials: "include"
-        }
-    })
-    if (!res.ok) {
-        history.pushState(null, null, "/login");
-        Router();
-        window.location.reload();
-    }
-}
-
 export async function checkForEmailAvailability(email) {
     const res = await fetch(`${URL.availabilityCheck.EMAIL}?search=${email}`, {
         method: "GET",
@@ -50,7 +36,7 @@ export async function login(data) {
         window.location.reload();
     }
     let token = await res.json();
-    window.getToken = window.setToken(token.access_token);
+    localStorage.setItem("token", token.access_token)
 }
 
 export async function refreshToken() {
@@ -58,8 +44,13 @@ export async function refreshToken() {
         method: "POST",
         credentials: 'include',
     })
+    if (!res.ok) {
+        history.pushState(null, null, "/login");
+        Router();
+        window.location.reload();
+    }
     let token = await res.json();
-    window.getToken = window.setToken(token.access_token);
+    localStorage.setItem("token", token.access_token);
 }
 
 export async function register(data) {
@@ -118,10 +109,11 @@ export async function updateEmail(data) {
 }
 
 export async function logout() {
+    console.log(window.getToken);
     const res = await fetch(URL.userAction.LOGOUT, {
         method: "GET",
         headers: {
-            Authorization: `Bearer ${window}`
+            Authorization: `Bearer ${localStorage.getItem("token")}`
         }
     });
     if (res.status == 401) {
