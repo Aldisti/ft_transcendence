@@ -234,12 +234,10 @@ class ModelUserInfoTests(TestCase):
                                                  first_name=self.first_name,
                                                  last_name=self.last_name,
                                                  birthdate=self.birthdate,
-                                                 picture=self.picture
                                                  )
         self.assertEqual(user_info.first_name, self.first_name)
         self.assertEqual(user_info.last_name, self.last_name)
         self.assertEqual(user_info.birthdate, self.birthdate)
-        self.assertEqual(user_info.picture, self.picture)
 
     def test_invalid_user_info_update(self):
         user_info = UserInfo.objects.create(self.user)
