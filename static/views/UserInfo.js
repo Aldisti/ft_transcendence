@@ -12,7 +12,7 @@ export default class extends Aview {
     }
 
     async getGeneralForm() {
-        let obj = await API.getUserInfo();
+        let obj = await API.getUserInfo(1);
         return `
         <div class="formContainer">
         <div class="inputLine">

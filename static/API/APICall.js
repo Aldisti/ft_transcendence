@@ -25,7 +25,7 @@ export async function getUserInfo(recursionProtection) {
     const res = await fetch(`${URL.general.USER_INFO}?search=${localStorage.getItem("username")}`, {
         method: "GET",
         headers: {
-            Authorization: `Bearer ${localStorage.getItem("username")}`
+            Authorization: `Bearer ${localStorage.getItem("token")}`
         },
         credentials: "include",
     })
@@ -33,7 +33,6 @@ export async function getUserInfo(recursionProtection) {
         refreshToken().then(res => {
             if (res.ok) {
                 getUserInfo(0);
-                return;
             } else {
                 history.pushState(null, null, "/home");
                 Router();
@@ -43,8 +42,7 @@ export async function getUserInfo(recursionProtection) {
     }
     if (res.ok) {
         let jsonBody = await res.json();
-        console.log(jsonBody)
-        return (jsonBody);
+        return (jsonBody.results[0]);
     }
     return ({});
 }

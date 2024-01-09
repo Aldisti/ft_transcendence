@@ -84,10 +84,17 @@ app.get("/users/", (req, res) => {
     console.log("test")
     res.status(200)
     res.json({
-        first_name: "test",
-        last_name: "last test",
-        birthdate: "1998-07-07"
+        results: [{
+            first_name: "test",
+            last_name: "last test",
+            birthdate: "1998-07-07"
+        }]
     });
+    // res.json({
+    //     first_name: "test",
+    //     last_name: "last test",
+    //     birthdate: "1998-07-07"
+    // })
     res.send();
 })
 
