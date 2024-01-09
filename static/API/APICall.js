@@ -42,7 +42,7 @@ export async function getUserInfo(recursionProtection) {
     }
     if (res.ok) {
         let jsonBody = await res.json();
-        return (jsonBody.results[0]);
+        return (jsonBody.results[0].userInfo);
     }
     return ({});
 }

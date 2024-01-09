@@ -12,7 +12,7 @@ export default class extends Aview {
     }
 
     async getGeneralForm() {
-        let obj = await API.getUserInfo(1);
+        let obj = {};
         return `
         <div class="formContainer">
         <div class="inputLine">
@@ -194,13 +194,21 @@ export default class extends Aview {
         return (ret);
     }
 
+    prepareInfoForm(form) {
+        let obj = {};
+        for (let val of Object.keys(form)) {
+            obj[val] = form[val].value;
+        }
+        return (obj);
+    }
+
     async performChecksAndSubmit(form) {
         let title = document.querySelector(".title");
 
         //will perfom check for general user info
+        console.log(this.prepareInfoForm(form))
         if (this.selectedForm == "info" && controls.checkChangeInfoForm(form, this.errors)) {
-            API.updateInfo(form, 1).then((res) => {
-                console.log(res);
+            API.updateInfo(this.prepareInfoForm(form), 1).then((res) => {
                 if (res == {})
                     return;
                 this.errors = res.user_info;
