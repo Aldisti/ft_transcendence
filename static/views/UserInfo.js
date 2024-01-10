@@ -239,7 +239,7 @@ export default class extends Aview {
 
         //will perfom check for picture
         if (this.selectedForm == "picture")
-            console.log("picture")
+            API.uploadImage(form.inpFile);
     }
 
     collectData() {

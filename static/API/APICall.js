@@ -25,9 +25,9 @@ export async function getUserInfo(recursionProtection) {
     const res = await fetch(`${URL.general.USER_INFO}`, {
         method: "GET",
         headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`
+            // Authorization: `Bearer ${localStorage.getItem("token")}`
         },
-        credentials: "include",
+        // credentials: "include",
     })
     if (res.status == 401 && recursionProtection) {
         refreshToken().then(res => {
