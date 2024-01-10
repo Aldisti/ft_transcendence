@@ -25,10 +25,7 @@ class LogoutView(APIView):
     throttle_scope = 'auth'
 
     def get(self, request) -> Response:
-<<<<<<< HEAD
         logger.warning(f"token: {request.COOKIES}")
-=======
->>>>>>> origin/adi-stef
         refresh_token = RefreshToken(request.COOKIES.get('refresh_token'))
         if refresh_token is None:
             return Response(data={'message': 'no token found'}, status=401)
