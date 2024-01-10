@@ -9,6 +9,8 @@ export const availabilityCheck = {
 export const general = {
     INTRA_URL: `http://${ip}:${port}/oauth2/intra/url/`,
     USER_INFO: `http://${ip}:${port}/users/`,
+    CONVERT_INTRA_TOKEN: `http://${ip}:${port}/oauth2/intra/login/`,
+    LINK_INTRA_TOKEN_ACCOUNT: `http://${ip}:${port}/oauth2/intra/link/`
 }
 
 export const userAction = {

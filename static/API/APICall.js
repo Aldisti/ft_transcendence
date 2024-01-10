@@ -21,8 +21,51 @@ export async function checkForEmailAvailability(email) {
     return (false)
 }
 
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+  }
+
+export async function convertIntraToken(){
+    if (getCookie("api_token") == undefined)
+        return (false);
+    const res = await fetch(URL.general.CONVERT_INTRA_TOKEN, {
+        method: "POST",
+        credentials: "include",
+    });
+    if (res.ok) {
+        let token = await res.json();
+        localStorage.setItem("token", token.access_token)
+        localStorage.setItem("username", token.username);
+        history.pushState(null, null, "/home");
+        Router();
+        window.location.reload();
+        return (true);
+    }
+    return (false);
+}
+export async function convertIntraTokenAccount(){
+    if (getCookie("api_token") == undefined)
+        return (false);
+    const res = await fetch(URL.general.LINK_INTRA_TOKEN_ACCOUNT, {
+        method: "POST",
+        credentials: "include",
+    });
+    if (res.ok) {
+        let token = await res.json();
+        localStorage.setItem("token", token.access_token)
+        localStorage.setItem("username", token.username);
+        history.pushState(null, null, "/home");
+        Router();
+        window.location.reload();
+        return (true);
+    }
+    return (false);
+}
+
 export async function getUserInfo(recursionProtection) {
-    const res = await fetch(`${URL.general.USER_INFO}`, {
+    const res = await fetch(`${URL.general.USER_INFO}${localStorage.getItem("username")}/`, {
         method: "GET",
         headers: {
             // Authorization: `Bearer ${localStorage.getItem("token")}`
@@ -42,7 +85,7 @@ export async function getUserInfo(recursionProtection) {
     }
     if (res.ok) {
         let jsonBody = await res.json();
-        return (jsonBody.results[0].user_info);
+        return (jsonBody.user_info);
     }
     return ({});
 }
@@ -68,7 +111,7 @@ export async function login(data) {
 
 export async function refreshToken() {
     const res = await fetch(URL.userAction.REFRESH_TOKEN, {
-        method: "POST",
+        method: "GET",
         credentials: 'include',
     })
     if (!res.ok) {
@@ -127,11 +170,11 @@ export async function updateInfo(data, recursionProtection) {
 }
 
 export async function updatePassword(recursionProtection, data) {
-    const rest = await fetch(URL.userAction.UPDATE_PASSWORD, {
-        method: "POST",
+    const res = await fetch(URL.userAction.UPDATE_PASSWORD, {
+        method: "PATCH",
         credentials: "include",
         headers: {
-            Autorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "application/json"
         },
         body: JSON.stringify(data),
@@ -143,7 +186,7 @@ export async function updatePassword(recursionProtection, data) {
         })
         return;
     }
-    return (rest);
+    return (res);
 }
 
 
@@ -168,7 +211,7 @@ export async function logout(recursionProtection) {
     });
     if (res.status == 401 && recursionProtection) {
         refreshToken().then(res => {
-            if (res.ok)
+            if (res.ok)login
                 logout(0);
         })
         return;
@@ -184,8 +227,8 @@ export async function logout(recursionProtection) {
     return;
 }
 
-export async function getIntraUrl() {
-    const res = await fetch(URL.general.INTRA_URL, {
+export async function getIntraUrl(parameter) {
+    const res = await fetch(`${URL.general.INTRA_URL}?type=${parameter}`, {
         method: "GET",
     });
     if (res.ok) {

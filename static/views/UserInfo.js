@@ -1,5 +1,6 @@
 import * as controls from '/viewScripts/userInfo/updateCheck.js';
 import Router from "/router/mainRouterFunc.js"
+import * as URL from "/API/URL.js"
 import Aview from "/views/abstractView.js";
 import * as API from "/API/APICall.js";
 import sha256 from "/scripts/crypto.js";
@@ -7,6 +8,7 @@ import sha256 from "/scripts/crypto.js";
 export default class extends Aview {
     constructor() {
         super();
+        this.intraUrl = "";
         this.selectedForm = "info"
         this.errors = {};
     }
@@ -159,6 +161,7 @@ export default class extends Aview {
             </div>
         `
     }
+
     getHtml() {
         return `
             <div class="userInfoContainer bg-lg">
@@ -167,7 +170,8 @@ export default class extends Aview {
                     <h4 class="formLink password passwordForm">${this.language.update.passwordTitle}</h4>
                     <h4 class="formLink email emailForm">${this.language.update.emailTitle}</h4>
                     <h4 class="formLink picture pictForm">${this.language.update.pictureTitle}</h4>
-                    <h4 class="formLink picture logout">${this.language.update.logout}</h4>
+                    <h4 class="formLink intra">${this.language.update.linkToIntra}</h4>
+                    <h4 class="formLink logout">${this.language.update.logout}</h4>
                 </div>
                 <div class="handle">
                 >
@@ -208,7 +212,7 @@ export default class extends Aview {
 
         //will perfom check for general user info
         console.log(form)
-        if (this.selectedForm == "info" && controls.checkChangeInfoForm(form, this.errors)) {
+        if (localStorage.getItem("selectedForm") == "info" && controls.checkChangeInfoForm(form, this.errors)) {
             API.updateInfo(this.prepareInfoForm(form), 1).then((res) => {
                 console.log(res);
                 if (res == {})
@@ -219,7 +223,7 @@ export default class extends Aview {
         }
 
         //will perfom check for email
-        if (this.selectedForm == "email" && await controls.checkChangeEmailForm(form, this.errors)) {
+        if (localStorage.getItem("selectedForm") == "email" && await controls.checkChangeEmailForm(form, this.errors)) {
             API.updateEmail(this.prepareEmailForm(form)).then((res) => {
 
 
@@ -227,9 +231,9 @@ export default class extends Aview {
         }
 
         //will perfom check for password
-        if (this.selectedForm == "password" && controls.checkChangePasswordForm(form, this.errors)) {
+        if (localStorage.getItem("selectedForm") == "password"&& controls.checkChangePasswordForm(form, this.errors)) {
             console.log(this.preparePasswordForm(form))
-            API.updatePassword(this.preparePasswordForm(1, form)).then((res) => {
+            API.updatePassword(1, this.preparePasswordForm(form)).then((res) => {
                 if (!res.ok) {
                     document.querySelector(`#${this.language.update.oldPassword[1]}-tooltip`).innerHTML = this.language.update.passwordErrors[0];
                     document.querySelectorAll("input")[0].style.backgroundColor = "#A22C29";
@@ -239,7 +243,7 @@ export default class extends Aview {
         }
 
         //will perfom check for picture
-        if (this.selectedForm == "picture")
+        if (localStorage.getItem("selectedForm") == "picture")
             API.uploadImage(1, form.inpFile)
     }
 
@@ -259,38 +263,48 @@ export default class extends Aview {
         //will load the form to change password
         if (e.target.classList.contains("passwordForm")) {
             this.selectedForm = "password";
+            localStorage.setItem("selectedForm", "password")
             document.querySelector(".formMenu").innerHTML = this.getPasswordForm();
         }
 
         //will load the form to change general user info
         else if (e.target.classList.contains("generalForm")) {
             this.selectedForm = "info";
+            localStorage.setItem("selectedForm", "info")
             this.getGeneralForm();
         }
 
         //will load the form to change email
         else if (e.target.classList.contains("emailForm")) {
             this.selectedForm = "email";
+            localStorage.setItem("selectedForm", "email")
             document.querySelector(".formMenu").innerHTML = this.getEmailForm();
         }
 
         //will load the form to change picture
         else if (e.target.classList.contains("pictForm")) {
             this.selectedForm = "picture";
+            localStorage.setItem("selectedForm", "picture")
             document.querySelector(".formMenu").innerHTML = this.getProfilePictureForm();
         }
 
         //will load the form to change picture
         else if (e.target.classList.contains("logout")) {
-            this.selectedForm = "logout";
             if (!confirm(this.language.update.confirmLogout))
                 return;
             API.logout(1)
+        }
+        else if (e.target.classList.contains("intra")) {
+            if (!confirm(this.language.update.confirmIntra))
+                return;
+            window.location.href = this.intraUrl;
         }
     }
 
     highlightFormMenu(formName) {
         document.querySelectorAll(".formLink").forEach(el => {
+            if (el.classList.contains("intra") && el.style.backgroundColor == "gray")
+                return;
             el.style.backgroundColor = "#f0ead2";
             el.style.color = "black";
         })
@@ -299,44 +313,58 @@ export default class extends Aview {
     }
 
     setup() {
-        //defining background
-        if (localStorage.getItem("style") == "modern"){
-            document.querySelector("#app").style.backgroundImage = "url('https://c4.wallpaperflare.com/wallpaper/105/526/545/blur-gaussian-gradient-multicolor-wallpaper-preview.jpg')";
-        }
-        else{
-            document.querySelector("#app").style.backgroundImage = "url('/imgs/backLogin.png')";
-        }
-        document.querySelector("#app").style.backgroundSize = "cover"
-        document.querySelector("#app").style.backgroundRepeat = "repeat"
-
-        //precompiling first form with known info
-        this.getGeneralForm();
-
-        //defining the start menu item that need to be highlighted
-        this.highlightFormMenu(this.selectedForm)
-
-        this.listeners.push([document, document.cloneNode(true)]);
-        document.querySelector(".userInfoContainer").addEventListener("click", (e) => {
-            if (e.target.classList.contains("handle")) {
-                if (document.querySelector(".handle").classList.contains("open")) {
-                    console.log("hey");
-                    document.querySelector(".handle").classList.remove("open");
-                    document.querySelector(".handle").style.transform = `translateX(0)`;
-                    document.querySelector(".handle").innerHTML = ">";
-                    document.querySelector(".leftSide").style.transform = `translateX(-${document.querySelector(".leftSide").clientWidth}px)`;
-                } else {
-                    console.log(`translateX(${document.querySelector(".leftSide").clientWidth}px)`)
-                    document.querySelector(".handle").classList.add("open");
-                    document.querySelector(".handle").style.transform = `translateX(${document.querySelector(".leftSide").clientWidth}px)`;
-                    document.querySelector(".handle").innerHTML = "<";
-                    document.querySelector(".leftSide").style.transform = "translateX(0)";
-                }
-                return;
+        document.querySelector(".intra").style.backgroundColor = "gray"
+        API.getIntraUrl("link").then(res=>{
+            if (res != "")
+            {
+                this.intraUrl = res;
+                document.querySelector(".intra").style.backgroundColor = "";
             }
-            this.changeForm(e);
-            this.highlightFormMenu(this.selectedForm)
-            if (e.target.classList.contains("submit"))
-                this.performChecksAndSubmit(this.collectData());
+        })
+
+        API.convertIntraTokenAccount().then(res=>{
+            if (!res)
+            {
+                //defining background
+                if (localStorage.getItem("style") == "modern"){
+                    document.querySelector("#app").style.backgroundImage = "url('https://c4.wallpaperflare.com/wallpaper/105/526/545/blur-gaussian-gradient-multicolor-wallpaper-preview.jpg')";
+                }
+                else{
+                    document.querySelector("#app").style.backgroundImage = "url('/imgs/backLogin.png')";
+                }
+                document.querySelector("#app").style.backgroundSize = "cover"
+                document.querySelector("#app").style.backgroundRepeat = "repeat"
+        
+                //precompiling first form with known info
+                this.getGeneralForm();
+        
+                //defining the start menu item that need to be highlighted
+                this.highlightFormMenu(localStorage.getItem("selectedForm") == undefined ? "info" : localStorage.getItem("selectedForm"))
+        
+                this.listeners.push([document, document.cloneNode(true)]);
+                document.querySelector(".userInfoContainer").addEventListener("click", (e) => {
+                    if (e.target.classList.contains("handle")) {
+                        if (document.querySelector(".handle").classList.contains("open")) {
+                            console.log("hey");
+                            document.querySelector(".handle").classList.remove("open");
+                            document.querySelector(".handle").style.transform = `translateX(0)`;
+                            document.querySelector(".handle").innerHTML = ">";
+                            document.querySelector(".leftSide").style.transform = `translateX(-${document.querySelector(".leftSide").clientWidth}px)`;
+                        } else {
+                            console.log(`translateX(${document.querySelector(".leftSide").clientWidth}px)`)
+                            document.querySelector(".handle").classList.add("open");
+                            document.querySelector(".handle").style.transform = `translateX(${document.querySelector(".leftSide").clientWidth}px)`;
+                            document.querySelector(".handle").innerHTML = "<";
+                            document.querySelector(".leftSide").style.transform = "translateX(0)";
+                        }
+                        return;
+                    }
+                    this.changeForm(e);
+                    this.highlightFormMenu(this.selectedForm)
+                    if (e.target.classList.contains("submit"))
+                        this.performChecksAndSubmit(this.collectData());
+                })
+            }
         })
     }
 }

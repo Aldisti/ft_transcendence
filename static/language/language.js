@@ -51,6 +51,8 @@ let language = {
 			passwordTitle: "change Password",
 			pictureTitle: "change Profile Picture",
 			logout: "Logout",
+			linkToIntra: "Link To Intra42",
+			confirmIntra: "Do you really want to link your intra profile?",
 			confirmLogout: "are you sure that you want to perform logout?",
 			logoutError: "something went wrong try again...",
 			

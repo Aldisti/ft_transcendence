@@ -38,23 +38,29 @@ export default class extends Aview {
         `
     }
     setup() {
-        API.getIntraUrl().then((url) => {
-            document.querySelector(".intraBtn").href = url;
-        })
-        window.addEventListener("click", (e) => {
-            if (e.target.id == "loginBtn") {
-                this.updateField(this.getInput());
-                this.field.password = sha256(this.field.password)
-                    // this.field.password = this.field.password //for testing
-                API.login(this.field);
+        API.convertIntraToken().then(res=>{
+            if (!res)
+            {
+                API.getIntraUrl("login").then((url) => {
+                    document.querySelector(".intraBtn").href = url;
+                })
+                window.addEventListener("click", (e) => {
+                    if (e.target.id == "loginBtn") {
+                        this.updateField(this.getInput());
+                        this.field.password = sha256(this.field.password)
+                            // this.field.password = this.field.password //for testing
+                        API.login(this.field);
+                    }
+                })
+                if (localStorage.getItem("style") == "modern")
+                    document.querySelector("#app").style.backgroundImage = "url('https://c4.wallpaperflare.com/wallpaper/105/526/545/blur-gaussian-gradient-multicolor-wallpaper-preview.jpg')";
+                else
+                    document.querySelector("#app").style.backgroundImage = "url('/imgs/backLogin.png')";
+                document.querySelector("#app").style.backgroundSize = "cover"
+                document.querySelector("#app").style.backgroundRepeat = "repeat"
             }
+
         })
-        if (localStorage.getItem("style") == "modern")
-            document.querySelector("#app").style.backgroundImage = "url('https://c4.wallpaperflare.com/wallpaper/105/526/545/blur-gaussian-gradient-multicolor-wallpaper-preview.jpg')";
-        else
-            document.querySelector("#app").style.backgroundImage = "url('/imgs/backLogin.png')";
-        document.querySelector("#app").style.backgroundSize = "cover"
-        document.querySelector("#app").style.backgroundRepeat = "repeat"
     }
 
 }
