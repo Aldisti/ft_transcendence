@@ -1,11 +1,13 @@
 
 from django.core.exceptions import ValidationError
-from django.db.models.manager import BaseManager
+from django.db.models import Manager
 from django.db import models
 
 from accounts.models import User
 
 from pyotp import random_base32
+from secrets import choice
+from string import ascii_lowercase, digits
 from uuid import uuid4
 
 
@@ -60,6 +62,25 @@ class UserTwoFactorAuthManager(BaseManager):
         return user_tfa
 
 
+class OtpCodeManager(Manager):
+    def create(self, user_tfa):
+        otp_code = self.model(user_tfa=user_tfa)
+        otp_code.generate_code()
+
+        otp_code.full_clean()
+        otp_code.save()
+        return otp_code
+
+    def generate_codes(self, user_tfa):
+        self.delete(user_tfa)
+        return [self.create(user_tfa=user_tfa) for i in range(10)]
+
+    def delete_codes(self, user_tfa):
+        codes = self.filter(user_tfa=user_tfa)
+        for code in codes:
+            code.delete()
+
+
 class UserTFA(models.Model):
     SOFTWARE = "SW"
     EMAIL = "EM"
@@ -73,6 +94,8 @@ class UserTFA(models.Model):
         A_EMAIL: "Activating Email Token",
         NONE: "None ",
     }
+    # TODO: replace this dict creating some functions in this class
+    # https://docs.djangoproject.com/en/4.2/topics/db/models/#model-methods
     TYPES = {
         A_SOFTWARE: SOFTWARE,
         A_EMAIL: EMAIL,
@@ -112,3 +135,25 @@ class UserTFA(models.Model):
 
     def __str__(self):
         return f"username: {self.user.username}, token: {self.otp_token}, type: {self.type}"
+
+
+class OtpCode(models.Model):
+    user_tfa = models.ForeignKey(
+        to=UserTFA,
+        on_delete=models.CASCADE,
+    )
+    code = models.CharField(
+        db_column='code',
+        max_length=10,
+    )
+
+    objects = OtpCodeManager()
+
+    def generate_code(self):
+        self.code = "".join([choice(ascii_lowercase + digits) for i in range(10)])
+
+    class Meta:
+        db_table = "otp_code"
+
+    def __str__(self) -> str:
+        return f"username: {self.user_tfa.user.username}, code: {self.code}"

@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from django.core.exceptions import ValidationError
 
 from email_manager.models import UserTokens
-from two_factor_auth.models import UserTFA
+from two_factor_auth.models import UserTFA, OtpCode
 
 from authentication.throttles import HighLoadThrottle, MediumLoadThrottle, LowLoadThrottle
 
@@ -133,4 +133,6 @@ def validate_activate(request) -> Response:
         return Response(data={'message': 'invalid code'}, status=400)
     user_tfa = UserTFA.objects.delete_url_token(user_tfa)
     UserTFA.objects.activate(user_tfa)
-    return Response(status=200)
+    otp_codes = OtpCode.objects.create(user_tfa=user_tfa)
+    codes = [otp_code.code for otp_code in otp_codes]
+    return Response(data={'codes': codes}, status=200)
