@@ -147,14 +147,14 @@ export default class extends Aview {
     }
     getProfilePictureForm() {
         return `
-        <div class="formContainer">
+        <div class="imageContainer">
             <div class="imageForm">
                 <div class="profilePict">
-                    <img src="https://media.sproutsocial.com/uploads/2022/06/profile-picture.jpeg">
+                    <img class="updateImgForm" src="https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg">
                 </div>
                 <div class="inputLineFile">
                     <label id="labelInpFile" for="inpFile"><img class="fileIcon" src="/imgs/fileIcon.png"><span class="selectFileText">Select New Photo...</span></label>
-                    <input class="inputData" id="inpFile" type="file" id="${this.language.update.profilePicture[1]}">
+                    <input onchange="window.test()" class="inputData" id="inpFile" type="file" id="${this.language.update.profilePicture[1]}">
                 </div>
             </div>
             <button class="submit">Submit!</button>
@@ -166,12 +166,12 @@ export default class extends Aview {
         return `
             <div class="userInfoContainer bg-lg">
                 <div class="leftSide bg-dark">
-                    <h4 class="formLink info generalForm">${this.language.update.generalTitle}</h4>
-                    <h4 class="formLink password passwordForm">${this.language.update.passwordTitle}</h4>
-                    <h4 class="formLink email emailForm">${this.language.update.emailTitle}</h4>
-                    <h4 class="formLink picture pictForm">${this.language.update.pictureTitle}</h4>
-                    <h4 class="formLink intra">${this.language.update.linkToIntra}</h4>
-                    <h4 class="formLink logout">${this.language.update.logout}</h4>
+                    <h6 class="formLink info generalForm">${this.language.update.generalTitle}</h6>
+                    <h6 class="formLink password passwordForm">${this.language.update.passwordTitle}</h6>
+                    <h6 class="formLink email emailForm">${this.language.update.emailTitle}</h6>
+                    <h6 class="formLink picture pictForm">${this.language.update.pictureTitle}</h6>
+                    <h6 class="formLink intra">${this.language.update.linkToIntra}</h6>
+                    <h6 class="formLink logout">${this.language.update.logout}</h6>
                 </div>
                 <div class="handle">
                 >
@@ -211,10 +211,9 @@ export default class extends Aview {
         let title = document.querySelector(".title");
 
         //will perfom check for general user info
-        console.log(form)
+        console.log("hey")
         if (localStorage.getItem("selectedForm") == "info" && controls.checkChangeInfoForm(form, this.errors)) {
             API.updateInfo(this.prepareInfoForm(form), 1).then((res) => {
-                console.log(res);
                 if (res == {})
                     return;
                 this.errors = res.user_info;
@@ -257,44 +256,47 @@ export default class extends Aview {
         return (form);
     }
 
-    changeForm(e) {
+    changeForm(e, byPass) {
         this.errors = { newPassword: "test" };
-
         //will load the form to change password
-        if (e.target.classList.contains("passwordForm")) {
+        if (e.classList.contains("passwordForm") || byPass == "password") {
             this.selectedForm = "password";
             localStorage.setItem("selectedForm", "password")
             document.querySelector(".formMenu").innerHTML = this.getPasswordForm();
         }
 
         //will load the form to change general user info
-        else if (e.target.classList.contains("generalForm")) {
+        else if (e.classList.contains("generalForm") || byPass == "info") {
             this.selectedForm = "info";
             localStorage.setItem("selectedForm", "info")
             this.getGeneralForm();
         }
 
         //will load the form to change email
-        else if (e.target.classList.contains("emailForm")) {
+        else if (e.classList.contains("emailForm") || byPass == "email") {
             this.selectedForm = "email";
             localStorage.setItem("selectedForm", "email")
             document.querySelector(".formMenu").innerHTML = this.getEmailForm();
         }
 
         //will load the form to change picture
-        else if (e.target.classList.contains("pictForm")) {
+        else if (e.classList.contains("pictForm") || byPass == "picture") {
             this.selectedForm = "picture";
             localStorage.setItem("selectedForm", "picture")
             document.querySelector(".formMenu").innerHTML = this.getProfilePictureForm();
+            API.getUserInfo(1).then(res=>{
+                if (res.picture != null)
+                  document.querySelector(".updateImgForm").src = res.picture;
+            })
         }
 
         //will load the form to change picture
-        else if (e.target.classList.contains("logout")) {
+        else if (e.classList.contains("logout")) {
             if (!confirm(this.language.update.confirmLogout))
                 return;
             API.logout(1)
         }
-        else if (e.target.classList.contains("intra")) {
+        else if (e.classList.contains("intra")) {
             if (!confirm(this.language.update.confirmIntra))
                 return;
             window.location.href = this.intraUrl;
@@ -308,7 +310,7 @@ export default class extends Aview {
             el.style.backgroundColor = "#f0ead2";
             el.style.color = "black";
         })
-        document.querySelector(`.${formName}`).style.backgroundColor = "var(--bs-danger)";
+        document.querySelector(`.${formName}`).style.backgroundColor = "var(--bs-success)";
         document.querySelector(`.${formName}`).style.color = "white";
     }
 
@@ -322,7 +324,7 @@ export default class extends Aview {
             }
         })
 
-        API.convertIntraTokenAccount().then(res=>{
+        API.convertIntraTokenAccount(1).then(res=>{
             if (!res)
             {
                 //defining background
@@ -335,23 +337,20 @@ export default class extends Aview {
                 document.querySelector("#app").style.backgroundSize = "cover"
                 document.querySelector("#app").style.backgroundRepeat = "repeat"
         
-                //precompiling first form with known info
-                this.getGeneralForm();
-        
                 //defining the start menu item that need to be highlighted
-                this.highlightFormMenu(localStorage.getItem("selectedForm") == undefined ? "info" : localStorage.getItem("selectedForm"))
+                if (localStorage.getItem("selectedForm") == undefined)
+                    localStorage.setItem("selectedForm", "info");
+                this.highlightFormMenu(localStorage.getItem("selectedForm"))
+                this.changeForm(document.querySelector("body"), localStorage.getItem("selectedForm"))
         
-                this.listeners.push([document, document.cloneNode(true)]);
                 document.querySelector(".userInfoContainer").addEventListener("click", (e) => {
                     if (e.target.classList.contains("handle")) {
                         if (document.querySelector(".handle").classList.contains("open")) {
-                            console.log("hey");
                             document.querySelector(".handle").classList.remove("open");
                             document.querySelector(".handle").style.transform = `translateX(0)`;
                             document.querySelector(".handle").innerHTML = ">";
                             document.querySelector(".leftSide").style.transform = `translateX(-${document.querySelector(".leftSide").clientWidth}px)`;
                         } else {
-                            console.log(`translateX(${document.querySelector(".leftSide").clientWidth}px)`)
                             document.querySelector(".handle").classList.add("open");
                             document.querySelector(".handle").style.transform = `translateX(${document.querySelector(".leftSide").clientWidth}px)`;
                             document.querySelector(".handle").innerHTML = "<";
@@ -359,7 +358,7 @@ export default class extends Aview {
                         }
                         return;
                     }
-                    this.changeForm(e);
+                    this.changeForm(e.target);
                     this.highlightFormMenu(this.selectedForm)
                     if (e.target.classList.contains("submit"))
                         this.performChecksAndSubmit(this.collectData());

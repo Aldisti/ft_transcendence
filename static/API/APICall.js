@@ -45,11 +45,14 @@ export async function convertIntraToken(){
     }
     return (false);
 }
-export async function convertIntraTokenAccount(){
+export async function convertIntraTokenAccount(recursionProtection){
     if (getCookie("api_token") == undefined)
         return (false);
     const res = await fetch(URL.general.LINK_INTRA_TOKEN_ACCOUNT, {
         method: "POST",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
         credentials: "include",
     });
     if (res.ok) {
@@ -60,6 +63,12 @@ export async function convertIntraTokenAccount(){
         Router();
         window.location.reload();
         return (true);
+    }
+    if (res.status == 401 && recursionProtection) {
+        refreshToken().then(res=>{
+            if (res.ok)
+                convertIntraTokenAccount(0);
+        })
     }
     return (false);
 }
@@ -105,6 +114,10 @@ export async function login(data) {
         Router();
         window.location.reload();
     }
+    if (!res.ok)
+    {
+        document.querySelector(".loginError").style.display = "flex";
+    }
     let token = await res.json();
     localStorage.setItem("token", token.access_token)
 }
@@ -125,7 +138,7 @@ export async function refreshToken() {
 }
 
 export async function register(data) {
-    const rest = await fetch(URL.userAction.REGISTER, {
+    const res = await fetch(URL.userAction.REGISTER, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -133,12 +146,13 @@ export async function register(data) {
         body: JSON.stringify(data),
     })
     if (res.status == 201) {
+        console.log("hey")
         localStorage.setItem("username", data.username)
-        history.pushState(null, null, "/home");
+        history.pushState(null, null, "/login");
         Router();
         return ({});
     } else {
-        let body = await rest.json()
+        let body = await res.json()
         return (body);
     }
 }
@@ -154,8 +168,6 @@ export async function updateInfo(data, recursionProtection) {
         body: JSON.stringify(data),
     })
     if (res.ok) {
-        history.pushState(null, null, "/home");
-        Router();
         window.location.reload();
         return ({});
     }
@@ -185,6 +197,10 @@ export async function updatePassword(recursionProtection, data) {
                 updatePassword(0, data);
         })
         return;
+    }
+    if (res.status == 400)
+    {
+        alert("Old password is not correct...")
     }
     return (res);
 }

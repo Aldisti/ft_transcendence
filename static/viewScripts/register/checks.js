@@ -210,7 +210,6 @@ export async function flow1Check(fields, errors, objList){
 
     //check email and username for bad character with regex and availability with fetch
     await checkUsername(fields[lan.register.username[1]], errors);
-    await checkEmail(fields[lan.register.email[1]], errors);
 
     //apply error in ui where needed
     showErrors(objList, errors);
@@ -224,13 +223,15 @@ export async function flow1Check(fields, errors, objList){
     return (true);
 }
 
-export function flow2Check(fields, errors, objList){
+export async function flow2Check(fields, errors, objList){
     let minAge = 16;
 
     dateValidator(fields[lan.register.birthDate[1]], errors, minAge);
+    await checkEmail(fields[lan.register.email[1]], errors);
+
     //space left for image check now empty
     showErrors(objList, errors)
-    for (let key of [lan.register.birthDate[1], lan.register.profilePicture[1]])
+    for (let key of [lan.register.birthDate[1], lan.register.profilePicture[1], lan.register.email[1]])
     {
         if (errors[key].isNotValid == true)
             return false;

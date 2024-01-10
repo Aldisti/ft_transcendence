@@ -16,6 +16,7 @@ let language = {
 			submit: "Submit!",
 			register: "Register!",
 			intraLogin: "Login with 42",
+			error: "Check Provided Info"
 		},
 		register: {
 			register: "Register [1/3]",

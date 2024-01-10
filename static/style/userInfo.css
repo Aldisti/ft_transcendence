@@ -14,8 +14,8 @@
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
-    width: 50%;
-    height: 70%;
+    width: 90%;
+    height: 60svh;
     border: 2px solid black;
     box-shadow: 15px 15px black;
 
@@ -30,8 +30,8 @@
 .formLink:hover
 {
     cursor: pointer;
-    background-color: black;
-    color: white;
+    background-color: black !important;
+    color: white !important;
 }
 
 .leftSide
@@ -52,7 +52,7 @@
     border: 2px solid black;
 }
 
-.leftSide h4
+.leftSide h6
 {
     padding: 10px;
     width: 90%;
@@ -71,10 +71,11 @@
     width: 80%;
 }
 
-.formContainer
+.formContainer, .imageContainer
 {
     width: 80%;
     height: fit-content;
+    max-height: 90svh;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
@@ -82,10 +83,17 @@
     background-color: white;
     border: 3px solid black;
     box-shadow: 15px 15px black;
+    padding: 20px;
 }
+
+.imageContainer{
+    width: 50% !important;
+}
+
 
 .formMenu
 {
+    overflow: scroll;
     width: 70%;
     height: 100%;
     display: flex;
@@ -108,7 +116,7 @@
     align-items: flex-start;
     border: 2px solid black;
     box-shadow: 15px 15px black;
-    margin: 30px;
+    margin: 15px;
 }
 
 .inputLineFile
@@ -133,10 +141,11 @@
 {
     border: 2px solid black;
     width: 100%;
-    height: 4svh;
+    height: 3.5svh;
     margin: 2px 0 2px 0;
     outline: none;
     transition: 0.6s;
+    font-size: 10px;
 }
 
 .inputLine input[size="small"]
@@ -209,12 +218,12 @@
     padding: 10px;
     background-color: white;
     border: 2px solid black;
-    box-shadow: 7px 7px black;
 }
 
 .profilePict img
 {
-    object-fit: cover;
+    object-fit: contain;
+    background-color: black;
     width: 100%;
     height: 100%;
 }
@@ -262,8 +271,8 @@
 
 .myTooltip {
 	padding: 10px;
-    width: 3svw;
-    height: 3svw;
+    width: 1.5svw;
+    height: 1.5svw;
 	background-color: #000;
     justify-content: center;
     align-items: center;
@@ -347,6 +356,10 @@
     {
         width: 90svw;
     }
+    .formMenu
+    {
+        width: 100%;
+    }
     .leftSide
     {
         width: 90%;
@@ -355,5 +368,7 @@
         left: 0;
         transform: translateX(-91svw);
     }
-    
+    .imageContainer{
+        width: 80% !important;
+    }
 }

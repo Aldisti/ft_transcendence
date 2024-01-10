@@ -66,16 +66,6 @@ export default class extends Aview{
 					</div> 
 					<input type="text" value="${this.field[this.language.register.username[1]]}" class="data retroShade" name="${this.language.register.username[1]}">
 				</div>
-				<div class="line">
-					<div class="f-line">
-						<div class="myTooltip">
-							?
-							<span id="${this.language.register.email[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
-				  		</div> 
-						<h3>${this.language.register.email[0]}</h3>
-					</div>
-					<input type="email" class="data retroShade" value="${this.field.email}" name="${this.language.register.email[1]}">
-				</div>
 				<div class="linebtn">
 					<a class="retroShade retroBtn btnColor-yellow" href="/login" data-link>${this.language.register.login}</a>
 					<button id="flow2" class="signupBtn retroShade retroBtn btnColor-green">${this.language.register.next}</button>
@@ -144,12 +134,11 @@ export default class extends Aview{
 					<div class="f-line">
 						<div class="myTooltip">
 							?
-							<span id="${this.language.register.profilePicture[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
-			  			</div> 
-						<h3>${this.language.register.profilePicture[0]}</h3>
-					</div> 
-					<label id="labelInpFile" for="inpFile"><span class="selectFileText">Select File</span><img class="fileIcon" src="/imgs/fileIcon.png"></label>
-					<input type="file" id="inpFile" class="data fileSelector" name="${this.language.register.profilePicture[1]}">
+							<span id="${this.language.register.email[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
+				  		</div> 
+						<h3>${this.language.register.email[0]}</h3>
+					</div>
+					<input type="email" class="data retroShade" value="${this.field.email}" name="${this.language.register.email[1]}">
 				</div>
 				<div class="linebtn">
 					<a class="retroShade retroBtn btnColor-yellow" href="/login" data-link>${this.language.register.login}</a>
@@ -211,11 +200,13 @@ export default class extends Aview{
 			else if (e.target.id == "flow3")
 			{
 				this.updateField(this.getInput());
-				if (check.flow2Check(this.field, this.errors, document.querySelectorAll(".data")))
-				{
-					document.querySelector("#app").innerHTML = this.getThirdForm();
-					check.setupSwitchListener();
-				}
+				check.flow2Check(this.field, this.errors, document.querySelectorAll(".data")).then(res=>{
+					if (res)
+					{
+						document.querySelector("#app").innerHTML = this.getThirdForm();
+						check.setupSwitchListener();
+					}
+				})
 			}
 			else if (e.target.id == "submit")
 			{

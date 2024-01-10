@@ -85,11 +85,11 @@ export function checkChangeInfoForm(form, errors){
     let flag = true;
 
     //through regex all the filled fields are checked, return true if is all ok false otherwise
-    if (!checkFirstName(form[lan.update.firstName[1]], errors[lan.update.firstName[1]]))
+    if (!checkFirstName(form[lan.update.firstName[1]], errors != undefined ? errors[lan.update.firstName[1]] : ""))
         flag = false;
-    if (!checkLastName(form[lan.update.lastName[1]], errors[lan.update.lastName[1]]))
+    if (!checkLastName(form[lan.update.lastName[1]], errors != undefined ? errors[lan.update.lastName[1]] : ""))
         flag = false;
-    if (!checkDate(form[lan.update.birthDate[1]], errors[lan.update.birthDate[1]]))
+    if (!checkDate(form[lan.update.birthDate[1]], errors != undefined ? errors[lan.update.birthDate[1]] : ""))
         flag = false;
     return (flag);
 }

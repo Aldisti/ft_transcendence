@@ -25,3 +25,17 @@ window.decode64 = function (base64String) {
     const decodedData = atob(base64String);
     return decodeURIComponent(escape(decodedData));
 }
+
+window.test = function()
+{
+    console.log("test")
+    const reader = new FileReader();
+    let file = document.querySelector("#inpFile").files[0];
+    document.querySelector("#labelInpFile").innerHTML = `<img class="fileIcon" src="/imgs/fileIcon.png"><span class="selectFileText">${file.name}</span>`
+    reader.onload = function (event){
+        console.log(event)
+        document.querySelector(".updateImgForm").src = event.target.result;
+
+    }
+    reader.readAsDataURL(file);
+}

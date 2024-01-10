@@ -28,6 +28,11 @@ export default class extends Aview {
                     	</div>
                 	</div>
             	</div>
+                <div class="loginError">
+                    <p>
+                        ${this.language.login.error}
+                    </p>
+                </div>
             	<div class="linebtn">
                 	<a class="retroBtn retroShade btnColor-yellow" href="/signup" data-link>${this.language.login.register}</a>
                 	<a class="retroBtn intraBtn retroShade btnColor-blue" href="#">${this.language.login.intraLogin}</a>

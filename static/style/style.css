@@ -62,7 +62,8 @@ html, body
 #app
 {
     width: 100svw;
-    height: 94svh;
+    min-height: 94svh;
+    height: fit-content;
 }
 
 .account
