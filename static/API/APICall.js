@@ -126,14 +126,23 @@ export async function updateInfo(data, recursionProtection) {
     return (body);
 }
 
-export async function updatePassword(data) {
+export async function updatePassword(recursionProtection, data) {
     const rest = await fetch(URL.userAction.UPDATE_PASSWORD, {
         method: "POST",
+        credentials: "include",
         headers: {
+            Autorization: `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "application/json"
         },
         body: JSON.stringify(data),
     })
+    if (res.status == 401 && recursionProtection) {
+        refreshToken().then(res => {
+            if (res.ok)
+                updatePassword(0, data);
+        })
+        return;
+    }
     return (rest);
 }
 
@@ -206,5 +215,9 @@ export async function uploadImage(recursionProtection, file){
             if (res.ok)
                 uploadImage(0, file);
         })
+    }
+    if (res.ok)
+    {
+        window.location.reload();
     }
 }

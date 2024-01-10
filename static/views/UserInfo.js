@@ -181,8 +181,8 @@ export default class extends Aview {
     preparePasswordForm(form) {
         console.log(form)
         let ret = {
-            [this.language.update.oldPassword[1]]: sha256(form[this.language.update.oldPassword[1]].value),
-            [this.language.update.newPassword[1]]: sha256(form[this.language.update.newPassword[1]].value),
+            password: sha256(form[this.language.update.oldPassword[1]].value),
+            new_password: sha256(form[this.language.update.newPassword[1]].value),
         }
         return (ret);
     }
@@ -228,7 +228,8 @@ export default class extends Aview {
 
         //will perfom check for password
         if (this.selectedForm == "password" && controls.checkChangePasswordForm(form, this.errors)) {
-            API.updatePassword(this.preparePasswordForm(form)).then((res) => {
+            console.log(this.preparePasswordForm(form))
+            API.updatePassword(this.preparePasswordForm(1, form)).then((res) => {
                 if (!res.ok) {
                     document.querySelector(`#${this.language.update.oldPassword[1]}-tooltip`).innerHTML = this.language.update.passwordErrors[0];
                     document.querySelectorAll("input")[0].style.backgroundColor = "#A22C29";
@@ -239,7 +240,7 @@ export default class extends Aview {
 
         //will perfom check for picture
         if (this.selectedForm == "picture")
-            API.uploadImage(1, form.inpFile);
+            API.uploadImage(1, form.inpFile)
     }
 
     collectData() {

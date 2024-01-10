@@ -19,7 +19,7 @@ export const userAction = {
     UPDATE_INFO: `http://${ip}:${port}/users/info/update/`,
     UPDATE_PHOTO: `http://${ip}:${port}/users/image/upload/`,
     UPDATE_EMAIL: `http://${ip}:${port}/register`,
-    UPDATE_PASSWORD: `http://${ip}:${port}/password`,
+    UPDATE_PASSWORD: `http://${ip}:${port}/users/password/update/`,
 
     TEST: `http://${ip}:${port}/users`
 }
