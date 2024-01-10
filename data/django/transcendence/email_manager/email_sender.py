@@ -93,7 +93,7 @@ def send_tfa_code_email(user_tfa: UserTFA) -> None:
     title = "OTP code"
     head = f"Dear {user_tfa.user.username},\nthis is your otp code\n"
     body = head + "Please insert it in 5 minutes"
-    code = TOTP(user_tfa.otp_token, interval=300).now()
+    code = TOTP(user_tfa.otp_token, interval=180).now()
     company = "Trinity"
 
     # email_message = generate_email(title, body, url, company)

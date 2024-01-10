@@ -18,8 +18,8 @@ GOOGLE_CLIENT_ID = "608692791188-2nkebjcfel5f7n5mlsvmtd1662i6bebl.apps.googleuse
 GOOGLE_CLIENT_SECRET = "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"
 
 # 42Intra redirect URIs
-INTRA_LOGIN_REDIRECT_URI = "http://localhost:8000/oauth2/intra/login/callback/"
-INTRA_LINK_REDIRECT_URI = "http://localhost:8000/oauth2/intra/link/callback/"
+INTRA_LOGIN_REDIRECT_URI = "http://localhost:8000/oauth2/intra/callback/login/"
+INTRA_LINK_REDIRECT_URI = "http://localhost:8000/oauth2/intra/callback/link/"
 INTRA_REDIRECT_URI = "http://localhost:8000/oauth2/intra/callback/"
 
 # Google redirect URIs

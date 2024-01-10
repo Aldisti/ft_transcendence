@@ -65,7 +65,7 @@ def password_reset(request):
 @api_view(['GET'])
 @permission_classes([])
 def send_otp_code(request) -> Response:
-    if request.user is not None:
+    if request.auth is not None:
         user_tfa = request.user.user_tfa
     else:
         url_token = request.query_params.get("token")

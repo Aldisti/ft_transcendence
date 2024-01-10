@@ -1,10 +1,9 @@
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from rest_framework import status
 from rest_framework.decorators import APIView, api_view, permission_classes, throttle_classes
 from rest_framework.response import Response
 
 from oauth2.settings import *
-from oauth2.utils import shrink_dict
 from oauth2.models import UserIntra
 
 from authentication.serializers import TokenPairSerializer as Tokens
@@ -16,6 +15,10 @@ from random import SystemRandom
 from datetime import datetime
 from base64 import b64encode
 import requests
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 class IntraCallback(APIView):
@@ -23,15 +26,29 @@ class IntraCallback(APIView):
     throttle_scope = 'medium_load'
 
     def get(self, request) -> Response:
+        logger.warning(request.query_params)
+        req_type = request.query_params.get('type')
         request_body = USER_INFO_DATA.copy()
         request_body['code'] = request.GET.get('code')
         request_body['state'] = request.GET.get('state')
-        if unquote(request_body['state']) != request.COOKIES.get('state_token'):
-            return Response('invalid state, csrf suspected', status=status.HTTP_403_FORBIDDEN)
+        # TODO: find a solution to check the state against csrf
+        # if unquote(request_body['state']) != request.COOKIES.get('state_token'):
+        #     return Response('invalid state, csrf suspected', status=status.HTTP_403_FORBIDDEN)
         api_response = requests.post(INTRA_TOKEN, json=request_body)
         if api_response.status_code != 200:
-            return Response(f"api error: {api_response.status_code}", status=500)
-        response = Response('received authorization', status=200)
+            return Response(data={
+                'message': f"api error: {api_response.status_code}"
+            }, status=500)
+        if req_type == 'login':
+            location_url = 'http://localhost:4200/login'
+        elif req_type == 'link':
+            location_url = 'http://localhost:4200/userinfo'
+        else:
+            return Response(data={'message': 'invalid type'}, status=400)
+        response = Response(
+            status=status.HTTP_307_TEMPORARY_REDIRECT,
+            headers={'Location': location_url}
+        )
         response.set_cookie('state_token', 'deleted', max_age=0)
         response.set_cookie(
             key='api_token',
@@ -49,13 +66,16 @@ class IntraUrl(APIView):
     throttle_scope = 'low_load'
 
     def get(self, request) -> Response:
+        req_type = request.query_params.get('type')
+        if req_type not in ['login', 'link']:
+            return Response(data={'message': 'invalid type'}, status=400)
         state = b64encode(SystemRandom().randbytes(64)).decode('utf-8')
         url = (f"{INTRA_AUTH}?"
                f"client_id={INTRA_CLIENT_ID}&"
-               f"redirect_uri={quote(INTRA_REDIRECT_URI)}&"
+               f"redirect_uri={quote(INTRA_REDIRECT_URI)}?type={req_type}&"
                f"response_type={RESPONSE_TYPE}&"
                f"state={quote(state)}")
-        response = Response({'url': url}, status=200)
+        response = Response(data={'url': url}, status=200)
         response.set_cookie(
             key='state_token',
             value=state,
@@ -73,14 +93,16 @@ def intra_link(request) -> Response:
     headers = {'Authorization': f"Bearer {request.COOKIES['api_token']}"}
     api_response = requests.get(INTRA_USER_INFO, headers=headers)
     if api_response.status_code != 200:
-        return Response(f"api error: {api_response.status_code}", status=500)
+        return Response(data={
+            'message': f"api error: {api_response.status_code}"
+        }, status=500)
     name, email = api_response.json()['login'], api_response.json()['email']
     del api_response
     try:
         UserIntra.objects.create(user=request.user, name=name, email=email)
-        return Response('user linked', status=200)
+        return Response(status=200)
     except ValidationError:
-        return Response('user already linked', status=status.HTTP_400_BAD_REQUEST)
+        return Response(data={'message': 'user already linked'}, status=400)
 
 
 @api_view(['POST'])
@@ -90,14 +112,22 @@ def intra_login(request) -> Response:
     headers = {'Authorization': f"Bearer {request.COOKIES['api_token']}"}
     api_response = requests.get(INTRA_USER_INFO, headers=headers)
     if api_response.status_code != 200:
-        return Response(f"api error: {api_response.status_code}", status=500)
+        return Response(data={
+            'message': f"api error: {api_response.status_code}"
+        }, status=500)
     name, email = api_response.json()['login'], api_response.json()['email']
     del api_response
-    user_intra = UserIntra.objects.get(pk=name, email=email)
+    try:
+        user_intra = UserIntra.objects.get(pk=name, email=email)
+    except ObjectDoesNotExist:
+        return Response({'message': 'user not linked'}, status=404)
     if user_intra is not None:
         refresh_token = Tokens.get_token(user_intra.user)
         exp = datetime.fromtimestamp(refresh_token['exp'], tz=TZ) - datetime.now(tz=TZ)
-        response = Response({'access_token': f"Bearer {str(refresh_token.access_token)}"}, status=200)
+        response = Response({
+            'username': user_intra.user.username,
+            'access_token': f"Bearer {str(refresh_token.access_token)}"
+        }, status=200)
         response.set_cookie('api_token', 'deleted', max_age=0)
         response.set_cookie(
             key='refresh_token',
@@ -108,4 +138,4 @@ def intra_login(request) -> Response:
             samesite=None,
         )
         return response
-    return Response('invalid credentials', status=status.HTTP_400_BAD_REQUEST)
+    return Response('invalid credentials', status=400)

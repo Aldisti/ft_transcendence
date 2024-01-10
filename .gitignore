@@ -12,6 +12,8 @@ srcs/docker-compose.yml
 **/images/*
 .*~
 .**~
+.*bkp
+.**bkp
 
 
 # Byte-compiled / optimized / DLL files

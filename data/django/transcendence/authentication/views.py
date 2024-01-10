@@ -25,12 +25,17 @@ class LogoutView(APIView):
     throttle_scope = 'auth'
 
     def get(self, request) -> Response:
+<<<<<<< HEAD
         logger.warning(f"token: {request.COOKIES}")
+=======
+>>>>>>> origin/adi-stef
         refresh_token = RefreshToken(request.COOKIES.get('refresh_token'))
+        if refresh_token is None:
+            return Response(data={'message': 'no token found'}, status=401)
         try:
             JwtToken.objects.create(refresh_token)
         except TokenError:
-            return Response("Invalid token", status=status.HTTP_400_BAD_REQUEST)
+            return Response(data={'message': "invalid token"}, status=403)
         response = Response(status=200)
         response.set_cookie(
             key="refresh_token",
@@ -45,21 +50,21 @@ class LoginView(APIView):
     permission_classes = []
 
     def post(self, request) -> Response:
-        error_response = Response(data={'message': 'invalid username or password'},status=400)
+        error_response = Response(data={
+            'message': 'invalid username or password'
+        }, status=400)
         user_serializer = UserSerializer(data=request.data)
-        if not user_serializer.is_valid():
-            return error_response
+        user_serializer.is_valid(raise_exception=True)
         user = User.objects.get(pk=user_serializer.validated_data['username'])
         if not user.check_password(user_serializer.validated_data['password']):
             return error_response
         if not user.active:
             return Response({'message': "user isn't active"}, status=400)
-        if user.user_tfa.type in UserTFA.TYPES.values():
+        if user.user_tfa.is_active():
             user_tfa = UserTFA.objects.generate_url_token(user.user_tfa)
             return Response(data={
-                'message': 'complete 2fa login',
-                'token': user_tfa.token,
-                '2fa_type': user_tfa.type,
+                'token': user_tfa.url_token,
+                'type': user_tfa.type,
             }, status=200)
         refresh_token = TokenPairSerializer.get_token(user)
         exp = datetime.fromtimestamp(refresh_token['exp'], tz=TZ) - datetime.now(tz=TZ)
@@ -75,31 +80,30 @@ class LoginView(APIView):
         return response
 
 
-
 class RefreshView(APIView):
     throttle_scope = 'auth'
     permission_classes = []
 
-    def post(self, request) -> Response:
+    def get(self, request) -> Response:
+        error_response = Response(status=403)
+        error_response.set_cookie('refresh_token', 'deleted', max_age=0)
         if request.auth is not None:
-            return Response(
-                'cannot refresh with valid access_token',
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response(data={
+                'message': 'cannot refresh with valid access token'
+            }, status=400)
         try:
             token = RefreshToken(request.COOKIES.get('refresh_token'))
+            if token is None:
+                return Response(data={'message': 'no token found'}, status=401)
             if JwtToken.objects.filter(token=token['csrf']).exists():
                 raise TokenError()
             if User.objects.get(pk=token['username']).active is False:
-                return Response("user isn't active", status=status.HTTP_400_BAD_REQUEST)
+                error_response.data({'message': "user isn't active"})
+                return error_response
             return Response({'access_token': str(token.access_token)}, status=200)
         except TokenError:
-            response = Response(
-                'invalid refresh token',
-                status=status.HTTP_400_BAD_REQUEST
-            )
-            response.set_cookie('refresh_token', "deleted", max_age=0)
-            return response
+            error_response.data(data={'message': 'invalid refresh token'})
+            return error_response
 
 
 #@api_view(['GET', 'POST'])
