@@ -11,7 +11,7 @@ from string import ascii_lowercase, digits
 from uuid import uuid4
 
 
-class UserTwoFactorAuthManager(BaseManager):
+class UserTwoFactorAuthManager(Manager):
     def create(self, user: User, **kwargs):
         kwargs.setdefault('otp_token', "")
         kwargs.setdefault('url_token', "")
@@ -22,25 +22,25 @@ class UserTwoFactorAuthManager(BaseManager):
         user_tfa.save()
         return user_tfa
 
-    def activating(self, user_tfa, **kwargs):
-        kwargs.setdefault('type', UserTFA.A_SOFTWARE)
-
-        if user_tfa.type in UserTFA.TYPES.values():
+    def activating(self, user_tfa, tfa_type: str):
+        if tfa_type is None or tfa_type == "" or tfa_type not in UserTFA.TFA_CHOICES:
+            raise ValidationError("invalid 2fa type")
+        if user_tfa.is_active():
             raise ValidationError("2fa already active")
-        user_tfa.type = kwargs['type']
+        user_tfa.type = tfa_type.lower()
         user_tfa.otp_token = random_base32()
         user_tfa.full_clean()
         user_tfa.save()
         return user_tfa
 
     def activate(self, user_tfa):
-        user_tfa.type = UserTFA.TYPES[user_tfa.type]
+        user_tfa.type = user_tfa.type.upper()
         user_tfa.full_clean()
         user_tfa.save()
         return user_tfa
 
     def deactivate(self, user_tfa):
-        if user_tfa.type == UserTFA.NONE:
+        if not user_tfa.is_active():
             raise ValidationError("2fa not active")
         user_tfa.type = UserTFA.NONE
         user_tfa.otp_token = ""
@@ -94,12 +94,6 @@ class UserTFA(models.Model):
         A_EMAIL: "Activating Email Token",
         NONE: "None ",
     }
-    # TODO: replace this dict creating some functions in this class
-    # https://docs.djangoproject.com/en/4.2/topics/db/models/#model-methods
-    TYPES = {
-        A_SOFTWARE: SOFTWARE,
-        A_EMAIL: EMAIL,
-    }
 
     user = models.OneToOneField(
         to=User,
@@ -129,6 +123,22 @@ class UserTFA(models.Model):
     )
 
     objects = UserTwoFactorAuthManager()
+
+    def is_active(self) -> bool:
+        return ((self.type == self.EMAIL or self.type == self.SOFTWARE)
+                and self.otp_token != "")
+
+    def is_inactive(self) -> bool:
+        return self.type == self.NONE or self.otp_token == ""
+
+    def is_activating(self) -> bool:
+        return self.type == self.A_EMAIL or self.type == self.A_SOFTWARE
+
+    def is_email(self) -> bool:
+        return self.type == self.EMAIL or self.type == self.A_EMAIL
+
+    def is_software(self) -> bool:
+        return self.type == self.SOFTWARE or self.type == self.A_SOFTWARE
 
     class Meta:
         db_table = "user_tfa"

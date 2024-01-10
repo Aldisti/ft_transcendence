@@ -18,9 +18,9 @@ import pyotp
 
 
 def verify_otp_code(user_tfa: UserTFA, code: str) -> bool:
-    if user_tfa.type == UserTFA.EMAIL or user_tfa.type == UserTFA.A_EMAIL:
+    if user_tfa.is_email():
         totp = pyotp.TOTP(user_tfa.otp_token, interval=180)
-    elif user_tfa.type == UserTFA.SOFTWARE or user_tfa.type == UserTFA.A_SOFTWARE:
+    elif user_tfa.is_software():
         totp = pyotp.TOTP(user_tfa.otp_token)
     else:
         return False
@@ -34,36 +34,36 @@ class ManageView(APIView):
         user_tfa = request.user.user_tfa
         data = {
             'username': user_tfa.user.username,
-            'is_active': True if user_tfa.type in UserTFA.TYPES.values() else False,
+            'is_active': user_tfa.is_active(),
         }
         if not data['is_active']:
             return Response(data=data, status=200)
         data['type'] = user_tfa.type
-        data['otp_token'] = user_tfa.otp_token
         return Response(data=data, status=200)
 
     def post(self, request) -> Response:
         tfa_type = request.data.get('type', '').lower()
-        if tfa_type not in UserTFA.TYPES.keys():
-            return Response(data={'message': 'invalid type', 'type': tfa_type}, status=400)
         user_tfa = request.user.user_tfa
         # try:
-        user_tfa = UserTFA.objects.activating(user_tfa, type=tfa_type)
+        user_tfa = UserTFA.objects.activating(user_tfa, tfa_type=tfa_type)
         # except ValidationError as e:
         #     return Response(data={'message': e.message}, status=400)
-        if user_tfa.type == UserTFA.A_EMAIL:
+        if user_tfa.is_email():
             return Response(data={'message': 'request email'}, status=200)
         uri = (pyotp.totp.TOTP(user_tfa.otp_token)
                .provisioning_uri(name=user_tfa.user.email, issuer_name='Transcendence'))
         return Response({'uri': uri, 'token': user_tfa.otp_token}, status=200)
 
     def delete(self, request) -> Response:
+        user_tfa = request.user.user_tfa
+        if user_tfa.is_inactive():
+            return Response(data={'message': '2fa not active'}, status=400)
         code = request.data.get('code', None)
         if code is None:
             return Response(data={'message': 'code is missing'}, status=400)
-        user_tfa = request.user.user_tfa
         if verify_otp_code(user_tfa, code):
-            UserTFA.objects.deactivate(user_tfa)
+            user_tfa = UserTFA.objects.deactivate(user_tfa)
+            OtpCode.objects.delete_codes(user_tfa)
             return Response(status=200)
         return Response(data={'message': 'invalid code'}, status=400)
 
@@ -124,7 +124,7 @@ def validate_activate(request) -> Response:
     if code is None:
         return Response(data={'message': 'missing code'}, status=400)
     user_tfa = request.user.user_tfa
-    if user_tfa.type not in UserTFA.TYPES.keys():
+    if not user_tfa.is_activating():
         return Response(data={
             'message': "2fa activation process not started yet",
         }, status=400)
