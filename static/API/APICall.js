@@ -186,7 +186,7 @@ export async function getIntraUrl() {
     return ("");
 }
 
-export async function uploadImage(file){
+export async function uploadImage(recursionProtection, file){
     const form = new FormData();
 
     if (file.files > 0){
@@ -200,4 +200,11 @@ export async function uploadImage(file){
         credentials: "include",
         body: form
     })
+    if (res.status == 401 && recursionProtection)
+    {
+        refreshToken().then(res=>{
+            if (res.ok)
+                uploadImage(0, file);
+        })
+    }
 }
