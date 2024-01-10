@@ -2,21 +2,21 @@ import Router from "/router/mainRouterFunc.js"
 import * as URL from "/API/URL.js"
 
 export async function checkForUsernameAvailability(username) {
-    const res = await fetch(`${URL.availabilityCheck.USERNAME}?search=${username}`, {
+    const res = await fetch(`${URL.availabilityCheck.USERNAME}?username=${username}`, {
         method: "GET",
     })
     let temp = await res.json()
-    if (temp.count == 0)
+    if (temp.found == false)
         return (true);
     return (false)
 }
 
 export async function checkForEmailAvailability(email) {
-    const res = await fetch(`${URL.availabilityCheck.EMAIL}?search=${email}`, {
+    const res = await fetch(`${URL.availabilityCheck.EMAIL}?email=${email}`, {
         method: "GET",
     })
     let temp = await res.json()
-    if (temp.count == 0)
+    if (temp.found == false)
         return (true);
     return (false)
 }

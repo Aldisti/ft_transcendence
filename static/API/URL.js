@@ -2,8 +2,8 @@ let ip = "localhost";
 let port = "8000";
 
 export const availabilityCheck = {
-    USERNAME: `http://${ip}:${port}/users/`,
-    EMAIL: `http://${ip}:${port}/users/`,
+    USERNAME: `http://${ip}:${port}/users/check/`,
+    EMAIL: `http://${ip}:${port}/users/check/`,
 }
 
 export const general = {
