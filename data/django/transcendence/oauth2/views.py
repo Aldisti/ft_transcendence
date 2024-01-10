@@ -15,6 +15,10 @@ from random import SystemRandom
 from datetime import datetime
 from base64 import b64encode
 import requests
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 class IntraCallback(APIView):
@@ -22,6 +26,8 @@ class IntraCallback(APIView):
     throttle_scope = 'medium_load'
 
     def get(self, request) -> Response:
+        logger.warning(request.query_params)
+        req_type = request.query_params.get('type')
         request_body = USER_INFO_DATA.copy()
         request_body['code'] = request.GET.get('code')
         request_body['state'] = request.GET.get('state')
@@ -33,9 +39,15 @@ class IntraCallback(APIView):
             return Response(data={
                 'message': f"api error: {api_response.status_code}"
             }, status=500)
+        if req_type == 'login':
+            location_url = 'http://localhost:4200/login'
+        elif req_type == 'link':
+            location_url = 'http://localhost:4200/userinfo'
+        else:
+            return Response(data={'message': 'invalid type'}, status=400)
         response = Response(
             status=status.HTTP_307_TEMPORARY_REDIRECT,
-            headers={'Location': 'http://localhost:4200/login'}
+            headers={'Location': location_url}
         )
         response.set_cookie('state_token', 'deleted', max_age=0)
         response.set_cookie(
@@ -54,10 +66,13 @@ class IntraUrl(APIView):
     throttle_scope = 'low_load'
 
     def get(self, request) -> Response:
+        req_type = request.query_params.get('type')
+        if req_type not in ['login', 'link']:
+            return Response(data={'message': 'invalid type'}, status=400)
         state = b64encode(SystemRandom().randbytes(64)).decode('utf-8')
         url = (f"{INTRA_AUTH}?"
                f"client_id={INTRA_CLIENT_ID}&"
-               f"redirect_uri={quote(INTRA_REDIRECT_URI)}&"
+               f"redirect_uri={quote(INTRA_REDIRECT_URI)}?type={req_type}&"
                f"response_type={RESPONSE_TYPE}&"
                f"state={quote(state)}")
         response = Response(data={'url': url}, status=200)
