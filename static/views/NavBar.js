@@ -1,7 +1,8 @@
 import allLanguage from "/language/language.js"
+import * as API from "/API/APICall.js"
 
 let language = allLanguage[localStorage.getItem("language")];
-
+let defaultProfilePicture = "https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg";
 document.querySelector("#navbar").innerHTML = `
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark" >
     <div class="container-fluid">
@@ -28,11 +29,11 @@ document.querySelector("#navbar").innerHTML = `
             <span>
                 ${localStorage.getItem("username") == undefined ? "" : localStorage.getItem("username")}
             </span>
-            <img src="https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg" alt="">
+            <img class="profilePictureUrl" src="${defaultProfilePicture}" alt="">
           </button>
           <ul class="dropdown-menu dropdown-menu-end bg-dark" aria-labelledby="dropdownMenuButton1">
             <li>
-            ${language.navbar.changeLanguage}
+              ${language.navbar.changeLanguage}
               <select name="language" id="languageSwitch">
                 <option value="en">en</option>
                 <option value="ita">ita</option>
@@ -51,3 +52,7 @@ document.querySelector("#navbar").innerHTML = `
     </div>
     </nav>
 `
+API.getUserInfo(1).then(res=>{
+  if (res.picture != null)
+    document.querySelector(".profilePictureUrl").src = res.picture;
+})

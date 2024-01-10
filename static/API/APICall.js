@@ -50,7 +50,7 @@ export async function getUserInfo(recursionProtection) {
 export async function login(data) {
     const res = await fetch(URL.userAction.LOGIN, {
         method: "POST",
-        // credentials: "include",
+        credentials: "include",
         headers: {
             "Content-Type": "application/json"
         },
@@ -102,7 +102,7 @@ export async function register(data) {
 
 export async function updateInfo(data, recursionProtection) {
     const res = await fetch(URL.userAction.UPDATE_INFO, {
-        method: "POST",
+        method: "PUT",
         credentials: "include",
         headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -179,10 +179,25 @@ export async function getIntraUrl() {
     const res = await fetch(URL.general.INTRA_URL, {
         method: "GET",
     });
-    console.log(res)
     if (res.ok) {
         let temp = await res.json();
         return (temp.url);
     }
     return ("");
+}
+
+export async function uploadImage(file){
+    const form = new FormData();
+
+    if (file.files > 0){
+        form.append("image", file.files[0]);
+    }
+    const res = await fetch(URL.userAction.UPDATE_PHOTO, {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        credentials: "include",
+        body: form
+    })
 }

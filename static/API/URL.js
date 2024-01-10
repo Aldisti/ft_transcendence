@@ -17,6 +17,7 @@ export const userAction = {
     LOGOUT: `http://${ip}:${port}/auth/logout/`,
     REGISTER: `http://${ip}:${port}/register/`,
     UPDATE_INFO: `http://${ip}:${port}/users/info/update/`,
+    UPDATE_PHOTO: `http://${ip}:${port}/users/image/upload/`,
     UPDATE_EMAIL: `http://${ip}:${port}/register`,
     UPDATE_PASSWORD: `http://${ip}:${port}/password`,
 
