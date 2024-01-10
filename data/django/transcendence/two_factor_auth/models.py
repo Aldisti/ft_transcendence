@@ -1,5 +1,6 @@
-from django.contrib.auth.base_user import BaseUserManager
+
 from django.core.exceptions import ValidationError
+from django.db.models.manager import BaseManager
 from django.db import models
 
 from accounts.models import User
@@ -8,7 +9,7 @@ from pyotp import random_base32
 from uuid import uuid4
 
 
-class UserTwoFactorAuthManager(BaseUserManager):
+class UserTwoFactorAuthManager(BaseManager):
     def create(self, user: User, **kwargs):
         kwargs.setdefault('otp_token', "")
         kwargs.setdefault('url_token', "")
@@ -24,8 +25,6 @@ class UserTwoFactorAuthManager(BaseUserManager):
 
         if user_tfa.type in UserTFA.TYPES.values():
             raise ValidationError("2fa already active")
-        elif user_tfa.type in UserTFA.TYPES.keys():
-            raise ValidationError("2fa activation process already started")
         user_tfa.type = kwargs['type']
         user_tfa.otp_token = random_base32()
         user_tfa.full_clean()

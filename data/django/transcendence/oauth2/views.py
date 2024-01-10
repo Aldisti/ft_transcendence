@@ -4,7 +4,6 @@ from rest_framework.decorators import APIView, api_view, permission_classes, thr
 from rest_framework.response import Response
 
 from oauth2.settings import *
-from oauth2.utils import shrink_dict
 from oauth2.models import UserIntra
 
 from authentication.serializers import TokenPairSerializer as Tokens
@@ -26,12 +25,15 @@ class IntraCallback(APIView):
         request_body = USER_INFO_DATA.copy()
         request_body['code'] = request.GET.get('code')
         request_body['state'] = request.GET.get('state')
-        if unquote(request_body['state']) != request.COOKIES.get('state_token'):
-            return Response('invalid state, csrf suspected', status=status.HTTP_403_FORBIDDEN)
+        # TODO: find a solution to check the state against csrf
+        # if unquote(request_body['state']) != request.COOKIES.get('state_token'):
+        #     return Response('invalid state, csrf suspected', status=status.HTTP_403_FORBIDDEN)
         api_response = requests.post(INTRA_TOKEN, json=request_body)
         if api_response.status_code != 200:
-            return Response(f"api error: {api_response.status_code}", status=500)
-        response = Response('received authorization', status=200)
+            return Response(data={
+                'message': f"api error: {api_response.status_code}"
+            }, status=500)
+        response = Response(status=200)
         response.set_cookie('state_token', 'deleted', max_age=0)
         response.set_cookie(
             key='api_token',
@@ -55,7 +57,7 @@ class IntraUrl(APIView):
                f"redirect_uri={quote(INTRA_REDIRECT_URI)}&"
                f"response_type={RESPONSE_TYPE}&"
                f"state={quote(state)}")
-        response = Response({'url': url}, status=200)
+        response = Response(data={'url': url}, status=200)
         response.set_cookie(
             key='state_token',
             value=state,
@@ -73,14 +75,16 @@ def intra_link(request) -> Response:
     headers = {'Authorization': f"Bearer {request.COOKIES['api_token']}"}
     api_response = requests.get(INTRA_USER_INFO, headers=headers)
     if api_response.status_code != 200:
-        return Response(f"api error: {api_response.status_code}", status=500)
+        return Response(data={
+            'message': f"api error: {api_response.status_code}"
+        }, status=500)
     name, email = api_response.json()['login'], api_response.json()['email']
     del api_response
     try:
         UserIntra.objects.create(user=request.user, name=name, email=email)
-        return Response('user linked', status=200)
+        return Response(status=200)
     except ValidationError:
-        return Response('user already linked', status=status.HTTP_400_BAD_REQUEST)
+        return Response(data={'message': 'user already linked'}, status=400)
 
 
 @api_view(['POST'])
@@ -90,14 +94,18 @@ def intra_login(request) -> Response:
     headers = {'Authorization': f"Bearer {request.COOKIES['api_token']}"}
     api_response = requests.get(INTRA_USER_INFO, headers=headers)
     if api_response.status_code != 200:
-        return Response(f"api error: {api_response.status_code}", status=500)
+        return Response(data={
+            'message': f"api error: {api_response.status_code}"
+        }, status=500)
     name, email = api_response.json()['login'], api_response.json()['email']
     del api_response
     user_intra = UserIntra.objects.get(pk=name, email=email)
     if user_intra is not None:
         refresh_token = Tokens.get_token(user_intra.user)
         exp = datetime.fromtimestamp(refresh_token['exp'], tz=TZ) - datetime.now(tz=TZ)
-        response = Response({'access_token': f"Bearer {str(refresh_token.access_token)}"}, status=200)
+        response = Response({
+            'access_token': f"Bearer {str(refresh_token.access_token)}"
+        }, status=200)
         response.set_cookie('api_token', 'deleted', max_age=0)
         response.set_cookie(
             key='refresh_token',

@@ -14,6 +14,10 @@ class UserAuthThrottle(UserRateThrottle):
     scope = 'auth'
 
 
+class AuthThrottle(UserRateThrottle):
+    scope = 'auth'
+
+
 class HighLoadThrottle(UserRateThrottle):
     scope = 'high_load'
 
