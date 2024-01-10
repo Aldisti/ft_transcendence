@@ -21,13 +21,15 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+
+
 class IntraCallback(APIView):
     permission_classes = []
     throttle_scope = 'medium_load'
 
-    def get(self, request) -> Response:
-        logger.warning(request.query_params)
-        req_type = request.query_params.get('type')
+    def get(self, request, req_type: str) -> Response:
+        # logger.warning(request.query_params)
+        # req_type = request.query_params.get('type')
         request_body = USER_INFO_DATA.copy()
         request_body['code'] = request.GET.get('code')
         request_body['state'] = request.GET.get('state')
@@ -72,7 +74,7 @@ class IntraUrl(APIView):
         state = b64encode(SystemRandom().randbytes(64)).decode('utf-8')
         url = (f"{INTRA_AUTH}?"
                f"client_id={INTRA_CLIENT_ID}&"
-               f"redirect_uri={quote(INTRA_REDIRECT_URI + '?type=' + req_type)}&"
+               f"redirect_uri={quote(INTRA_REDIRECT_URI)}{req_type}/&"
                f"response_type={RESPONSE_TYPE}&"
                f"state={quote(state)}")
         response = Response(data={'url': url}, status=200)
