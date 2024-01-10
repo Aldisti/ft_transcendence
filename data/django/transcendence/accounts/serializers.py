@@ -13,14 +13,12 @@ logger = logging.getLogger(__name__)
 
 
 class UploadImageSerializer(serializers.Serializer):
-    username = serializers.CharField(validators=[RegexValidator("^[A-Za-z0-9!?*$~_-]{5,32}$")])
     image = serializers.FileField(max_length=50, validators=[image_validator])
 
-    def save_image(self, validated_data):
-        username = validated_data["username"]
+    def save_image(self, user, validated_data):
         image = validated_data["image"]
-        user = User.objects.get(pk=username)
-        user_info = UserInfo.objects.get(pk=user)
+        #user_info = UserInfo.objects.get(pk=user)
+        user_info = user.user_info
         user_info = UserInfo.objects.update_picture(user_info, picture=image)
         return user_info
 
