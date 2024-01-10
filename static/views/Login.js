@@ -43,6 +43,7 @@ export default class extends Aview {
         `
     }
     setup() {
+        new window.QRCode(document.getElementById("qrcode"), "http://localhost:4200/home")
         API.convertIntraToken().then(res=>{
             if (!res)
             {
