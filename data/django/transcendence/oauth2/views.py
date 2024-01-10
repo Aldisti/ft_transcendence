@@ -120,4 +120,4 @@ def intra_login(request) -> Response:
             samesite=None,
         )
         return response
-    return Response('invalid credentials', status=status.HTTP_400_BAD_REQUEST)
+    return Response('invalid credentials', status=400)
