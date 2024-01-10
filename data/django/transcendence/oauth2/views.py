@@ -28,7 +28,6 @@ class IntraCallback(APIView):
     throttle_scope = 'medium_load'
 
     def get(self, request, req_type: str) -> Response:
-        # logger.warning(request.query_params)
         # req_type = request.query_params.get('type')
         request_body = USER_INFO_DATA.copy()
         request_body['code'] = request.GET.get('code')
@@ -37,6 +36,7 @@ class IntraCallback(APIView):
         # if unquote(request_body['state']) != request.COOKIES.get('state_token'):
         #     return Response('invalid state, csrf suspected', status=status.HTTP_403_FORBIDDEN)
         api_response = requests.post(INTRA_TOKEN, json=request_body)
+        logger.warning(api_response.json())
         if api_response.status_code != 200:
             return Response(data={
                 'message': f"api error: {api_response.status_code}"
@@ -74,7 +74,7 @@ class IntraUrl(APIView):
         state = b64encode(SystemRandom().randbytes(64)).decode('utf-8')
         url = (f"{INTRA_AUTH}?"
                f"client_id={INTRA_CLIENT_ID}&"
-               f"redirect_uri={quote(INTRA_REDIRECT_URI)}{req_type}/&"
+               f"redirect_uri={quote(INTRA_REDIRECT_URI + req_type + '/')}&"
                f"response_type={RESPONSE_TYPE}&"
                f"state={quote(state)}")
         response = Response(data={'url': url}, status=200)
