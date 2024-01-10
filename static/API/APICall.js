@@ -189,7 +189,7 @@ export async function getIntraUrl() {
 export async function uploadImage(recursionProtection, file){
     const form = new FormData();
 
-    if (file.files > 0){
+    if (file.files.length > 0){
         form.append("image", file.files[0]);
     }
     const res = await fetch(URL.userAction.UPDATE_PHOTO, {
