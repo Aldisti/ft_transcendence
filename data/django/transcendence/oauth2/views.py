@@ -1,4 +1,4 @@
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from rest_framework import status
 from rest_framework.decorators import APIView, api_view, permission_classes, throttle_classes
 from rest_framework.response import Response
@@ -102,7 +102,10 @@ def intra_login(request) -> Response:
         }, status=500)
     name, email = api_response.json()['login'], api_response.json()['email']
     del api_response
-    user_intra = UserIntra.objects.get(pk=name, email=email)
+    try:
+        user_intra = UserIntra.objects.get(pk=name, email=email)
+    except ObjectDoesNotExist:
+        return Response({'message': 'user not linked'}, status=404)
     if user_intra is not None:
         refresh_token = Tokens.get_token(user_intra.user)
         exp = datetime.fromtimestamp(refresh_token['exp'], tz=TZ) - datetime.now(tz=TZ)
