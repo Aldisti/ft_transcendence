@@ -72,7 +72,7 @@ class IntraUrl(APIView):
         state = b64encode(SystemRandom().randbytes(64)).decode('utf-8')
         url = (f"{INTRA_AUTH}?"
                f"client_id={INTRA_CLIENT_ID}&"
-               f"redirect_uri={quote(INTRA_REDIRECT_URI)}?type={req_type}&"
+               f"redirect_uri={quote(INTRA_REDIRECT_URI + '?type=' + req_type)}&"
                f"response_type={RESPONSE_TYPE}&"
                f"state={quote(state)}")
         response = Response(data={'url': url}, status=200)
