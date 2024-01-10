@@ -107,13 +107,13 @@ class UserInfoManager(models.Manager):
         user_info.first_name = kwargs.get("first_name", user_info.first_name)
         user_info.last_name = kwargs.get("last_name", user_info.last_name)
         user_info.birthdate = kwargs.get("birthdate", user_info.birthdate)
-        user_info.picture = kwargs.get("picture", user_info.picture)
+        #user_info.picture = kwargs.get("picture", user_info.picture)
         user_info.full_clean()
         user_info.save()
         return user_info
 
     def update_picture(self, user_info, picture):
-        if user_info.picture.name != "":
+        if user_info.picture.__str__() != "":
             logger.warning(f"found path: {user_info.picture.path}")
             default_storage.delete(user_info.picture.path)
         user_info.picture = picture

@@ -89,14 +89,14 @@ REST_FRAMEWORK = {
         "high_load": "10/minute",
         "medium_load": "30/minute",
         "low_load": "60/minute",
-}
+    }
 }
 
 # Django SimpleJWT
 # https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=1),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 
     "ALGORITHM": "HS256",

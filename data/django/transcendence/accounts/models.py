@@ -10,6 +10,9 @@ from accounts.managers import UserManager, UserInfoManager
 
 import logging
 
+from django.core.files import File
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -97,6 +100,7 @@ class UserInfo(models.Model):
         db_column="picture",
         max_length=100,
         upload_to=upload_user_picture,
+        default="",
         blank=True,
         null=True,
     )
@@ -110,9 +114,8 @@ class UserInfo(models.Model):
         but send the pre_delete and post_delete signals.
         This function catches the pre_delete signal in order to delete the profile image
         """
-        logger.warning("My image delete at model level")
         instance = kwargs.get("instance", None)
-        if instance != None and instance.user_info.picture.name != "":
+        if instance is not None and instance.user_info.picture.__str__() != "":
             default_storage.delete(instance.user_info.picture.path)
 
     def __str__(self):

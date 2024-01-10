@@ -3,7 +3,7 @@ from django.test import TestCase
 from accounts.models import User
 from accounts.models import UserInfo
 from accounts.utils import Roles
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 
 
 # Create your tests here.
@@ -23,8 +23,12 @@ class ModelUserTests(TestCase):
         cls.new_password = "password"
         cls.invalid_role = "dafds"
         cls.role = "M"
-        cls.user = User.objects.create_user("gpanico", "giovanni@gmail.com", "prova")
-        cls.superuser = User.objects.create_superuser("admin", "admin@gmail.com", "prova")
+        user = User.objects.create_user("gpanico", "giovanni@gmail.com", "prova")
+        user.user_info = UserInfo.objects.create(user)
+        cls.user = user
+        superuser = User.objects.create_superuser("admin", "admin@gmail.com", "prova")
+        superuser.user_info = UserInfo.objects.create(superuser)
+        cls.superuser = superuser
 
     def test_valid_user_creation(self):
         self.assertEqual(self.user.email, self.email)
@@ -131,7 +135,7 @@ class ModelUserTests(TestCase):
 
     def test_user_delete(self):
         self.user.delete()
-        with self.assertRaises(User.DoesNotExist):
+        with self.assertRaises(ObjectDoesNotExist):
             User.objects.get(pk=self.username)
 
     def test_valid_superuser_creation(self):
@@ -230,12 +234,10 @@ class ModelUserInfoTests(TestCase):
                                                  first_name=self.first_name,
                                                  last_name=self.last_name,
                                                  birthdate=self.birthdate,
-                                                 picture=self.picture
                                                  )
         self.assertEqual(user_info.first_name, self.first_name)
         self.assertEqual(user_info.last_name, self.last_name)
         self.assertEqual(user_info.birthdate, self.birthdate)
-        self.assertEqual(user_info.picture, self.picture)
 
     def test_invalid_user_info_update(self):
         user_info = UserInfo.objects.create(self.user)
