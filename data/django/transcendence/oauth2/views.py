@@ -33,7 +33,10 @@ class IntraCallback(APIView):
             return Response(data={
                 'message': f"api error: {api_response.status_code}"
             }, status=500)
-        response = Response(status=200)
+        response = Response(
+            status=status.HTTP_307_TEMPORARY_REDIRECT,
+            headers={'Location': 'http://localhost:4200/login'}
+        )
         response.set_cookie('state_token', 'deleted', max_age=0)
         response.set_cookie(
             key='api_token',
@@ -104,6 +107,7 @@ def intra_login(request) -> Response:
         refresh_token = Tokens.get_token(user_intra.user)
         exp = datetime.fromtimestamp(refresh_token['exp'], tz=TZ) - datetime.now(tz=TZ)
         response = Response({
+            'username': user_intra.user.username,
             'access_token': f"Bearer {str(refresh_token.access_token)}"
         }, status=200)
         response.set_cookie('api_token', 'deleted', max_age=0)
