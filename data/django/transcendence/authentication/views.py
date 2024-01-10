@@ -21,7 +21,7 @@ from datetime import datetime
 class LogoutView(APIView):
     throttle_scope = 'auth'
 
-    def post(self, request) -> Response:
+    def get(self, request) -> Response:
         refresh_token = RefreshToken(request.COOKIES.get('refresh_token'))
         if refresh_token is None:
             return Response(data={'message': 'no token found'}, status=401)
@@ -53,7 +53,7 @@ class LoginView(APIView):
             return error_response
         if not user.active:
             return Response({'message': "user isn't active"}, status=400)
-        if user.user_tfa.type in UserTFA.TYPES.values():
+        if user.user_tfa.is_active():
             user_tfa = UserTFA.objects.generate_url_token(user.user_tfa)
             return Response(data={
                 'token': user_tfa.url_token,
@@ -77,7 +77,7 @@ class RefreshView(APIView):
     throttle_scope = 'auth'
     permission_classes = []
 
-    def post(self, request) -> Response:
+    def get(self, request) -> Response:
         error_response = Response(status=403)
         error_response.set_cookie('refresh_token', 'deleted', max_age=0)
         if request.auth is not None:

@@ -207,6 +207,7 @@ AUTH_USER_MODEL = "accounts.User"
 # tmp for testing reasons
 
 CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
 APPEND_SLASH = False
 
 # email
