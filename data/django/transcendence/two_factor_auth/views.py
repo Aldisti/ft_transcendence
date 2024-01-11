@@ -85,7 +85,8 @@ def validate_login(request) -> Response:
         user_tfa = UserTFA.objects.generate_url_token(user_tfa)
         return Response(data={
             'message': 'invalid code',
-            'token': user_tfa.url_token}, status=400)
+            'token': user_tfa.url_token
+        }, status=400)
     user_tfa = UserTFA.objects.delete_url_token(user_tfa)
 
     refresh_token = TokenPairSerializer.get_token(user_tfa.user)
@@ -117,6 +118,7 @@ def validate_recover(request) -> Response:
             'message': 'invalid code',
             'token': user_tfa.url_token}, status=400)
     user_tfa = UserTFA.objects.delete_url_token(user_tfa)
+
     user_tokens = UserTokens.objects.generate_password_token(user_tfa.user.user_tokens)
     return Response(data={'token': user_tokens.password_token}, status=200)
 

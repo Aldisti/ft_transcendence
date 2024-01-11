@@ -1,4 +1,7 @@
+from smtplib import SMTPException
+
 from django.shortcuts import render
+from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.exceptions import APIException
@@ -35,7 +38,7 @@ def password_recovery(request):
     except User.DoesNotExist:
         return Response({"message": "User not found"}, status=404)
     user_tfa = user.user_tfa
-    if user_tfa.type in UserTFA.TYPES.values():
+    if user_tfa.is_active():
         user_tfa = UserTFA.objects.generate_url_token(user_tfa)
         return Response(data={'token': user_tfa.url_token}, status=200)
     send_password_email(user)
@@ -69,8 +72,14 @@ def send_otp_code(request) -> Response:
         user_tfa = request.user.user_tfa
     else:
         url_token = request.query_params.get("token")
-        user_tfa = UserTFA.objects.get(url_token=url_token)
+        try:
+            user_tfa = UserTFA.objects.get(url_token=url_token)
+        except UserTFA.DoesNotExist:
+            return Response(data={'message': 'token not found'}, status=404)
     if not user_tfa.is_email():
         return Response(data={'message': '2fa not active'}, status=400)
-    send_tfa_code_email(user_tfa)
-    return Response(data={'message': 'ok'}, status=200)
+    try:
+        send_tfa_code_email(user_tfa)
+    except SMTPException as e:
+        return Response(data={'message': f"\n{str(e)}\n"}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+    return Response(status=200)
