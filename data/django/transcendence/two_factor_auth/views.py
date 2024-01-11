@@ -15,6 +15,10 @@ from transcendence.settings import TZ
 
 from datetime import datetime
 import pyotp
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 def verify_otp_code(user_tfa: UserTFA, code: str) -> bool:
@@ -123,13 +127,15 @@ def validate_activate(request) -> Response:
     code = request.data.get('code', None)
     if code is None:
         return Response(data={'message': 'missing code'}, status=400)
+    logger.warning(f"code: {code}")
     user_tfa = request.user.user_tfa
     if not user_tfa.is_activating():
         return Response(data={
             'message': "2fa activation process not started yet",
         }, status=403)
+    logger.warning(f"type: {user_tfa.type}")
     if not verify_otp_code(user_tfa, code):
-        UserTFA.objects.generate_url_token(user_tfa)
+        UserTFA.objects.delete_url_token(user_tfa)
         return Response(data={'message': 'invalid code'}, status=400)
     user_tfa = UserTFA.objects.delete_url_token(user_tfa)
     UserTFA.objects.activate(user_tfa)
