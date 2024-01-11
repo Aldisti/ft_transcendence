@@ -127,7 +127,7 @@ def validate_activate(request) -> Response:
     if not user_tfa.is_activating():
         return Response(data={
             'message': "2fa activation process not started yet",
-        }, status=400)
+        }, status=403)
     if not verify_otp_code(user_tfa, code):
         UserTFA.objects.generate_url_token(user_tfa)
         return Response(data={'message': 'invalid code'}, status=400)
