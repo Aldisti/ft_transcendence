@@ -101,7 +101,8 @@ def intra_link(request) -> Response:
     name, email = api_response.json()['login'], api_response.json()['email']
     del api_response
     try:
-        UserIntra.objects.create(user=request.user, name=name, email=email)
+        user_intra = UserIntra.objects.create(user=request.user, name=name, email=email)
+        User.objects.update_user_linked(user_intra.user, linked=True)
         return Response(status=200)
     except ValidationError:
         return Response(data={'message': 'user already linked'}, status=400)

@@ -47,6 +47,11 @@ class User(AbstractBaseUser):
         db_comment="True when email is verified",
         default=False,
     )
+    linked = models.BooleanField(
+        db_column="linked",
+        db_comment="True when oauth2 is active",
+        default=False,
+    )
 
     USERNAME_FIELD = "username"
     EMAIL_FIELD = "email"
