@@ -13,10 +13,9 @@ function sendEmailTfaCode()
 {
     let code = document.querySelector("#emailTfaCode").value;
     console.log(code)
-    if (code.length == 6)
+    if (code.length == 6 || code.length == 10)
     {
         API.validateCode(1, code).then(res=>{
-            
         })
     }
 }
@@ -24,10 +23,9 @@ function sendAppTfaCode()
 {
     let code = document.querySelector("#appTfaCode").value;
     console.log(code)
-    if (code.length == 6)
+    if (code.length == 6 || code.length == 10)
     {
         API.validateCode(1, code).then(res=>{
-            
         })
     }
 }
@@ -35,12 +33,32 @@ function sendAppTfaCodeRemove()
 {
     let code = document.querySelector("#removeTfaCode").value;
     console.log(code)
-    if (code.length == 6)
+    if (code.length == 6 || code.length == 10)
     {
         API.removeTfa(1, code).then(res=>{
-            
         })
     }
+}
+
+let emailError = `
+    <ul style="margin: 0;">
+        <li>An Email has been sent Check you Inbox!</li>
+        <li>insert the Code in the box below</li>
+        <li>Submit and activate your 2FA</li>
+    </ul>
+`
+let qrError = `
+    <ul style="margin: 0;">
+        <li>Open your app and look for your code</li>
+        <li>insert it in the box below</li>
+        <li>submit and login</li>
+    </ul>
+`
+
+window.goHome = ()=>{
+    history.pushState(null, null, "/home");
+    Router();
+    window.location.reload(); 
 }
 
 export default class extends Aview {
@@ -204,8 +222,8 @@ export default class extends Aview {
         return `
             <div class="formContainer">
                 <div class="decisionBox">
-                    <button class="retroBtn emailChoice">email</button>
-                    <button class="retroBtn appChoice">app</button>
+                    <button class="retroBtn emailChoice" style="background-color: var(--bs-success)">email</button>
+                    <button class="retroBtn appChoice" style="background-color: var(--bs-success)">app</button>
                 </div>
             </div>
         `
@@ -218,19 +236,32 @@ export default class extends Aview {
                     <div id="qrCode">
                     </div>
                     <div class="qrInfo">
-                        hey
+                        <ul style="margin: 0;">
+                            <li>Scan the QR code With your App</li>
+                            <li>the code will be automatically added</li>
+                            <li>Insert the given displayed code end Submit</li>
+                        </ul>
                     </div>
                 </div>
                 <div class="line codeInputLine">
-                    <input id="appTfaCode" type="text">
-                    <button class="retroBtn sendCode">Submit</button>
+                    <label for="emailTfaCode">Insert Code:</label>
+                    <div class="codeSend">
+                        <input id="appTfaCode" type="text">
+                        <button class="retroBtn sendCode" style="background-color: var(--bs-success)">Submit</button>
+                    </div>
                 </div>
                 <div class="line submitLine">
-                    <button onclick="window.showCode()" class="retroBtn">show code</button>
-                    <p class="codeDisplay" style="display: none;">
-                    heyyyjdfhkjbfsjkwfbgwkjfbgwkfsgbkjfbvfkjbvfkjbvksfjbvsfkjvbsbfkjvbksfjvbkjfbskj
-                    </p>
-                    
+                <button onclick="window.showCode()" class="retroBtn" style="background-color: var(--bs-danger)">show code</button>
+                <p class="codeDisplay" style="display: none;">
+                Nothing to Show yet
+                </p>
+                
+                </div>
+                <div class="line">
+                    <div class="codeSend">
+                        <button class="retroBtn downloadKeys" style="background-color: var(--bs-warning)">Download Recovery Keys</button>
+                        <button disabled="true" class="retroBtn finishBtn" onclick="window.goHome()" style="background-color: var(--bs-warning)">Finish!</button>
+                    </div>
                 </div>
             </div>
         `
@@ -240,33 +271,43 @@ export default class extends Aview {
             <div class="formContainer">
                 <div class="line infoLine">
                     <div>
-                        <p class="info">
-                        </p>
+                        ${emailError}
                     </div>
-                    <button class="retroBtn sendBtn">send email</button>
                 </div>
                 <div class="line codeInputLine">
+                    <label for="emailTfaCode">Insert Code:</label>
                     <input id="emailTfaCode" type="text">
-                    <button class="retroBtn sendCode">Submit</button>
+                </div>
+                <div class="line" >
+                    <button class="retroBtn resendBtn" style="background-color: var(--bs-warning)">send email</button>
+                    <button class="retroBtn sendCode" style="background-color: var(--bs-success)">Submit</button>
+                </div>
+                <div class="line">
+                    <div class="codeSend">
+                        <button class="retroBtn downloadKeys" style="background-color: var(--bs-warning)">Download Recovery Keys</button>
+                        <button disabled="true" class="retroBtn finishBtn" onclick="window.goHome()" style="background-color: var(--bs-warning)">Finish!</button>
+                    </div>
                 </div>
             </div>
         `
     }
     get2faRemoveForm(){
         return `
-            <div class="formContainer">
-                <div class="line infoLine">
-                    <div>
-                        <p class="info">
-                        </p>
-                    </div>
-                    <button class="retroBtn sendBtn">send email</button>
-                </div>
-                <div class="line codeInputLine">
-                    <input id="removeTfaCode" type="text">
-                    <button class="retroBtn sendCode">Submit</button>
-                </div>
+        <div class="formContainer">
+        <div class="line infoLine">
+            <div>
+                ${localStorage.getItem("is_active") == "EM" ? emailError : qrError}
             </div>
+        </div>
+        <div class="line codeInputLine">
+            <label for="emailTfaCode">Insert Code:</label>
+            <input id="removeTfaCode" type="text">
+        </div>
+        <div class="line" >
+            ${localStorage.getItem("is_active") == "EM" ? '<button class="retroBtn sendBtn" style="background-color: var(--bs-warning)">send email</button>' : ""}
+            <button class="retroBtn sendCode" style="background-color: var(--bs-success)">Submit</button>
+        </div>
+    </div>
         `
     }
 
@@ -367,6 +408,7 @@ export default class extends Aview {
 
     changeForm(e, byPass) {
         this.errors = { };
+
         //will load the form to change password
         if (e.classList.contains("passwordForm") || byPass == "password") {
             this.selectedForm = "password";
@@ -400,27 +442,36 @@ export default class extends Aview {
         }
 
         else if (e.classList.contains("twofa") || byPass == "twofa") {
-            if (localStorage.getItem("is_active") == "true")
+            if (localStorage.getItem("is_active") != undefined)
             {
+                if (localStorage.getItem("is_active") == "EM")
+                    API.getEmailCode(1).then()
                 document.querySelector(".formMenu").innerHTML = this.get2faRemoveForm();
                 document.querySelector(".sendCode").addEventListener("click", sendAppTfaCodeRemove)
                 return ;
             }
             localStorage.setItem("selectedForm", "twofa")
             document.querySelector(".formMenu").innerHTML = this.get2faChoice();
+
             document.querySelector(".emailChoice").addEventListener("click", ()=>{
                 document.querySelector(".formMenu").innerHTML = this.get2faEmailForm();
                 document.querySelector(".sendCode").addEventListener("click", sendEmailTfaCode)
+                document.querySelector(".resendBtn").addEventListener("click", ()=>{
+                    API.getEmailCode(1)
+                })
                 API.activateTfa(1, "em").then(res=>{
                     console.log(res)
                     // if (Object.keys(res).length > 0)
                         API.getEmailCode(1)
                 })
             })
+
             document.querySelector(".appChoice").addEventListener("click", ()=>{
                 document.querySelector(".formMenu").innerHTML = this.get2faAppForm();
                 API.activateTfa(1, "sw").then(res=>{
                     window.otp_token = res.token;
+                    console.log(document.querySelector(".codeDisplay"))
+                    document.querySelector(".codeDisplay").innerHTML = res.token;
                     new window.QRCode(document.getElementById("qrCode"), res.uri);
                     document.querySelector(".sendCode").addEventListener("click", sendAppTfaCode)
                 })
@@ -479,16 +530,11 @@ export default class extends Aview {
                 if (localStorage.getItem("selectedForm") == undefined)
                     localStorage.setItem("selectedForm", "info");
                 this.highlightFormMenu(localStorage.getItem("selectedForm"))
-                this.changeForm(document.querySelector("body"), localStorage.getItem("selectedForm"))
 
                 API.isTfaACtive(1).then(res=>{
-                    console.log(res)
-                    if (res.is_active)
-                    {
-                        localStorage.setItem("is_active", "true");
-                        document.querySelector(".twofaForm").innerText = "Remove 2FA"
-                    }
+                    this.changeForm(document.querySelector("body"), localStorage.getItem("selectedForm"))
                 })
+
         
                 document.querySelector(".userInfoContainer").addEventListener("click", (e) => {
                     if (e.target.classList.contains("handle")) {

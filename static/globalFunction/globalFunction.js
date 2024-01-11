@@ -52,3 +52,30 @@ window.showCode = function(){
         document.querySelector(".codeDisplay").classList.remove("visible");
     }
 }
+
+window.downloadFile = (fileName, content)=>{
+    // Create a Blob containing the content
+    const blob = new Blob([content], { type: 'text/plain' });
+  
+    // Create a temporary URL for the Blob
+    const url = URL.createObjectURL(blob);
+  
+    // Create a link element
+    const link = document.createElement('a');
+  
+    // Set the download attribute and href for the link
+    link.download = fileName;
+    link.href = url;
+  
+    // Append the link to the document
+    document.body.appendChild(link);
+  
+    // Trigger a click event on the link to start the download
+    link.click();
+  
+    // Remove the link from the document
+    document.body.removeChild(link);
+  
+    // Release the object URL
+    URL.revokeObjectURL(url);
+  }

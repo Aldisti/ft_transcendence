@@ -384,7 +384,17 @@ export async function validateCode(recursionProtection, code)
     if (res.ok)
     {
         let jsonBody = await res.json();
-        console.log(jsonBody)
+        console.log(jsonBody);
+        let body = "";
+
+        for (let el of jsonBody.codes)
+            body += ` ${el}`;
+        document.querySelector(".downloadKeys").style.backgroundColor = "var(--bs-success)"
+        document.querySelector(".downloadKeys").addEventListener("click", ()=>{
+            window.downloadFile("recovery_keys.txt", body);
+            document.querySelector(".finishBtn").disabled = false
+            document.querySelector(".finishBtn").style.backgroundColor = "var(--bs-success)"
+        })
         return (jsonBody);
     }
     return ({});
@@ -444,7 +454,13 @@ export async function isTfaACtive(recursionProtection)
     if (res.ok)
     {
         let resJson = await res.json();
-        return (resJson)
+        if (resJson.is_active)
+        {
+            localStorage.setItem("is_active", resJson.type);
+            document.querySelector(".twofaForm").innerText = "Remove 2FA"
+        }
+        else
+            localStorage.removeItem("is_active");
     }
     if (res.status == 401 && recursionProtection)
     {
@@ -465,7 +481,7 @@ export async function isTfaACtive(recursionProtection)
 export async function removeTfa(recursionProtection, code)
 {
     const res = await fetch(URL.auth.REMOVE_TFA, {
-        method: "DELETE",
+        method: "PUT",
         credentials: "include",
         headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -475,6 +491,13 @@ export async function removeTfa(recursionProtection, code)
             code: code
         })
     })
+    if (res.ok)
+    {
+        localStorage.removeItem("is_active");
+        history.pushState(null, null, "/home");
+        Router();
+        window.location.reload()
+    }
     if (res.status == 401 && recursionProtection)
     {
         refreshToken().then(res=>{
@@ -489,6 +512,5 @@ export async function removeTfa(recursionProtection, code)
             }
         })
     }
-    console.log(res);
     return (res);
 }

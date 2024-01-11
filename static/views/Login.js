@@ -8,7 +8,7 @@ function validateLoginCode()
 {
     let code = document.querySelector("#emailTfaCode").value;
     console.log(code)
-    if (code.length == 6)
+    if (code.length == 6 || code.length == 10)
     {
         API.validateCodeLogin(1, code, localStorage.getItem("otp_token")).then(token=>{
             console.log(token);
@@ -23,6 +23,21 @@ function validateLoginCode()
     }
     
 }
+
+let emailError = `
+    <ul style="margin: 0;">
+        <li>An Email has been sent Check you Inbox!</li>
+        <li>insert the Code in the box below</li>
+        <li>Submit and activate your 2FA</li>
+    </ul>
+`
+let qrError = `
+    <ul style="margin: 0;">
+        <li>Open your app and look for your code</li>
+        <li>insert it in the box below</li>
+        <li>submit and login</li>
+    </ul>
+`
 
 export default class extends Aview {
     constructor() {
@@ -64,45 +79,23 @@ export default class extends Aview {
         `
     }
 
-    get2faAppForm(){
-        return `
-            <div class="formContainer">
-                <div class="line qrLine">
-                    <div id="qrCode">
-                    </div>
-                    <div class="qrInfo">
-                        hey
-                    </div>
-                </div>
-                <div class="line codeInputLine">
-                    <input type="text">
-                    <button class="retroBtn">Submit</button>
-                </div>
-                <div class="line submitLine">
-                    <button onclick="window.showCode()" class="retroBtn">show code</button>
-                    <p class="codeDisplay" style="display: none;">
-                    heyyyjdfhkjbfsjkwfbgwkjfbgwkfsgbkjfbvfkjbvfkjbvksfjbvsfkjvbsbfkjvbksfjvbkjfbskj
-                    </p>
-                    
-                </div>
-            </div>
-        `
-    }
     get2faEmailForm(){
         return `
-            <div class="formContainer">
-                <div class="line infoLine">
-                    <div>
-                        <p class="info">
-                        </p>
-                    </div>
-                    <button class="retroBtn sendBtn" style="background-color: var(--bs-success);">send email</button>
-                </div>
-                <div class="line codeInputLine">
-                    <input id="emailTfaCode" type="text">
-                    <button class="retroBtn sendCode" style="background-color: var(--bs-success);">Submit</button>
-                </div>
+        <div class="formContainer" style="color: black !important;">
+        <div class="line infoLine">
+            <div>
+                ${localStorage.getItem("is_active") == "EM" ? emailError : qrError}
             </div>
+        </div>
+        <div class="line codeInputLine">
+            <label for="emailTfaCode">Insert Code:</label>
+            <input id="emailTfaCode" type="text">
+        </div>
+        <div class="line" style="flex-direction: row;">
+            <button class="retroBtn resendBtn" style="background-color: var(--bs-warning)">send email</button>
+            <button class="retroBtn sendCode" style="background-color: var(--bs-success)">Submit</button>
+        </div>
+    </div>
         `
     }
     setup() {
@@ -130,7 +123,10 @@ export default class extends Aview {
                             {
                                 if (res.type == "EM")
                                 {
-                                    document.querySelector(".base").innerHTML = this.get2faEmailForm();
+                                    document.querySelector(".loginForm").innerHTML = this.get2faEmailForm();
+                                    document.querySelector(".resendBtn").addEventListener("click", ()=>{
+                                        API.getEmailCode(1, res.token)
+                                    })
                                     API.getEmailCode(1, res.token).then(res=>{
                                         document.querySelector(".sendCode").addEventListener("click", ()=>{
                                             if (res.ok)
@@ -140,7 +136,7 @@ export default class extends Aview {
                                     // document.querySelector("#app").innerHTML = this.get2faAppForm();
                                 }
                                 if (res.type == "SW")
-                                    document.querySelector(".base").innerHTML = this.get2faEmailForm();
+                                    document.querySelector(".loginForm").innerHTML = this.get2faEmailForm();
                                     document.querySelector(".sendCode").addEventListener("click", ()=>{
                                             validateLoginCode();
                                     })
