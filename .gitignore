@@ -14,6 +14,7 @@ srcs/docker-compose.yml
 .**~
 .*bkp
 .**bkp
+data/django/transcendence/APIDocs.md
 
 
 # Byte-compiled / optimized / DLL files
