@@ -7,6 +7,6 @@ urlpatterns = [
         path('url/', views.IntraUrl.as_view(), name='get_intra_url'),
         path('callback/<str:req_type>/', views.IntraCallback.as_view(), name='get_intra_token'),
         path('login/', views.intra_login, name='intra_login'),
-        path('link/', views.intra_link, name='intra_link'),
+        path('link/', views.IntraLink.as_view(), name='intra_link'),
     ]))
 ]

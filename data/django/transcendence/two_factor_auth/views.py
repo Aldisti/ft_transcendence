@@ -44,10 +44,10 @@ class ManageView(APIView):
     def post(self, request) -> Response:
         tfa_type = request.data.get('type', '').lower()
         user_tfa = request.user.user_tfa
-        # try:
-        user_tfa = UserTFA.objects.activating(user_tfa, tfa_type=tfa_type)
-        # except ValidationError as e:
-        #     return Response(data={'message': e.message}, status=400)
+        try:
+            user_tfa = UserTFA.objects.activating(user_tfa, tfa_type=tfa_type)
+        except ValidationError as e:
+            return Response(data={'message': e.message}, status=400)
         if user_tfa.is_email():
             return Response(data={'message': 'request email'}, status=200)
         uri = (pyotp.totp.TOTP(user_tfa.otp_token)

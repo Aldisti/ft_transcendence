@@ -33,9 +33,6 @@ class UserIntra(models.Model):
 
     objects = UserIntraManager()
 
-    def is_linked(self):
-        return self.name != "" and self.email != ""
-
     class Meta:
         db_table = "user_intra"
 

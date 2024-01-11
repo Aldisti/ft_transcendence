@@ -30,7 +30,7 @@ class JwtTokenManagerTests(TestCase):
 
     def test_valid_token_creation(self):
         jwt_token = JwtToken.objects.create(self.token)
-        self.assertEqual(jwt_token.otp_token, self.token['csrf'])
+        self.assertEqual(jwt_token.token, self.token['csrf'])
 
     def test_invalid_token_creation(self):
         with self.assertRaises(ValueError):
