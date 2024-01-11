@@ -21,6 +21,7 @@ import logging
 
 logger = logging.getLogger()
 
+
 class LogoutView(APIView):
     throttle_scope = 'auth'
 
@@ -54,12 +55,14 @@ class LoginView(APIView):
         user_serializer.is_valid(raise_exception=True)
         try:
             user = User.objects.get(pk=user_serializer.validated_data['username'])
-        except ObjectDoesNotExist:
+        except User.DoesNotExist:
             return error_response
         if not user.check_password(user_serializer.validated_data['password']):
             return error_response
+        if not user.verified:
+            return Response(data={'message': 'user not verified yet'}, status=400)
         if not user.active:
-            return Response({'message': "user isn't active"}, status=400)
+            return Response(data={'message': "user isn't active"}, status=400)
         if user.user_tfa.is_active():
             user_tfa = UserTFA.objects.generate_url_token(user.user_tfa)
             return Response(data={
@@ -68,7 +71,7 @@ class LoginView(APIView):
             }, status=200)
         refresh_token = TokenPairSerializer.get_token(user)
         exp = datetime.fromtimestamp(refresh_token['exp'], tz=TZ) - datetime.now(tz=TZ)
-        response = Response({
+        response = Response(data={
             'access_token': str(refresh_token.access_token)
         }, status=200)
         response.set_cookie(
@@ -96,10 +99,11 @@ class RefreshView(APIView):
         try:
             token = RefreshToken(request.COOKIES.get('refresh_token'))
             if token is None:
-                return Response(data={'message': 'no token found'}, status=401)
+                raise TokenError()
             if JwtToken.objects.filter(token=token['csrf']).exists():
                 raise TokenError()
-            if User.objects.get(pk=token['username']).active is False:
+            user = User.objects.get(pk=token['username'])
+            if not user.active:
                 error_response.data({'message': "user isn't active"})
                 return error_response
             return Response({'access_token': str(token.access_token)}, status=200)
