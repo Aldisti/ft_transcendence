@@ -21,8 +21,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-
-
 class IntraCallback(APIView):
     permission_classes = []
     throttle_scope = 'medium_load'
@@ -37,15 +35,14 @@ class IntraCallback(APIView):
         # if unquote(request_body['state']) != request.COOKIES.get('state_token'):
         #     return Response('invalid state, csrf suspected', status=status.HTTP_403_FORBIDDEN)
         api_response = requests.post(INTRA_TOKEN, json=request_body)
-        logger.warning(api_response.json())
         if api_response.status_code != 200:
             return Response(data={
                 'message': f"api error: {api_response.status_code}"
             }, status=500)
         if req_type == 'login':
-            location_url = 'http://localhost:4200/login'
+            location_url = CLIENT_INTRA_REDIRECT_LOGIN
         elif req_type == 'link':
-            location_url = 'http://localhost:4200/userinfo'
+            location_url = CLIENT_INTRA_REDIRECT_LINK
         else:
             return Response(data={'message': 'invalid type'}, status=400)
         response = Response(
@@ -73,11 +70,13 @@ class IntraUrl(APIView):
         if req_type not in ['login', 'link']:
             return Response(data={'message': 'invalid type'}, status=400)
         state = b64encode(SystemRandom().randbytes(64)).decode('utf-8')
-        url = (f"{INTRA_AUTH}?"
-               f"client_id={INTRA_CLIENT_ID}&"
-               f"redirect_uri={quote(INTRA_REDIRECT_URI + req_type + '/')}&"
-               f"response_type={RESPONSE_TYPE}&"
-               f"state={quote(state)}")
+        url = (
+            f"{INTRA_AUTH}?"
+            f"client_id={INTRA_CLIENT_ID}&"
+            f"redirect_uri={quote(INTRA_REDIRECT_URI + req_type + '/')}&"
+            f"response_type={RESPONSE_TYPE}&"
+            f"state={quote(state)}"
+        )
         response = Response(data={'url': url}, status=200)
         response.set_cookie(
             key='state_token',
