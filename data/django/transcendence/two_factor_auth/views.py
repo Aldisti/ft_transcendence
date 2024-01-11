@@ -129,11 +129,11 @@ def validate_activate(request) -> Response:
         return Response(data={'message': 'missing code'}, status=400)
     logger.warning(f"code: {code}")
     user_tfa = request.user.user_tfa
+    logger.warning(f"type: {user_tfa.type}")
     if not user_tfa.is_activating():
         return Response(data={
             'message': "2fa activation process not started yet",
         }, status=403)
-    logger.warning(f"type: {user_tfa.type}")
     if not verify_otp_code(user_tfa, code):
         UserTFA.objects.delete_url_token(user_tfa)
         return Response(data={'message': 'invalid code'}, status=400)
