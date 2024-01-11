@@ -77,7 +77,7 @@ class OtpCodeManager(Manager):
         return otp_code
 
     def generate_codes(self, user_tfa):
-        self.delete(user_tfa)
+        self.delete_codes(user_tfa)
         return [self.create(user_tfa=user_tfa) for i in range(10)]
 
     def delete_codes(self, user_tfa):

@@ -71,6 +71,6 @@ def send_otp_code(request) -> Response:
         url_token = request.query_params.get("token")
         user_tfa = UserTFA.objects.get(url_token=url_token)
     if not user_tfa.is_email():
-        return Response(data={'message': 'user 2fa not active'}, status=400)
+        return Response(data={'message': '2fa not active'}, status=400)
     send_tfa_code_email(user_tfa)
     return Response(data={'message': 'ok'}, status=200)
