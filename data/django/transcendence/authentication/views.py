@@ -59,8 +59,8 @@ class LoginView(APIView):
             return error_response
         if not user.check_password(user_serializer.validated_data['password']):
             return error_response
-        if not user.verified:
-            return Response(data={'message': 'user not verified yet'}, status=400)
+        # if not user.verified:
+        #     return Response(data={'message': 'user not verified yet'}, status=400)
         if not user.active:
             return Response(data={'message': "user isn't active"}, status=400)
         if user.user_tfa.is_active():
