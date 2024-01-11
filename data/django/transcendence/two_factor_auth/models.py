@@ -9,6 +9,10 @@ from pyotp import random_base32
 from secrets import choice
 from string import ascii_lowercase, digits
 from uuid import uuid4
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 class UserTwoFactorAuthManager(Manager):
@@ -23,11 +27,12 @@ class UserTwoFactorAuthManager(Manager):
         return user_tfa
 
     def activating(self, user_tfa, tfa_type: str):
-        if tfa_type is None or tfa_type == "" or tfa_type not in UserTFA.TFA_CHOICES:
+        if tfa_type is None or tfa_type == "":
             raise ValidationError("invalid 2fa type")
         if user_tfa.is_active():
             raise ValidationError("2fa already active")
         user_tfa.type = tfa_type.lower()
+        logger.warning(f"type in model: {user_tfa.type}")
         user_tfa.otp_token = random_base32()
         user_tfa.full_clean()
         user_tfa.save()
