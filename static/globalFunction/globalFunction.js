@@ -39,3 +39,16 @@ window.test = function()
     }
     reader.readAsDataURL(file);
 }
+
+window.showCode = function(){
+    if (!document.querySelector(".codeDisplay").classList.contains("visible"))
+    {
+        document.querySelector(".codeDisplay").style.display = "flex";
+        document.querySelector(".codeDisplay").classList.add("visible");
+    }
+    else
+    {
+        document.querySelector(".codeDisplay").style.display = "none";
+        document.querySelector(".codeDisplay").classList.remove("visible");
+    }
+}

@@ -5,6 +5,44 @@ import Aview from "/views/abstractView.js";
 import * as API from "/API/APICall.js";
 import sha256 from "/scripts/crypto.js";
 
+function isNumber(value) {
+    return typeof value === 'number';
+}
+
+function sendEmailTfaCode()
+{
+    let code = document.querySelector("#emailTfaCode").value;
+    console.log(code)
+    if (code.length == 6)
+    {
+        API.validateCode(1, code).then(res=>{
+            
+        })
+    }
+}
+function sendAppTfaCode()
+{
+    let code = document.querySelector("#appTfaCode").value;
+    console.log(code)
+    if (code.length == 6)
+    {
+        API.validateCode(1, code).then(res=>{
+            
+        })
+    }
+}
+function sendAppTfaCodeRemove()
+{
+    let code = document.querySelector("#removeTfaCode").value;
+    console.log(code)
+    if (code.length == 6)
+    {
+        API.removeTfa(1, code).then(res=>{
+            
+        })
+    }
+}
+
 export default class extends Aview {
     constructor() {
         super();
@@ -162,6 +200,76 @@ export default class extends Aview {
         `
     }
 
+    get2faChoice(){
+        return `
+            <div class="formContainer">
+                <div class="decisionBox">
+                    <button class="retroBtn emailChoice">email</button>
+                    <button class="retroBtn appChoice">app</button>
+                </div>
+            </div>
+        `
+    }
+
+    get2faAppForm(){
+        return `
+            <div class="formContainer">
+                <div class="line qrLine">
+                    <div id="qrCode">
+                    </div>
+                    <div class="qrInfo">
+                        hey
+                    </div>
+                </div>
+                <div class="line codeInputLine">
+                    <input id="appTfaCode" type="text">
+                    <button class="retroBtn sendCode">Submit</button>
+                </div>
+                <div class="line submitLine">
+                    <button onclick="window.showCode()" class="retroBtn">show code</button>
+                    <p class="codeDisplay" style="display: none;">
+                    heyyyjdfhkjbfsjkwfbgwkjfbgwkfsgbkjfbvfkjbvfkjbvksfjbvsfkjvbsbfkjvbksfjvbkjfbskj
+                    </p>
+                    
+                </div>
+            </div>
+        `
+    }
+    get2faEmailForm(){
+        return `
+            <div class="formContainer">
+                <div class="line infoLine">
+                    <div>
+                        <p class="info">
+                        </p>
+                    </div>
+                    <button class="retroBtn sendBtn">send email</button>
+                </div>
+                <div class="line codeInputLine">
+                    <input id="emailTfaCode" type="text">
+                    <button class="retroBtn sendCode">Submit</button>
+                </div>
+            </div>
+        `
+    }
+    get2faRemoveForm(){
+        return `
+            <div class="formContainer">
+                <div class="line infoLine">
+                    <div>
+                        <p class="info">
+                        </p>
+                    </div>
+                    <button class="retroBtn sendBtn">send email</button>
+                </div>
+                <div class="line codeInputLine">
+                    <input id="removeTfaCode" type="text">
+                    <button class="retroBtn sendCode">Submit</button>
+                </div>
+            </div>
+        `
+    }
+
     getHtml() {
         return `
             <div class="userInfoContainer bg-lg">
@@ -169,6 +277,7 @@ export default class extends Aview {
                     <h6 class="formLink info generalForm">${this.language.update.generalTitle}</h6>
                     <h6 class="formLink password passwordForm">${this.language.update.passwordTitle}</h6>
                     <h6 class="formLink email emailForm">${this.language.update.emailTitle}</h6>
+                    <h6 class="formLink twofa twofaForm">${this.language.update.twoFaTitle}</h6>
                     <h6 class="formLink picture pictForm">${this.language.update.pictureTitle}</h6>
                     <h6 class="formLink intra">${this.language.update.linkToIntra}</h6>
                     <h6 class="formLink logout">${this.language.update.logout}</h6>
@@ -257,7 +366,7 @@ export default class extends Aview {
     }
 
     changeForm(e, byPass) {
-        this.errors = { newPassword: "test" };
+        this.errors = { };
         //will load the form to change password
         if (e.classList.contains("passwordForm") || byPass == "password") {
             this.selectedForm = "password";
@@ -290,12 +399,41 @@ export default class extends Aview {
             })
         }
 
+        else if (e.classList.contains("twofa") || byPass == "twofa") {
+            if (localStorage.getItem("is_active") == "true")
+            {
+                document.querySelector(".formMenu").innerHTML = this.get2faRemoveForm();
+                document.querySelector(".sendCode").addEventListener("click", sendAppTfaCodeRemove)
+                return ;
+            }
+            localStorage.setItem("selectedForm", "twofa")
+            document.querySelector(".formMenu").innerHTML = this.get2faChoice();
+            document.querySelector(".emailChoice").addEventListener("click", ()=>{
+                document.querySelector(".formMenu").innerHTML = this.get2faEmailForm();
+                document.querySelector(".sendCode").addEventListener("click", sendEmailTfaCode)
+                API.activateTfa(1, "em").then(res=>{
+                    console.log(res)
+                    // if (Object.keys(res).length > 0)
+                        API.getEmailCode(1)
+                })
+            })
+            document.querySelector(".appChoice").addEventListener("click", ()=>{
+                document.querySelector(".formMenu").innerHTML = this.get2faAppForm();
+                API.activateTfa(1, "sw").then(res=>{
+                    window.otp_token = res.token;
+                    new window.QRCode(document.getElementById("qrCode"), res.uri);
+                    document.querySelector(".sendCode").addEventListener("click", sendAppTfaCode)
+                })
+            })
+            return;
+        }
         //will load the form to change picture
         else if (e.classList.contains("logout")) {
             if (!confirm(this.language.update.confirmLogout))
                 return;
             API.logout(1)
         }
+
         else if (e.classList.contains("intra")) {
             if (!confirm(this.language.update.confirmIntra))
                 return;
@@ -342,6 +480,15 @@ export default class extends Aview {
                     localStorage.setItem("selectedForm", "info");
                 this.highlightFormMenu(localStorage.getItem("selectedForm"))
                 this.changeForm(document.querySelector("body"), localStorage.getItem("selectedForm"))
+
+                API.isTfaACtive(1).then(res=>{
+                    console.log(res)
+                    if (res.is_active)
+                    {
+                        localStorage.setItem("is_active", "true");
+                        document.querySelector(".twofaForm").innerText = "Remove 2FA"
+                    }
+                })
         
                 document.querySelector(".userInfoContainer").addEventListener("click", (e) => {
                     if (e.target.classList.contains("handle")) {
@@ -359,7 +506,7 @@ export default class extends Aview {
                         return;
                     }
                     this.changeForm(e.target);
-                    this.highlightFormMenu(this.selectedForm)
+                    this.highlightFormMenu(localStorage.getItem("selectedForm"))
                     if (e.target.classList.contains("submit"))
                         this.performChecksAndSubmit(this.collectData());
                 })

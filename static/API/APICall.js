@@ -108,18 +108,17 @@ export async function login(data) {
         },
         body: JSON.stringify(data),
     })
-    if (res.ok) {
-        localStorage.setItem("username", data.username);
-        history.pushState(null, null, "/home");
-        Router();
-        window.location.reload();
-    }
     if (!res.ok)
     {
         document.querySelector(".loginError").style.display = "flex";
     }
-    let token = await res.json();
-    localStorage.setItem("token", token.access_token)
+    if (res.ok)
+    {
+        localStorage.setItem("username", data.username);
+        let token = await res.json();
+        localStorage.setItem("otp_token", token.token);
+        return (token)
+    }
 }
 
 export async function refreshToken() {
@@ -273,10 +272,223 @@ export async function uploadImage(recursionProtection, file){
         refreshToken().then(res=>{
             if (res.ok)
                 uploadImage(0, file);
+            else
+            {
+                localStorage.removeItem("username");
+                history.pushState(null, null, "/login");
+                Router();
+                window.location.reload();
+            }
         })
     }
     if (res.ok)
     {
         window.location.reload();
     }
+}
+
+export async function activateTfa(recursionProtection, type)
+{
+    const res = await fetch(URL.auth.ACTIVATE_TFA, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({
+            type: type
+        })
+    })
+    if (res.status == 401 && recursionProtection)
+    {
+        refreshToken().then(res=>{
+            if (res.ok)
+                activateTfa(0, type);
+            else
+            {
+                localStorage.removeItem("username");
+                history.pushState(null, null, "/login");
+                Router();
+                window.location.reload();             
+            }
+        })
+    }
+    if (res.ok)
+    {
+        let resJson = await res.json();
+        console.log(resJson)
+        return (resJson);
+    }
+    return ({})
+}
+
+export async function getEmailCode(recursionProtection, token)
+{
+    let header = {};
+    if (token == undefined)
+    {
+        header =  {
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+    }
+    const res = await fetch(`${URL.auth.GET_EMAIL_CODE}${token != undefined ? `?token=${token}` : ""}`, {
+        credentials: "include",
+        headers: header
+    })
+    if (token == undefined && res.status == 401 && recursionProtection)
+    {
+        refreshToken().then(res=>{
+            if (res.ok)
+                getEmailCode(0);
+            else
+            {
+                localStorage.removeItem("username");
+                history.pushState(null, null, "/login");
+                Router();
+                window.location.reload();             
+            }
+        })
+    }
+    return (res);
+
+}
+
+export async function validateCode(recursionProtection, code)
+{
+    const res = await fetch(URL.auth.VALIDATE_CODE, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            code: code,
+        })
+    })
+    if (res.status == 401 && recursionProtection)
+    {
+        refreshToken().then(res=>{
+            if (res.ok)
+                validateCode(0, code);
+            else
+            {
+                localStorage.removeItem("username");
+                history.pushState(null, null, "/login");
+                Router();
+                window.location.reload();             
+            }
+        })
+    }
+    if (res.ok)
+    {
+        let jsonBody = await res.json();
+        console.log(jsonBody)
+        return (jsonBody);
+    }
+    return ({});
+}
+
+export async function validateCodeLogin(recursionProtection, code, token)
+{
+    const res = await fetch(`${URL.auth.VALIDATE_CODE_LOGIN}?token=${token}`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            code: code,
+        })
+    })
+    if (res.status == 401 && recursionProtection)
+    {
+        refreshToken().then(res=>{
+            if (res.ok)
+                validateCodeLogin(0, code, token);
+            else
+            {
+                localStorage.removeItem("username");
+                history.pushState(null, null, "/login");
+                Router();
+                window.location.reload();             
+            }
+        })
+    }
+    if (res.status == 400)
+    {
+        let jsonBody = await res.json();
+        console.log(jsonBody);
+        localStorage.setItem("otp_token", jsonBody.token == undefined ? localStorage.getItem("otp_token") : jsonBody.token);
+        return ({});
+    }
+    if (res.ok)
+    {
+        let jsonBody = await res.json();
+        console.log(jsonBody);
+        return (jsonBody);
+    }
+    return ({});
+}
+
+export async function isTfaACtive(recursionProtection)
+{
+    const res = await fetch(URL.auth.CHECK_TFA_STATUS, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+    })
+    if (res.ok)
+    {
+        let resJson = await res.json();
+        return (resJson)
+    }
+    if (res.status == 401 && recursionProtection)
+    {
+        refreshToken().then(res=>{
+            if (res.ok)
+                isTfaACtive(0);
+            else
+            {
+                localStorage.removeItem("username");
+                history.pushState(null, null, "/login");
+                Router();
+                window.location.reload();             
+            }
+        })
+    }
+}
+
+export async function removeTfa(recursionProtection, code)
+{
+    const res = await fetch(URL.auth.REMOVE_TFA, {
+        method: "DELETE",
+        credentials: "include",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            code: code
+        })
+    })
+    if (res.status == 401 && recursionProtection)
+    {
+        refreshToken().then(res=>{
+            if (res.ok)
+                removeTfa(0);
+            else
+            {
+                localStorage.removeItem("username");
+                history.pushState(null, null, "/login");
+                Router();
+                window.location.reload();             
+            }
+        })
+    }
+    console.log(res);
+    return (res);
 }

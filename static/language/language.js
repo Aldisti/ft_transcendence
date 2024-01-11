@@ -51,6 +51,7 @@ let language = {
 			generalTitle: "change General Info",
 			passwordTitle: "change Password",
 			pictureTitle: "change Profile Picture",
+			twoFaTitle: "Enable 2FA",
 			logout: "Logout",
 			linkToIntra: "Link To Intra42",
 			confirmIntra: "Do you really want to link your intra profile?",

@@ -10,7 +10,17 @@ export const general = {
     INTRA_URL: `http://${ip}:${port}/oauth2/intra/url/`,
     USER_INFO: `http://${ip}:${port}/users/`,
     CONVERT_INTRA_TOKEN: `http://${ip}:${port}/oauth2/intra/login/`,
-    LINK_INTRA_TOKEN_ACCOUNT: `http://${ip}:${port}/oauth2/intra/link/`
+    LINK_INTRA_TOKEN_ACCOUNT: `http://${ip}:${port}/oauth2/intra/link/`,
+}
+
+export const auth = {
+    ACTIVATE_TFA: `http://${ip}:${port}/2fa/manage/`,
+    GET_EMAIL_CODE: `http://${ip}:${port}/tokens/otp/`,
+    VALIDATE_CODE: `http://${ip}:${port}/2fa/validate/activate/`,
+    VALIDATE_CODE_LOGIN: `http://${ip}:${port}/2fa/validate/login/`,
+    CHECK_TFA_STATUS: `http://${ip}:${port}/2fa/manage/`,
+    REMOVE_TFA: `http://${ip}:${port}/2fa/manage/`,
+
 }
 
 export const userAction = {
