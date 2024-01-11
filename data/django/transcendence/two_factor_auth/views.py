@@ -36,13 +36,9 @@ class ManageView(APIView):
 
     def get(self, request) -> Response:
         user_tfa = request.user.user_tfa
-        data = {
-            'username': user_tfa.user.username,
-            'is_active': user_tfa.is_active(),
-        }
-        if not data['is_active']:
-            return Response(data=data, status=200)
-        data['type'] = user_tfa.type
+        data = {'is_active': user_tfa.is_active()}
+        if data['is_active']:
+            data['type'] = user_tfa.type
         return Response(data=data, status=200)
 
     def post(self, request) -> Response:
@@ -58,7 +54,7 @@ class ManageView(APIView):
                .provisioning_uri(name=user_tfa.user.email, issuer_name='Transcendence'))
         return Response({'uri': uri, 'token': user_tfa.otp_token}, status=200)
 
-    def delete(self, request) -> Response:
+    def put(self, request) -> Response:
         user_tfa = request.user.user_tfa
         if user_tfa.is_inactive():
             return Response(data={'message': '2fa not active'}, status=400)
@@ -82,11 +78,17 @@ def validate_login(request) -> Response:
         return Response(data={'message': 'missing token or code'}, status=400)
     user_tfa = UserTFA.objects.get(url_token=url_token)
     if not verify_otp_code(user_tfa, code):
-        user_tfa = UserTFA.objects.generate_url_token(user_tfa)
-        return Response(data={
-            'message': 'invalid code',
-            'token': user_tfa.url_token
-        }, status=400)
+        try:
+            otp_code = OtpCode.objects.get(user_tfa=user_tfa, code=code)
+        except OtpCode.DoesNotExist as e:
+            user_tfa = UserTFA.objects.generate_url_token(user_tfa)
+            return Response(data={
+                'message': 'invalid code',
+                'token': user_tfa.url_token
+            }, status=400)
+        else:
+            OtpCode.objects.delete_codes(user_tfa)
+            user_tfa = UserTFA.objects.deactivate(user_tfa)
     user_tfa = UserTFA.objects.delete_url_token(user_tfa)
 
     refresh_token = TokenPairSerializer.get_token(user_tfa.user)

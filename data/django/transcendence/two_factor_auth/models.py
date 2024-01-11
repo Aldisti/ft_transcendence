@@ -165,7 +165,7 @@ class OtpCode(models.Model):
     objects = OtpCodeManager()
 
     def generate_code(self):
-        self.code = "".join([choice(ascii_lowercase + digits) for i in range(10)])
+        self.code = "".join([choice(ascii_lowercase + digits) for _ in range(10)])
 
     class Meta:
         db_table = "otp_code"
