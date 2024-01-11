@@ -139,6 +139,6 @@ def validate_activate(request) -> Response:
         return Response(data={'message': 'invalid code'}, status=400)
     user_tfa = UserTFA.objects.delete_url_token(user_tfa)
     UserTFA.objects.activate(user_tfa)
-    otp_codes = OtpCode.objects.create(user_tfa=user_tfa)
+    otp_codes = OtpCode.objects.generate_codes(user_tfa=user_tfa)
     codes = [otp_code.code for otp_code in otp_codes]
     return Response(data={'codes': codes}, status=200)
