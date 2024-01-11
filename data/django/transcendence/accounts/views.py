@@ -41,8 +41,7 @@ def registration(request):
     #image_validator(file)
     #return Response(status=200)
     user_serializer = CompleteUserSerializer(data=request.data)
-    if not user_serializer.is_valid(raise_exception=True):
-        return Response(status=400)
+    user_serializer.is_valid(raise_exception=True)
     user = user_serializer.create(user_serializer.validated_data)
     send_verification_email(user=user)
     serializer_response = CompleteUserSerializer(user)
