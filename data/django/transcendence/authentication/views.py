@@ -1,4 +1,4 @@
-
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import status
 from rest_framework.decorators import APIView, api_view, permission_classes
 from rest_framework.response import Response
@@ -52,7 +52,10 @@ class LoginView(APIView):
         }, status=400)
         user_serializer = UserSerializer(data=request.data)
         user_serializer.is_valid(raise_exception=True)
-        user = User.objects.get(pk=user_serializer.validated_data['username'])
+        try:
+            user = User.objects.get(pk=user_serializer.validated_data['username'])
+        except ObjectDoesNotExist:
+            return error_response
         if not user.check_password(user_serializer.validated_data['password']):
             return error_response
         if not user.active:
@@ -65,7 +68,9 @@ class LoginView(APIView):
             }, status=200)
         refresh_token = TokenPairSerializer.get_token(user)
         exp = datetime.fromtimestamp(refresh_token['exp'], tz=TZ) - datetime.now(tz=TZ)
-        response = Response({'access_token': str(refresh_token.access_token)}, status=200)
+        response = Response({
+            'access_token': str(refresh_token.access_token)
+        }, status=200)
         response.set_cookie(
             key='refresh_token',
             value=str(refresh_token),
