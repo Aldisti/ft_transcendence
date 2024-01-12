@@ -8,5 +8,5 @@ urlpatterns = [
         path('login/', views.validate_login, name='validate_login'),
         path('recover/', views.validate_recover, name='validate_recover'),
         path('activate/', views.validate_activate, name='validate_activate'),
-    ]))
+    ])),
 ]
