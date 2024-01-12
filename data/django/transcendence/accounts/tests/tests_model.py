@@ -113,6 +113,14 @@ class ModelUserTests(TestCase):
         user = User.objects.update_user_verified(self.user, verified=True)
         self.assertTrue(user.verified)
 
+    def test_user_linked_update(self):
+        # User linked
+        user = User.objects.update_user_linked(self.user, linked=True)
+        self.assertTrue(user.linked)
+        # User unlinked
+        user = User.objects.update_user_linked(self.user, linked=False)
+        self.assertFalse(user.linked)
+
     def test_invalid_user_creation(self):
         # checking creation without values
         with self.assertRaises(TypeError):

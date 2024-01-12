@@ -37,13 +37,13 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["username", "email", "password", "new_password", "active", "verified"]
+        fields = ["username", "email", "password", "new_password", "active", "verified", "linked"]
         extra_kwargs = {
             "password": {"write_only": True, "required": False},
             "username": {"validators": [RegexValidator("^[A-Za-z0-9!?*$~_-]{5,32}$")]},
             "email": {"required": False, "validators": [EmailValidator()]},
             "active": {"read_only": True, "required": False},
-            "verified": {"read_only": True, "required": False}
+            "verified": {"read_only": True, "required": False},
         }
 
 
@@ -63,7 +63,7 @@ class CompleteUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["username", "email", "password", "new_password", "role", "active", "verified", "banned", "user_info"]
+        fields = ["username", "email", "password", "new_password", "role", "active", "verified", "banned", "linked", "user_info"]
         extra_kwargs = {
             "password": {"write_only": True, "required": False},
             "username": {"validators": [RegexValidator("^[A-Za-z0-9!?*$~_-]{5,32}$")]},

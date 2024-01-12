@@ -9,6 +9,8 @@ from transcendence.settings import TZ
 
 from datetime import datetime, timedelta
 
+from rest_framework_simplejwt.exceptions import TokenError
+
 
 class JwtTokenManagerTests(TestCase):
     @classmethod
@@ -33,7 +35,7 @@ class JwtTokenManagerTests(TestCase):
         self.assertEqual(jwt_token.token, self.token['csrf'])
 
     def test_invalid_token_creation(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TokenError):
             JwtToken.objects.create(None)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TokenError):
             JwtToken.objects.create(self.invalid_token)
