@@ -74,6 +74,7 @@ def password_reset(request):
 
 class SendOtpCodeView(APIView):
     throttle_scope = 'email'
+    permission_classes = []
 
     def get(self, request) -> Response:
         if request.auth is not None:
