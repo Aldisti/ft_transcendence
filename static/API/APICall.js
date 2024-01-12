@@ -73,6 +73,29 @@ export async function convertIntraTokenAccount(recursionProtection){
     return (false);
 }
 
+export async function unlinkIntra(recursionProtection){
+    const res = await fetch(URL.general.LINK_INTRA_TOKEN_ACCOUNT, {
+        method: "DELETE",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        credentials: "include",
+    });
+    if (res.ok) {
+        history.pushState(null, null, "/home");
+        Router();
+        window.location.reload();
+        return (true);
+    }
+    if (res.status == 401 && recursionProtection) {
+        refreshToken().then(res=>{
+            if (res.ok)
+                unlinkIntra(0);
+        })
+    }
+    return (false);
+}
+
 export async function getUserInfo(recursionProtection) {
     const res = await fetch(`${URL.general.USER_INFO}${localStorage.getItem("username")}/`, {
         method: "GET",
@@ -94,7 +117,7 @@ export async function getUserInfo(recursionProtection) {
     }
     if (res.ok) {
         let jsonBody = await res.json();
-        return (jsonBody.user_info);
+        return (jsonBody);
     }
     return ({});
 }
@@ -350,6 +373,13 @@ export async function getEmailCode(recursionProtection, token)
             }
         })
     }
+    if (res.status == 429)
+    {
+        console.log(res.headers)
+        let resJson = await res.json();
+        let errMsg = resJson.detail.split(" ")
+        alert(`You made too many request you will be able to request another code in ${errMsg[errMsg.length - 2]} seconds`)
+    }
     return (res);
 
 }
@@ -457,7 +487,6 @@ export async function isTfaACtive(recursionProtection)
         if (resJson.is_active)
         {
             localStorage.setItem("is_active", resJson.type);
-            document.querySelector(".twofaForm").innerText = "Remove 2FA"
         }
         else
             localStorage.removeItem("is_active");
@@ -477,6 +506,33 @@ export async function isTfaACtive(recursionProtection)
         })
     }
 }
+
+export async function validateRecover(token, code)
+{
+    const res = await fetch(`${URL.auth.VALIDATE_CODE_RECOVERY}?token=${token}`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            code: code,
+        })
+    })
+    if (res.status == 400)
+    {
+        let jsonBody = await res.json();
+        console.log(jsonBody);
+        localStorage.setItem("otp_token", jsonBody.token == undefined ? localStorage.getItem("otp_token") : jsonBody.token);
+        return ({});
+    }
+    if (res.ok)
+    {
+        let jsonBody = await res.json();
+        return (jsonBody);
+    }
+    return ({});
+} 
 
 export async function removeTfa(recursionProtection, code)
 {
@@ -513,4 +569,39 @@ export async function removeTfa(recursionProtection, code)
         })
     }
     return (res);
+}
+
+export async function sendRecoveryEmail(username)
+{
+    const res = await fetch(URL.auth.SEND_RECOVERY_CODE, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            username: username,
+        })
+    })
+    let temp = await res.json();
+    console.log(temp);
+    return (temp);
+}
+
+export async function recoveryPassword(data, token)
+{
+    const res = await fetch(`${URL.auth.UPDATE_PASSWORD}?token=${token}`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data)
+    })
+    if (res.ok)
+    {
+        history.pushState(null, null, "/login");
+        Router();
+        window.location.reload();    
+    }
+    console.log(res)
 }

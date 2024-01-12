@@ -53,6 +53,7 @@ document.querySelector("#navbar").innerHTML = `
     </nav>
 `
 API.getUserInfo(1).then(res=>{
-  if (res.picture != null)
-    document.querySelector(".profilePictureUrl").src = res.picture;
+  if (res.user_info.picture != null)
+  console.log(res)
+    document.querySelector(".profilePictureUrl").src = res.user_info.picture;
 })

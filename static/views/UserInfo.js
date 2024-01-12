@@ -71,6 +71,7 @@ export default class extends Aview {
 
     async getGeneralForm() {
         API.getUserInfo(1).then(res => {
+            res = res.user_info
             document.querySelector(".formMenu").innerHTML = `
                 <div class="formContainer">
                 <div class="inputLine">
@@ -222,8 +223,13 @@ export default class extends Aview {
         return `
             <div class="formContainer">
                 <div class="decisionBox">
+                    <h3 id="intraLink" href="#" class="formLink intra">${this.language.update.linkToIntra}</h3>
+                </div>
+                <div class="decisionBox">
                     <button class="retroBtn emailChoice" style="background-color: var(--bs-success)">email</button>
                     <button class="retroBtn appChoice" style="background-color: var(--bs-success)">app</button>
+                </div>
+                <div class="showForm">
                 </div>
             </div>
         `
@@ -231,7 +237,7 @@ export default class extends Aview {
 
     get2faAppForm(){
         return `
-            <div class="formContainer">
+            <div class="formContainerInner">
                 <div class="line qrLine">
                     <div id="qrCode">
                     </div>
@@ -268,7 +274,7 @@ export default class extends Aview {
     }
     get2faEmailForm(){
         return `
-            <div class="formContainer">
+            <div class="formContainerInner">
                 <div class="line infoLine">
                     <div>
                         ${emailError}
@@ -294,20 +300,23 @@ export default class extends Aview {
     get2faRemoveForm(){
         return `
         <div class="formContainer">
-        <div class="line infoLine">
-            <div>
-                ${localStorage.getItem("is_active") == "EM" ? emailError : qrError}
+            <div class="decisionBox">
+                <h3 id="intraLink" href="#" class="formLink intra">${this.language.update.linkToIntra}</h3>
+            </div>
+            <div class="line infoLine">
+                <div>
+                    ${localStorage.getItem("is_active") == "EM" ? emailError : qrError}
+                </div>
+            </div>
+            <div class="line codeInputLine">
+                <label for="emailTfaCode">Insert Code:</label>
+                <input id="removeTfaCode" type="text">
+            </div>
+            <div class="line" >
+                ${localStorage.getItem("is_active") == "EM" ? '<button class="retroBtn sendBtn" style="background-color: var(--bs-warning)">send email</button>' : ""}
+                <button class="retroBtn sendCode" style="background-color: var(--bs-success)">Submit</button>
             </div>
         </div>
-        <div class="line codeInputLine">
-            <label for="emailTfaCode">Insert Code:</label>
-            <input id="removeTfaCode" type="text">
-        </div>
-        <div class="line" >
-            ${localStorage.getItem("is_active") == "EM" ? '<button class="retroBtn sendBtn" style="background-color: var(--bs-warning)">send email</button>' : ""}
-            <button class="retroBtn sendCode" style="background-color: var(--bs-success)">Submit</button>
-        </div>
-    </div>
         `
     }
 
@@ -318,9 +327,8 @@ export default class extends Aview {
                     <h6 class="formLink info generalForm">${this.language.update.generalTitle}</h6>
                     <h6 class="formLink password passwordForm">${this.language.update.passwordTitle}</h6>
                     <h6 class="formLink email emailForm">${this.language.update.emailTitle}</h6>
-                    <h6 class="formLink twofa twofaForm">${this.language.update.twoFaTitle}</h6>
+                    <h6 class="formLink twofa twofaForm">${this.language.update.security}</h6>
                     <h6 class="formLink picture pictForm">${this.language.update.pictureTitle}</h6>
-                    <h6 class="formLink intra">${this.language.update.linkToIntra}</h6>
                     <h6 class="formLink logout">${this.language.update.logout}</h6>
                 </div>
                 <div class="handle">
@@ -436,12 +444,24 @@ export default class extends Aview {
             localStorage.setItem("selectedForm", "picture")
             document.querySelector(".formMenu").innerHTML = this.getProfilePictureForm();
             API.getUserInfo(1).then(res=>{
-                if (res.picture != null)
-                  document.querySelector(".updateImgForm").src = res.picture;
+                if (res.user_info.picture != null)
+                  document.querySelector(".updateImgForm").src = res.user_info.picture;
             })
         }
 
         else if (e.classList.contains("twofa") || byPass == "twofa") {
+            localStorage.setItem("selectedForm", "twofa")
+            API.convertIntraTokenAccount(1).then(res=>{})
+            API.isTfaACtive(1).then(res=>{})
+            API.getUserInfo(1).then(res=>{
+                if (res.linked)
+                {
+                    document.querySelector("#intraLink").innerHTML = "Unlink Intra"
+                    localStorage.setItem("intraLinked", "true");
+                }
+                else
+                    localStorage.setItem("intraLinked", "false");
+            })
             if (localStorage.getItem("is_active") != undefined)
             {
                 if (localStorage.getItem("is_active") == "EM")
@@ -450,24 +470,22 @@ export default class extends Aview {
                 document.querySelector(".sendCode").addEventListener("click", sendAppTfaCodeRemove)
                 return ;
             }
-            localStorage.setItem("selectedForm", "twofa")
             document.querySelector(".formMenu").innerHTML = this.get2faChoice();
 
             document.querySelector(".emailChoice").addEventListener("click", ()=>{
-                document.querySelector(".formMenu").innerHTML = this.get2faEmailForm();
+                document.querySelector(".showForm").innerHTML = this.get2faEmailForm();
                 document.querySelector(".sendCode").addEventListener("click", sendEmailTfaCode)
                 document.querySelector(".resendBtn").addEventListener("click", ()=>{
                     API.getEmailCode(1)
                 })
                 API.activateTfa(1, "em").then(res=>{
-                    console.log(res)
-                    // if (Object.keys(res).length > 0)
+                    if (Object.keys(res).length == 0)
                         API.getEmailCode(1)
                 })
             })
 
             document.querySelector(".appChoice").addEventListener("click", ()=>{
-                document.querySelector(".formMenu").innerHTML = this.get2faAppForm();
+                document.querySelector(".showForm").innerHTML = this.get2faAppForm();
                 API.activateTfa(1, "sw").then(res=>{
                     window.otp_token = res.token;
                     console.log(document.querySelector(".codeDisplay"))
@@ -475,6 +493,14 @@ export default class extends Aview {
                     new window.QRCode(document.getElementById("qrCode"), res.uri);
                     document.querySelector(".sendCode").addEventListener("click", sendAppTfaCode)
                 })
+            })
+            document.querySelector(".intra").style.backgroundColor = "gray"
+            API.getIntraUrl("link").then(res=>{
+                if (res != "")
+                {
+                    this.intraUrl = res
+                    document.querySelector(".intra").style.backgroundColor = "";
+                }
             })
             return;
         }
@@ -488,14 +514,20 @@ export default class extends Aview {
         else if (e.classList.contains("intra")) {
             if (!confirm(this.language.update.confirmIntra))
                 return;
-            window.location.href = this.intraUrl;
+            if (localStorage.getItem("intraLinked") == "false")
+                window.location.href = this.intraUrl;
+            else
+            {
+                console.log("unlink")
+                API.unlinkIntra(1);
+
+            }
         }
     }
 
     highlightFormMenu(formName) {
+        console.log(formName)
         document.querySelectorAll(".formLink").forEach(el => {
-            if (el.classList.contains("intra") && el.style.backgroundColor == "gray")
-                return;
             el.style.backgroundColor = "#f0ead2";
             el.style.color = "black";
         })
@@ -504,18 +536,6 @@ export default class extends Aview {
     }
 
     setup() {
-        document.querySelector(".intra").style.backgroundColor = "gray"
-        API.getIntraUrl("link").then(res=>{
-            if (res != "")
-            {
-                this.intraUrl = res;
-                document.querySelector(".intra").style.backgroundColor = "";
-            }
-        })
-
-        API.convertIntraTokenAccount(1).then(res=>{
-            if (!res)
-            {
                 //defining background
                 if (localStorage.getItem("style") == "modern"){
                     document.querySelector("#app").style.backgroundImage = "url('https://c4.wallpaperflare.com/wallpaper/105/526/545/blur-gaussian-gradient-multicolor-wallpaper-preview.jpg')";
@@ -527,15 +547,11 @@ export default class extends Aview {
                 document.querySelector("#app").style.backgroundRepeat = "repeat"
         
                 //defining the start menu item that need to be highlighted
-                if (localStorage.getItem("selectedForm") == undefined)
+                if (localStorage.getItem("selectedForm") == null)
                     localStorage.setItem("selectedForm", "info");
+                
+                this.changeForm(document.body, localStorage.getItem("selectedForm"));
                 this.highlightFormMenu(localStorage.getItem("selectedForm"))
-
-                API.isTfaACtive(1).then(res=>{
-                    this.changeForm(document.querySelector("body"), localStorage.getItem("selectedForm"))
-                })
-
-        
                 document.querySelector(".userInfoContainer").addEventListener("click", (e) => {
                     if (e.target.classList.contains("handle")) {
                         if (document.querySelector(".handle").classList.contains("open")) {
@@ -556,7 +572,5 @@ export default class extends Aview {
                     if (e.target.classList.contains("submit"))
                         this.performChecksAndSubmit(this.collectData());
                 })
-            }
-        })
     }
 }

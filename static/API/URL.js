@@ -18,9 +18,11 @@ export const auth = {
     GET_EMAIL_CODE: `http://${ip}:${port}/tokens/otp/`,
     VALIDATE_CODE: `http://${ip}:${port}/2fa/validate/activate/`,
     VALIDATE_CODE_LOGIN: `http://${ip}:${port}/2fa/validate/login/`,
+    VALIDATE_CODE_RECOVERY: `http://${ip}:${port}/2fa/validate/recover/`,
     CHECK_TFA_STATUS: `http://${ip}:${port}/2fa/manage/`,
     REMOVE_TFA: `http://${ip}:${port}/2fa/manage/`,
-
+    SEND_RECOVERY_CODE: `http://${ip}:${port}/tokens/recovery/`,
+    UPDATE_PASSWORD: `http://${ip}:${port}/tokens/password/`,
 }
 
 export const userAction = {

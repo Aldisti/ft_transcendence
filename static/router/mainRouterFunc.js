@@ -11,7 +11,6 @@ const Router =()=>{
 	styleH.disableStyleSheet(fRoute);
 	for (let route of Routes)
 	{
-		//if found set lastClass to delete previus css and set matchedLocation to update the new html
 		if (route.path == location.pathname)
 		{
 			matechedLocation = new route.view;

@@ -2,7 +2,8 @@ import Aview from "/views/abstractView.js";
 import language from "/language/language.js";
 import * as API from "/API/APICall.js"
 import sha256 from "/scripts/crypto.js"
-import Router from "/router/mainRouterFunc.js"
+import Router from "/router/mainRouterFunc.js";
+
 
 function validateLoginCode()
 {
@@ -21,7 +22,88 @@ function validateLoginCode()
             }
         })
     }
-    
+}
+
+function validateCodeRecovery(token)
+{
+    let code = document.querySelector("#TfaCode").value;
+    if (code.length == 6 || code.length == 10)
+    {
+        API.validateRecover(token, code).then(res=>{
+            if (Object.keys(res).length == 1)
+            {
+                history.pushState(null, null, `/password/recovery/?token=${res.token}`);
+                Router();
+            }
+        });
+    }
+}
+
+
+function disableTfaPage(type){
+    return `
+    <div class="base">
+    <div class="loginForm">
+    <div class="formContainer" style="color: black !important;">
+    <div class="line infoLine">
+        <div>
+            ${localStorage.getItem("is_active") == "EM" ? emailError : qrError}
+        </div>
+    </div>
+    <div class="line codeInputLine">
+        <label for="emailTfaCode">Insert Code:</label>
+        <input id="TfaCode" type="text">
+    </div>
+    <div class="line" style="flex-direction: row;">
+        ${type == "EM" ? `<button class="retroBtn resendBtn" style="background-color: var(--bs-warning)">send email</button>` : ""}
+        <button class="retroBtn sendCode" style="background-color: var(--bs-success)">Submit</button>
+    </div>
+</div>
+    </div>
+</div>
+    `
+}
+
+
+window.showRecoveryPage = ()=>{
+    document.querySelector("#app").innerHTML = `
+        <div class="passwordPage">
+            <div class="passwordContainer">
+                <div class="line">
+                    <h1 style="margin: 0;">Recover Your Password</h1>
+                </div>
+                <div class="line">
+                    <h3>Enter username:</h3>
+                    <div class="passInp">
+                        <input type="text" class="data retroShade" name="username">
+                    </div>
+                </div>
+                <div class=" btnLeft">
+                    <button id="recoveryBtn" class="retroBtn retroShade btnColor-green">Get Email</button>
+                </div>
+            </div>
+        </div>
+    `
+    document.querySelector("#recoveryBtn").addEventListener("click", ()=>{
+        API.sendRecoveryEmail(document.querySelector(".data").value).then(res=>{
+            if (Object.keys(res).length > 0)
+            {
+                console.log(res)
+                document.querySelector("#app").innerHTML = disableTfaPage(res.type);
+                if (res.type == "EM")
+                {
+                    API.getEmailCode(1, res.token);
+                    document.querySelector(".resendBtn").addEventListener("click", ()=>{
+                        API.getEmailCode(1, res.token);
+                    })
+                }
+                document.querySelector(".sendCode").addEventListener("click", ()=>{
+                    validateCodeRecovery(res.token);
+                })
+            }
+
+        })
+    })
 }
 
 let emailError = `
@@ -74,6 +156,7 @@ export default class extends Aview {
                 	<a class="retroBtn intraBtn retroShade btnColor-blue" href="#">${this.language.login.intraLogin}</a>
                 	<button id="loginBtn" class="retroBtn retroShade btnColor-green">${this.language.login.submit}</button>
             	</div>
+                <span onclick="window.showRecoveryPage()"  class="recovery" href="#">Password Dimenticata?</span>
         	</div>
    		</div>
         `

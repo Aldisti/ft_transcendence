@@ -15,6 +15,14 @@
 	box-shadow: 15px 15px black;
 }
 
+.recovery
+{
+	margin: 20px;
+	width: 100%;
+	text-align: start;
+	color: white;
+}
+
 .base
 {
 	width: 100svw;
@@ -168,6 +176,34 @@ h4
 	width: 100%;
 	height: 100%;
 	object-fit: contain;
+}
+
+.passwordContainer
+{
+    width: 60svw;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: url("/imgs/backUpdate.jpg");
+    padding: 30px;
+    border: 2px solid black;
+    box-shadow: 15px 15px black;
+}
+
+.btnLeft
+{
+	display: flex;
+	justify-content: center;
+}
+
+.passwordPage
+{
+    width: 100svw;
+    height: 100svh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 @media only screen and (max-width: 900px){
