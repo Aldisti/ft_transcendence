@@ -68,6 +68,8 @@ class UserTokens(models.Model):
 
     objects = UserTokensManger()
 
+    def is_resetting_password(self):
+        return self.password_token != ""
 
     class Meta:
         db_table = "user_tokens"

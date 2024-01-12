@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from email_manager.models import UserTokens
 from two_factor_auth.models import UserTFA
 from .serializers import TokenPairSerializer
 from .models import JwtToken
@@ -63,6 +64,9 @@ class LoginView(APIView):
         #     return Response(data={'message': 'user not verified yet'}, status=400)
         if not user.active:
             return Response(data={'message': "user isn't active"}, status=400)
+        # TODO: gpanico should check this line
+        UserTokens.objects.clear_password_token(user.user_tokens)
+
         if user.user_tfa.is_active():
             user_tfa = UserTFA.objects.generate_url_token(user.user_tfa)
             return Response(data={

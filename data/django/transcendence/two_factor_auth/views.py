@@ -77,10 +77,11 @@ def validate_login(request) -> Response:
     if url_token is None or code is None:
         return Response(data={'message': 'missing token or code'}, status=400)
     user_tfa = UserTFA.objects.get(url_token=url_token)
+    if user_tfa.user.user_tokens.is_resetting_password():
+        return Response(status=403)
     if not verify_otp_code(user_tfa, code):
         try:
             otp_code = OtpCode.objects.get(user_tfa=user_tfa, code=code)
-            logger.warning(f"code: {otp_code.code}")
         except OtpCode.DoesNotExist:
             user_tfa = UserTFA.objects.generate_url_token(user_tfa)
             return Response(data={
@@ -115,6 +116,8 @@ def validate_recover(request) -> Response:
     if url_token is None or code is None:
         return Response(data={'message': 'missing token or code'}, status=400)
     user_tfa = UserTFA.objects.get(url_token=url_token)
+    if not user_tfa.user.user_tokens.is_resetting_password():
+        return Response(status=403)
     if not verify_otp_code(user_tfa, code):
         user_tfa = UserTFA.objects.generate_url_token(user_tfa)
         return Response(data={
@@ -132,9 +135,7 @@ def validate_activate(request) -> Response:
     code = request.data.get('code', None)
     if code is None:
         return Response(data={'message': 'missing code'}, status=400)
-    logger.warning(f"code: {code}")
     user_tfa = request.user.user_tfa
-    logger.warning(f"type: {user_tfa.type}")
     if not user_tfa.is_activating():
         return Response(data={
             'message': "2fa activation process not started yet",
