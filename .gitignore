@@ -15,7 +15,8 @@ srcs/docker-compose.yml
 .*bkp
 .**bkp
 data/django/transcendence/APIDocs.md
-
+data/postgres
+data/postgres/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

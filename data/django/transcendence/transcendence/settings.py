@@ -89,6 +89,7 @@ REST_FRAMEWORK = {
         "high_load": "10/minute",
         "medium_load": "30/minute",
         "low_load": "60/minute",
+        "email": "1/minute",
     }
 }
 

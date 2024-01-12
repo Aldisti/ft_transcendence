@@ -7,7 +7,7 @@ from oauth2.settings import *
 from oauth2.models import UserIntra
 
 from authentication.serializers import TokenPairSerializer as Tokens
-from authentication.throttles import AnonAuthThrottle, UserAuthThrottle
+from authentication.throttles import AnonAuthThrottle, UserAuthThrottle, MediumLoadThrottle
 
 from transcendence.settings import TZ
 
@@ -89,23 +89,32 @@ class IntraUrl(APIView):
         return response
 
 
-@api_view(['POST'])
-@throttle_classes([UserAuthThrottle])
-def intra_link(request) -> Response:
-    headers = {'Authorization': f"Bearer {request.COOKIES['api_token']}"}
-    api_response = requests.get(INTRA_USER_INFO, headers=headers)
-    if api_response.status_code != 200:
-        return Response(data={
-            'message': f"api error: {api_response.status_code}"
-        }, status=500)
-    name, email = api_response.json()['login'], api_response.json()['email']
-    del api_response
-    try:
-        user_intra = UserIntra.objects.create(user=request.user, name=name, email=email)
-        User.objects.update_user_linked(user_intra.user, linked=True)
-        return Response(status=200)
-    except ValidationError:
-        return Response(data={'message': 'user already linked'}, status=400)
+class IntraLink(APIView):
+    throttle_classes = [MediumLoadThrottle]
+
+    def post(self, request) -> Response:
+        headers = {'Authorization': f"Bearer {request.COOKIES['api_token']}"}
+        api_response = requests.get(INTRA_USER_INFO, headers=headers)
+        if api_response.status_code != 200:
+            return Response(data={
+                'message': f"api error: {api_response.status_code}"
+            }, status=500)
+        name, email = api_response.json()['login'], api_response.json()['email']
+        del api_response
+        try:
+            UserIntra.objects.create(user=request.user, name=name, email=email)
+            return Response(status=200)
+        except ValidationError:
+            return Response(data={'message': 'user already linked'}, status=400)
+
+    def delete(self, request) -> Response:
+        user = request.user
+        if not user.linked:
+            return Response(data={'message': 'no account linked'}, status=400)
+        # TODO: unlink the user
+        # User.objects.update_user_linked(user, False)
+        user.user_intra.delete()
+        return Response(data={'message': 'user unlinked'}, status=200)
 
 
 @api_view(['POST'])
