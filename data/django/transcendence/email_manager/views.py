@@ -1,14 +1,16 @@
-from smtplib import SMTPException
 
-from django.shortcuts import render
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes, APIView
 from rest_framework.response import Response
-from rest_framework.exceptions import APIException
+
 from email_manager.models import UserTokens
 from email_manager.email_sender import send_password_email, send_tfa_code_email
+
 from accounts.models import User
+
 from two_factor_auth.models import UserTFA
+
+from smtplib import SMTPException
 
 
 @api_view(['GET'])
@@ -67,10 +69,7 @@ def password_reset(request):
         return Response({"message" "Invalid password"}, status=400)
     user = User.objects.reset_user_password(user, password)
     user_tokens = UserTokens.objects.clear_password_token(user_tokens)
-    # TODO: redirect to login page
-    return Response(headers={'Location': 'http://localhost:4200/login'},
-                    status=status.HTTP_307_TEMPORARY_REDIRECT)
-    # return Response(status=200)
+    return Response(status=200)
 
 
 class SendOtpCodeView(APIView):
