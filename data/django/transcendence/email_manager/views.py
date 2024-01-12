@@ -43,6 +43,7 @@ def password_recovery(request):
         return Response({"message": "User not found"}, status=404)
     user_tfa = user.user_tfa
     if user_tfa.is_active():
+        UserTokens.objects.generate_password_token(user.user_tokens)
         user_tfa = UserTFA.objects.generate_url_token(user_tfa)
         return Response(data={'token': user_tfa.url_token, 'type': user_tfa.type},
                         status=200)
