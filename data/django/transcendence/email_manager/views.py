@@ -42,7 +42,8 @@ def password_recovery(request):
     user_tfa = user.user_tfa
     if user_tfa.is_active():
         user_tfa = UserTFA.objects.generate_url_token(user_tfa)
-        return Response(data={'token': user_tfa.url_token}, status=200)
+        return Response(data={'token': user_tfa.url_token, 'type': user_tfa.type},
+                        status=200)
     try:
         send_password_email(user)
     except SMTPException as e:
