@@ -80,7 +80,8 @@ def validate_login(request) -> Response:
     if not verify_otp_code(user_tfa, code):
         try:
             otp_code = OtpCode.objects.get(user_tfa=user_tfa, code=code)
-        except OtpCode.DoesNotExist as e:
+            logger.warning(f"code: {otp_code.code}")
+        except OtpCode.DoesNotExist:
             user_tfa = UserTFA.objects.generate_url_token(user_tfa)
             return Response(data={
                 'message': 'invalid code',
