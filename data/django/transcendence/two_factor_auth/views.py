@@ -81,7 +81,7 @@ def validate_login(request) -> Response:
         return Response(status=403)
     if not verify_otp_code(user_tfa, code):
         try:
-            otp_code = OtpCode.objects.get(user_tfa=user_tfa, code=code)
+            otp_code = user_tfa.otpcode_set.get(code=code)
         except OtpCode.DoesNotExist:
             user_tfa = UserTFA.objects.generate_url_token(user_tfa)
             return Response(data={
@@ -124,7 +124,6 @@ def validate_recover(request) -> Response:
             'message': 'invalid code',
             'token': user_tfa.url_token}, status=400)
     user_tfa = UserTFA.objects.delete_url_token(user_tfa)
-
     return Response(data={'token': user_tfa.user.user_tokens.password_token}, status=200)
 
 

@@ -156,6 +156,8 @@ class OtpCode(models.Model):
     user_tfa = models.ForeignKey(
         to=UserTFA,
         on_delete=models.CASCADE,
+        related_name="user_tfa",
+        db_column="username",
     )
     code = models.CharField(
         db_column='code',
