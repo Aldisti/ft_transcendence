@@ -132,3 +132,18 @@ class UserOpenIdTests(TestCase):
         self.assertEqual(user_openid.intra_email, old_user_openid.intra_email)
         self.assertEqual(user_openid.google_name, '')
         self.assertEqual(user_openid.google_email, '')
+
+    def test_unlink_all(self):
+        user_openid = UserOpenId.objects.create(
+            self.user,
+            intra_name=self.intra_name,
+            intra_email=self.intra_email,
+            google_name=self.google_name,
+            google_email=self.google_email,
+        )
+        user_openid = UserOpenId.objects.unlink_all(user_openid)
+        self.assertEqual(user_openid.user, self.user)
+        self.assertEqual(user_openid.intra_name, '')
+        self.assertEqual(user_openid.intra_email, '')
+        self.assertEqual(user_openid.google_name, '')
+        self.assertEqual(user_openid.google_email, '')
