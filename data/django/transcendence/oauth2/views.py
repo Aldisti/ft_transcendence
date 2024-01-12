@@ -3,8 +3,9 @@ from rest_framework import status
 from rest_framework.decorators import APIView, api_view, permission_classes, throttle_classes
 from rest_framework.response import Response
 
+from accounts.models import User
 from oauth2.settings import *
-from oauth2.models import UserIntra
+from oauth2.models import UserOpenId
 
 from authentication.serializers import TokenPairSerializer as Tokens
 from authentication.throttles import AnonAuthThrottle, UserAuthThrottle, MediumLoadThrottle
@@ -37,7 +38,8 @@ class IntraCallback(APIView):
         api_response = requests.post(INTRA_TOKEN, json=request_body)
         if api_response.status_code != 200:
             return Response(data={
-                'message': f"api error: {api_response.status_code}"
+                'status': api_response.status_code,
+                'error': f"{api_response.json()}"
             }, status=500)
         if req_type == 'login':
             location_url = CLIENT_INTRA_REDIRECT_LOGIN
@@ -93,28 +95,36 @@ class IntraLink(APIView):
     throttle_classes = [MediumLoadThrottle]
 
     def post(self, request) -> Response:
+        if not request.user.linked:
+            user_openid = request.user.user_openid
+        else:
+            user_openid = UserOpenId.objects.create(user=request.user)
+            User.objects.update_user_linked(request.user, True)
+        if user_openid.is_intra_linked():
+            return Response(data={'message': 'user already linked'}, status=400)
         headers = {'Authorization': f"Bearer {request.COOKIES['api_token']}"}
         api_response = requests.get(INTRA_USER_INFO, headers=headers)
         if api_response.status_code != 200:
             return Response(data={
                 'message': f"api error: {api_response.status_code}"
-            }, status=500)
+            }, status=status.HTTP_503_SERVICE_UNAVAILABLE)
         name, email = api_response.json()['login'], api_response.json()['email']
         del api_response
         try:
-            UserIntra.objects.create(user=request.user, name=name, email=email)
-            return Response(status=200)
-        except ValidationError:
-            return Response(data={'message': 'user already linked'}, status=400)
+            UserOpenId.objects.link_intra(user_openid, intra_name=name, intra_email=email)
+        except ValidationError as e:
+            return Response(data={'message': str(e)}, status=400)
+        return Response(status=200)
 
     def delete(self, request) -> Response:
         user = request.user
-        if not user.linked:
-            return Response(data={'message': 'no account linked'}, status=400)
-        # TODO: unlink the user
-        # User.objects.update_user_linked(user, False)
-        user.user_intra.delete()
-        return Response(data={'message': 'user unlinked'}, status=200)
+        if not user.linked or not user.user_openid.is_linked_intra():
+            return Response(data={'message': 'account not linked'}, status=400)
+        try:
+            UserOpenId.objects.unlink_intra(user.user_openid)
+        except ValidationError as e:
+            return Response(data={'message': str(e)}, status=400)
+        return Response(status=200)
 
 
 @api_view(['POST'])
@@ -130,24 +140,23 @@ def intra_login(request) -> Response:
     name, email = api_response.json()['login'], api_response.json()['email']
     del api_response
     try:
-        user_intra = UserIntra.objects.get(pk=name, email=email)
-    except ObjectDoesNotExist:
-        return Response({'message': 'user not linked'}, status=404)
-    if user_intra is not None:
-        refresh_token = Tokens.get_token(user_intra.user)
-        exp = datetime.fromtimestamp(refresh_token['exp'], tz=TZ) - datetime.now(tz=TZ)
-        response = Response({
-            'username': user_intra.user.username,
-            'access_token': f"Bearer {str(refresh_token.access_token)}"
-        }, status=200)
-        response.set_cookie('api_token', 'deleted', max_age=0)
-        response.set_cookie(
-            key='refresh_token',
-            value=str(refresh_token),
-            max_age=exp,
-            secure=False,
-            httponly=False,
-            samesite=None,
-        )
-        return response
-    return Response('invalid credentials', status=400)
+        user_openid = UserOpenId.objects.get(intra_name=name, intra_email=email)
+    except UserOpenId.DoesNotExist:
+        return Response(data={'message': 'user not linked'}, status=404)
+
+    refresh_token = Tokens.get_token(user_openid.user)
+    exp = datetime.fromtimestamp(refresh_token['exp'], tz=TZ) - datetime.now(tz=TZ)
+    response = Response(data={
+        'username': user_openid.user.username,
+        'access_token': f"Bearer {str(refresh_token.access_token)}"
+    }, status=200)
+    response.set_cookie('api_token', 'deleted', max_age=0)
+    response.set_cookie(
+        key='refresh_token',
+        value=str(refresh_token),
+        max_age=exp,
+        secure=False,
+        httponly=False,
+        samesite=None,
+    )
+    return response
