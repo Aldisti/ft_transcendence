@@ -1,4 +1,4 @@
-from django.core.exceptions import ObjectDoesNotExist
+
 from rest_framework import status
 from rest_framework.decorators import APIView, api_view, permission_classes
 from rest_framework.response import Response
@@ -7,9 +7,11 @@ from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from email_manager.models import UserTokens
+
 from two_factor_auth.models import UserTFA
-from .serializers import TokenPairSerializer
-from .models import JwtToken
+
+from authentication.serializers import TokenPairSerializer
+from authentication.models import JwtToken
 
 from accounts.models import User
 from accounts.serializers import UserSerializer
@@ -64,7 +66,7 @@ class LoginView(APIView):
         #     return Response(data={'message': 'user not verified yet'}, status=400)
         if not user.active:
             return Response(data={'message': "user isn't active"}, status=400)
-        # TODO: gpanico should check this line
+        # TODO: @gpanico should check this line
         UserTokens.objects.clear_password_token(user.user_tokens)
 
         if user.user_tfa.is_active():
@@ -116,9 +118,9 @@ class RefreshView(APIView):
             return error_response
 
 
-#@api_view(['GET', 'POST'])
-#@permission_classes([])
-#def test(request):
+# @api_view(['GET', 'POST'])
+# @permission_classes([])
+# def test(request):
 #    response = Response({"access_token": "prova"})
 #    response.set_cookie(
 #            "test_token",
