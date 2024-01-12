@@ -60,7 +60,8 @@ def send_password_email(user: User):
     # generate url
     # url = reverse("api-password_recovery") + "?token=" + user_tokens.password_token
     # TODO: mettersi d'accordo con Marco sulla pagina per il password recovery
-    url = "http://localhost:8000/tokens/password/" + "?token=" + user_tokens.password_token
+    # url = "http://localhost:8000/tokens/password/" + "?token=" + user_tokens.password_token
+    url = "http://localhost:4200/password/recovery/" + "?token=" + user_tokens.password_token
 
     # generate message
     title = "Password recovery"

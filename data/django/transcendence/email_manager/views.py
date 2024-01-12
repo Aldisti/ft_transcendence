@@ -25,6 +25,8 @@ def email_token_validation(request):
     user_tokens = UserTokens.objects.clear_email_token(user_tokens)
     user = User.objects.update_user_verified(user, verified=True)
     # TODO: redirect to login page
+    # return Response(headers={'Location': 'http://localhost:4200/login'},
+    #                 status=status.HTTP_307_TEMPORARY_REDIRECT)
     return Response(status=200)
 
 
@@ -65,7 +67,9 @@ def password_reset(request):
     user = User.objects.reset_user_password(user, password)
     user_tokens = UserTokens.objects.clear_password_token(user_tokens)
     # TODO: redirect to login page
-    return Response(status=200)
+    return Response(headers={'Location': 'http://localhost:4200/login'},
+                    status=status.HTTP_307_TEMPORARY_REDIRECT)
+    # return Response(status=200)
 
 
 class SendOtpCodeView(APIView):
