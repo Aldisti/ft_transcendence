@@ -49,7 +49,7 @@ class ManageView(APIView):
         except ValidationError as e:
             return Response(data={'message': e.message}, status=400)
         if user_tfa.is_email():
-            return Response(data={'message': 'request email'}, status=200)
+            return Response(status=200)
         uri = (pyotp.totp.TOTP(user_tfa.otp_token)
                .provisioning_uri(name=user_tfa.user.email, issuer_name='Transcendence'))
         return Response({'uri': uri, 'token': user_tfa.otp_token}, status=200)
