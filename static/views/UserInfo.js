@@ -4,41 +4,9 @@ import * as URL from "/API/URL.js"
 import Aview from "/views/abstractView.js";
 import * as API from "/API/APICall.js";
 import sha256 from "/scripts/crypto.js";
-
-function isNumber(value) {
-    return typeof value === 'number';
-}
-
-function sendEmailTfaCode()
-{
-    let code = document.querySelector("#emailTfaCode").value;
-    console.log(code)
-    if (code.length == 6 || code.length == 10)
-    {
-        API.validateCode(1, code).then(res=>{
-        })
-    }
-}
-function sendAppTfaCode()
-{
-    let code = document.querySelector("#appTfaCode").value;
-    console.log(code)
-    if (code.length == 6 || code.length == 10)
-    {
-        API.validateCode(1, code).then(res=>{
-        })
-    }
-}
-function sendAppTfaCodeRemove()
-{
-    let code = document.querySelector("#removeTfaCode").value;
-    console.log(code)
-    if (code.length == 6 || code.length == 10)
-    {
-        API.removeTfa(1, code).then(res=>{
-        })
-    }
-}
+import * as pages from "/viewScripts/userInfo/loadViews.js"
+import handleClick from "/viewScripts/userInfo/handleClick.js"
+import * as prepare from "/viewScripts/userInfo/prepareForms.js"
 
 let emailError = `
     <ul style="margin: 0;">
@@ -74,41 +42,41 @@ export default class extends Aview {
             res = res.user_info
             document.querySelector(".formMenu").innerHTML = `
                 <div class="formContainer">
-                <div class="inputLine">
-                    <label for="${this.language.update.username[1]}">${this.language.update.username[0]}</label>
-                    <input class="inputData" type="text" value="${localStorage.getItem("username")}" id="${this.language.update.username[1]}" disabled="true">
-                </div>
-                <div class="inputLine">
-                    <div class="f-line">
-                        <div class="myTooltip">
-                            ?
-                            <span id="${this.language.update.firstName[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
+                    <div class="inputLine">
+                        <label for="${this.language.update.username[1]}">${this.language.update.username[0]}</label>
+                        <input class="inputData" type="text" value="${localStorage.getItem("username")}" id="${this.language.update.username[1]}" disabled="true">
+                    </div>
+                    <div class="inputLine">
+                        <div class="f-line">
+                            <div class="myTooltip">
+                                ?
+                                <span id="${this.language.update.firstName[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
+                            </div> 
+                            <label for="${this.language.update.firstName[1]}">${this.language.update.firstName[0]}</label>
                         </div> 
-                        <label for="${this.language.update.firstName[1]}">${this.language.update.firstName[0]}</label>
-                    </div> 
-                    <input class="inputData" value="${res.first_name}" type="text" id="${this.language.update.firstName[1]}">
-                </div>
-                <div class="inputLine">
-                    <div class="f-line">
-                        <div class="myTooltip">
-                            ?
-                            <span id="${this.language.update.lastName[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
+                        <input class="inputData" value="${res.first_name}" type="text" id="${this.language.update.firstName[1]}">
+                    </div>
+                    <div class="inputLine">
+                        <div class="f-line">
+                            <div class="myTooltip">
+                                ?
+                                <span id="${this.language.update.lastName[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
+                            </div> 
+                            <label for="${this.language.update.lastName[1]}">${this.language.update.lastName[0]}</label>
                         </div> 
-                        <label for="${this.language.update.lastName[1]}">${this.language.update.lastName[0]}</label>
-                    </div> 
-                    <input value="${res.last_name}" class="inputData" type="text" id="${this.language.update.lastName[1]}">
-                </div>
-                <div class="inputLine">
-                    <div class="f-line">
-                        <div class="myTooltip">
-                            ?
-                            <span id="${this.language.update.birthDate[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
+                        <input value="${res.last_name}" class="inputData" type="text" id="${this.language.update.lastName[1]}">
+                    </div>
+                    <div class="inputLine">
+                        <div class="f-line">
+                            <div class="myTooltip">
+                                ?
+                                <span id="${this.language.update.birthDate[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
+                            </div> 
+                            <label for="${this.language.update.birthDate[1]}">${this.language.update.birthDate[0]}</label>
                         </div> 
-                        <label for="${this.language.update.birthDate[1]}">${this.language.update.birthDate[0]}</label>
-                    </div> 
-                    <input value="${res.birthdate}" class="inputData" type="date" id="${this.language.update.birthDate[1]}">
-                </div>
-                <button class="submit">Submit!</button>
+                        <input value="${res.birthdate}" class="inputData" type="date" id="${this.language.update.birthDate[1]}">
+                    </div>
+                    <button class="submit">Submit!</button>
                 </div>
             `
         })
@@ -116,114 +84,125 @@ export default class extends Aview {
 
     getPasswordForm() {
         return `
-        <div class="formContainer">
-            <div class="inputLine">
-                <div class="f-line">
-                    <div class="myTooltip">
-                        ?
-                        <span id="${this.language.update.oldPassword[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
+            <div class="formContainer">
+                <div class="inputLine">
+                    <div class="f-line">
+                        <div class="myTooltip">
+                            ?
+                            <span id="${this.language.update.oldPassword[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
+                        </div> 
+                        <label for="${this.language.update.oldPassword[1]}">${this.language.update.oldPassword[0]}</label>
                     </div> 
-                    <label for="${this.language.update.oldPassword[1]}">${this.language.update.oldPassword[0]}</label>
-                </div> 
-                <div class="passInp">
-                    <input size="small" class="inputData" type="password" id="${this.language.update.oldPassword[1]}">
-                    <div onclick="window.switchVisibility(this)" class="passwordSwitch">
-                        <img src="/imgs/openEye.png" alt="">
+                    <div class="passInp">
+                        <input size="small" class="inputData" type="password" id="${this.language.update.oldPassword[1]}">
+                        <div onclick="window.switchVisibility(this)" class="passwordSwitch">
+                            <img src="/imgs/openEye.png" alt="">
+                        </div>
                     </div>
                 </div>
-
-            </div>
-            <div class="inputLine">
-                <div class="f-line">
-                    <div class="myTooltip">
-                        ?
-                        <span id="${this.language.update.newPassword[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
+                <div class="inputLine">
+                    <div class="f-line">
+                        <div class="myTooltip">
+                            ?
+                            <span id="${this.language.update.newPassword[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
+                        </div> 
+                        <label for="${this.language.update.newPassword[1]}">${this.language.update.newPassword[0]}</label>
                     </div> 
-                    <label for="${this.language.update.newPassword[1]}">${this.language.update.newPassword[0]}</label>
-                </div> 
-                <div class="passInp">
-                    <input size="small" class="inputData" type="password" id="${this.language.update.newPassword[1]}">
-                    <div onclick="window.switchVisibility(this)" class="passwordSwitch">
-                        <img src="/imgs/openEye.png" alt="">
+                    <div class="passInp">
+                        <input size="small" class="inputData" type="password" id="${this.language.update.newPassword[1]}">
+                        <div onclick="window.switchVisibility(this)" class="passwordSwitch">
+                            <img src="/imgs/openEye.png" alt="">
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="inputLine">
-                <div class="f-line">
-                    <div class="myTooltip">
-                        ?
-                        <span id="${this.language.update.confirmNewPassword[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
+                <div class="inputLine">
+                    <div class="f-line">
+                        <div class="myTooltip">
+                            ?
+                            <span id="${this.language.update.confirmNewPassword[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
+                        </div> 
+                        <label for="${this.language.update.confirmNewPassword[1]}">${this.language.update.confirmNewPassword[0]}</label>
                     </div> 
-                    <label for="${this.language.update.confirmNewPassword[1]}">${this.language.update.confirmNewPassword[0]}</label>
-                </div> 
-                <div class="passInp">
-                    <input size="small" class="inputData" type="password" id="${this.language.update.confirmNewPassword[1]}">
-                    <div onclick="window.switchVisibility(this)" class="passwordSwitch">
-                        <img src="/imgs/openEye.png" alt="">
+                    <div class="passInp">
+                        <input size="small" class="inputData" type="password" id="${this.language.update.confirmNewPassword[1]}">
+                        <div onclick="window.switchVisibility(this)" class="passwordSwitch">
+                            <img src="/imgs/openEye.png" alt="">
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="errors retroShade">
-                <ul>
-                    <li>${this.language.register.errors[0]}</li>
-                    <li>${this.language.register.errors[1]}</li>
-                    <li>${this.language.register.errors[2]}</li>
-                    <li>${this.language.register.errors[3]}</li>
-                    <li>${this.language.register.errors[4]}</li>
-                </ul>
-            </div>
-            <button class="submit">Submit!</button>
+                <div class="errors retroShade">
+                    <ul>
+                        <li>${this.language.register.errors[0]}</li>
+                        <li>${this.language.register.errors[1]}</li>
+                        <li>${this.language.register.errors[2]}</li>
+                        <li>${this.language.register.errors[3]}</li>
+                        <li>${this.language.register.errors[4]}</li>
+                    </ul>
+                </div>
+                <button class="submit">Submit!</button>
             </div>
         `
     }
     getEmailForm() {
         return `
-        <div class="formContainer">
-            <div class="inputLine">
-                <div class="f-line">
-                    <div class="myTooltip">
-                        ?
-                        <span id="${this.language.update.email[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
+            <div class="formContainer">
+                <div class="inputLine">
+                    <div class="f-line">
+                        <div class="myTooltip">
+                            ?
+                            <span id="${this.language.update.email[1]}-tooltip" class="tooltiptext">${this.language.register.flow1Errors[2]}</span>
+                        </div> 
+                        <label for="${this.language.update.email[1]}">${this.language.update.email[0]}</label>
                     </div> 
-                    <label for="${this.language.update.email[1]}">${this.language.update.email[0]}</label>
-                </div> 
-                <input class="inputData" type="text" id="${this.language.update.email[1]}">
-            </div>
-            <div class="inputLine">
-                <label for="${this.language.update.password[1]}">${this.language.update.password[0]}</label>
-                <div class="passInp">
-                    <input size="small" class="inputData" type="password" id="${this.language.update.password[1]}">
-                    <div onclick="window.switchVisibility(this)" class="passwordSwitch">
-                        <img src="/imgs/openEye.png" alt="">
+                    <input class="inputData" type="text" id="${this.language.update.email[1]}">
+                </div>
+                <div class="inputLine">
+                    <label for="${this.language.update.password[1]}">${this.language.update.password[0]}</label>
+                    <div class="passInp">
+                        <input size="small" class="inputData" type="password" id="${this.language.update.password[1]}">
+                        <div onclick="window.switchVisibility(this)" class="passwordSwitch">
+                            <img src="/imgs/openEye.png" alt="">
+                        </div>
                     </div>
                 </div>
+                <button class="submit">Submit!</button>
             </div>
-            <button class="submit">Submit!</button>
-        </div>
         `
     }
     getProfilePictureForm() {
         return `
-        <div class="imageContainer">
-            <div class="imageForm">
-                <div class="profilePict">
-                    <img class="updateImgForm" src="https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg">
+            <div class="imageContainer">
+                <div class="imageForm">
+                    <div class="profilePict">
+                        <img class="updateImgForm" src="https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg">
+                    </div>
+                    <div class="inputLineFile">
+                        <label id="labelInpFile" for="inpFile"><img class="fileIcon" src="/imgs/fileIcon.png"><span class="selectFileText">Select New Photo...</span></label>
+                        <input onchange="window.test()" class="inputData" id="inpFile" type="file" id="${this.language.update.profilePicture[1]}">
+                    </div>
                 </div>
-                <div class="inputLineFile">
-                    <label id="labelInpFile" for="inpFile"><img class="fileIcon" src="/imgs/fileIcon.png"><span class="selectFileText">Select New Photo...</span></label>
-                    <input onchange="window.test()" class="inputData" id="inpFile" type="file" id="${this.language.update.profilePicture[1]}">
+                    <button class="submit">Submit!</button>
                 </div>
-            </div>
-            <button class="submit">Submit!</button>
             </div>
         `
     }
 
     get2faChoice(){
+        let intraAdvice = "Click the button to link your intra profile"
+        if (localStorage.getItem("intraLinked") == "true")
+            intraAdvice = "your intra profile is linked click the button to unlink"
         return `
             <div class="formContainer">
                 <div class="decisionBox">
-                    <h3 id="intraLink" href="#" class="formLink intra">${this.language.update.linkToIntra}</h3>
+                    <p class="intraInfo">
+                        ${intraAdvice}
+                    </p>
+                    <h5 id="intraLink" class=" retroBtn intra" style="background-color: var(--bs-danger);">${this.language.update.linkToIntra}</h5>
+                </div>
+            </div>
+            <div class="formContainer">
+                <div class="decisionBox">
+                    <h4>Enable TFA</h4>
                 </div>
                 <div class="decisionBox">
                     <button class="retroBtn emailChoice" style="background-color: var(--bs-success)">email</button>
@@ -298,25 +277,39 @@ export default class extends Aview {
         `
     }
     get2faRemoveForm(){
+        let intraAdvice = "Click the button to link your intra profile"
+
+        if (localStorage.getItem("intraLinked") == "true")
+            intraAdvice = "your intra profile is linked click the button to unlink"
         return `
-        <div class="formContainer">
-            <div class="decisionBox">
-                <h3 id="intraLink" href="#" class="formLink intra">${this.language.update.linkToIntra}</h3>
-            </div>
-            <div class="line infoLine">
-                <div>
-                    ${localStorage.getItem("is_active") == "EM" ? emailError : qrError}
+
+            <div class="formContainer">
+                <div class="decisionBox">
+                    <p class="intraInfo">
+                        ${intraAdvice}
+                    </p>
+                    <h5 id="intraLink" class=" retroBtn intra" style="background-color: var(--bs-danger);">${this.language.update.linkToIntra}</h5>
                 </div>
             </div>
-            <div class="line codeInputLine">
-                <label for="emailTfaCode">Insert Code:</label>
-                <input id="removeTfaCode" type="text">
+
+            <div class="formContainer">
+                <div class="decisionBox">
+                    <h4>Disable TFA</h4>
+                </div>
+                <div class="line infoLine">
+                    <div>
+                        ${localStorage.getItem("is_active") == "EM" ? emailError : qrError}
+                    </div>
+                </div>
+                <div class="line codeInputLine">
+                    <label for="emailTfaCode">Insert Code:</label>
+                    <input id="removeTfaCode" type="text">
+                </div>
+                <div class="line" >
+                    ${localStorage.getItem("is_active") == "EM" ? '<button class="retroBtn sendBtn" style="background-color: var(--bs-warning)">send email</button>' : ""}
+                    <button class="retroBtn sendCode" style="background-color: var(--bs-success)">Submit</button>
+                </div>
             </div>
-            <div class="line" >
-                ${localStorage.getItem("is_active") == "EM" ? '<button class="retroBtn sendBtn" style="background-color: var(--bs-warning)">send email</button>' : ""}
-                <button class="retroBtn sendCode" style="background-color: var(--bs-success)">Submit</button>
-            </div>
-        </div>
         `
     }
 
@@ -332,37 +325,12 @@ export default class extends Aview {
                     <h6 class="formLink logout">${this.language.update.logout}</h6>
                 </div>
                 <div class="handle">
-                >
+                    >
                 </div>
                 <div class="formMenu">
-
                 </div>
             </div>
         `
-    }
-    preparePasswordForm(form) {
-        console.log(form)
-        let ret = {
-            password: sha256(form[this.language.update.oldPassword[1]].value),
-            new_password: sha256(form[this.language.update.newPassword[1]].value),
-        }
-        return (ret);
-    }
-
-    prepareEmailForm(form) {
-        let ret = {
-            [this.language.update.email[1]]: form[this.language.update.email[1]].value,
-            [this.language.update.password[1]]: sha256(form[this.language.update.password[1]].value),
-        }
-        return (ret);
-    }
-
-    prepareInfoForm(form) {
-        let obj = {};
-        for (let val of Object.keys(form)) {
-            obj[val] = form[val].value;
-        }
-        return (obj);
     }
 
     async performChecksAndSubmit(form) {
@@ -371,7 +339,7 @@ export default class extends Aview {
         //will perfom check for general user info
         console.log("hey")
         if (localStorage.getItem("selectedForm") == "info" && controls.checkChangeInfoForm(form, this.errors)) {
-            API.updateInfo(this.prepareInfoForm(form), 1).then((res) => {
+            API.updateInfo(prepare.prepareInfoForm(form), 1).then((res) => {
                 if (res == {})
                     return;
                 this.errors = res.user_info;
@@ -381,7 +349,7 @@ export default class extends Aview {
 
         //will perfom check for email
         if (localStorage.getItem("selectedForm") == "email" && await controls.checkChangeEmailForm(form, this.errors)) {
-            API.updateEmail(this.prepareEmailForm(form)).then((res) => {
+            API.updateEmail(prepare.prepareEmailForm(form, this)).then((res) => {
 
 
             })
@@ -389,14 +357,8 @@ export default class extends Aview {
 
         //will perfom check for password
         if (localStorage.getItem("selectedForm") == "password"&& controls.checkChangePasswordForm(form, this.errors)) {
-            console.log(this.preparePasswordForm(form))
-            API.updatePassword(1, this.preparePasswordForm(form)).then((res) => {
-                if (!res.ok) {
-                    document.querySelector(`#${this.language.update.oldPassword[1]}-tooltip`).innerHTML = this.language.update.passwordErrors[0];
-                    document.querySelectorAll("input")[0].style.backgroundColor = "#A22C29";
-                    document.querySelectorAll("input")[0].style.color = "white"
-                }
-            });
+            console.log(prepare.preparePasswordForm(form, this))
+            API.updatePassword(1, prepare.preparePasswordForm(form, this), this).then((res) => {});
         }
 
         //will perfom check for picture
@@ -404,124 +366,38 @@ export default class extends Aview {
             API.uploadImage(1, form.inpFile)
     }
 
-    collectData() {
-        let values = document.querySelectorAll(".inputData");
-        let form = {};
-        this.errors = {};
-
-        for (let val of values)
-            form[val.id] = val
-        return (form);
-    }
-
     changeForm(e, byPass) {
         this.errors = { };
 
         //will load the form to change password
         if (e.classList.contains("passwordForm") || byPass == "password") {
-            this.selectedForm = "password";
-            localStorage.setItem("selectedForm", "password")
-            document.querySelector(".formMenu").innerHTML = this.getPasswordForm();
+            pages.loadPasswordPage(this);
         }
 
         //will load the form to change general user info
         else if (e.classList.contains("generalForm") || byPass == "info") {
-            this.selectedForm = "info";
-            localStorage.setItem("selectedForm", "info")
-            this.getGeneralForm();
+            pages.loadInfoPage(this);
         }
 
         //will load the form to change email
         else if (e.classList.contains("emailForm") || byPass == "email") {
-            this.selectedForm = "email";
-            localStorage.setItem("selectedForm", "email")
-            document.querySelector(".formMenu").innerHTML = this.getEmailForm();
+            pages.loadEmailPage(this);
         }
 
         //will load the form to change picture
         else if (e.classList.contains("pictForm") || byPass == "picture") {
-            this.selectedForm = "picture";
-            localStorage.setItem("selectedForm", "picture")
-            document.querySelector(".formMenu").innerHTML = this.getProfilePictureForm();
-            API.getUserInfo(1).then(res=>{
-                if (res.user_info.picture != null)
-                  document.querySelector(".updateImgForm").src = res.user_info.picture;
-            })
+            pages.loadPicturePage(this);
         }
 
         else if (e.classList.contains("twofa") || byPass == "twofa") {
-            localStorage.setItem("selectedForm", "twofa")
-            API.convertIntraTokenAccount(1).then(res=>{})
-            API.isTfaACtive(1).then(res=>{})
-            API.getUserInfo(1).then(res=>{
-                if (res.linked)
-                {
-                    document.querySelector("#intraLink").innerHTML = "Unlink Intra"
-                    localStorage.setItem("intraLinked", "true");
-                }
-                else
-                    localStorage.setItem("intraLinked", "false");
-            })
-            if (localStorage.getItem("is_active") != undefined)
-            {
-                if (localStorage.getItem("is_active") == "EM")
-                    API.getEmailCode(1).then()
-                document.querySelector(".formMenu").innerHTML = this.get2faRemoveForm();
-                document.querySelector(".sendCode").addEventListener("click", sendAppTfaCodeRemove)
-                return ;
-            }
-            document.querySelector(".formMenu").innerHTML = this.get2faChoice();
-
-            document.querySelector(".emailChoice").addEventListener("click", ()=>{
-                document.querySelector(".showForm").innerHTML = this.get2faEmailForm();
-                document.querySelector(".sendCode").addEventListener("click", sendEmailTfaCode)
-                document.querySelector(".resendBtn").addEventListener("click", ()=>{
-                    API.getEmailCode(1)
-                })
-                API.activateTfa(1, "em").then(res=>{
-                    if (Object.keys(res).length == 0)
-                        API.getEmailCode(1)
-                })
-            })
-
-            document.querySelector(".appChoice").addEventListener("click", ()=>{
-                document.querySelector(".showForm").innerHTML = this.get2faAppForm();
-                API.activateTfa(1, "sw").then(res=>{
-                    window.otp_token = res.token;
-                    console.log(document.querySelector(".codeDisplay"))
-                    document.querySelector(".codeDisplay").innerHTML = res.token;
-                    new window.QRCode(document.getElementById("qrCode"), res.uri);
-                    document.querySelector(".sendCode").addEventListener("click", sendAppTfaCode)
-                })
-            })
-            document.querySelector(".intra").style.backgroundColor = "gray"
-            API.getIntraUrl("link").then(res=>{
-                if (res != "")
-                {
-                    this.intraUrl = res
-                    document.querySelector(".intra").style.backgroundColor = "";
-                }
-            })
-            return;
+            pages.loadSecurityPage(this);
         }
         //will load the form to change picture
         else if (e.classList.contains("logout")) {
-            if (!confirm(this.language.update.confirmLogout))
-                return;
-            API.logout(1)
+            pages.triggerLogout(this);
         }
-
         else if (e.classList.contains("intra")) {
-            if (!confirm(this.language.update.confirmIntra))
-                return;
-            if (localStorage.getItem("intraLinked") == "false")
-                window.location.href = this.intraUrl;
-            else
-            {
-                console.log("unlink")
-                API.unlinkIntra(1);
-
-            }
+            pages.triggerIntraLink(this);
         }
     }
 
@@ -536,41 +412,20 @@ export default class extends Aview {
     }
 
     setup() {
-                //defining background
-                if (localStorage.getItem("style") == "modern"){
-                    document.querySelector("#app").style.backgroundImage = "url('https://c4.wallpaperflare.com/wallpaper/105/526/545/blur-gaussian-gradient-multicolor-wallpaper-preview.jpg')";
-                }
-                else{
-                    document.querySelector("#app").style.backgroundImage = "url('/imgs/backLogin.png')";
-                }
-                document.querySelector("#app").style.backgroundSize = "cover"
-                document.querySelector("#app").style.backgroundRepeat = "repeat"
+        //defining background
+        if (localStorage.getItem("style") == "modern")
+            document.querySelector("#app").style.backgroundImage = "url('https://c4.wallpaperflare.com/wallpaper/105/526/545/blur-gaussian-gradient-multicolor-wallpaper-preview.jpg')";
+        else
+            document.querySelector("#app").style.backgroundImage = "url('/imgs/backLogin.png')";
+        document.querySelector("#app").style.backgroundSize = "cover"
+        document.querySelector("#app").style.backgroundRepeat = "repeat"
+
+        //defining the start menu item that need to be highlighted
+        if (localStorage.getItem("selectedForm") == null)
+            localStorage.setItem("selectedForm", "info");
         
-                //defining the start menu item that need to be highlighted
-                if (localStorage.getItem("selectedForm") == null)
-                    localStorage.setItem("selectedForm", "info");
-                
-                this.changeForm(document.body, localStorage.getItem("selectedForm"));
-                this.highlightFormMenu(localStorage.getItem("selectedForm"))
-                document.querySelector(".userInfoContainer").addEventListener("click", (e) => {
-                    if (e.target.classList.contains("handle")) {
-                        if (document.querySelector(".handle").classList.contains("open")) {
-                            document.querySelector(".handle").classList.remove("open");
-                            document.querySelector(".handle").style.transform = `translateX(0)`;
-                            document.querySelector(".handle").innerHTML = ">";
-                            document.querySelector(".leftSide").style.transform = `translateX(-${document.querySelector(".leftSide").clientWidth}px)`;
-                        } else {
-                            document.querySelector(".handle").classList.add("open");
-                            document.querySelector(".handle").style.transform = `translateX(${document.querySelector(".leftSide").clientWidth}px)`;
-                            document.querySelector(".handle").innerHTML = "<";
-                            document.querySelector(".leftSide").style.transform = "translateX(0)";
-                        }
-                        return;
-                    }
-                    this.changeForm(e.target);
-                    this.highlightFormMenu(localStorage.getItem("selectedForm"))
-                    if (e.target.classList.contains("submit"))
-                        this.performChecksAndSubmit(this.collectData());
-                })
+        this.changeForm(document.body, localStorage.getItem("selectedForm"));
+        this.highlightFormMenu(localStorage.getItem("selectedForm"))
+        document.querySelector(".userInfoContainer").addEventListener("click", handleClick.bind(null, this))
     }
 }

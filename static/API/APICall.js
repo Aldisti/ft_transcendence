@@ -203,7 +203,7 @@ export async function updateInfo(data, recursionProtection) {
     return (body);
 }
 
-export async function updatePassword(recursionProtection, data) {
+export async function updatePassword(recursionProtection, data, dupThis) {
     const res = await fetch(URL.userAction.UPDATE_PASSWORD, {
         method: "PATCH",
         credentials: "include",
@@ -218,12 +218,19 @@ export async function updatePassword(recursionProtection, data) {
             if (res.ok)
                 updatePassword(0, data);
         })
-        return;
+    }
+    if (!res.ok)
+    {
+        document.querySelector(`#${dupThis.language.update.oldPassword[1]}-tooltip`).innerHTML = dupThis.language.update.passwordErrors[0];
+        document.querySelectorAll("input")[0].style.backgroundColor = "#A22C29";
+        document.querySelectorAll("input")[0].style.color = "white"
     }
     if (res.status == 400)
     {
         alert("Old password is not correct...")
     }
+    if (res.ok)
+        window.location.reload()
     return (res);
 }
 
@@ -310,6 +317,7 @@ export async function uploadImage(recursionProtection, file){
     }
 }
 
+
 export async function activateTfa(recursionProtection, type)
 {
     const res = await fetch(URL.auth.ACTIVATE_TFA, {
@@ -340,7 +348,6 @@ export async function activateTfa(recursionProtection, type)
     if (res.ok)
     {
         let resJson = await res.json();
-        console.log(resJson)
         return (resJson);
     }
     return ({})
