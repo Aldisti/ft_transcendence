@@ -27,11 +27,7 @@ logger = logging.getLogger(__name__)
 @throttle_classes([LowLoadThrottle])
 def is_user_linked(request) -> Response:
     user: User = request.user
-    data = {
-        'linked': user.linked,
-        'intra': False,
-        'google': False,
-    }
+    data = {'intra': False, 'google': False}
     if user.linked:
         data['intra'] = user.user_openid.is_intra_linked()
         data['google'] = user.user_openid.is_google_linked()
