@@ -15,12 +15,41 @@
 	box-shadow: 15px 15px black;
 }
 
+.tfa
+{
+    padding: 0 !important;
+    justify-content: space-between !important;
+}
+
+.tfa span
+{
+	flex-grow: 1;
+	padding: 10px;
+}
+
+.registerLink
+{
+	color: white;
+}
+
+.loginLink
+{
+    height: fit-content;
+}
+
+
 .recovery
 {
-	margin: 20px;
 	width: 100%;
+	margin: 10px 0 10px 0;
 	text-align: start;
 	color: white;
+	text-decoration: underline;
+}
+
+.recovery:hover, .registerLink:hover
+{
+	cursor: pointer;
 }
 
 .base
@@ -142,7 +171,32 @@ h4
 	height: 5vh;
 	flex-wrap: wrap;
 	display: flex;
+	align-items: center;
 	justify-content: space-between;
+	margin: 20px;
+}
+
+.fullWidth
+{
+	width: 100% !important;
+}
+
+.extra
+{
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: flex-start;
+}
+
+.linebtn img
+{
+	width: 30%;
+	height: 100%;
+	border-right: 2px solid black;
+	object-fit: contain;
+	background-color: white;
 }
 
 

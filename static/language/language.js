@@ -14,8 +14,9 @@ let language = {
 			name:	"Username: ",
 			password: "Password: ",
 			submit: "Submit!",
-			register: "Register!",
-			intraLogin: "Login with 42",
+			register: "Not yet registered?",
+			intraLogin: "Login",
+			googleLogin: "Login", 
 			error: "Check Provided Info"
 		},
 		register: {

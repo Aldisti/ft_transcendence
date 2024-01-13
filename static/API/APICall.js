@@ -7,7 +7,7 @@ function getCookie(name) {
     if (parts.length === 2) return parts.pop().split(';').shift();
 }
 
-async function refreshAndRetry(retryFunc)
+async function refreshAndRetry(retryFunc, ...args)
 {
     await refreshToken().then(res=>{
         if (!res.ok)
@@ -18,7 +18,7 @@ async function refreshAndRetry(retryFunc)
             window.location.reload();
         }
     })
-    return await retryFunc(0);
+    return await retryFunc(...args);
 }
 
 export async function checkForUsernameAvailability(username) {
@@ -80,7 +80,7 @@ export async function convertIntraTokenAccount(recursionProtection){
         return (true);
     }
     if (res.status == 401 && recursionProtection)
-        return await refreshAndRetry(convertIntraTokenAccount);
+        return await refreshAndRetry(convertIntraTokenAccount, 0);
     return (false);
 }
 
@@ -99,7 +99,7 @@ export async function unlinkIntra(recursionProtection){
         return (true);
     }
     if (res.status == 401 && recursionProtection) {
-        return await refreshAndRetry(unlinkIntra);
+        return await refreshAndRetry(unlinkIntra, 0);
     }
     return (false);
 }
@@ -113,7 +113,7 @@ export async function getUserInfo(recursionProtection) {
         // credentials: "include",
     })
     if (res.status == 401 && recursionProtection)
-        return await refreshAndRetry(getUserInfo);
+        return await refreshAndRetry(getUserInfo, 0);
     if (res.ok) {
         let jsonBody = await res.json();
         return (jsonBody);
@@ -193,7 +193,7 @@ export async function updateInfo(data, recursionProtection) {
         return ({});
     }
     if (res.status == 401 && recursionProtection)
-        return await refreshAndRetry(updateInfo);
+        return await refreshAndRetry(updateInfo, data, 0);
     let body = await res.json()
     return (body);
 }
@@ -209,7 +209,7 @@ export async function updatePassword(recursionProtection, data, dupThis) {
         body: JSON.stringify(data),
     })
     if (res.status == 401 && recursionProtection)
-        return await refreshAndRetry(updatePassword);
+        return await refreshAndRetry(updatePassword, 0, data, dupThis);
     if (!res.ok)
     {
         document.querySelector(`#${dupThis.language.update.oldPassword[1]}-tooltip`).innerHTML = dupThis.language.update.passwordErrors[0];
@@ -246,10 +246,13 @@ export async function logout(recursionProtection) {
         },
     });
     if (res.status == 401 && recursionProtection)
-        return await refreshAndRetry(logout);
+        return await refreshAndRetry(logout, 0);
     if (res.ok) {
         localStorage.removeItem("username");
         localStorage.removeItem("token");
+        localStorage.removeItem("intraLinked");
+        localStorage.removeItem("isActive");
+        localStorage.removeItem("selectedForm");
         history.pushState(null, null, "/home");
         Router();
         window.location.reload();
@@ -272,6 +275,7 @@ export async function getIntraUrl(parameter) {
 }
 
 export async function uploadImage(recursionProtection, file){
+    console.log("hey")
     const form = new FormData();
 
     if (file.files.length > 0){
@@ -286,7 +290,7 @@ export async function uploadImage(recursionProtection, file){
         body: form
     })
     if (res.status == 401 && recursionProtection)
-        return await refreshAndRetry(uploadImage);
+        return await refreshAndRetry(uploadImage, 0, file);
     if (res.ok)
     {
         window.location.reload();
@@ -308,7 +312,7 @@ export async function activateTfa(recursionProtection, type)
         })
     })
     if (res.status == 401 && recursionProtection)
-        return await refreshAndRetry(activateTfa);
+        return await refreshAndRetry(activateTfa, 0, type);
     if (res.ok)
     {
         let resJson = await res.json();
@@ -331,19 +335,7 @@ export async function getEmailCode(recursionProtection, token)
         headers: header
     })
     if (token == undefined && res.status == 401 && recursionProtection)
-    {
-        refreshToken().then(res=>{
-            if (res.ok)
-                getEmailCode(0);
-            else
-            {
-                localStorage.removeItem("username");
-                history.pushState(null, null, "/login");
-                Router();
-                window.location.reload();             
-            }
-        })
-    }
+        return await refreshAndRetry(activateTfa, 0, token);
     if (res.status == 429)
     {
         console.log(res.headers)
@@ -369,7 +361,7 @@ export async function validateCode(recursionProtection, code)
         })
     })
     if (res.status == 401 && recursionProtection)
-        return await refreshAndRetry(validateCode);
+        return await refreshAndRetry(validateCode, 0, code);
     if (res.ok)
     {
         let jsonBody = await res.json();
@@ -402,7 +394,7 @@ export async function validateCodeLogin(recursionProtection, code, token)
         })
     })
     if (res.status == 401 && recursionProtection)
-        return await refreshAndRetry(validateCodeLogin);
+        return await refreshAndRetry(validateCodeLogin, 0, code, token);
     if (res.status == 400)
     {
         let jsonBody = await res.json();
@@ -439,7 +431,7 @@ export async function isTfaACtive(recursionProtection)
             localStorage.removeItem("is_active");
     }
     if (res.status == 401 && recursionProtection)
-        return await refreshAndRetry(isTfaACtive);
+        return await refreshAndRetry(isTfaACtive, 0);
 }
 
 export async function validateRecover(token, code)
@@ -490,7 +482,7 @@ export async function removeTfa(recursionProtection, code)
         window.location.reload()
     }
     if (res.status == 401 && recursionProtection)
-        return await refreshAndRetry(removeTfa);
+        return await refreshAndRetry(removeTfa, 0, code);
     return (res);
 }
 
@@ -544,6 +536,6 @@ export async function getIntraStatus(recursionProtection){
         return (body);
     }
     if (res.status == 401 && recursionProtection)
-        return await refreshAndRetry(getIntraStatus);
+        return await refreshAndRetry(getIntraStatus, 0);
     return ({});
 }

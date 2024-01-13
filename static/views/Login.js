@@ -2,53 +2,20 @@ import Aview from "/views/abstractView.js";
 import language from "/language/language.js";
 import * as API from "/API/APICall.js"
 import sha256 from "/scripts/crypto.js"
-import Router from "/router/mainRouterFunc.js";
 import * as oauth2 from "/viewScripts/login/oauth2Handle.js";
 import * as handleLogin from "/viewScripts/login/handleLogin.js";
+import * as triggerRecovery from "/viewScripts/login/recoverPassword.js";
 
-function validateCodeRecovery(token)
-{
-    let code = document.querySelector("#TfaCode").value;
-    if (code.length == 6 || code.length == 10)
-    {
-        API.validateRecover(token, code).then(res=>{
-            if (Object.keys(res).length == 1)
-            {
-                history.pushState(null, null, `/password/recovery/?token=${res.token}`);
-                Router();
-            }
-        });
+export default class extends Aview {
+    constructor() {
+        super();
+        this.needListener = true;
+        this.listenerId = "loginBtn";
+        this.field = {};
     }
-}
 
-
-function disableTfaPage(type){
-    return `
-    <div class="base">
-    <div class="loginForm">
-    <div class="formContainer" style="color: black !important;">
-    <div class="line infoLine">
-        <div>
-            ${localStorage.getItem("is_active") == "EM" ? emailError : qrError}
-        </div>
-    </div>
-    <div class="line codeInputLine">
-        <label for="emailTfaCode">Insert Code:</label>
-        <input id="TfaCode" type="text">
-    </div>
-    <div class="line" style="flex-direction: row;">
-        ${type == "EM" ? `<button class="retroBtn resendBtn" style="background-color: var(--bs-warning)">send email</button>` : ""}
-        <button class="retroBtn sendCode" style="background-color: var(--bs-success)">Submit</button>
-    </div>
-</div>
-    </div>
-</div>
-    `
-}
-
-
-window.showRecoveryPage = ()=>{
-    document.querySelector("#app").innerHTML = `
+    showRecoveryPage(){
+        document.querySelector("#app").innerHTML = `
         <div class="passwordPage">
             <div class="passwordContainer">
                 <div class="line">
@@ -65,51 +32,10 @@ window.showRecoveryPage = ()=>{
                 </div>
             </div>
         </div>
-    `
-    document.querySelector("#recoveryBtn").addEventListener("click", ()=>{
-        API.sendRecoveryEmail(document.querySelector(".data").value).then(res=>{
-            if (Object.keys(res).length > 0)
-            {
-                console.log(res)
-                document.querySelector("#app").innerHTML = disableTfaPage(res.type);
-                if (res.type == "EM")
-                {
-                    API.getEmailCode(1, res.token);
-                    document.querySelector(".resendBtn").addEventListener("click", ()=>{
-                        API.getEmailCode(1, res.token);
-                    })
-                }
-                document.querySelector(".sendCode").addEventListener("click", ()=>{
-                    validateCodeRecovery(res.token);
-                })
-            }
-
-        })
-    })
-}
-
-let emailError = `
-    <ul style="margin: 0;">
-        <li>An Email has been sent Check you Inbox!</li>
-        <li>insert the Code in the box below</li>
-        <li>Submit and activate your 2FA</li>
-    </ul>
-`
-let qrError = `
-    <ul style="margin: 0;">
-        <li>Open your app and look for your code</li>
-        <li>insert it in the box below</li>
-        <li>submit and login</li>
-    </ul>
-`
-
-export default class extends Aview {
-    constructor() {
-        super();
-        this.needListener = true;
-        this.listenerId = "loginBtn";
-        this.field = {};
+        `
+        document.querySelector("#recoveryBtn").addEventListener("click", triggerRecovery.start);
     }
+
     getHtml() {
         return `
 		    <div class="base">
@@ -134,11 +60,16 @@ export default class extends Aview {
                         </p>
                     </div>
                 	<div class="linebtn">
-                    	<a class="retroBtn retroShade btnColor-yellow" href="/signup" data-link>${this.language.login.register}</a>
-                    	<button class="retroBtn intraBtn retroShade btnColor-blue">${this.language.login.intraLogin}</button>
-                    	<button id="loginBtn" class="retroBtn retroShade btnColor-green">${this.language.login.submit}</button>
+                    	<button id="loginBtn" class="retroBtn fullWidth retroShade btnColor-green">${this.language.login.submit}</button>
+                    </div>
+                    <div class="linebtn">
+                    	<button class="retroBtn tfa intraBtn retroShade btnColor-blue"><img src="/imgs/logo42.png"><span>${this.language.login.intraLogin}</span></button>
+                    	<button class="retroBtn tfa googleBtn retroShade btnColor-blue"><img src="/imgs/logoGoogle.png"><span>${this.language.login.googleLogin}</span></button>
                 	</div>
-                    <span onclick="window.showRecoveryPage()"  class="recovery" href="#">Password Dimenticata?</span>
+                    <div class="extra">
+                        <a class="retroShade registerLink" href="/signup" data-link>${this.language.login.register}</a>
+                        <span class="recovery" href="#">Password Dimenticata?</span>
+                    </div>
             	</div>
    		    </div>
         `
@@ -149,7 +80,7 @@ export default class extends Aview {
             <div class="formContainer" style="color: black !important;">
                 <div class="line infoLine">
                     <div>
-                        ${localStorage.getItem("is_active") == "EM" ? emailError : qrError}
+                        ${localStorage.getItem("is_active") == "EM" ? triggerRecovery.emailError : triggerRecovery.qrError}
                     </div>
                 </div>
                 <div class="line codeInputLine">
@@ -166,6 +97,8 @@ export default class extends Aview {
     setup() {
         //do all the necessary stuff to manage the login with intra if user is already linked
         oauth2.intraLoginHandle();
+
+        document.querySelector(".recovery").addEventListener("click", this.showRecoveryPage)
 
         //defining what to do in case of login button is pressed
         document.querySelector("#loginBtn").addEventListener("click", (e) => {

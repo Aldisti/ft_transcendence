@@ -54,7 +54,11 @@ function waitForAppBtn(dupThis){
     API.activateTfa(1, "sw").then(res=>{
         window.otp_token = res.token;
         document.querySelector(".codeDisplay").innerHTML = res.token;
-        new window.QRCode(document.getElementById("qrCode"), res.uri);
+        new window.QRCode(document.getElementById("qrCode"), {
+            text: res.uri,
+            width: 250,
+            height: 250
+        });
         document.querySelector(".sendCode").addEventListener("click", sendAppTfaCode)
     })
 }
@@ -102,9 +106,9 @@ export function loadSecurityPage(dupThis)
 
     //check if user has a 42 account linked setting localstorage
     API.getIntraStatus(1).then(res=>{
-        console.log(res)
         if (res.intra == true)
         {
+            console.log(res)
             document.querySelector("#intraLink").innerHTML = "Unlink Intra"
             localStorage.setItem("intraLinked", "true");
         }

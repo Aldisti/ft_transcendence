@@ -1,9 +1,17 @@
 import Aview from "/views/abstractView.js";
 import sha256 from "/scripts/crypto.js";
-import language from "/language/language.js";
 import * as API from "/API/APICall.js"
 import Router from "/router/mainRouterFunc.js"
+import allLanguage from "/language/language.js"
 
+let language = allLanguage[localStorage.getItem("language")];
+
+function passwordValidator(password)
+{
+    if (password.length > 8 && password.length < 72 && password.match(/[0123456789]/) && password.match(/[!@#$%^&*()_+\-=ˆ\[\]{};:'",.<>?~]/) && password.match(/[QWERTYUIOPASDFGHJKLZXCVBNM]/) && password.match(/[qwertyuiopasdfghjklzxcvbnm]/))
+        return (true);
+    return (false);
+}  
 
 export default class extends Aview {
     constructor() {
@@ -35,8 +43,17 @@ export default class extends Aview {
                         </div>
                     </div>
                 </div>
+                <div class="errors retroShade" style="display: none;">
+                    <ul>
+                        <li>${language.register.errors[0]}</li>
+                        <li>${language.register.errors[1]}</li>
+                        <li>${language.register.errors[2]}</li>
+                        <li>${language.register.errors[3]}</li>
+                        <li>${language.register.errors[4]}</li>
+                    </ul>
+                </div>
                 <div class="lineBtn">
-                    <button id="sendBtn" class="retroBtn retroShade btnColor-green">${this.language.login.submit}</button>
+                    <button id="sendBtn" class="retroBtn retroShade btnColor-green">${language.login.submit}</button>
                 </div>
             </div>
         </div>
@@ -53,6 +70,12 @@ export default class extends Aview {
         document.querySelector("#sendBtn").addEventListener("click", ()=>{
             let list = document.querySelectorAll(".data");
             let toSend = {};
+
+            if ((!passwordValidator(list[0].value) || !passwordValidator(list[1].value) ) || (list[1].value != list[0].value))
+            {
+                document.querySelector(".errors").style.display = "flex";
+                return ;
+            }
             for (let el of list)
                 toSend[el.name] = sha256(el.value);
             API.recoveryPassword(toSend, urlParams.get("token"));

@@ -15,7 +15,7 @@ const   Routes = [
     { path: "/games/pongThreeD", view: Pong3d, style: "/style/pong3d.css", modernStyle: "/style/modern/pong3d.css"},
     { path: "/games/pongTwoD", view: Pong2d, style: "/style/pong2d.css", modernStyle: "/style/modern/pong2d.css"},
     { path: "/userInfo", view: UserInfo, style: "/style/userInfo.css", modernStyle: "/style/modern/userInfo.css"}, 
-    { path: "/password/recovery/", view: PasswordRecovery, style: "/style/passwordRecovery.css", modernStyle: "/style/modern/userInfo.css"}
+    { path: "/password/recovery/", view: PasswordRecovery, style: "/style/passwordRecovery.css", modernStyle: "/style/modern/passwordRecovery.css"}
 ]
 
 export default Routes;

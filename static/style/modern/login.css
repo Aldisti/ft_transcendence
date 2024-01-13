@@ -1,30 +1,69 @@
 *{
-    font-family: Arial, Helvetica, sans-serif !important;
-    text-shadow: none !important;
+    border-radius: 8px !important;
+    font-family: 'Arial', sans-serif;
+    font-weight: bold;
+	border: none;
+}
+
+.account{
+    border-radius: 10px !important;
+}
+
+.profilePictureUrl{
+    border-radius: 10px !important;
 }
 
 .loginForm
 {
+	background-image: url("/imgs/login.png");
 	background-size: cover;
-	border-radius: 10px;
 	background-repeat: no-repeat;
 	color: white;
 	width: 40svw;
-	height: 50svh;
+	height: fit-content;
 	display: flex;
 	justify-content: space-between;
 	flex-direction: column;
 	align-items: center;
 	padding: 20px;
-    box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
-	background-color: white;
+	box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
 }
 
+.tfa
+{
+    padding: 0 !important;
+    justify-content: space-between !important;
+}
+
+.tfa span
+{
+	flex-grow: 1;
+	padding: 10px;
+}
+
+.registerLink
+{
+	color: white;
+}
+
+.recovery
+{
+	width: 100%;
+	margin: 10px 0 10px 0;
+	text-align: start;
+	color: white;
+	text-decoration: underline;
+}
+
+.recovery:hover, .registerLink:hover
+{
+	cursor: pointer;
+}
 
 .base
 {
 	width: 100svw;
-	height: 100svh;
+    height: 92svh;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -32,97 +71,218 @@
 
 #title
 {
-	width: 90%;
-	font-size: 70px;
+	width: 100%;
 	text-align: start;
+}
+
+.loginError
+{
+	background-color: var(--bs-danger);
+	width: 100%;
+	height: 8svh;
+	display: none;
+	justify-content: center;
+	align-items: center;
+	margin: 10px;
+	box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+}
+
+.loginError p
+{
+	margin: 0;
+	width: fit-content;
+	height: fit-content;
 }
 
 .retroBtn
 {
-	width: 20%;
+	width: 30%;
 	height: 100%;
+	padding: 5px;
 	border: none;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	color: white;
-	box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
-	font-size: 20px;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
 	font-weight: bolder;
 	text-decoration: none;
-	border-radius: 10px;
+	font-size: 10px;
 }
 
-.retroBtn:hover
+.btnColor-blue
 {
-    box-shadow: none;
+	background-color: lightskyblue;
+	color: white;
 }
-
-
 .btnColor-yellow
 {
-	background-color: #ffb703;
+	background-color: var(--bs-warning);
 }
 
 .btnColor-green
 {
-	background-color: #5E794C;
+	background-color: var(--bs-success);
 	color: white;
-	font-size: 20px;
+}
+
+h4
+{
+	color: black;
+	margin: 0;
+}
+
+input
+{
+	border: 1px solid gray !important;	
 }
 
 .retroShade
 {
-    transition: 0.2s;
+	transition: 0.2s;
 }
 
+.retroShade:hover
+{
+	box-shadow: none;
+}
 
 .line
 {
-	width: 90%;
-	height: 6svh;
-	color: white;
+	width: 100%;
 	display: flex;
+	flex-direction: column;
 	justify-content: space-between;
-	align-items: center;
-	border-radius: 10px;
-	background-color: #0A100D !important;
-	padding: 5px;
-	transition: 0.3s;
-	box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+	align-items: flex-start;
+	box-shadow: 7px 7px black;
+	background-color: white;
+	padding: 10px;
+	margin-top: 20px;
+	margin-bottom: 20px;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
 }
 
 .line input
 {
-	width: 70%;
-	height: 80%;
+	width: 100%;
+	height: 4svh;
 	border: none;
-	font-size: 25px;
-	border: 1px solid black;
-	outline: none;
-	border-radius: 7px;
+	font-size: 15px;
+	border: 2px solid black;
 }
-input:hover
+
+.line input[size="small"]
 {
-    background-color: white;
+	width: 90%;
 }
 
 .linebtn
 {
-	width: 90%;
-	height: 4vh;
+	width: 100%;
+	height: 5vh;
+	flex-wrap: wrap;
 	display: flex;
 	justify-content: space-between;
+	margin: 20px;
 }
 
-.loginForm h3
+.fullWidth
 {
-	text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-	margin: 0;
+	width: 100% !important;
 }
 
-.loginForm h1
+.extra
 {
-	color: black;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: flex-start;
 }
 
+.linebtn img
+{
+	width: 30%;
+	height: 100%;
+	box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+	object-fit: contain;
+	background-color: white;
+	padding: 10px;
+}
+
+.passInp
+{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.passwordSwitch
+{
+	width: 4svh;
+	height: 4svh;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+	padding: 5px;
+	background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.passwordSwitch:hover
+{
+	cursor: pointer;
+}
+
+.passwordSwitch img
+{
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+}
+
+.passwordContainer
+{
+    width: 60svw;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: url("/imgs/backUpdate.jpg");
+    padding: 30px;
+	box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+
+}
+
+.btnLeft
+{
+	height: 5svh;
+	display: flex;
+	justify-content: center;
+}
+
+.passwordPage
+{
+    width: 100svw;
+    height: 100svh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.formContainer
+{
+	width: 100%;
+}
+
+@media only screen and (max-width: 900px){
+	.loginForm
+	{
+		width: 90svw;
+	}
+
+	.retroBtn{
+		width: 33%;
+	}
+}

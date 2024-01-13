@@ -67,7 +67,7 @@ export default class extends Aview{
 					<input type="text" value="${this.field[this.language.register.username[1]]}" class="data retroShade" name="${this.language.register.username[1]}">
 				</div>
 				<div class="linebtn">
-					<a class="retroShade retroBtn btnColor-yellow" href="/login" data-link>${this.language.register.login}</a>
+					<a class="retroShade loginLink" href="/login" data-link>${this.language.register.login}</a>
 					<button id="flow2" class="signupBtn retroShade retroBtn btnColor-green">${this.language.register.next}</button>
 				</div>
 			</div>
@@ -107,7 +107,7 @@ export default class extends Aview{
 					</ul>
 				</div>
 				<div class="linebtn">
-					<a class="retroShade retroBtn btnColor-yellow" href="/login" data-link>${this.language.register.login}</a>
+					<a class="retroShade loginLink" href="/login" data-link>${this.language.register.login}</a>
 					<button id="goFlow2" class="signupBtn retroShade retroBtn btnColor-green">${this.language.register.goBack}</button>
 					<button id="submit" class="signupBtn retroShade retroBtn btnColor-green">${this.language.register.submit}</button>
 				</div>
@@ -141,7 +141,7 @@ export default class extends Aview{
 					<input type="email" class="data retroShade" value="${this.field.email}" name="${this.language.register.email[1]}">
 				</div>
 				<div class="linebtn">
-					<a class="retroShade retroBtn btnColor-yellow" href="/login" data-link>${this.language.register.login}</a>
+					<a class="retroShade loginLink" href="/login" data-link>${this.language.register.login}</a>
 					<button id="goFlow1" class="signupBtn retroShade retroBtn btnColor-green">${this.language.register.goBack}</button>
 					<button id="flow3" class="signupBtn retroShade retroBtn btnColor-green">${this.language.register.next}</button>
 				</div>

@@ -1,0 +1,534 @@
+*{
+    border-radius: 8px !important;
+    font-family: 'Verdana', sans-serif;
+    font-weight: bolder;
+}
+
+.account{
+    border-radius: 10px !important;
+}
+
+.profilePictureUrl{
+    border-radius: 10px !important;
+}
+
+img
+{
+    border-radius: 0 !important;
+}
+
+input
+{
+    border: 1px solid gray !important;
+}
+
+.userInfoContainer
+{
+    width: 100svw;
+    height: 94svh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+}
+
+.imageForm
+{
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    width: 90%;
+    height: 60svh;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+
+}
+
+.formLink
+{
+    transition: 0.5s;
+
+}
+
+.intraInfo
+{
+    width: 60%;
+    margin: 0;
+}
+
+#intraLink
+{
+    background-color: var(--bs-danger);
+}
+
+.formLink:hover
+{
+    cursor: pointer;
+    background-color: black !important;
+    color: white !important;
+}
+
+.leftSide
+{
+    z-index: 1000000000;
+    transition: 0.6s;
+    width: 30%;
+    height: 100%;
+    border-right: 2px solid black;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 40px;
+    align-items: center;
+    padding: 20px;
+    background-color: white;
+    background-color: #6c584c;
+    border: 2px solid black;
+}
+
+.leftSide h6
+{
+    padding: 10px;
+    width: 90%;
+    height: fit-content;
+    border: 2px solid black;
+    box-shadow: 15px 15px black;
+    background-color: #f0ead2;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+}
+
+.title
+{
+    padding: 10px;
+    background-color: #f0ead2;
+    border: 2px solid black;
+    box-shadow: 15px 15px black;
+    width: 80%;
+}
+
+.formContainer, .imageContainer
+{
+    background: url("/imgs/backUpdate.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 90%;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    background-color: white;
+    box-shadow: 15px 15px black;
+    padding: 20px;
+    margin-bottom: 40px;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+
+}
+
+.showForm
+{
+    display: flex;
+    justify-content: center;
+}
+
+.formContainerInner
+{
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-center;
+    align-items: center;
+}
+
+.imageContainer{
+    width: 50% !important;
+}
+
+
+.formMenu
+{
+    overflow: scroll;
+    width: 70%;
+    height: 94svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 20px;
+    overflow: scroll;
+}
+
+.inputLine
+{
+    background-color: #f0ead2;
+    padding: 10px;
+    font-size: 20px;
+    width: 90%;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+    align-items: flex-start;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+    margin: 15px;
+}
+
+.inputLineFile
+{
+    background-color: white;
+    padding: 10px;
+    font-size: 20px;
+    width: 90%;
+    height: 8svh;
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+}
+
+.inputLine label
+{
+    width: 90%;
+}
+.inputLine input
+{
+    border: 2px solid black;
+    width: 100%;
+    height: 3.5svh;
+    margin: 2px 0 2px 0;
+    outline: none;
+    transition: 0.6s;
+    font-size: 10px;
+}
+
+.inputLine input[size="small"]
+{
+    width: 90%;
+}
+
+.passInp
+{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.errors
+{
+	width: 90%;
+	background-color: #A22C29;
+	box-shadow: 7px 7px black;
+	border: 2px solid black;
+	display: flex;
+	align-items: center;
+	justify-content: start;
+	padding: 20px;
+    color: white;
+	display: none;
+}
+
+.errors ul
+{
+	margin: 0;
+}
+
+.passwordSwitch
+{
+	width: 4svh;
+	height: 4svh;
+	border: 2px solid black;
+	padding: 5px;
+	background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.passwordSwitch img
+{
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+}
+
+
+.submit
+{
+    background-color: var(--bs-success);
+    width: 90%;
+    height: fit-content;
+    padding: 10px;
+    border: none;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+    margin: 30px;
+    color: white;
+}
+
+.profilePict
+{
+    width: 90%;
+    height: 70%;
+    padding: 10px;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+}
+
+.profilePict img
+{
+    object-fit: contain;
+    background-color: black;
+    width: 100%;
+    height: 100%;
+}
+
+#inpFile
+{
+	position: absolute;
+	left: -300svw;
+}
+
+#labelInpFile
+{
+	width: 100%;
+	height: 80%;
+	display: flex;
+	align-items: center;
+}
+
+#labelInpFile span{
+    display: flex;
+    align-items: center;
+}
+
+#labelInpFile:hover
+{
+	cursor: pointer;
+}
+
+.fileIcon
+{
+	width: 10%;
+	height: 80%;
+	object-fit: contain;
+}
+
+.selectFileText
+{
+	display: flex;
+	align-items: flex-end;
+	height: 100%;
+    width: 100%;
+	font-size: larger;
+    margin-left: 20px;
+}
+
+.myTooltip {
+	padding: 10px;
+    width: 1.5svw;
+    height: 1.5svw;
+	background-color: #000;
+    justify-content: center;
+    align-items: center;
+	position: relative;
+	display: flex;
+	color: white;
+  }
+  
+  /* Tooltip text */
+  .myTooltip .tooltiptext {
+	visibility: hidden;
+	min-width: 20svw;
+	background-color: #555;
+	color: #fff;
+	padding: 15px;
+	border-radius: 6px;
+  
+	/* Position the tooltip text */
+	position: absolute;
+	z-index: 1;
+	bottom: 125%;
+	left: 50%;
+	margin-left: -60px;
+  
+	/* Fade in tooltip */
+	opacity: 0;
+	transition: opacity 0.3s;
+  }
+  
+  /* Tooltip arrow */
+  .myTooltip .tooltiptext::after {
+	content: "";
+	position: absolute;
+	top: 100%;
+	left: 15%;
+	margin-left: -5px;
+	border-width: 5px;
+	border-style: solid;
+	border-color: #555 transparent transparent transparent;
+  }
+  
+  /* Show the tooltip text when you mouse over the tooltip container */
+  .myTooltip:hover .tooltiptext {
+	visibility: visible;
+	opacity: 1;
+  }
+  
+  .handle
+  {
+    width: 10svw;
+    height: 10svw;
+    background-color: var(--bs-danger);
+    position: absolute;
+    bottom: 0;
+    left:0;
+    transition: 0.6s;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    color: white;
+  } 
+  .f-line
+  {
+	    display: flex;
+	    justify-content: flex-start;
+	    align-items: flex-end;
+	    gap: 10px;
+  }
+
+  .line
+  {
+    width: 100%;
+    height: fit-content;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 20px;
+    background-color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+
+  }
+
+  .formContainer{
+    display: flex;
+  }
+
+  .codeSend
+  {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .codeSend input
+  {
+    width: 60% !important;
+  }
+  .retroBtn
+    {
+    	width: 30%;
+    	height: 4svh;
+    	padding: 5px;
+    	border: none;
+    	display: flex;
+    	justify-content: center;
+    	align-items: center;
+    	color: white;
+        box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+    	font-weight: bolder;
+    	text-decoration: none;
+    	font-size: 10px;
+    }
+    .retroBtn:hover
+    {
+        cursor: pointer;
+    }
+    .submitLine
+    {
+        height: 100%;
+        display: flex;
+    }
+    .codeDisplay
+    {
+        width: 60%;
+        height: 100%;
+        overflow: scroll;
+        margin: 0;
+        align-items: center;
+
+    }
+    .decisionBox
+    {
+        width: 100%;
+        height: 8svh;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: white;
+        padding: 20px;
+        margin: 20px;
+        box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+
+
+    }
+    .qrInfo{
+        background-color: var(--bs-success);
+        flex-grow: 1;
+        height: 250px;
+        box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        color: white;
+    }
+    .codeInputLine
+    {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .codeInputLine input
+    {
+        width: 100%;
+    }
+
+    .showForm
+    {
+        width: 100%;
+    }
+@media screen and (max-width: 900px) {
+    .handle
+    {
+        display: flex;
+    } 
+
+    .userInfoContainer
+    {
+        justify-content: center;
+        align-items: center;
+    }
+    .formContainer
+    {
+        width: 90svw;
+    }
+    .formMenu
+    {
+        width: 100%;
+    }
+    .leftSide
+    {
+        width: 90%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        transform: translateX(-91svw);
+    }
+    .imageContainer{
+        width: 80% !important;
+    }
+}
