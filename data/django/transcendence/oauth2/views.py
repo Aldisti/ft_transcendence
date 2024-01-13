@@ -120,7 +120,7 @@ class IntraLink(APIView):
 
     def delete(self, request) -> Response:
         user = request.user
-        if not user.linked or not user.user_openid.is_linked_intra():
+        if not user.linked or not user.user_openid.is_intra_linked():
             return Response(data={'message': 'account not linked'}, status=400)
         try:
             UserOpenId.objects.unlink_intra(user.user_openid)
