@@ -15,6 +15,8 @@ RUN pip install httpie
 RUN pip install django-cors-headers
 # for two factor authentication
 RUN pip install pyotp
+# for jwts
+RUN pip install pyjwt && pip install pyjwt[crypto]
 
 RUN mkdir /etc/develop
 

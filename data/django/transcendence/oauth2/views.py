@@ -1,6 +1,7 @@
 from urllib.parse import unquote
 
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from django.shortcuts import render
 from rest_framework import status
 from rest_framework.decorators import APIView, api_view, permission_classes, throttle_classes
 from rest_framework.response import Response
@@ -14,8 +15,9 @@ from authentication.throttles import HighLoadThrottle, MediumLoadThrottle, LowLo
 
 from transcendence.settings import TZ
 
-from datetime import datetime
 from secrets import token_urlsafe
+from datetime import datetime
+from jwt import decode
 import requests
 import logging
 
@@ -39,7 +41,7 @@ class IntraCallback(APIView):
     throttle_scope = 'medium_load'
 
     def get(self, request, req_type: str) -> Response:
-        request_body = USER_INFO_DATA.copy()
+        request_body = INTRA_REQUEST_BODY.copy()
         request_body['code'] = request.GET.get('code')
         request_body['state'] = request.GET.get('state')
         request_body['redirect_uri'] = INTRA_REDIRECT_URI + req_type + '/'
@@ -55,9 +57,9 @@ class IntraCallback(APIView):
                 'error': f"{api_response.json()}"
             }, status=500)
         if req_type == 'login':
-            location_url = CLIENT_INTRA_REDIRECT_LOGIN
+            location_url = CLIENT_REDIRECT_LOGIN
         elif req_type == 'link':
-            location_url = CLIENT_INTRA_REDIRECT_LINK
+            location_url = CLIENT_REDIRECT_LINK
         else:
             return Response(data={'message': 'invalid type'}, status=400)
         response = Response(
@@ -76,32 +78,31 @@ class IntraCallback(APIView):
         return response
 
 
-class IntraUrl(APIView):
-    permission_classes = []
-    throttle_scope = 'low_load'
-
-    def get(self, request) -> Response:
-        req_type = request.query_params.get('type')
-        if req_type not in ['login', 'link']:
-            return Response(data={'message': 'invalid type'}, status=400)
-        state = token_urlsafe()
-        url = (
-            f"{INTRA_AUTH}?"
-            f"client_id={INTRA_CLIENT_ID}&"
-            f"redirect_uri={quote(INTRA_REDIRECT_URI + req_type + '/')}&"
-            f"response_type={RESPONSE_TYPE}&"
-            f"state={quote(state)}"
-        )
-        response = Response(data={'url': url}, status=200)
-        response.set_cookie(
-            key='state_token',
-            value=state,
-            max_age=7200,
-            secure=False,
-            httponly=False,
-            samesite=None,
-        )
-        return response
+@api_view(['GET'])
+@permission_classes([])
+@throttle_classes([LowLoadThrottle])
+def get_intra_url(self, request) -> Response:
+    req_type = request.query_params.get('type')
+    if req_type not in ['login', 'link']:
+        return Response(data={'message': 'invalid type'}, status=400)
+    state = token_urlsafe()
+    url = (
+        f"{INTRA_AUTH}?"
+        f"client_id={INTRA_CLIENT_ID}&"
+        f"redirect_uri={quote(INTRA_REDIRECT_URI + req_type + '/')}&"
+        f"response_type={RESPONSE_TYPE}&"
+        f"state={quote(state)}"
+    )
+    response = Response(data={'url': url}, status=200)
+    response.set_cookie(
+        key='state_token',
+        value=state,
+        max_age=7200,
+        secure=False,
+        httponly=False,
+        samesite=None,
+    )
+    return response
 
 
 class IntraLink(APIView):
@@ -173,3 +174,130 @@ def intra_login(request) -> Response:
         samesite=None,
     )
     return response
+
+
+@api_view(['GET'])
+@permission_classes([])
+@throttle_classes([LowLoadThrottle])
+def get_google_url(request) -> Response:
+    req_type = request.query_params.get('type')
+    if req_type == 'login':
+        redirect_uri = GOOGLE_LOGIN_REDIRECT_URI
+    elif req_type == 'link':
+        redirect_uri = GOOGLE_LINK_REDIRECT_URI
+    else:
+        return Response(data={'message': 'invalid type'}, status=400)
+    state = token_urlsafe()
+    url = (
+        f"{GOOGLE_AUTH}?"
+        f"client_id={quote(GOOGLE_CLIENT_ID)}&"
+        f"response_type={quote(RESPONSE_TYPE)}&"
+        f"scope={quote(GOOGLE_SCOPE)}&"
+        f"redirect_uri={quote(redirect_uri)}"
+        # f"state={quote(state)}"
+    )
+    response = Response(data={'url': url}, status=200)
+    response.set_cookie(
+        key='state_token',
+        value=state,
+        max_age=7200,
+        secure=False,
+        httponly=False,
+        samesite=None,
+    )
+    return response
+
+
+@api_view(['GET'])
+@permission_classes([])
+def google_callback(request) -> Response:
+    request_body = GOOGLE_REQUEST_BODY.copy()
+    request_body['code'] = request.GET.get('code')
+    request_body['redirect_uri'] = GOOGLE_REDIRECT_URI
+    # request_body['state'] = request.GET.get('state')
+    api_response = requests.post(GOOGLE_TOKEN, json=request_body)
+    if api_response.status_code != 200:
+        return Response(data={
+            'status': api_response.status_code,
+            'error': f"{api_response.json()}"
+        }, status=503)
+    payload = decode(api_response.json()['id_token'], options={"verify_signature": False})
+    return Response(data=payload, status=200)
+
+
+@api_view(['GET'])
+@throttle_classes([MediumLoadThrottle])
+def google_link_callback(request) -> Response:
+    request_body = GOOGLE_REQUEST_BODY.copy()
+    request_body['code'] = request.GET.get('code')
+    request_body['redirect_uri'] = GOOGLE_LINK_REDIRECT_URI
+    # request_body['state'] = request.GET.get('state')
+    api_response = requests.post(GOOGLE_TOKEN, json=request_body)
+    if api_response.status_code != 200:
+        return Response(data={
+            'status': api_response.status_code,
+            'error': f"{api_response.json()}"
+        }, status=503)
+    payload = decode(api_response.json()['id_token'], options={"verify_signature": False})
+    user = User.objects.get(pk='aldisti')
+    if not user.linked:
+        UserOpenId.objects.create(user=user, google_email=payload['email'])
+        User.objects.update_user_linked(user, True)
+    elif user.user_openid.is_google_linked():
+        return Response(data={'message': 'user already linked'}, status=400)
+    else:
+        UserOpenId.objects.link_google(user.user_openid, google_email=payload['email'])
+    response = Response(
+        status=status.HTTP_307_TEMPORARY_REDIRECT,
+        headers={'Location': CLIENT_REDIRECT_LINK}
+    )
+    response.set_cookie('state_token', 'deleted', max_age=0)
+    return response
+
+
+@api_view(['GET'])
+@permission_classes([])
+@throttle_classes([MediumLoadThrottle])
+def google_login_callback(request) -> Response:
+    request_body = GOOGLE_REQUEST_BODY.copy()
+    request_body['code'] = request.GET.get('code')
+    request_body['redirect_uri'] = GOOGLE_LOGIN_REDIRECT_URI
+    # request_body['state'] = request.GET.get('state')
+    api_response = requests.post(GOOGLE_TOKEN, json=request_body)
+    if api_response.status_code != 200:
+        return Response(data={
+            'status': api_response.status_code,
+            'error': f"{api_response.json()}"
+        }, status=503)
+    payload = decode(api_response.json()['id_token'], options={"verify_signature": False})
+    try:
+        user_openid = UserOpenId.objects.get(google_email=payload['email'])
+    except UserOpenId.DoesNotExist:
+        return Response(data={'message': 'user not found'}, status=404)
+    refresh_token = Tokens.get_token(user_openid.user)
+    exp = datetime.fromtimestamp(refresh_token['exp'], tz=TZ) - datetime.now(tz=TZ)
+    response = Response(
+        data={'access_token': str(refresh_token.access_token)},
+        status=status.HTTP_307_TEMPORARY_REDIRECT,
+        headers={'Location': CLIENT_REDIRECT_LOGIN}
+    )
+    response.set_cookie('state_token', 'deleted', max_age=0)
+    response.set_cookie(
+        key='refresh_token',
+        value=str(refresh_token),
+        max_age=exp,
+        secure=False,
+        httponly=False,
+        samesite=None,
+    )
+    return response
+
+
+@api_view(['DELETE'])
+@throttle_classes([LowLoadThrottle])
+def unlink_google(request) -> Response:
+    user: User = request.user
+    if not user.linked or not user.user_openid.is_google_linked():
+        return Response(data={'message': 'user not linked'}, status=400)
+    UserOpenId.objects.unlink_google(user.user_openid)
+    return Response(status=200)
