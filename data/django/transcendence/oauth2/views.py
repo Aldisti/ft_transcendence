@@ -1,3 +1,5 @@
+from urllib.parse import unquote
+
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from rest_framework import status
 from rest_framework.decorators import APIView, api_view, permission_classes, throttle_classes
@@ -32,6 +34,8 @@ class IntraCallback(APIView):
         request_body['code'] = request.GET.get('code')
         request_body['state'] = request.GET.get('state')
         request_body['redirect_uri'] = INTRA_REDIRECT_URI + req_type + '/'
+        logger.warning(f"cookie state: {request.COOKIES.get('state_token', '')}\n"
+                       f"body state: {unquote(request_body['state'])}")
         # TODO: find a solution to check the state against csrf
         # if unquote(request_body['state']) != request.COOKIES.get('state_token'):
         #     return Response('invalid state, csrf suspected', status=status.HTTP_403_FORBIDDEN)
@@ -95,7 +99,7 @@ class IntraLink(APIView):
     throttle_classes = [MediumLoadThrottle]
 
     def post(self, request) -> Response:
-        if not request.user.linked:
+        if request.user.linked:
             user_openid = request.user.user_openid
         else:
             user_openid = UserOpenId.objects.create(user=request.user)
