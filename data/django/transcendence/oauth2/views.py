@@ -10,13 +10,12 @@ from oauth2.settings import *
 from oauth2.models import UserOpenId
 
 from authentication.serializers import TokenPairSerializer as Tokens
-from authentication.throttles import AnonAuthThrottle, UserAuthThrottle, MediumLoadThrottle
+from authentication.throttles import HighLoadThrottle, MediumLoadThrottle
 
 from transcendence.settings import TZ
 
-from random import SystemRandom
 from datetime import datetime
-from base64 import b64encode
+from secrets import token_urlsafe
 import requests
 import logging
 
@@ -29,7 +28,6 @@ class IntraCallback(APIView):
     throttle_scope = 'medium_load'
 
     def get(self, request, req_type: str) -> Response:
-        # req_type = request.query_params.get('type')
         request_body = USER_INFO_DATA.copy()
         request_body['code'] = request.GET.get('code')
         request_body['state'] = request.GET.get('state')
@@ -75,7 +73,7 @@ class IntraUrl(APIView):
         req_type = request.query_params.get('type')
         if req_type not in ['login', 'link']:
             return Response(data={'message': 'invalid type'}, status=400)
-        state = b64encode(SystemRandom().randbytes(64)).decode('utf-8')
+        state = token_urlsafe()
         url = (
             f"{INTRA_AUTH}?"
             f"client_id={INTRA_CLIENT_ID}&"
@@ -96,7 +94,7 @@ class IntraUrl(APIView):
 
 
 class IntraLink(APIView):
-    throttle_classes = [MediumLoadThrottle]
+    throttle_scope = 'medium_load'
 
     def post(self, request) -> Response:
         if request.user.linked:
@@ -133,7 +131,7 @@ class IntraLink(APIView):
 
 @api_view(['POST'])
 @permission_classes([])
-@throttle_classes([AnonAuthThrottle])
+@throttle_classes([HighLoadThrottle])
 def intra_login(request) -> Response:
     headers = {'Authorization': f"Bearer {request.COOKIES['api_token']}"}
     api_response = requests.get(INTRA_USER_INFO, headers=headers)
