@@ -27,13 +27,15 @@ logger = logging.getLogger(__name__)
 @throttle_classes([LowLoadThrottle])
 def is_user_linked(request) -> Response:
     user: User = request.user
-    if not user.linked:
-        return Response(data={'linked': user.linked}, status=200)
-    return Response(data={
+    data = {
         'linked': user.linked,
-        'intra': user.user_openid.is_intra_linked(),
-        'google': user.user_openid.is_google_linked(),
-    }, status=200)
+        'intra': False,
+        'google': False,
+    }
+    if user.linked:
+        data['intra'] = user.user_openid.is_intra_linked()
+        data['google'] = user.user_openid.is_google_linked()
+    return Response(data=data, status=200)
 
 
 class IntraCallback(APIView):
