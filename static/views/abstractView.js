@@ -28,6 +28,15 @@ export default class Aview{
 		for (let key of keys)
 			this.field[key] = data[key];
 	}
+    defineWallpaper(old, modern){
+        //defining background
+        if (localStorage.getItem("style") == "modern")
+            document.querySelector("#app").style.backgroundImage = `url(${modern})`;
+        else
+            document.querySelector("#app").style.backgroundImage = `url(${old})`;
+        document.querySelector("#app").style.backgroundSize = "cover"
+        document.querySelector("#app").style.backgroundRepeat = "repeat"
+    }
     setup(){
 
     }

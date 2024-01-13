@@ -87,10 +87,8 @@ export function loadSecurityPage(dupThis)
 {
     localStorage.setItem("selectedForm", "twofa")
 
-    //setup API call to later enable TFA or link to intra
-    API.convertIntraTokenAccount(1).then(res=>{})
+    //check if the user already have enabled TFA if so show the form to remove it
     API.isTfaACtive(1).then(res=>{
-        //check if the user already have enabled TFA 
         if (localStorage.getItem("is_active") != undefined)
         {
             //if the user has email TFA send otp via email
@@ -101,15 +99,25 @@ export function loadSecurityPage(dupThis)
             return ;
         }
     })
-    API.getUserInfo(1).then(res=>{
-        //check if user has a 42 account linked setting localstorage
-        if (res.linked)
+
+    //check if user has a 42 account linked setting localstorage
+    API.getIntraStatus(1).then(res=>{
+        console.log(res)
+        if (res.intra == true)
         {
             document.querySelector("#intraLink").innerHTML = "Unlink Intra"
             localStorage.setItem("intraLinked", "true");
         }
         else
+        {
             localStorage.setItem("intraLinked", "false");
+
+            //ask to the server the link to connect user's 42 account
+            API.getIntraUrl("link").then(res=>{
+                if (res != "")
+                    dupThis.intraUrl = res
+            })
+        }
     })
 
     //if user not yet enabled TFA display menu to select activation method
@@ -120,10 +128,6 @@ export function loadSecurityPage(dupThis)
 
     //setup listener for APP TFA form if clicked the form is displayed
     document.querySelector(".appChoice").addEventListener("click", waitForAppBtn.bind(null, dupThis))
-    API.getIntraUrl("link").then(res=>{
-        if (res != "")
-            dupThis.intraUrl = res
-    })
 }
 
 export function triggerLogout(dupThis)
@@ -135,11 +139,14 @@ export function triggerLogout(dupThis)
 
 export function triggerIntraLink(dupThis)
 {
-    if (!confirm(dupThis.language.update.confirmIntra))
-        return;
-    if (localStorage.getItem("intraLinked") == "false")
+    if (localStorage.getItem("intraLinked") == "false" && confirm(dupThis.language.update.intraLinkConfirm))
+    {
         window.location.href = dupThis.intraUrl;
-    else
+        localStorage.setItem("userWantLink", "true");
+    }
+        // API.convertIntraTokenAccount(1).then(res=>{})
+
+    else if (localStorage.getItem("intraLinked") == "true" && confirm(dupThis.language.update.intraUnlinkConfirm))
     {
         console.log("unlink")
         API.unlinkIntra(1);

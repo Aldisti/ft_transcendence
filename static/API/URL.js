@@ -7,8 +7,8 @@ export const availabilityCheck = {
 }
 
 export const general = {
-    INTRA_URL: `http://${ip}:${port}/oauth2/intra/url/`,
     USER_INFO: `http://${ip}:${port}/users/`,
+    INTRA_URL: `http://${ip}:${port}/oauth2/intra/url/`,
     CONVERT_INTRA_TOKEN: `http://${ip}:${port}/oauth2/intra/login/`,
     LINK_INTRA_TOKEN_ACCOUNT: `http://${ip}:${port}/oauth2/intra/link/`,
 }
@@ -23,6 +23,7 @@ export const auth = {
     REMOVE_TFA: `http://${ip}:${port}/2fa/manage/`,
     SEND_RECOVERY_CODE: `http://${ip}:${port}/tokens/recovery/`,
     UPDATE_PASSWORD: `http://${ip}:${port}/tokens/password/`,
+    INTRA_STATUS: `http://${ip}:${port}/oauth2/linked/`,
 }
 
 export const userAction = {

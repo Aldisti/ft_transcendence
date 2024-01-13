@@ -67,11 +67,6 @@ export default class extends Aview{
         `
     }
     setup(){
-        if (localStorage.getItem("style") == "modern")
-        document.querySelector("#app").style.backgroundImage = "url('https://img.freepik.com/free-vector/gradient-blur-pink-blue-abstract-background_53876-117324.jpg?w=1380&t=st=1701540894~exp=1701541494~hmac=3fc9764a101effd1e8ad25bce3daa82a9355df0ef7d008f559874f309b5d91f7')";
-		else
-			document.querySelector("#app").style.backgroundImage = "url('/imgs/backLogin.png')";
-		document.querySelector("#app").style.backgroundSize = "cover"
-		document.querySelector("#app").style.backgroundRepeat = "repeat"
+        this.defineWallpaper("/imgs/backLogin.png", "https://c4.wallpaperflare.com/wallpaper/105/526/545/blur-gaussian-gradient-multicolor-wallpaper-preview.jpg")
     }
 }

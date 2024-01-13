@@ -1,6 +1,26 @@
 import Router from "/router/mainRouterFunc.js"
 import * as URL from "/API/URL.js"
 
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+}
+
+async function refreshAndRetry(retryFunc)
+{
+    await refreshToken().then(res=>{
+        if (!res.ok)
+        {
+            localStorage.removeItem("username");
+            history.pushState(null, null, "/login");
+            Router();
+            window.location.reload();
+        }
+    })
+    return await retryFunc(0);
+}
+
 export async function checkForUsernameAvailability(username) {
     const res = await fetch(`${URL.availabilityCheck.USERNAME}?username=${username}`, {
         method: "GET",
@@ -21,15 +41,10 @@ export async function checkForEmailAvailability(email) {
     return (false)
 }
 
-function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-  }
-
 export async function convertIntraToken(){
     if (getCookie("api_token") == undefined)
         return (false);
+
     const res = await fetch(URL.general.CONVERT_INTRA_TOKEN, {
         method: "POST",
         credentials: "include",
@@ -64,12 +79,8 @@ export async function convertIntraTokenAccount(recursionProtection){
         window.location.reload();
         return (true);
     }
-    if (res.status == 401 && recursionProtection) {
-        refreshToken().then(res=>{
-            if (res.ok)
-                convertIntraTokenAccount(0);
-        })
-    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(convertIntraTokenAccount);
     return (false);
 }
 
@@ -82,16 +93,13 @@ export async function unlinkIntra(recursionProtection){
         credentials: "include",
     });
     if (res.ok) {
-        history.pushState(null, null, "/home");
-        Router();
-        window.location.reload();
+        // history.pushState(null, null, "/home");
+        // Router();
+        // window.location.reload();
         return (true);
     }
     if (res.status == 401 && recursionProtection) {
-        refreshToken().then(res=>{
-            if (res.ok)
-                unlinkIntra(0);
-        })
+        return await refreshAndRetry(unlinkIntra);
     }
     return (false);
 }
@@ -104,17 +112,8 @@ export async function getUserInfo(recursionProtection) {
         },
         // credentials: "include",
     })
-    if (res.status == 401 && recursionProtection) {
-        refreshToken().then(res => {
-            if (res.ok) {
-                getUserInfo(0);
-            } else {
-                history.pushState(null, null, "/home");
-                Router();
-                window.location.reload();
-            }
-        })
-    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(getUserInfo);
     if (res.ok) {
         let jsonBody = await res.json();
         return (jsonBody);
@@ -193,12 +192,8 @@ export async function updateInfo(data, recursionProtection) {
         window.location.reload();
         return ({});
     }
-    if (res.status == 401 && recursionProtection) {
-        refreshToken().then(res => {
-            if (res.ok)
-                updateInfo(data, 0);
-        })
-    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(updateInfo);
     let body = await res.json()
     return (body);
 }
@@ -213,12 +208,8 @@ export async function updatePassword(recursionProtection, data, dupThis) {
         },
         body: JSON.stringify(data),
     })
-    if (res.status == 401 && recursionProtection) {
-        refreshToken().then(res => {
-            if (res.ok)
-                updatePassword(0, data);
-        })
-    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(updatePassword);
     if (!res.ok)
     {
         document.querySelector(`#${dupThis.language.update.oldPassword[1]}-tooltip`).innerHTML = dupThis.language.update.passwordErrors[0];
@@ -254,15 +245,11 @@ export async function logout(recursionProtection) {
             Authorization: `Bearer ${localStorage.getItem("token")}`
         },
     });
-    if (res.status == 401 && recursionProtection) {
-        refreshToken().then(res => {
-            if (res.ok)login
-                logout(0);
-        })
-        return;
-    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(logout);
     if (res.ok) {
         localStorage.removeItem("username");
+        localStorage.removeItem("token");
         history.pushState(null, null, "/home");
         Router();
         window.location.reload();
@@ -274,6 +261,7 @@ export async function logout(recursionProtection) {
 
 export async function getIntraUrl(parameter) {
     const res = await fetch(`${URL.general.INTRA_URL}?type=${parameter}`, {
+        credentials: "include",
         method: "GET",
     });
     if (res.ok) {
@@ -298,19 +286,7 @@ export async function uploadImage(recursionProtection, file){
         body: form
     })
     if (res.status == 401 && recursionProtection)
-    {
-        refreshToken().then(res=>{
-            if (res.ok)
-                uploadImage(0, file);
-            else
-            {
-                localStorage.removeItem("username");
-                history.pushState(null, null, "/login");
-                Router();
-                window.location.reload();
-            }
-        })
-    }
+        return await refreshAndRetry(uploadImage);
     if (res.ok)
     {
         window.location.reload();
@@ -332,19 +308,7 @@ export async function activateTfa(recursionProtection, type)
         })
     })
     if (res.status == 401 && recursionProtection)
-    {
-        refreshToken().then(res=>{
-            if (res.ok)
-                activateTfa(0, type);
-            else
-            {
-                localStorage.removeItem("username");
-                history.pushState(null, null, "/login");
-                Router();
-                window.location.reload();             
-            }
-        })
-    }
+        return await refreshAndRetry(activateTfa);
     if (res.ok)
     {
         let resJson = await res.json();
@@ -405,19 +369,7 @@ export async function validateCode(recursionProtection, code)
         })
     })
     if (res.status == 401 && recursionProtection)
-    {
-        refreshToken().then(res=>{
-            if (res.ok)
-                validateCode(0, code);
-            else
-            {
-                localStorage.removeItem("username");
-                history.pushState(null, null, "/login");
-                Router();
-                window.location.reload();             
-            }
-        })
-    }
+        return await refreshAndRetry(validateCode);
     if (res.ok)
     {
         let jsonBody = await res.json();
@@ -450,19 +402,7 @@ export async function validateCodeLogin(recursionProtection, code, token)
         })
     })
     if (res.status == 401 && recursionProtection)
-    {
-        refreshToken().then(res=>{
-            if (res.ok)
-                validateCodeLogin(0, code, token);
-            else
-            {
-                localStorage.removeItem("username");
-                history.pushState(null, null, "/login");
-                Router();
-                window.location.reload();             
-            }
-        })
-    }
+        return await refreshAndRetry(validateCodeLogin);
     if (res.status == 400)
     {
         let jsonBody = await res.json();
@@ -499,19 +439,7 @@ export async function isTfaACtive(recursionProtection)
             localStorage.removeItem("is_active");
     }
     if (res.status == 401 && recursionProtection)
-    {
-        refreshToken().then(res=>{
-            if (res.ok)
-                isTfaACtive(0);
-            else
-            {
-                localStorage.removeItem("username");
-                history.pushState(null, null, "/login");
-                Router();
-                window.location.reload();             
-            }
-        })
-    }
+        return await refreshAndRetry(isTfaACtive);
 }
 
 export async function validateRecover(token, code)
@@ -562,19 +490,7 @@ export async function removeTfa(recursionProtection, code)
         window.location.reload()
     }
     if (res.status == 401 && recursionProtection)
-    {
-        refreshToken().then(res=>{
-            if (res.ok)
-                removeTfa(0);
-            else
-            {
-                localStorage.removeItem("username");
-                history.pushState(null, null, "/login");
-                Router();
-                window.location.reload();             
-            }
-        })
-    }
+        return await refreshAndRetry(removeTfa);
     return (res);
 }
 
@@ -589,6 +505,7 @@ export async function sendRecoveryEmail(username)
             username: username,
         })
     })
+    console.log(res)
     let temp = await res.json();
     console.log(temp);
     return (temp);
@@ -611,4 +528,22 @@ export async function recoveryPassword(data, token)
         window.location.reload();    
     }
     console.log(res)
+}
+
+export async function getIntraStatus(recursionProtection){
+    console.log("hey")
+    const res = await fetch(URL.auth.INTRA_STATUS, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        credentials: "include",
+    });
+    if (res.ok) {
+        let body = await res.json();
+        return (body);
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(getIntraStatus);
+    return ({});
 }

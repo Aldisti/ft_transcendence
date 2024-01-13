@@ -334,10 +334,8 @@ export default class extends Aview {
     }
 
     async performChecksAndSubmit(form) {
-        let title = document.querySelector(".title");
 
-        //will perfom check for general user info
-        console.log("hey")
+        //will perfom check for general user INFO
         if (localStorage.getItem("selectedForm") == "info" && controls.checkChangeInfoForm(form, this.errors)) {
             API.updateInfo(prepare.prepareInfoForm(form), 1).then((res) => {
                 if (res == {})
@@ -347,21 +345,18 @@ export default class extends Aview {
             })
         }
 
-        //will perfom check for email
+        //will perfom check for EMAIL
         if (localStorage.getItem("selectedForm") == "email" && await controls.checkChangeEmailForm(form, this.errors)) {
-            API.updateEmail(prepare.prepareEmailForm(form, this)).then((res) => {
-
-
-            })
+            API.updateEmail(prepare.prepareEmailForm(form, this)).then((res) => {})
         }
 
-        //will perfom check for password
+        //will perfom check for PASSWORD
         if (localStorage.getItem("selectedForm") == "password"&& controls.checkChangePasswordForm(form, this.errors)) {
             console.log(prepare.preparePasswordForm(form, this))
             API.updatePassword(1, prepare.preparePasswordForm(form, this), this).then((res) => {});
         }
 
-        //will perfom check for picture
+        //will perfom check for PICTURE
         if (localStorage.getItem("selectedForm") == "picture")
             API.uploadImage(1, form.inpFile)
     }
@@ -389,43 +384,46 @@ export default class extends Aview {
             pages.loadPicturePage(this);
         }
 
+        //load the security page where user can link 42 account and enable/disable TFA
         else if (e.classList.contains("twofa") || byPass == "twofa") {
             pages.loadSecurityPage(this);
         }
+
         //will load the form to change picture
         else if (e.classList.contains("logout")) {
             pages.triggerLogout(this);
         }
+
         else if (e.classList.contains("intra")) {
             pages.triggerIntraLink(this);
         }
     }
 
     highlightFormMenu(formName) {
-        console.log(formName)
+
+        //first all the button is turned the same
         document.querySelectorAll(".formLink").forEach(el => {
             el.style.backgroundColor = "#f0ead2";
             el.style.color = "black";
         })
+
+        //then the one passed as argument is colored in green to highlight it
         document.querySelector(`.${formName}`).style.backgroundColor = "var(--bs-success)";
         document.querySelector(`.${formName}`).style.color = "white";
     }
 
     setup() {
-        //defining background
-        if (localStorage.getItem("style") == "modern")
-            document.querySelector("#app").style.backgroundImage = "url('https://c4.wallpaperflare.com/wallpaper/105/526/545/blur-gaussian-gradient-multicolor-wallpaper-preview.jpg')";
-        else
-            document.querySelector("#app").style.backgroundImage = "url('/imgs/backLogin.png')";
-        document.querySelector("#app").style.backgroundSize = "cover"
-        document.querySelector("#app").style.backgroundRepeat = "repeat"
+        this.defineWallpaper("/imgs/backLogin.png", "https://c4.wallpaperflare.com/wallpaper/105/526/545/blur-gaussian-gradient-multicolor-wallpaper-preview.jpg")
 
         //defining the start menu item that need to be highlighted
         if (localStorage.getItem("selectedForm") == null)
             localStorage.setItem("selectedForm", "info");
         
+        //will load the starting form depending on a localstorage variable and highlight it
         this.changeForm(document.body, localStorage.getItem("selectedForm"));
         this.highlightFormMenu(localStorage.getItem("selectedForm"))
+
+        //setup general click listener that will handle the left side menu acion and style (change color on click)
         document.querySelector(".userInfoContainer").addEventListener("click", handleClick.bind(null, this))
     }
 }
