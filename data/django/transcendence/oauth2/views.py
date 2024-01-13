@@ -10,7 +10,7 @@ from oauth2.settings import *
 from oauth2.models import UserOpenId
 
 from authentication.serializers import TokenPairSerializer as Tokens
-from authentication.throttles import HighLoadThrottle, MediumLoadThrottle
+from authentication.throttles import HighLoadThrottle, MediumLoadThrottle, LowLoadThrottle
 
 from transcendence.settings import TZ
 
@@ -21,6 +21,19 @@ import logging
 
 
 logger = logging.getLogger(__name__)
+
+
+@api_view(['GET'])
+@throttle_classes([LowLoadThrottle])
+def is_user_linked(request) -> Response:
+    user: User = request.user
+    if not user.linked:
+        return Response(data={'linked': user.linked}, status=200)
+    return Response(data={
+        'linked': user.linked,
+        'intra': user.user_openid.is_intra_linked(),
+        'google': user.user_openid.is_google_linked(),
+    }, status=200)
 
 
 class IntraCallback(APIView):

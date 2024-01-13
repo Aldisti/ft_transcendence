@@ -4,6 +4,7 @@ from oauth2 import views
 
 
 urlpatterns = [
+    path('linked/', views.is_user_linked, name='is_user_linked'),
     path('intra/', include([
         path('url/', views.IntraUrl.as_view(), name='get_intra_url'),
         path('callback/<str:req_type>/', views.IntraCallback.as_view(), name='get_intra_token'),
