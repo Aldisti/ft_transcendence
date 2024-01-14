@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 
 class LoginView(APIView):
-    throttle_scope = 'auth'
+    throttle_classes = [MediumLoadThrottle]
     permission_classes = []
 
     def post(self, request) -> Response:
