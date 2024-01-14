@@ -121,7 +121,15 @@ SIMPLE_JWT = {
     "TOKEN_VERIFY_SERIALIZER": "rest_framework_simplejwt.serializers.TokenVerifySerializer",
 }
 
+
+# Logging settings
+# https://docs.djangoproject.com/en/4.2/howto/logging/
+
+# LOGGING = {}
+
+
 ROOT_URLCONF = 'transcendence.urls'
+
 
 TEMPLATES = [
     {
