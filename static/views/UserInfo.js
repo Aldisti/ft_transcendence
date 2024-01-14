@@ -381,7 +381,7 @@ export default class extends Aview {
 
         //will perfom check for PASSWORD
         if (localStorage.getItem("selectedForm") == "password"&& controls.checkChangePasswordForm(form, this.errors)) {
-            console.log(prepare.preparePasswordForm(form, this))
+            //console.log(prepare.preparePasswordForm(form, this))
             API.updatePassword(1, prepare.preparePasswordForm(form, this), this).then((res) => {});
         }
 
@@ -433,7 +433,7 @@ export default class extends Aview {
     }
 
     highlightFormMenu(formName) {
-        console.log(formName)
+        //console.log(formName)
         //first all the button is turned the same
         document.querySelectorAll(".formLink").forEach(el => {
             el.style.backgroundColor = "#f0ead2";

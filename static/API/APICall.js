@@ -175,7 +175,7 @@ export async function register(data) {
         body: JSON.stringify(data),
     })
     if (res.status == 201) {
-        console.log("hey")
+        //console.log("hey")
         localStorage.setItem("username", data.username)
         history.pushState(null, null, "/login");
         Router();
@@ -279,7 +279,7 @@ export async function getIntraUrl(parameter) {
 }
 
 export async function uploadImage(recursionProtection, file){
-    console.log("hey")
+    //console.log("hey")
     const form = new FormData();
 
     if (file.files.length > 0){
@@ -342,7 +342,7 @@ export async function getEmailCode(recursionProtection, token)
         return await refreshAndRetry(activateTfa, 0, token);
     if (res.status == 429)
     {
-        console.log(res.headers)
+        //console.log(res.headers)
         let resJson = await res.json();
         let errMsg = resJson.detail.split(" ")
         alert(`You made too many request you will be able to request another code in ${errMsg[errMsg.length - 2]} seconds`)
@@ -369,7 +369,7 @@ export async function validateCode(recursionProtection, code)
     if (res.ok)
     {
         let jsonBody = await res.json();
-        console.log(jsonBody);
+        //console.log(jsonBody);
         let body = "";
 
         for (let el of jsonBody.codes)
@@ -402,14 +402,14 @@ export async function validateCodeLogin(recursionProtection, code, token)
     if (res.status == 400)
     {
         let jsonBody = await res.json();
-        console.log(jsonBody);
+        //console.log(jsonBody);
         localStorage.setItem("otp_token", jsonBody.token == undefined ? localStorage.getItem("otp_token") : jsonBody.token);
         return ({});
     }
     if (res.ok)
     {
         let jsonBody = await res.json();
-        console.log(jsonBody);
+        //console.log(jsonBody);
         return (jsonBody);
     }
     return ({});
@@ -453,7 +453,7 @@ export async function validateRecover(token, code)
     if (res.status == 400)
     {
         let jsonBody = await res.json();
-        console.log(jsonBody);
+        //console.log(jsonBody);
         localStorage.setItem("otp_token", jsonBody.token == undefined ? localStorage.getItem("otp_token") : jsonBody.token);
         return ({});
     }
@@ -501,9 +501,9 @@ export async function sendRecoveryEmail(username)
             username: username,
         })
     })
-    console.log(res)
+    //console.log(res)
     let temp = await res.json();
-    console.log(temp);
+    //console.log(temp);
     return (temp);
 }
 
@@ -523,7 +523,7 @@ export async function recoveryPassword(data, token)
         Router();
         window.location.reload();    
     }
-    console.log(res)
+    //console.log(res)
 }
 
 export async function getIntraStatus(recursionProtection){

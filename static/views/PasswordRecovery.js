@@ -79,7 +79,7 @@ export default class extends Aview {
             for (let el of list)
                 toSend[el.name] = sha256(el.value);
             API.recoveryPassword(toSend, urlParams.get("token"));
-            console.log(toSend, urlParams.get("token"))
+            //console.log(toSend, urlParams.get("token"))
         })
     }
 }

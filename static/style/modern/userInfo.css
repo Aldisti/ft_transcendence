@@ -51,10 +51,34 @@ input
 
 }
 
-.intraInfo
+.intraInfo, .googleInfo
 {
     width: 60%;
     margin: 0;
+}
+
+.intra, .google
+{
+    justify-content: space-between !important;
+    padding: 0 !important;
+}
+.intra img, .google img
+{
+    width: 20%;
+    border-radius: 8px !important;
+    height: 100%;
+    object-fit: contain;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+
+}
+
+.intra span, .google span
+{
+    padding: 5px;
+    font-size: 10px;
+    flex-grow: 1;
+    text-align: center;
 }
 
 #intraLink

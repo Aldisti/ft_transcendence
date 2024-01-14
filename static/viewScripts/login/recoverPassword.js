@@ -60,7 +60,7 @@ export function start()
     API.sendRecoveryEmail(document.querySelector(".data").value).then(res=>{
         if (Object.keys(res).length > 0)
         {
-            console.log(res)
+            //console.log(res)
             document.querySelector("#app").innerHTML = disableTfaPage(res.type);
             if (res.type == "EM")
             {

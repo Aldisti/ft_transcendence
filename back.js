@@ -27,13 +27,13 @@ app.use(cors({
 app.use(bodyParser.json())
 const PORT = process.env.PORT || 8000;
 app.post("/auth/refresh/", (req, res) => {
-    console.log(req.headers);
+    //console.log(req.headers);
     res.status(200).send();
 })
 app.post("/login", (req, res) => {
-    console.log("hey")
-    console.log(req.body.username);
-    console.log(generateAccessToken(req.body.username))
+    //console.log("hey")
+    //console.log(req.body.username);
+    //console.log(generateAccessToken(req.body.username))
     res.cookie('jwt', generateAccessToken("test"), {
         // Options for the cookie
         httpOnly: true,
@@ -54,7 +54,7 @@ app.post("/username/check", (req, res) => {
     res.send();
 })
 app.post("/email/check", (req, res) => {
-    console.log(req);
+    //console.log(req);
     if (req.body.email == "mpaterno@test.it")
         res.status(200);
     else
@@ -63,7 +63,7 @@ app.post("/email/check", (req, res) => {
 })
 
 app.post("/auth/login/", (req, res) => {
-    console.log(req.body)
+    //console.log(req.body)
     res.json({ access_token: "ciaooo" }).status(200).send()
 })
 app.get("/auth/logout/", (req, res) => {
@@ -72,19 +72,19 @@ app.get("/auth/logout/", (req, res) => {
 })
 
 app.post('/updateInfo/', (req, res) => {
-    console.log(req.body);
+    //console.log(req.body);
     res.status(200).json({}).send();
 })
 
 
 app.get('/test/logout', (req, res) => {
-    console.log("ho fatto logout");
+    //console.log("ho fatto logout");
     res.status(200);
     res.send("ok")
 })
 
 app.get("/users/", (req, res) => {
-    console.log("test")
+    //console.log("test")
     res.status(200)
     res.json({
         results: [{user_info: {
@@ -102,19 +102,19 @@ app.get("/users/", (req, res) => {
 })
 
 app.post("/register", (req, res) => {
-    console.log("hey")
-    console.log(req.body);
+    //console.log("hey")
+    //console.log(req.body);
     res.status(200)
     res.send(errors);
 })
 
 app.post("/password", (req, res) => {
-    console.log("hey")
-    console.log(req.body);
+    //console.log("hey")
+    //console.log(req.body);
     res.status(400)
     res.send("hey");
 })
 
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    //console.log(`Server is running on port ${PORT}`);
 });

@@ -7,7 +7,7 @@ function isNumber(value) {
 function sendEmailTfaCode()
 {
     let code = document.querySelector("#emailTfaCode").value;
-    console.log(code)
+    //console.log(code)
     if (code.length == 6 || code.length == 10)
     {
         API.validateCode(1, code).then(res=>{
@@ -17,7 +17,7 @@ function sendEmailTfaCode()
 function sendAppTfaCode()
 {
     let code = document.querySelector("#appTfaCode").value;
-    console.log(code)
+    //console.log(code)
     if (code.length == 6 || code.length == 10)
     {
         API.validateCode(1, code).then(res=>{
@@ -27,7 +27,7 @@ function sendAppTfaCode()
 function sendAppTfaCodeRemove()
 {
     let code = document.querySelector("#removeTfaCode").value;
-    console.log(code)
+    //console.log(code)
     if (code.length == 6 || code.length == 10)
     {
         API.removeTfa(1, code).then(res=>{
@@ -67,7 +67,7 @@ async function handleIntraLink(dupThis)
 {
     //check if user has a 42 account linked setting localstorage
     await API.getIntraStatus(1).then(res=>{
-        console.log(res)
+        //console.log(res)
         if (res.intra == true)
             localStorage.setItem("intraLinked", "true")
         else
@@ -150,7 +150,7 @@ export function triggerIntraLink(dupThis)
     }
     else if (localStorage.getItem("intraLinked") != null && confirm(dupThis.language.update.intraUnlinkConfirm))
     {
-        console.log("unlink")
+        //console.log("unlink")
         API.unlinkIntra(1).then(()=>{
             window.location.reload();
         });
@@ -159,6 +159,6 @@ export function triggerIntraLink(dupThis)
 
 export function triggerGoogleLink(dupThis)
 {
-    console.log("heyyyyy")
+    //console.log("heyyyyy")
 }
 
