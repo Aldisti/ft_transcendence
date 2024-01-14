@@ -13,11 +13,18 @@ urlpatterns = [
         path('disable/', views.IntraLink.as_view(), name='intra_disable'),
     ])),
     path('google/', include([
-        path('url/', views.get_google_url, name='get_google_url'),
-        path('unlink/', views.unlink_google, name='unlink_google'),
-        path('callback/', include([
-            path('link/', views.google_link_callback, name='google_link_callback'),
-            path('login/', views.google_login_callback, name='google_login_callback'),
+        path('v1/', include([
+            path('url/', views.get_google_url, name='get_google_url'),
+            path('callback/', include([
+                path('link/', views.google_link_callback, name='google_link_callback'),
+                path('login/', views.google_login_callback, name='google_login_callback'),
+            ])),
         ])),
+        path('v2/', include([
+            path('url/', views.get_google_url_v2, name='get_google_url'),
+            path('link/', views.google_link, name='google_link'),
+            path('login/', views.google_login, name='google_login'),
+        ])),
+        path('unlink/', views.unlink_google, name='unlink_google'),
     ])),
 ]
