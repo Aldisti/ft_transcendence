@@ -348,7 +348,15 @@ def google_link(request) -> Response:
     if user.linked:
         UserOpenId.objects.link_google(user.user_openid, google_email=payload['email'])
     else:
-        UserOpenId.objects.create(user, google_email=payload['email'])
+        try:
+            UserOpenId.objects.create(user, google_email=payload['email'])
+        except ValidationError as e:
+            logger.warning("\n")
+            logger.warning(f"{UserOpenId.objects.all()}")
+            for i in UserOpenId.objects.all():
+                logger.warning(f"{i.google_email} -- {i.is_google_linked()}")
+            logger.warning("\n")
+            return Response(data={'message': e.message}, status=400)
     return Response(status=200)
 
 
