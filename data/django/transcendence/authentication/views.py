@@ -124,8 +124,11 @@ class RefreshView(APIView):
             refresh_token = RefreshToken(request.COOKIES.get('refresh_token'))
             if refresh_token is None:
                 raise TokenError()
-            if JwtToken.objects.filter(token=refresh_token['csrf']).exists():
-                raise TokenError()
+            try:
+                if JwtToken.objects.filter(token=refresh_token['csrf']).exists():
+                    raise TokenError()
+            except KeyError:
+                logger.warning(f"token received: {str(refresh_token)}")
         except TokenError:
             error_response.data = {'message': 'invalid refresh token'}
             return error_response
