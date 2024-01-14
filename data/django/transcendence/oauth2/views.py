@@ -45,8 +45,11 @@ class IntraCallback(APIView):
         request_body['code'] = request.GET.get('code')
         request_body['state'] = request.GET.get('state')
         request_body['redirect_uri'] = INTRA_REDIRECT_URI + req_type + '/'
-        logger.warning(f"cookie state: {request.COOKIES.get('state_token', '')}\n"
-                       f"body state: {unquote(request_body['state'])}")
+
+        logger.warning(f"cookie state: {request.COOKIES.get('state_token', '')}")
+        logger.warning(f"body quote state: {request_body['state']}")
+        logger.warning(f"body unquote state: {unquote(request_body['state'])}")
+
         # TODO: find a solution to check the state against csrf
         # if unquote(request_body['state']) != request.COOKIES.get('state_token'):
         #     return Response('invalid state, csrf suspected', status=status.HTTP_403_FORBIDDEN)
@@ -85,10 +88,10 @@ def get_intra_url(request) -> Response:
     req_type = request.query_params.get('type')
     if req_type not in ['login', 'link']:
         return Response(data={'message': 'invalid type'}, status=400)
-    state = token_urlsafe()
+    state = token_urlsafe(32)
     url = (
         f"{INTRA_AUTH}?"
-        f"client_id={INTRA_CLIENT_ID}&"
+        f"client_id={quote(INTRA_CLIENT_ID)}&"
         f"redirect_uri={quote(INTRA_REDIRECT_URI + req_type + '/')}&"
         f"response_type={RESPONSE_TYPE}&"
         f"state={quote(state)}"
@@ -120,7 +123,7 @@ class IntraLink(APIView):
         api_response = requests.get(INTRA_USER_INFO, headers=headers)
         if api_response.status_code != 200:
             return Response(data={
-                'message': f"api error: {api_response.status_code}"
+                'message': f"api error: {api_response.status_code}",
             }, status=status.HTTP_503_SERVICE_UNAVAILABLE)
         name, email = api_response.json()['login'], api_response.json()['email']
         del api_response
@@ -180,25 +183,18 @@ def intra_login(request) -> Response:
 @permission_classes([])
 @throttle_classes([LowLoadThrottle])
 def get_google_url(request) -> Response:
-    req_type = request.query_params.get('type')
-    if req_type == 'login':
-        redirect_uri = GOOGLE_LOGIN_REDIRECT_URI
-    elif req_type == 'link':
-        redirect_uri = GOOGLE_LINK_REDIRECT_URI
-    else:
-        return Response(data={'message': 'invalid type'}, status=400)
-    state = token_urlsafe()
+    state = token_urlsafe(32)
     url = (
         f"{GOOGLE_AUTH}?"
         f"client_id={quote(GOOGLE_CLIENT_ID)}&"
         f"response_type={quote(RESPONSE_TYPE)}&"
         f"scope={quote(GOOGLE_SCOPE)}&"
-        f"redirect_uri={quote(redirect_uri)}"
-        # f"state={quote(state)}"
+        f"redirect_uri={quote(GOOGLE_REDIRECT_URI)}&"
+        f"state={quote(state)}"
     )
     response = Response(data={'url': url}, status=200)
     response.set_cookie(
-        key='state_token',
+        key='google_state',
         value=state,
         max_age=7200,
         secure=False,
@@ -208,63 +204,64 @@ def get_google_url(request) -> Response:
     return response
 
 
-@api_view(['GET'])
-@throttle_classes([MediumLoadThrottle])
-def google_link_callback(request) -> Response:
+@api_view(['POST'])
+@throttle_classes([])
+def google_link(request) -> Response:
     request_body = GOOGLE_REQUEST_BODY.copy()
-    request_body['code'] = request.GET.get('code')
-    request_body['redirect_uri'] = GOOGLE_LINK_REDIRECT_URI
-    # request_body['state'] = request.GET.get('state')
+    request_body['code'] = request.data.get('code')
+    request_body['redirect_uri'] = GOOGLE_REDIRECT_URI
+    if request.data.get('state') != request.COOKIES.get('google_state'):
+        return Response(data={'message': 'csrf suspected'}, status=403)
+    user: User = request.user
+    if user.linked and user.user_openid.is_google_linked():
+        return Response(data={'message': 'user already linked'}, status=400)
     api_response = requests.post(GOOGLE_TOKEN, json=request_body)
     if api_response.status_code != 200:
         return Response(data={
             'status': api_response.status_code,
-            'error': f"{api_response.json()}"
+            'error': f"{api_response.json()}",
         }, status=503)
     payload = decode(api_response.json()['id_token'], options={"verify_signature": False})
-    user = User.objects.get(pk='aldisti')
     if not user.linked:
-        UserOpenId.objects.create(user=user, google_email=payload['email'])
-        User.objects.update_user_linked(user, True)
-    elif user.user_openid.is_google_linked():
-        return Response(data={'message': 'user already linked'}, status=400)
+        try:
+            user_openid = UserOpenId.objects.create(user, google_email=payload['email'])
+        except ValidationError:
+            return Response(data={'message': 'user already linked'}, status=400)
+        User.objects.update_user_linked(user_openid.user, True)
     else:
         UserOpenId.objects.link_google(user.user_openid, google_email=payload['email'])
-    response = Response(
-        status=status.HTTP_307_TEMPORARY_REDIRECT,
-        headers={'Location': CLIENT_REDIRECT_LINK}
-    )
-    response.set_cookie('state_token', 'deleted', max_age=0)
+    response = Response(status=200)
+    response.set_cookie('google_state', 'deleted', max_age=0)
     return response
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 @permission_classes([])
-@throttle_classes([MediumLoadThrottle])
-def google_login_callback(request) -> Response:
+@throttle_classes([])
+def google_login(request) -> Response:
     request_body = GOOGLE_REQUEST_BODY.copy()
-    request_body['code'] = request.GET.get('code')
-    request_body['redirect_uri'] = GOOGLE_LOGIN_REDIRECT_URI
-    # request_body['state'] = request.GET.get('state')
+    request_body['code'] = request.data.get('code')
+    request_body['redirect_uri'] = GOOGLE_REDIRECT_URI
+    if request.data.get('state') != request.COOKIES.get('google_state'):
+        return Response(data={'message': 'csrf suspected'}, status=403)
     api_response = requests.post(GOOGLE_TOKEN, json=request_body)
     if api_response.status_code != 200:
         return Response(data={
             'status': api_response.status_code,
-            'error': f"{api_response.json()}"
+            'error': f"{api_response.json()}",
         }, status=503)
     payload = decode(api_response.json()['id_token'], options={"verify_signature": False})
     try:
         user_openid = UserOpenId.objects.get(google_email=payload['email'])
     except UserOpenId.DoesNotExist:
-        return Response(data={'message': 'user not found'}, status=404)
+        return Response(data={'user not found'}, status=404)
     refresh_token = Tokens.get_token(user_openid.user)
     exp = datetime.fromtimestamp(refresh_token['exp'], tz=TZ) - datetime.now(tz=TZ)
-    response = Response(
-        data={'access_token': str(refresh_token.access_token)},
-        status=status.HTTP_307_TEMPORARY_REDIRECT,
-        headers={'Location': CLIENT_REDIRECT_LOGIN}
-    )
-    response.set_cookie('state_token', 'deleted', max_age=0)
+    response = Response(data={
+        'access_token': str(refresh_token.access_token),
+        'username': user_openid.user.username,
+    }, status=200)
+    response.set_cookie('google_state', 'deleted', max_age=0)
     response.set_cookie(
         key='refresh_token',
         value=str(refresh_token),
@@ -284,112 +281,3 @@ def unlink_google(request) -> Response:
         return Response(data={'message': 'user not linked'}, status=400)
     UserOpenId.objects.unlink_google(user.user_openid)
     return Response(status=200)
-
-
-# Another version of Google OAuth2
-
-
-@api_view(['GET'])
-@permission_classes([])
-@throttle_classes([LowLoadThrottle])
-def get_google_url_v2(request) -> Response:
-    state = token_urlsafe()
-    url = (
-        f"{GOOGLE_AUTH}?"
-        f"client_id={quote(GOOGLE_CLIENT_ID)}&"
-        f"response_type={quote(RESPONSE_TYPE)}&"
-        f"scope={quote(GOOGLE_SCOPE)}&"
-        f"redirect_uri={quote('http://localhost:4200/google/callback')}&"
-        f"state={quote(state)}"
-    )
-    response = Response(data={'url': url}, status=200)
-    response.set_cookie(
-        key='state_token',
-        value=state,
-        max_age=7200,
-        secure=False,
-        httponly=False,
-        samesite=None,
-    )
-    return response
-
-
-@api_view(['POST'])
-@permission_classes([]) # should have the basic permission class
-@throttle_classes([])
-def google_link(request) -> Response:
-    request_body = GOOGLE_REQUEST_BODY.copy()
-    request_body['code'] = request.data.get('code')
-    logger.warning(f"google_link: body state: {request.data.get('state')}")
-    logger.warning(f"google_link: cookie state: {request.COOKIES.get('state_token')}")
-    # request_body['state'] = request.data.get('state')
-    request_body['redirect_uri'] = 'http://localhost:4200/google/callback'
-    # if testing is needed just comment this three lines
-    # and uncomment the try except down there
-    user: User = request.user
-    if user.linked and user.user_openid.is_google_linked():
-        return Response(data={'message': 'user already linked'}, status=400)
-
-    api_response = requests.post(GOOGLE_TOKEN, json=request_body)
-    if api_response.status_code != 200:
-        return Response(data={
-            'status': api_response.status_code,
-            'error': f"{api_response.json()}",
-        }, status=503)
-    payload = decode(api_response.json()['id_token'], options={"verify_signature": False})
-
-    # this try except is temporary and should be deleted
-    # its only purpose is TESTING
-    # try:
-    #     user = User.objects.get(pk='aldisti')
-    # except User.DoesNotExist:
-    #     user = User.objects.create_user('aldisti', 'alessandrodiste99@gmail.com', 'password')
-
-    if user.linked:
-        UserOpenId.objects.link_google(user.user_openid, google_email=payload['email'])
-    else:
-        try:
-            user_openid = UserOpenId.objects.create(user, google_email=payload['email'])
-        except ValidationError:
-            return Response(data={'message': 'user already linked'}, status=400)
-        User.objects.update_user_linked(user_openid.user, True)
-    return Response(status=200)
-
-
-@api_view(['POST'])
-@permission_classes([])
-@throttle_classes([])
-def google_login(request) -> Response:
-    request_body = GOOGLE_REQUEST_BODY.copy()
-    request_body['code'] = request.data.get('code')
-    logger.warning(f"google_login: body state: {request.data.get('state')}")
-    logger.warning(f"google_login: cookie state: {request.COOKIES.get('state_token')}")
-    # request_body['state'] = request.data.get('state')
-    request_body['redirect_uri'] = 'http://localhost:4200/google/callback'
-    api_response = requests.post(GOOGLE_TOKEN, json=request_body)
-    if api_response.status_code != 200:
-        return Response(data={
-            'status': api_response.status_code,
-            'error': f"{api_response.json()}",
-        }, status=503)
-    payload = decode(api_response.json()['id_token'], options={"verify_signature": False})
-    try:
-        user_openid = UserOpenId.objects.get(google_email=payload['email'])
-    except UserOpenId.DoesNotExist:
-        return Response(data={'user not found'}, status=404)
-    refresh_token = Tokens.get_token(user_openid.user)
-    exp = datetime.fromtimestamp(refresh_token['exp'], tz=TZ) - datetime.now(tz=TZ)
-    response = Response(data={
-        'access_token': str(refresh_token.access_token),
-        'username': user_openid.user.username,
-    }, status=200)
-    response.set_cookie('state_token', 'deleted', max_age=0)
-    response.set_cookie(
-        key='refresh_token',
-        value=str(refresh_token),
-        max_age=exp,
-        secure=False,
-        httponly=False,
-        samesite=None,
-    )
-    return response
