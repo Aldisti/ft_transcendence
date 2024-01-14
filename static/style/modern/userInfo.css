@@ -25,12 +25,10 @@ input
 .userInfoContainer
 {
     width: 100svw;
-    height: 94svh;
+    height: 92svh;
     position: relative;
     display: flex;
-    align-items: center;
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
-}
+    align-items: center;}
 
 .imageForm
 {
@@ -62,6 +60,22 @@ input
     justify-content: space-between !important;
     padding: 0 !important;
     padding: 5px;
+}
+
+@keyframes slide {
+    0%{
+        transform: rotate(0);
+    }
+    25%{
+        transform: rotate(40deg);
+    }
+    75%{
+        transform: rotate(-40deg);
+    }
+    100%{
+        transform: rotate(0);
+
+    }
 }
 .imgWrap{
     width: 15%;
@@ -181,7 +195,7 @@ input
 {
     overflow: scroll;
     width: 70%;
-    height: 94svh;
+    height: 92svh;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -482,6 +496,10 @@ input
     .retroBtn:hover
     {
         cursor: pointer;
+    }
+    .retroBtn:hover .imgWrap
+    {
+        animation: slide 1s;
     }
     .submitLine
     {

@@ -210,7 +210,7 @@ export default class extends Aview {
                 <p class="intraInfo">
                     ${intraAdvice}
                 </p>
-                <h5 id="intraLink" class=" retroBtn intra" style="background-color: var(--bs-danger);"><div class="imgWrap"><img src="/imgs/logo42.png"></div><span>${labelIntra}</span></h5>
+                <h5 id="intraLink" class=" retroBtn intra" style="background-color: var(${localStorage.getItem("intraLinked") != null ? "--bs-success" : "--bs-warning"});"><div class="imgWrap"><img src="/imgs/logo42.png"></div><span>${labelIntra}</span></h5>
             </div>
         </div>
 
@@ -219,7 +219,7 @@ export default class extends Aview {
                 <p class="googleInfo">
                     ${googleAdvice}
                 </p>
-                <h5 id="googleLink" class=" retroBtn google" style="background-color: var(--bs-danger);"><div class="imgWrap"><img src="/imgs/logoGoogle.png"></div><span>${labelGoogle}</span></h5>
+                <h5 id="googleLink" class=" retroBtn google" style="background-color: var(${localStorage.getItem("googleLinked") != null ? "--bs-success" : "--bs-warning"});"><div class="imgWrap"><img src="/imgs/logoGoogle.png"></div><span>${labelGoogle}</span></h5>
             </div>
         </div>
             <div class="formContainer">
@@ -320,7 +320,7 @@ export default class extends Aview {
                 <p class="intraInfo">
                     ${intraAdvice}
                 </p>
-                <h5 id="intraLink" class=" retroBtn intra" style="background-color: var(--bs-danger);"><div class="imgWrap"><img src="/imgs/logo42.png"></div><span>${labelIntra}</span></h5>
+                <h5 id="intraLink" class=" retroBtn intra" style="background-color: var(${localStorage.getItem("intraLinked") != null ? "--bs-success" : "--bs-warning"});"><div class="imgWrap"><img src="/imgs/logo42.png"></div><span>${labelIntra}</span></h5>
             </div>
         </div>
 
@@ -329,7 +329,7 @@ export default class extends Aview {
                 <p class="googleInfo">
                     ${googleAdvice}
                 </p>
-                <h5 id="googleLink" class=" retroBtn google" style="background-color: var(--bs-danger);"><div class="imgWrap"><img src="/imgs/logoGoogle.png"></div><span>${labelGoogle}</span></h5>
+                <h5 id="googleLink" class=" retroBtn google" style="background-color: var(${localStorage.getItem("googleLinked") != null ? "--bs-success" : "--bs-warning"});"><div class="imgWrap"><img src="/imgs/logoGoogle.png"></div><span>${labelGoogle}</span></h5>
             </div>
         </div>
 

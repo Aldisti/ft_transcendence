@@ -15,11 +15,11 @@
 .base
 {
     width: 100svw;
-    height: fit-content;
+    height: 92svh;
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
-    align-items: center;
+    align-items: flex-start;
 }
 
 .game

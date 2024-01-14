@@ -59,7 +59,8 @@
         color: white;
     }
     .base {
-        height: fit-content;
+        justify-content: flex-start;
+        overflow: scroll;
     }
     .text {
         width: 100%;

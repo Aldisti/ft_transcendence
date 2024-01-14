@@ -18,6 +18,12 @@
     display: none;
 }
 
+.navbar
+{
+    height: 8svh;
+}
+
+
 #clock
 {
     width: 5svh;
@@ -63,7 +69,7 @@ html, body
 #app
 {
     width: 100svw;
-    min-height: 94svh;
+    min-height: 92svh;
     height: fit-content;
 }
 
@@ -115,11 +121,165 @@ html, body
     margin: 0;
 }
 
+.chatHandle
+{
+    width: 15svh;
+    height: 8svh;
+    background-color: var(--bs-danger);
+    z-index: 10000000000;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+
+
+.chatContainer
+{
+    width: 80svw;
+    height: 92svh;
+    background-color: var(--bs-primary);
+    position: absolute;
+    z-index: 10000000000;
+    bottom: 0;
+    right: 0;
+    transform: translateX(100%);
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.chatSideList
+{
+    width: 32%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    overflow: scroll;
+    gap: 20px;
+    padding: 20px;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+}
+
+.userLine{
+    width: 100%;
+    height: 8%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--bs-success);
+    padding: 10px;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+
+}
+
+.userLine:hover
+{
+    cursor: pointer;
+    transform: translateX(4%);
+}
+
+.nameContainer{
+    width: 80%;
+    height: 100%;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+
+}
+
+.chatUserPict{
+    width: 10%;
+    height: 100%;
+    background-color: var(--bs-success);
+
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+}
+
+.chatUserPict img{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.chatFull
+{
+    width: 65%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+}
+
+.chatBox
+{
+    width: 100%;
+    height: 80%;
+    background-color: var(--bs-warning);
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+}
+
+.chatInput
+{
+    width: 100%;
+    height: 15%;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+}
+
+#chatInputElement{
+    width: 85%;
+    padding: 10px;
+    height: 100%;
+    resize: none;
+    border: none;
+    outline: none;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+
+}
+
+.submitChatInput{
+    width: 10%;
+    height: 100%;
+    border: none;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+}
+
+.open{
+    transform: translateX(0);
+}
+
+.dropdown-menu {
+    z-index: 100000000000 !important;
+}
+
 @media screen and (max-width: 900px) {
     .account
     {
         flex-direction: row-reverse;
         width: fit-content;
+    }
+
+    .navbar-collapse {
+        background-color: rgba(var(--bs-dark-rgb),var(--bs-bg-opacity)) !important; /* Set the background color of the collapsed menu */
+        height: fit-content;
+        z-index: 1000000;
+        padding: 20px;
+    }
+    
+    .navbar-brand, .navbar-nav .nav-link {
+        line-height: 60px; /* Center content vertically within the navbar */
     }
     
 }
