@@ -38,9 +38,10 @@ export default class extends Aview{
     setup(){
         if (localStorage.getItem("userWantLink") != null)
         {
-            console.log(localStorage.getItem("userWantLink"), "hey")
-            API.convertIntraTokenAccount(1).then(res=>{})
-            localStorage.removeItem("userWantLink");
+            API.convertIntraTokenAccount(1).then(res=>{
+                localStorage.removeItem("userWantLink");
+                window.location.reload();
+            })
         }
         animation();
         this.defineWallpaper("/imgs/backLogin.png", "https://c4.wallpaperflare.com/wallpaper/105/526/545/blur-gaussian-gradient-multicolor-wallpaper-preview.jpg")

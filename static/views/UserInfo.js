@@ -189,17 +189,32 @@ export default class extends Aview {
 
     get2faChoice(){
         let intraAdvice = "Click the button to link your intra profile"
-        if (localStorage.getItem("intraLinked") == "true")
-            intraAdvice = "your intra profile is linked click the button to unlink"
+        let labelIntra = "Link 42 Account"
+        let labelGoogle = "Link Google Account"
+
+        if (localStorage.getItem("intraLinked") != null)
+        {
+            intraAdvice = "your intra profile is linked click the button to unlink";
+            labelIntra = "Unlink 42 Account"
+        }
         return `
-            <div class="formContainer">
-                <div class="decisionBox">
-                    <p class="intraInfo">
-                        ${intraAdvice}
-                    </p>
-                    <h5 id="intraLink" class=" retroBtn intra" style="background-color: var(--bs-danger);">${this.language.update.linkToIntra}</h5>
-                </div>
+        <div class="formContainer">
+            <div class="decisionBox">
+                <p class="intraInfo">
+                    ${intraAdvice}
+                </p>
+                <h5 id="intraLink" class=" retroBtn intra" style="background-color: var(--bs-danger);"><img src="/imgs/logo42.png"><span>${labelIntra}</span></h5>
             </div>
+        </div>
+
+        <div class="formContainer">
+            <div class="decisionBox">
+                <p class="googleInfo">
+                    ${intraAdvice}
+                </p>
+                <h5 id="googleLink" class=" retroBtn google" style="background-color: var(--bs-danger);"><img src="/imgs/logoGoogle.png"><span>${labelGoogle}</span></h5>
+            </div>
+        </div>
             <div class="formContainer">
                 <div class="decisionBox">
                     <h4>Enable TFA</h4>
@@ -278,9 +293,14 @@ export default class extends Aview {
     }
     get2faRemoveForm(){
         let intraAdvice = "Click the button to link your intra profile"
+        let labelIntra = "Link 42 Account"
+        let labelGoogle = "Link Google Account"
 
-        if (localStorage.getItem("intraLinked") == "true")
-            intraAdvice = "your intra profile is linked click the button to unlink"
+        if (localStorage.getItem("intraLinked") != null)
+        {
+            intraAdvice = "your intra profile is linked click the button to unlink";
+            labelIntra = "Unlink 42 Account"
+        }
         return `
 
             <div class="formContainer">
@@ -288,7 +308,16 @@ export default class extends Aview {
                     <p class="intraInfo">
                         ${intraAdvice}
                     </p>
-                    <h5 id="intraLink" class=" retroBtn intra" style="background-color: var(--bs-danger);">${this.language.update.linkToIntra}</h5>
+                    <h5 id="intraLink" class=" retroBtn intra" style="background-color: var(--bs-danger);"><img src="/imgs/logo42.png"><span>${labelIntra}</span></h5>
+                </div>
+            </div>
+
+            <div class="formContainer">
+                <div class="decisionBox">
+                    <p class="googleInfo">
+                        ${intraAdvice}
+                    </p>
+                    <h5 id="googleLink" class=" retroBtn google" style="background-color: var(--bs-danger);"><img src="/imgs/logoGoogle.png"><span>${labelGoogle}</span></h5>
                 </div>
             </div>
 
@@ -394,13 +423,17 @@ export default class extends Aview {
             pages.triggerLogout(this);
         }
 
-        else if (e.classList.contains("intra")) {
+        else if (e.classList.contains("intra") || e.parentNode.classList.contains("intra")) {
             pages.triggerIntraLink(this);
+        }
+
+        else if (e.classList.contains("google") || e.parentNode.classList.contains("google")) {
+            pages.triggerGoogleLink(this);
         }
     }
 
     highlightFormMenu(formName) {
-
+        console.log(formName)
         //first all the button is turned the same
         document.querySelectorAll(".formLink").forEach(el => {
             el.style.backgroundColor = "#f0ead2";

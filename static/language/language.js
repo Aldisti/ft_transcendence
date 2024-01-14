@@ -55,6 +55,7 @@ let language = {
 			security: "Security",
 			logout: "Logout",
 			linkToIntra: "Link To Intra42",
+			linkToGoogle: "Link To Google",
 			intraLinkConfirm: "Do you really want to link your intra profile?",
 			intraUnlinkConfirm: "Do you really want to Unlink your intra profile?",
 			confirmLogout: "are you sure that you want to perform logout?",

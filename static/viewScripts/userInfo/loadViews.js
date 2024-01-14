@@ -63,6 +63,25 @@ function waitForAppBtn(dupThis){
     })
 }
 
+async function handleIntraLink(dupThis)
+{
+    //check if user has a 42 account linked setting localstorage
+    await API.getIntraStatus(1).then(res=>{
+        console.log(res)
+        if (res.intra == true)
+            localStorage.setItem("intraLinked", "true")
+        else
+        {
+            localStorage.removeItem("intraLinked")
+            //ask to the server the link to connect user's 42 account
+            API.getIntraUrl("link").then(res=>{
+                if (res != "")
+                    dupThis.intraUrl = res
+            })
+        }
+    })
+}
+
 export function loadPasswordPage(dupThis)
 {
     localStorage.setItem("selectedForm", "password")
@@ -87,10 +106,11 @@ export function loadPicturePage(dupThis)
         document.querySelector(".updateImgForm").src = res.user_info.picture;
     })
 }
-export function loadSecurityPage(dupThis)
+export async function loadSecurityPage(dupThis)
 {
-    localStorage.setItem("selectedForm", "twofa")
+    localStorage.setItem("selectedForm", "twofa");
 
+    await handleIntraLink(dupThis);
     //check if the user already have enabled TFA if so show the form to remove it
     API.isTfaACtive(1).then(res=>{
         if (localStorage.getItem("is_active") != undefined)
@@ -103,30 +123,10 @@ export function loadSecurityPage(dupThis)
             return ;
         }
     })
-
-    //check if user has a 42 account linked setting localstorage
-    API.getIntraStatus(1).then(res=>{
-        if (res.intra == true)
-        {
-            console.log(res)
-            document.querySelector("#intraLink").innerHTML = "Unlink Intra"
-            localStorage.setItem("intraLinked", "true");
-        }
-        else
-        {
-            localStorage.setItem("intraLinked", "false");
-
-            //ask to the server the link to connect user's 42 account
-            API.getIntraUrl("link").then(res=>{
-                if (res != "")
-                    dupThis.intraUrl = res
-            })
-        }
-    })
-
+    
     //if user not yet enabled TFA display menu to select activation method
     document.querySelector(".formMenu").innerHTML = dupThis.get2faChoice();
-
+    
     //setup listener for EMAIL TFA form if clicked the form is displayed
     document.querySelector(".emailChoice").addEventListener("click", waitForEmailBtn.bind(null, dupThis))
 
@@ -143,17 +143,22 @@ export function triggerLogout(dupThis)
 
 export function triggerIntraLink(dupThis)
 {
-    if (localStorage.getItem("intraLinked") == "false" && confirm(dupThis.language.update.intraLinkConfirm))
+    if (localStorage.getItem("intraLinked") == null && confirm(dupThis.language.update.intraLinkConfirm))
     {
-        window.location.href = dupThis.intraUrl;
         localStorage.setItem("userWantLink", "true");
+        window.location.href = dupThis.intraUrl;
     }
-        // API.convertIntraTokenAccount(1).then(res=>{})
-
-    else if (localStorage.getItem("intraLinked") == "true" && confirm(dupThis.language.update.intraUnlinkConfirm))
+    else if (localStorage.getItem("intraLinked") != null && confirm(dupThis.language.update.intraUnlinkConfirm))
     {
         console.log("unlink")
-        API.unlinkIntra(1);
+        API.unlinkIntra(1).then(()=>{
+            window.location.reload();
+        });
     }
+}
+
+export function triggerGoogleLink(dupThis)
+{
+    console.log("heyyyyy")
 }
 

@@ -27,10 +27,32 @@
 
 }
 
-.intraInfo
+.intraInfo, .googleInfo
 {
     width: 60%;
     margin: 0;
+}
+
+.intra, .google
+{
+    justify-content: space-between !important;
+    padding: 0 !important;
+}
+.intra img, .google img
+{
+    width: 20%;
+    height: 100%;
+    object-fit: contain;
+    background-color: white;
+    border-right: 2px solid black;
+}
+
+.intra span, .google span
+{
+    padding: 5px;
+    font-size: 10px;
+    flex-grow: 1;
+    text-align: center;
 }
 
 #intraLink
@@ -445,7 +467,7 @@
         align-items: center;
         background-color: white;
         border: 2px solid black;
-        padding: 20px;
+        padding: 10px;
         margin: 20px;
 
     }

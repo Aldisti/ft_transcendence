@@ -1,6 +1,15 @@
 import Router from "/router/mainRouterFunc.js"
 import * as URL from "/API/URL.js"
 
+function cleanLocalStorage()
+{
+    localStorage.removeItem("username");
+    localStorage.removeItem("token");
+    localStorage.removeItem("intraLinked");
+    localStorage.removeItem("isActive");
+    localStorage.removeItem("selectedForm");
+}
+
 function getCookie(name) {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
@@ -12,7 +21,8 @@ async function refreshAndRetry(retryFunc, ...args)
     await refreshToken().then(res=>{
         if (!res.ok)
         {
-            localStorage.removeItem("username");
+            alert("Something went wrong please login again...")
+            cleanLocalStorage();
             history.pushState(null, null, "/login");
             Router();
             window.location.reload();
@@ -93,9 +103,7 @@ export async function unlinkIntra(recursionProtection){
         credentials: "include",
     });
     if (res.ok) {
-        // history.pushState(null, null, "/home");
-        // Router();
-        // window.location.reload();
+        localStorage.removeItem("intraLinked");
         return (true);
     }
     if (res.status == 401 && recursionProtection) {
@@ -248,11 +256,7 @@ export async function logout(recursionProtection) {
     if (res.status == 401 && recursionProtection)
         return await refreshAndRetry(logout, 0);
     if (res.ok) {
-        localStorage.removeItem("username");
-        localStorage.removeItem("token");
-        localStorage.removeItem("intraLinked");
-        localStorage.removeItem("isActive");
-        localStorage.removeItem("selectedForm");
+        cleanLocalStorage()
         history.pushState(null, null, "/home");
         Router();
         window.location.reload();
@@ -523,7 +527,6 @@ export async function recoveryPassword(data, token)
 }
 
 export async function getIntraStatus(recursionProtection){
-    console.log("hey")
     const res = await fetch(URL.auth.INTRA_STATUS, {
         method: "GET",
         headers: {
