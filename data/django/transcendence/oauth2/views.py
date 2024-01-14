@@ -381,6 +381,7 @@ def google_login(request) -> Response:
     exp = datetime.fromtimestamp(refresh_token['exp'], tz=TZ) - datetime.now(tz=TZ)
     response = Response(data={
         'access_token': str(refresh_token.access_token),
+        'username': user_openid.user.username,
     }, status=200)
     response.set_cookie('state_token', 'deleted', max_age=0)
     response.set_cookie(
