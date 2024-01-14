@@ -139,6 +139,6 @@ class RefreshView(APIView):
             error_response.data({'message': "user isn't active"})
             return error_response
         token_exp = datetime.fromtimestamp(refresh_token['exp'], tz=TZ)
-        if user.logout > user.last_login and user.logout > token_exp:
+        if user.last_logout > user.last_login and user.last_logout > token_exp:
             return error_response
         return Response({'access_token': str(refresh_token.access_token)}, status=200)
