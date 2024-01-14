@@ -16,7 +16,7 @@ class UserManager(BaseUserManager):
         if not email:
             raise ValueError("Missing email")
         email = self.normalize_email(email)
-        kwargs.setdefault('last_logout', datetime.datetime.now())
+        kwargs.setdefault('last_logout', datetime.datetime.now(tz=settings.TZ))
         if kwargs.get("role") != Roles.ADMIN:
             kwargs.pop("role", "")
             kwargs["verified"] = False
