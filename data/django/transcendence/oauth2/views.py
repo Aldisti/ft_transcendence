@@ -81,7 +81,7 @@ class IntraCallback(APIView):
 @api_view(['GET'])
 @permission_classes([])
 @throttle_classes([LowLoadThrottle])
-def get_intra_url(self, request) -> Response:
+def get_intra_url(request) -> Response:
     req_type = request.query_params.get('type')
     if req_type not in ['login', 'link']:
         return Response(data={'message': 'invalid type'}, status=400)
