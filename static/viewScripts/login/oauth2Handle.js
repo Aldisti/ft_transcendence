@@ -14,3 +14,12 @@ export function intraLoginHandle(){
         })
     })
 }
+
+export function googleLoginHandle(){
+    document.querySelector(".googleBtn").addEventListener("click", ()=>{
+        API.getGoogleUrl().then((url) => {
+            localStorage.setItem("loginWithGoogle", "true");
+            window.location.href = url;
+        })
+    })
+}

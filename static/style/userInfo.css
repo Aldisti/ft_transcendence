@@ -37,14 +37,23 @@
 {
     justify-content: space-between !important;
     padding: 0 !important;
+    padding: 5px;
 }
-.intra img, .google img
-{
-    width: 20%;
+.imgWrap{
+    width: 15%;
     height: 100%;
-    object-fit: contain;
+    padding: 5px;
     background-color: white;
     border-right: 2px solid black;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+}
+.imgWrap img
+{
+    width: 100%;
+    height: 100%;
+    border-radius: 8px !important;
+    object-fit: contain;
+    background-color: white;
 }
 
 .intra span, .google span
@@ -259,9 +268,12 @@
     border: 2px solid black;
     width: 90%;
     height: fit-content;
+    color: white;
     padding: 10px;
     box-shadow: 15px 15px black;
     margin: 30px;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+
 }
 
 .profilePict
@@ -439,6 +451,8 @@
     	font-weight: bolder;
     	text-decoration: none;
     	font-size: 10px;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+
     }
     .retroBtn:hover
     {

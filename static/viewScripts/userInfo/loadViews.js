@@ -67,7 +67,7 @@ async function handleIntraLink(dupThis)
 {
     //check if user has a 42 account linked setting localstorage
     await API.getIntraStatus(1).then(res=>{
-        //console.log(res)
+        console.log(res)
         if (res.intra == true)
             localStorage.setItem("intraLinked", "true")
         else
@@ -77,6 +77,16 @@ async function handleIntraLink(dupThis)
             API.getIntraUrl("link").then(res=>{
                 if (res != "")
                     dupThis.intraUrl = res
+            })
+        }
+        if (res.google == true)
+            localStorage.setItem("googleLinked", "true")
+        else
+        {
+            localStorage.removeItem("googleLinked")
+            //ask to the server the link to connect user's 42 account
+            API.getGoogleUrl().then(res=>{
+                dupThis.googleUrl = res;
             })
         }
     })
@@ -159,6 +169,14 @@ export function triggerIntraLink(dupThis)
 
 export function triggerGoogleLink(dupThis)
 {
-    //console.log("heyyyyy")
+    if (localStorage.getItem("googleLinked") == null && confirm(dupThis.language.update.googleLinkConfirm))
+        window.location.href = dupThis.googleUrl;
+    else if (localStorage.getItem("googleLinked") != null && confirm(dupThis.language.update.googleUnlinkConfirm))
+    {
+        //console.log("unlink")
+        API.unlinkGoogle(1).then(()=>{
+            window.location.reload();
+        });
+    }
 }
 

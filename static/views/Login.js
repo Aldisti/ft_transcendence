@@ -97,6 +97,7 @@ export default class extends Aview {
     setup() {
         //do all the necessary stuff to manage the login with intra if user is already linked
         oauth2.intraLoginHandle();
+        oauth2.googleLoginHandle();
 
         document.querySelector(".recovery").addEventListener("click", this.showRecoveryPage)
 

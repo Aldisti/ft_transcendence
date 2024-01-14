@@ -6,6 +6,7 @@ function cleanLocalStorage()
     localStorage.removeItem("username");
     localStorage.removeItem("token");
     localStorage.removeItem("intraLinked");
+    localStorage.removeItem("googleLinked");
     localStorage.removeItem("isActive");
     localStorage.removeItem("selectedForm");
 }
@@ -23,9 +24,9 @@ async function refreshAndRetry(retryFunc, ...args)
         {
             alert("Something went wrong please login again...")
             cleanLocalStorage();
-            history.pushState(null, null, "/login");
-            Router();
-            window.location.reload();
+            // history.pushState(null, null, "/login");
+            // Router();
+            // window.location.reload();
         }
     })
     return await retryFunc(...args);
@@ -108,6 +109,24 @@ export async function unlinkIntra(recursionProtection){
     }
     if (res.status == 401 && recursionProtection) {
         return await refreshAndRetry(unlinkIntra, 0);
+    }
+    return (false);
+}
+
+export async function unlinkGoogle(recursionProtection){
+    const res = await fetch(URL.auth.UNLINK_GOOGLE_ACCOUNT, {
+        method: "DELETE",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        credentials: "include",
+    });
+    if (res.ok) {
+        localStorage.removeItem("googleLinked");
+        return (true);
+    }
+    if (res.status == 401 && recursionProtection) {
+        return await refreshAndRetry(unlinkGoogle, 0);
     }
     return (false);
 }
@@ -247,7 +266,7 @@ export async function updateEmail(data) {
 
 export async function logout(recursionProtection) {
     const res = await fetch(URL.userAction.LOGOUT, {
-        method: "GET",
+        method: "POST",
         credentials: "include",
         headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`
@@ -541,4 +560,59 @@ export async function getIntraStatus(recursionProtection){
     if (res.status == 401 && recursionProtection)
         return await refreshAndRetry(getIntraStatus, 0);
     return ({});
+}
+
+export async function getGoogleUrl() {
+    const res = await fetch(`${URL.auth.GET_GOOGLE_URL}`, {
+        credentials: "include",
+        method: "GET",
+    });
+    if (res.ok) {
+        let temp = await res.json();
+        return (temp.url);
+    }
+    return ("");
+}
+
+export async function linkGoogleAccount(recursionProtection, code, state) {
+    const res = await fetch(URL.auth.LINK_GOOGLE_ACCOUNT, {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+            code: code,
+            state: state
+        })
+    });
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(linkGoogleAccount, 0, code, state);
+    console.log(res);
+}
+
+export async function googleLogin(recursionProtection, code, state) {
+    const res = await fetch(URL.auth.LOGIN_WITH_GOOGLE, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+            code: code,
+            state: state
+        })
+    });
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(googleLogin, 0, code, state);
+    if (res.ok)
+    {
+        let jsonBody = await res.json();
+
+        localStorage.setItem("token", jsonBody.access_token)
+        localStorage.setItem("username", jsonBody.username)
+        // window.location.reload();
+    }
+    console.log(res);
 }

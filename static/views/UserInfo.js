@@ -33,6 +33,7 @@ export default class extends Aview {
     constructor() {
         super();
         this.intraUrl = "";
+        this.googleUrl = "";
         this.selectedForm = "info"
         this.errors = {};
     }
@@ -189,6 +190,7 @@ export default class extends Aview {
 
     get2faChoice(){
         let intraAdvice = "Click the button to link your intra profile"
+        let googleAdvice = "Click the button to link your google profile"
         let labelIntra = "Link 42 Account"
         let labelGoogle = "Link Google Account"
 
@@ -197,22 +199,27 @@ export default class extends Aview {
             intraAdvice = "your intra profile is linked click the button to unlink";
             labelIntra = "Unlink 42 Account"
         }
+        if (localStorage.getItem("googleLinked") != null)
+        {
+            googleAdvice = "your google profile is linked click the button to unlink";
+            labelGoogle = "Unlink google Account"
+        }
         return `
         <div class="formContainer">
             <div class="decisionBox">
                 <p class="intraInfo">
                     ${intraAdvice}
                 </p>
-                <h5 id="intraLink" class=" retroBtn intra" style="background-color: var(--bs-danger);"><img src="/imgs/logo42.png"><span>${labelIntra}</span></h5>
+                <h5 id="intraLink" class=" retroBtn intra" style="background-color: var(--bs-danger);"><div class="imgWrap"><img src="/imgs/logo42.png"></div><span>${labelIntra}</span></h5>
             </div>
         </div>
 
         <div class="formContainer">
             <div class="decisionBox">
                 <p class="googleInfo">
-                    ${intraAdvice}
+                    ${googleAdvice}
                 </p>
-                <h5 id="googleLink" class=" retroBtn google" style="background-color: var(--bs-danger);"><img src="/imgs/logoGoogle.png"><span>${labelGoogle}</span></h5>
+                <h5 id="googleLink" class=" retroBtn google" style="background-color: var(--bs-danger);"><div class="imgWrap"><img src="/imgs/logoGoogle.png"></div><span>${labelGoogle}</span></h5>
             </div>
         </div>
             <div class="formContainer">
@@ -293,6 +300,7 @@ export default class extends Aview {
     }
     get2faRemoveForm(){
         let intraAdvice = "Click the button to link your intra profile"
+        let googleAdvice = "Click the button to link your google profile"
         let labelIntra = "Link 42 Account"
         let labelGoogle = "Link Google Account"
 
@@ -301,25 +309,29 @@ export default class extends Aview {
             intraAdvice = "your intra profile is linked click the button to unlink";
             labelIntra = "Unlink 42 Account"
         }
+        if (localStorage.getItem("googleLinked") != null)
+        {
+            googleAdvice = "your google profile is linked click the button to unlink";
+            labelGoogle = "Unlink google Account"
+        }
         return `
-
-            <div class="formContainer">
-                <div class="decisionBox">
-                    <p class="intraInfo">
-                        ${intraAdvice}
-                    </p>
-                    <h5 id="intraLink" class=" retroBtn intra" style="background-color: var(--bs-danger);"><img src="/imgs/logo42.png"><span>${labelIntra}</span></h5>
-                </div>
+        <div class="formContainer">
+            <div class="decisionBox">
+                <p class="intraInfo">
+                    ${intraAdvice}
+                </p>
+                <h5 id="intraLink" class=" retroBtn intra" style="background-color: var(--bs-danger);"><div class="imgWrap"><img src="/imgs/logo42.png"></div><span>${labelIntra}</span></h5>
             </div>
+        </div>
 
-            <div class="formContainer">
-                <div class="decisionBox">
-                    <p class="googleInfo">
-                        ${intraAdvice}
-                    </p>
-                    <h5 id="googleLink" class=" retroBtn google" style="background-color: var(--bs-danger);"><img src="/imgs/logoGoogle.png"><span>${labelGoogle}</span></h5>
-                </div>
+        <div class="formContainer">
+            <div class="decisionBox">
+                <p class="googleInfo">
+                    ${googleAdvice}
+                </p>
+                <h5 id="googleLink" class=" retroBtn google" style="background-color: var(--bs-danger);"><div class="imgWrap"><img src="/imgs/logoGoogle.png"></div><span>${labelGoogle}</span></h5>
             </div>
+        </div>
 
             <div class="formContainer">
                 <div class="decisionBox">

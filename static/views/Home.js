@@ -36,6 +36,20 @@ export default class extends Aview{
     `
     }
     setup(){
+        const urlParams = new URLSearchParams(window.location.search);
+
+        if (localStorage.getItem("loginWithGoogle") == "true")
+        {
+            API.googleLogin(1, urlParams.get("code"), urlParams.get("state")).then(res=>{
+                localStorage.removeItem("loginWithGoogle");
+                window.goHome();
+            })
+            return ;
+        }
+        if (urlParams.get("code") != null)
+        {
+            API.linkGoogleAccount(1, urlParams.get("code"), urlParams.get("state"))
+        }
         if (localStorage.getItem("userWantLink") != null)
         {
             API.convertIntraTokenAccount(1).then(res=>{

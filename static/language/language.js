@@ -58,6 +58,8 @@ let language = {
 			linkToGoogle: "Link To Google",
 			intraLinkConfirm: "Do you really want to link your intra profile?",
 			intraUnlinkConfirm: "Do you really want to Unlink your intra profile?",
+			googleUnlinkConfirm: "Do you really want to Unlink your google profile?",
+			googleLinkConfirm: "Do you really want to link your google profile?",
 			confirmLogout: "are you sure that you want to perform logout?",
 			logoutError: "something went wrong try again...",
 			

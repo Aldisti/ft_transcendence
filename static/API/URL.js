@@ -24,6 +24,11 @@ export const auth = {
     SEND_RECOVERY_CODE: `http://${ip}:${port}/tokens/recovery/`,
     UPDATE_PASSWORD: `http://${ip}:${port}/tokens/password/`,
     INTRA_STATUS: `http://${ip}:${port}/oauth2/linked/`,
+
+    GET_GOOGLE_URL: `http://${ip}:${port}/oauth2/google/v2/url/`,
+    UNLINK_GOOGLE_ACCOUNT: `http://${ip}:${port}/oauth2/google/unlink/`,
+    LINK_GOOGLE_ACCOUNT: `http://${ip}:${port}/oauth2/google/v2/link/`,
+    LOGIN_WITH_GOOGLE: `http://${ip}:${port}/oauth2/google/v2/login/`,
 }
 
 export const userAction = {
