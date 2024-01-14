@@ -239,12 +239,17 @@ input
 {
 	width: 4svh;
 	height: 4svh;
-	border: 2px solid black;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
 	padding: 5px;
 	background-color: white;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.passwordSwitch:hover
+{
+    cursor: pointer;
 }
 
 .passwordSwitch img
