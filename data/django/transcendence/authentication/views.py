@@ -110,7 +110,7 @@ def logout(request) -> Response:
 
 
 class RefreshView(APIView):
-    throttle_scope = 'auth'
+    throttle_classes = [MediumLoadThrottle]
     permission_classes = []
 
     def get(self, request) -> Response:
