@@ -299,7 +299,7 @@ def get_google_url_v2(request) -> Response:
         f"client_id={quote(GOOGLE_CLIENT_ID)}&"
         f"response_type={quote(RESPONSE_TYPE)}&"
         f"scope={quote(GOOGLE_SCOPE)}&"
-        f"redirect_uri={quote('http://localhost:4200/google/callback')}"
+        f"redirect_uri={quote('http://localhost:4200/google/callback')}&"
         f"state={quote(state)}"
     )
     response = Response(data={'url': url}, status=200)
@@ -349,7 +349,7 @@ def google_link(request) -> Response:
         UserOpenId.objects.link_google(user.user_openid, google_email=payload['email'])
     else:
         UserOpenId.objects.create(user, google_email=payload['email'])
-    return Response(data=payload, status=200)
+    return Response(status=200)
 
 
 @api_view(['POST'])
