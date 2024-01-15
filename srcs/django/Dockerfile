@@ -15,6 +15,8 @@ RUN pip install httpie
 RUN pip install django-cors-headers
 # for two factor authentication
 RUN pip install pyotp
+# for asgi server and channels
+RUN pip install -U channels["daphne"]
 
 RUN mkdir /etc/develop
 

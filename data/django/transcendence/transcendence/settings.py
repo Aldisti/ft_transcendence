@@ -36,10 +36,22 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
+# Asgi application
+
+ASGI_APPLICATION = "transcendence.asgi.application"
+
+# Channels layer
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
 
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     # 'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -52,6 +64,8 @@ INSTALLED_APPS = [
     'email_manager',
     'oauth2',
     'two_factor_auth',
+    'channels',
+    'chat',
     # tmp for testing reasons
     'corsheaders',
 ]

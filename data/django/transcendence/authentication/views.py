@@ -76,7 +76,7 @@ class LoginView(APIView):
             value=str(refresh_token),
             max_age=exp.seconds,
             secure=False,
-            httponly=False,
+            httponly=True,
             samesite=None,
         )
         return response
