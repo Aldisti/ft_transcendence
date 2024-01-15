@@ -45,14 +45,8 @@ class IntraCallback(APIView):
         request_body['code'] = request.GET.get('code')
         request_body['state'] = request.GET.get('state')
         request_body['redirect_uri'] = INTRA_REDIRECT_URI + req_type + '/'
-
-        logger.warning(f"cookie state: {request.COOKIES.get('state_token', '')}")
-        logger.warning(f"body quote state: {request_body['state']}")
-        logger.warning(f"body unquote state: {unquote(request_body['state'])}")
-
-        # TODO: find a solution to check the state against csrf
-        # if unquote(request_body['state']) != request.COOKIES.get('state_token'):
-        #     return Response('invalid state, csrf suspected', status=status.HTTP_403_FORBIDDEN)
+        if request_body['state'] != request.COOKIES.get('state_token'):
+            return Response('csrf suspected', status=status.HTTP_403_FORBIDDEN)
         api_response = requests.post(INTRA_TOKEN, json=request_body)
         if api_response.status_code != 200:
             return Response(data={

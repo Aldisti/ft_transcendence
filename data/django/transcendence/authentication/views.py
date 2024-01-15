@@ -1,4 +1,6 @@
+
 from django.core.exceptions import ValidationError
+
 from rest_framework import status
 from rest_framework.decorators import APIView, api_view, permission_classes, throttle_classes
 from rest_framework.response import Response
@@ -20,7 +22,6 @@ from accounts.serializers import UserSerializer
 from transcendence.settings import TZ
 
 from datetime import datetime
-
 import logging
 
 
@@ -91,22 +92,6 @@ def logout(request) -> Response:
     response = Response(status=200)
     response.set_cookie(key="refresh_token", value="deleted", max_age=0)
     return response
-
-
-# @api_view(['GET', 'POST'])
-# @permission_classes([])
-# def test(request) -> Response:
-#     data = {
-#         'headers': request.headers,
-#         'cookies': request.COOKIES,
-#         'body': request.body,
-#         'path': request.path,
-#         'path_info': request.path_info,
-#         'path_split': request.path.strip('/').split('/'),
-#     }
-#     if request.path.strip('/').split('/')[-1] == 'v2':
-#         return Response(status=200)
-#     return Response(data=data, status=200)
 
 
 class RefreshView(APIView):
