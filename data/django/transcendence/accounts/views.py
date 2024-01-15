@@ -8,7 +8,7 @@ from rest_framework.exceptions import APIException
 from rest_framework import filters
 from accounts.paginations import MyPageNumberPagination
 from accounts.serializers import CompleteUserSerializer, UploadImageSerializer, UserInfoSerializer
-from accounts.models import User, UserInfo
+from accounts.models import User, UserInfo, FriendsList
 from accounts.validators import image_validator
 from email_manager.email_sender import send_verification_email
 from authentication.permissions import IsActualUser, IsAdmin, IsModerator, IsUser
@@ -36,9 +36,10 @@ def upload_profile_picture(request):
 @api_view(['GET', 'POST'])
 @permission_classes([])
 def registration(request):
-    #file = request.FILES['file']
-    #logger.warning(f"type(file): {type(file)}")
-    #image_validator(file)
+    #user_1 = User.objects.get(pk="gpanico1");
+    #user_2 = User.objects.get(pk="gpanico");
+    #friends = FriendsList.objects.create(user_1=user_1, user_2=user_2)
+    #logger.warning(f"friends: {friends}")
     #return Response(status=200)
     user_serializer = CompleteUserSerializer(data=request.data)
     user_serializer.is_valid(raise_exception=True)
