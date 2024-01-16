@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     'two_factor_auth',
     'channels',
     'chat',
+    'notifications',
     # tmp for testing reasons
     'corsheaders',
 ]

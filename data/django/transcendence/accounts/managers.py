@@ -7,6 +7,8 @@ from django.conf import settings
 from django.db.models import Q
 import logging
 
+from uuid import uuid4
+
 logger = logging.getLogger(__name__)
 
 
@@ -116,7 +118,6 @@ class UserInfoManager(models.Manager):
         user_info.first_name = kwargs.get("first_name", user_info.first_name)
         user_info.last_name = kwargs.get("last_name", user_info.last_name)
         user_info.birthdate = kwargs.get("birthdate", user_info.birthdate)
-        #user_info.picture = kwargs.get("picture", user_info.picture)
         user_info.full_clean()
         user_info.save()
         return user_info
@@ -165,3 +166,34 @@ class FriendsListManager(models.Manager):
     def get_all_friends(self, user):
         friends_list = super().get_queryset().filter(Q(user_1=user) | Q(user_2=user))
         return friends_list
+
+
+class FriendTokenManager(models.Manager):
+    def create(self, user):
+        token = uuid4()
+        friend_token = self.model(user=user, token=token)
+        friend_token.full_clean()
+        friend_token.save()
+        return friend_token
+
+
+class UserWebsocketsManager(models.Manager):
+    def create(self, user, **kwargs):
+        kwargs.setdefault("chat_channel", "")
+        kwargs.setdefault("ntf_channel", "")
+        user_websockets = self.model(user=user, **kwargs)
+        user_websockets.full_clean()
+        user_websockets.save()
+        return user_websockets
+
+    def update_chat_channel(self, user_websockets, chat_channel: str):
+        user_websockets.chat_channel = chat_channel
+        user_websockets.full_clean()
+        user_websockets.save()
+        return user_websockets
+
+    def update_ntf_channel(self, user_websockets, ntf_channel: str):
+        user_websockets.ntf_channel = ntf_channel
+        user_websockets.full_clean()
+        user_websockets.save()
+        return user_websockets

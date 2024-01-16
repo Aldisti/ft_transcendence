@@ -1,14 +1,13 @@
 from channels.generic.websocket import WebsocketConsumer
 from asgiref.sync import async_to_sync
-from accounts.models import User
-from chat.models import UserChat
+from accounts.models import User, UserWebsockets
 import logging
 import json
 
 logger = logging.getLogger(__name__)
 
 # name of global group
-GLOBAL = "global"
+G_GROUP = "global_group"
 
 # class used in order to define accepted type of messages
 class ValidTypes:
@@ -21,21 +20,22 @@ class ChatConsumer(WebsocketConsumer):
     def connect(self):
         user = self.scope["user"]
         logger.warning(f"{user.username} connected")
-        # update channel_name in database
+        # update chat_channel in database
         try:
-            UserChat.objects.update_channel_name(user.user_chat, self.channel_name)
-        except UserChat.DoesNotExist:
-            UserChat.objects.create(user, channel_name=self.channel_name)
+            UserWebsockets.objects.update_chat_channel(user.user_websockets, self.channel_name)
+        except UserWebsockets.DoesNotExist:
+            UserWebsockets.objects.create(user, chat_channel=self.channel_name)
         # add websocket to global group (this can be a dedicated websocket)
-        async_to_sync(self.channel_layer.group_add)(GLOBAL, self.channel_name)
+        async_to_sync(self.channel_layer.group_add)(G_GROUP, self.channel_name)
         self.accept()
 
     def disconnect(self, close_code):
-        # update channel_name in database
         user = self.scope["user"]
-        UserChat.objects.update_channel_name(user.user_chat, channel_name="")
         # remove websocket from global group
-        async_to_sync(self.channel_layer.group_add)(GLOBAL, self.channel_name)
+        async_to_sync(self.channel_layer.group_discard)(G_GROUP, self.channel_name)
+        # update chat_channel in database
+        user_websockets = UserWebsockets.objects.get(user=user)
+        UserWebsockets.objects.update_chat_channel(user_websockets, chat_channel="")
         logger.warning(f"[{close_code}]: {user.username} disconnected")
 
     def receive(self, text_data):
@@ -57,7 +57,7 @@ class ChatConsumer(WebsocketConsumer):
         elif message_type == ValidTypes.GLOBAL:
             new_data = {"type": message_type, "sender": user.username, "message": message_body}
             async_to_sync(self.channel_layer.group_send)(
-                GLOBAL,
+                G_GROUP,
                 {
                     "type": "send",
                     "text": json.dumps(new_data),

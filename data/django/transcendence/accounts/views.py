@@ -20,6 +20,22 @@ logger = logging.getLogger(__name__)
 
 # Create your views here.
 
+@api_view(['GET'])
+@permission_classes([IsUser])
+def make_friends_request(request):
+    user = request.user
+    r_username = request.query_params["username"]
+    try:
+        r_user = User.objects.get(pk=f_username)
+    except User.objects.DoesNotExist:
+        return Response({"message": "User not found"}, status=404)
+    if FriendsList.objects.are_friends(user, r_user):
+        return Response({"message": "You're already a friend of this user"}, status=400)
+    return Response(status=200)
+    
+
+
+
 @api_view(['POST'])
 @permission_classes([IsUser])
 def upload_profile_picture(request):
