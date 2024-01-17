@@ -8,6 +8,7 @@ from accounts.utils import Roles
 import datetime
 import logging
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -114,6 +115,13 @@ class UserManager(BaseUserManager):
         user.save()
         return user
 
+    def is_already_registered(self, username="", email="") -> True:
+        if self.get_queryset().filter(pk=username):
+            return True
+        if self.get_queryset().filter(email=email):
+            return True
+        return False
+
 
 class UserInfoManager(models.Manager):
     def create(self, user, **kwargs):
@@ -130,7 +138,6 @@ class UserInfoManager(models.Manager):
         user_info.first_name = kwargs.get("first_name", user_info.first_name)
         user_info.last_name = kwargs.get("last_name", user_info.last_name)
         user_info.birthdate = kwargs.get("birthdate", user_info.birthdate)
-        #user_info.picture = kwargs.get("picture", user_info.picture)
         user_info.full_clean()
         user_info.save()
         return user_info
@@ -143,3 +150,25 @@ class UserInfoManager(models.Manager):
         user_info.full_clean()
         user_info.save()
         return user_info
+
+
+class UserWebsocketsManager(models.Manager):
+    def create(self, user, **kwargs):
+        kwargs.setdefault("chat_channel", "")
+        kwargs.setdefault("ntf_channel", "")
+        user_websockets = self.model(user=user, **kwargs)
+        user_websockets.full_clean()
+        user_websockets.save()
+        return user_websockets
+
+    def update_chat_channel(self, user_websockets, chat_channel: str):
+        user_websockets.chat_channel = chat_channel
+        user_websockets.full_clean()
+        user_websockets.save()
+        return user_websockets
+
+    def update_ntf_channel(self, user_websockets, ntf_channel: str):
+        user_websockets.ntf_channel = ntf_channel
+        user_websockets.full_clean()
+        user_websockets.save()
+        return user_websockets
