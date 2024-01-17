@@ -134,4 +134,4 @@ def get_all_friends(request):
     user = request.user
     friends_list = FriendsList.objects.get_all_friends(user)
     friends = [{"username": friend.user.username, "picture": friend.user.picture, "status": True if friend.chat_channel != "" else False} for friend in friends_list]
-    return Reponse(friends, status=200)
+    return Response(friends, status=200)
