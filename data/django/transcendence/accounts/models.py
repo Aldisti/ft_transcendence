@@ -65,6 +65,12 @@ class User(AbstractBaseUser):
     class Meta:
         db_table = "user_auth"
 
+    def get_status(self):
+        return self.user_websockets.chat_channel != ""
+
+    def get_picture(self):
+        return self.user_info.picture
+
     def __str__(self):
         return f"username: {self.username}, email: {self.email}, role: {self.role}"
 

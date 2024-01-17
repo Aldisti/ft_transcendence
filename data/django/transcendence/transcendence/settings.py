@@ -35,6 +35,7 @@ SECRET_KEY = 'django-insecure-&1ve_f1=v5e9=n$(u=@dfjxh)a93!&#39qi9f2atxuqn%mafyj
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
+#DEFAULT_HOST = "http://localhost:8000"
 
 # Asgi application
 

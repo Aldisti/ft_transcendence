@@ -1,5 +1,6 @@
 from chat.models import Chat, ChatMember
 from friends.models import FriendsList
+from accounts.models import User
 
 
 def create_chat_entities(friends: FriendsList) -> FriendsList:
@@ -16,3 +17,12 @@ def delete_chat_entities(friends: FriendsList) -> FriendsList:
     user_2 = friends.user_2
     chat = Chat.objects.filter(chat_member__user_id=user_1.username).filter(chat_member__user_id=user_2.username)
     chat.delete()
+
+def get_users_from_friends(friends: list, common_friend: User) -> list:
+    users = []
+    for friend in friends:
+        user = friend.user_1
+        if user == common_friend:
+            user = friend.user_2
+        users.append(user)
+    return users

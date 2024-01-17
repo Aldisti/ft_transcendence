@@ -5,8 +5,14 @@ from authentication.permissions import IsUser
 from accounts.models import User
 from friends.models import FriendsList
 from notifications.models import Notification
-from friends.utils import create_chat_entities, delete_chat_entities
+from friends.utils import (create_chat_entities,
+                           delete_chat_entities, 
+                           get_users_from_friends)
+from friends.serializers import FriendsSerializer
 
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Create your views here.
 
@@ -127,11 +133,11 @@ def are_friends(request):
         return Response({"is_friend": False}, status=200)
     return Response({"is_friend": True}, status=200)
 
-# TODO: refactor the next endpoint
 @api_view(['GET'])
 @permission_classes([IsUser])
 def get_all_friends(request):
     user = request.user
     friends_list = FriendsList.objects.get_all_friends(user)
-    friends = [{"username": friend.username, "picture": friend.picture, "status": True if friend.user_websocket.chat_channel != "" else False} for friend in friends_list]
-    return Response(friends, status=200)
+    users = get_users_from_friends(friends=friends_list, common_friend=user)
+    friends_serializer = FriendsSerializer(users, many=True, context={"request": request})
+    return Response(friends_serializer.data, status=200)
