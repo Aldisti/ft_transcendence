@@ -181,3 +181,6 @@ class UserGame(models.Model):
     )
 
     objects = UserGameManager()
+
+    def __str__(self) -> str:
+        return f"username: {self.user.username}, display_name: {self.display_name}"
