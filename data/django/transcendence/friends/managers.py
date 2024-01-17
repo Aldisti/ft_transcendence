@@ -76,5 +76,5 @@ class FriendsListManager(models.Manager):
 
     def get_all_friends(self, user):
         friends_list = super().get_queryset().filter((Q(user_1=user) | Q(user_2=user)) & Q(token=""))
-        friends = [friend.user_1 if user == user_1 else friend.user_2 for friend in friends_list]
+        friends = [friend.user_1 if user == friend.user_1 else friend.user_2 for friend in friends_list]
         return friends
