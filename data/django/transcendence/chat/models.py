@@ -1,6 +1,6 @@
 from django.db import models
 from django.core import validators
-from chat.managers import UserChatManager
+from chat.managers import ChatManager, ChatMemberManager
 from accounts.models import User, UserWebsockets
 
 import logging
@@ -23,6 +23,8 @@ class Chat(models.Model):
         unique=True,
     )
 
+    objects = ChatManager()
+
 
 class ChatMember(models.Model):
     class Meta:
@@ -32,7 +34,7 @@ class ChatMember(models.Model):
     chat = models.ForeignKey(
         Chat,
         on_delete=models.CASCADE,
-        related_name="+",
+        related_name="chat_member",
         db_column="chat_id",
     )
 
@@ -42,6 +44,8 @@ class ChatMember(models.Model):
         related_name="+",
         db_column="username"
     )
+
+    objects = ChatMemberManager()
 
 
 class Message(models.Model):

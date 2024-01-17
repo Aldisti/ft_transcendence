@@ -24,6 +24,7 @@ urlpatterns = [
     path('oauth2/', include('oauth2.urls')),
     path('2fa/', include('two_factor_auth.urls')),
     path('tokens/', include('email_manager.urls')),
+    path('friends/', include('friends.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

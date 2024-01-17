@@ -4,16 +4,16 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class UserChatManager(models.Manager):
-    def create(self, user, **kwargs):
-        kwargs.setdefault("channel_name", "")
-        user_chat = self.model(user=user, **kwargs)
-        user_chat.full_clean()
-        user_chat.save()
-        return user_chat
+class ChatManager(models.Manager):
+    def create(self, chat_name):
+        chat = self.model(chat_name=chat_name)
+        chat.full_clean()
+        chat.save()
+        return chat
 
-    def update_channel_name(self, user_chat, channel_name: str):
-        user_chat.channel_name = channel_name
-        user_chat.full_clean()
-        user_chat.save()
-        return user_chat
+class ChatMemberManager(models.Manager):
+    def create(self, chat, user):
+        chat_member = self.model(chat=chat, user=user)
+        chat_member.full_clean()
+        chat_member.save()
+        return chat_member

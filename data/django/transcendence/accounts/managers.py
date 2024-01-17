@@ -4,10 +4,8 @@ from accounts.utils import Roles
 from django.core.files.storage import default_storage
 from django.core.files.base import File
 from django.conf import settings
-from django.db.models import Q
 import logging
 
-from uuid import uuid4
 
 logger = logging.getLogger(__name__)
 
@@ -102,6 +100,13 @@ class UserManager(BaseUserManager):
         user.save()
         return user
 
+    def is_already_registered(self, username="", email="") -> True:
+        if self.get_queryset().filter(pk=username):
+            return True
+        if self.get_queryset().filter(email=email):
+            return True
+        return False
+
 
 class UserInfoManager(models.Manager):
     def create(self, user, **kwargs):
@@ -130,51 +135,6 @@ class UserInfoManager(models.Manager):
         user_info.full_clean()
         user_info.save()
         return user_info
-
-
-def swap_users(function):
-    def wrapper(self, user_1, user_2):
-        if user_1.username > user_2.username:
-            user_1, user_2 = user_2, user_1
-        return function(self, user_1, user_2)
-    
-    return wrapper
-
-
-class FriendsListManager(models.Manager):
-    @swap_users
-    def create(self, user_1, user_2):
-        friends_list = self.model(user_1=user_1, user_2=user_2)
-        friends_list.full_clean()
-        friends_list.save()
-        return friends_list
-
-    @swap_users
-    def are_friends(self, user_1, user_2) -> bool:
-        if super().get_queryset().filter(user_1=user_1, user_2=user_2):
-            return True
-        return False
-
-    @swap_users
-    def delete(self, user_1, user_2):
-        try:
-            friends = super().get_queryset().filter(user_1=user_1, user_2=user_2)[0]
-        except IndexError:
-            raise ValueError("This relationship does not exist")
-        friends.delete()
-
-    def get_all_friends(self, user):
-        friends_list = super().get_queryset().filter(Q(user_1=user) | Q(user_2=user))
-        return friends_list
-
-
-class FriendTokenManager(models.Manager):
-    def create(self, user):
-        token = uuid4()
-        friend_token = self.model(user=user, token=token)
-        friend_token.full_clean()
-        friend_token.save()
-        return friend_token
 
 
 class UserWebsocketsManager(models.Manager):

@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     'channels',
     'chat',
     'notifications',
+    'friends',
     # tmp for testing reasons
     'corsheaders',
 ]
@@ -112,7 +113,7 @@ REST_FRAMEWORK = {
 # https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=1),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 
     "ALGORITHM": "HS256",

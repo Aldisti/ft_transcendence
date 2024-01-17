@@ -2,7 +2,7 @@ from django.core.validators import RegexValidator, EmailValidator
 
 from rest_framework import serializers
 
-from accounts.models import User, UserInfo
+from accounts.models import User, UserInfo, UserWebsockets
 from two_factor_auth.models import UserTFA
 from accounts.validators import image_validator
 from django.core.validators import RegexValidator, EmailValidator
@@ -17,7 +17,6 @@ class UploadImageSerializer(serializers.Serializer):
 
     def save_image(self, user, validated_data):
         image = validated_data["image"]
-        #user_info = UserInfo.objects.get(pk=user)
         user_info = user.user_info
         user_info = UserInfo.objects.update_picture(user_info, picture=image)
         return user_info
@@ -79,6 +78,7 @@ class CompleteUserSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(**validated_data)
         user.user_info = UserInfo.objects.create(user, **user_info)
         user.user_tfa = UserTFA.objects.create(user=user)
+        user.user_websockets = UserWebsockets.objects.create(user=user)
         return user
 
     def update_email(self, validated_data):
@@ -118,5 +118,3 @@ class CompleteUserSerializer(serializers.ModelSerializer):
         user = User.objects.get(pk=username)
         updated_user = User.objects.update_user_active(user, banned)
         return updated_user
-
-#    def update_image(self, validated_data):

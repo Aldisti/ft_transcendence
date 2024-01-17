@@ -1,3 +1,8 @@
+# Global group notification
+G_N_GROUP = "global_notification"
+
+
+# Notification types
 class NotificationTypes:
     FRIEND_REQ = "friend_req"
     MATCH_REQ = "match_req"
@@ -11,5 +16,3 @@ class NotificationTypes:
         (ALLERT, "allert"),
         (BAN, "ban"),
     ]
-
-

@@ -8,7 +8,8 @@ from rest_framework.exceptions import APIException
 from rest_framework import filters
 from accounts.paginations import MyPageNumberPagination
 from accounts.serializers import CompleteUserSerializer, UploadImageSerializer, UserInfoSerializer
-from accounts.models import User, UserInfo, FriendsList
+from accounts.models import User, UserInfo
+from friends.models import FriendsList
 from accounts.validators import image_validator
 from email_manager.email_sender import send_verification_email
 from authentication.permissions import IsActualUser, IsAdmin, IsModerator, IsUser
@@ -16,24 +17,6 @@ from authentication.permissions import IsActualUser, IsAdmin, IsModerator, IsUse
 import logging
 
 logger = logging.getLogger(__name__)
-
-
-# Create your views here.
-
-@api_view(['GET'])
-@permission_classes([IsUser])
-def make_friends_request(request):
-    user = request.user
-    r_username = request.query_params["username"]
-    try:
-        r_user = User.objects.get(pk=f_username)
-    except User.objects.DoesNotExist:
-        return Response({"message": "User not found"}, status=404)
-    if FriendsList.objects.are_friends(user, r_user):
-        return Response({"message": "You're already a friend of this user"}, status=400)
-    return Response(status=200)
-    
-
 
 
 @api_view(['POST'])
@@ -49,14 +32,9 @@ def upload_profile_picture(request):
     return Response({"message": "Profile picture uploaded"}, status=200)
 
 
-@api_view(['GET', 'POST'])
+@api_view(['POST'])
 @permission_classes([])
 def registration(request):
-    #user_1 = User.objects.get(pk="gpanico1");
-    #user_2 = User.objects.get(pk="gpanico");
-    #friends = FriendsList.objects.create(user_1=user_1, user_2=user_2)
-    #logger.warning(f"friends: {friends}")
-    #return Response(status=200)
     user_serializer = CompleteUserSerializer(data=request.data)
     user_serializer.is_valid(raise_exception=True)
     user = user_serializer.create(user_serializer.validated_data)
@@ -144,25 +122,15 @@ class ListUser(ListAPIView):
     ordering = ["username"]
 
 
-# TODO: refactor the sequent endopoint
-
 @api_view(['GET'])
 @permission_classes([])
 def check_user(request):
-    logger.warning(f"request.query_params: {request.query_params}")
+    """
+    http://<url>/?<username|email>=<username|mail>
+    """
     if len(request.query_params) != 1:
         return Response({"message": "bad url formatting"}, status=400)
     username = request.query_params.get("username", "")
     email = request.query_params.get("email", "")
-    found = True
-    if username != "":
-        try:
-            User.objects.get(pk=username)
-        except User.DoesNotExist:
-            found = False
-    elif email != "":
-        try:
-            User.objects.get(email=email)
-        except User.DoesNotExist:
-            found = False
+    found = User.objects.is_already_registered(username, email)
     return Response({"found": found}, status=200)

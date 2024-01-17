@@ -1,5 +1,5 @@
 from django.db import models
-from accounts.models import UserWebsockets
+from accounts.models import User, UserWebsockets
 from notifications.managers import NotificationManager
 from notifications.utils import NotificationTypes as NtfTypes
 
@@ -38,7 +38,7 @@ class Notification(models.Model):
     objects=NotificationManager()
 
     def __str__(self):
-        return f"username: (self.user.username), notification: {self.body}, sent_time: {self.sent_time}"
+        return f"username: {self.user.username}, notification: {self.body}, sent_time: {self.sent_time}"
 
     def to_json(self) -> dict:
         data = {

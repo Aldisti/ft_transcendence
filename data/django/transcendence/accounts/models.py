@@ -6,7 +6,7 @@ from django.dispatch import receiver
 
 from accounts.utils import Roles
 from accounts.validators import validate_birthdate
-from accounts.managers import UserManager, UserInfoManager, FriendsListManager, FriendTokenManager, UserWebsocketsManager
+from accounts.managers import UserManager, UserInfoManager, UserWebsocketsManager
 
 import logging
 
@@ -125,61 +125,6 @@ class UserInfo(models.Model):
 
     def __str__(self):
         return f"user: {self.user.username}, first_name: {self.first_name}, last_name: {self.last_name}, joined:{self.date_joined}"
-
-
-class FriendsList(models.Model):
-    class Meta:
-        db_table = "friends_list"
-        constraints = [
-            models.UniqueConstraint(
-                fields=["user_1", "user_2"],
-                name="friend_constraint",
-            )
-        ]
-
-
-    user_1 = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name="+",
-        db_column="user_1",
-    )
-
-    user_2 = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name="+",
-        db_column="user_2",
-    )
-
-    objects = FriendsListManager()
-
-    def __str__(self):
-        return f"{self.user_1} and {self.user_2} are friends"
-
-
-class FriendToken(models.Model):
-    class Meta:
-        db_table = "friend_tokens"
-
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        db_column="username",
-        related_name="+"
-    )
-
-    token = models.CharField(
-        db_column="token",
-        max_length=36,
-        unique=True,
-        validators=[validators.MinLengthValidator(36, message="Too short token")]
-    )
-
-    objects = FriendTokenManager()
-
-    def __str__(self):
-        return f"{self.user.username} has token: {self.token}"
 
 
 class UserWebsockets(models.Model):

@@ -2,14 +2,11 @@ from channels.generic.websocket import WebsocketConsumer
 from asgiref.sync import async_to_sync
 from accounts.models import UserWebsockets
 from notifications.models import Notification
+from notifications.utils import G_N_GROUP
 import json
 import logging
 
-
 logger = logging.getLogger(__name__)
-
-# Global group notification
-G_N_GROUP = "global_notification"
 
 
 class NotificationConsumer(WebsocketConsumer):
@@ -40,3 +37,6 @@ class NotificationConsumer(WebsocketConsumer):
         user_websockets = UserWebsockets.objects.get(user=user)
         UserWebsockets.objects.update_ntf_channel(user_websockets, ntf_channel="")
         logger.warning(f"[{close_code}]: {user.username} disconnected from ntf sock")
+
+    def notification_message(self, event):
+        self.send(text_data=event["text"])
