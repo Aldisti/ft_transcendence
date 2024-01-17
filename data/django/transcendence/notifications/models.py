@@ -44,6 +44,6 @@ class Notification(models.Model):
         data = {
             "type": self.ntf_type,
             "body": self.body,
-            "sent_time": self.sent_time.strftime("%y/%m/%d, %H:%M:%S"),
+            "sent_time": self.sent_time.strftime("%Y/%m/%d:%H.%M.%S"),
         }
         return data

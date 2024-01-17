@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PROJECT="./data/django/transcendence/"
-APPS=('accounts' 'authentication' 'email_manager' 'oauth2' 'two_factor_auth' 'chat' 'notifications')
+APPS=('accounts' 'authentication' 'email_manager' 'oauth2' 'two_factor_auth' 'chat' 'notifications' 'friends')
 DEL_PATH="migrations/0"
 
 for i in ${APPS[@]}; do

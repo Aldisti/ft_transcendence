@@ -44,6 +44,11 @@ class FriendsList(models.Model):
         validators=[validators.MinLengthValidator(36, message="Too short token")]
     )
 
+    creation_time = models.DateTimeField(
+        db_column="creation_time",
+        auto_now_add=True,
+    )
+
     objects = FriendsListManager()
 
     def __str__(self):

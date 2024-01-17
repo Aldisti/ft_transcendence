@@ -25,14 +25,14 @@ class FriendsListManager(models.Manager):
     @swap_users
     def are_friends(self, user_1, user_2) -> bool:
         friends = super().get_queryset().filter(user_1=user_1, user_2=user_2)
-        if friends and friends.token == "":
+        if friends and friends[0].token == "":
             return True
         return False
 
     @swap_users
     def will_be_friends(self, user_1, user_2) -> bool:
         friends = super().get_queryset().filter(user_1=user_1, user_2=user_2)
-        if friends and friends.token != "":
+        if friends and friends[0].token != "":
             return True
         return False
 

@@ -5,11 +5,12 @@ from authentication.permissions import IsUser
 from accounts.models import User
 from friends.models import FriendsList
 from notifications.models import Notification
-from friends.utils import create_chat_entities
+from friends.utils import create_chat_entities, delete_chat_entities
 
 
 # Create your views here.
 
+# TODO: the following two endpoints have the same incipit, try to reduce code
 
 @api_view(['GET'])
 @permission_classes([IsUser])
@@ -48,6 +49,35 @@ def make_friends_request(request):
 
 @api_view(['GET'])
 @permission_classes([IsUser])
+def delete_friends(request):
+    user = request.user
+    r_username = request.query_params["username"]
+    # check that requested username
+    if r_username == user.username:
+        return Response({"message": "You're already friend with yourself"}, status=400)
+    # take the ex_friend user from database
+    try:
+        ex_friend = User.objects.get(pk=r_username)
+    except User.DoesNotExist:
+        return Response({"message": "User not found"}, status=404)
+    # retrieve friends from database
+    friends = FriendsList.objects.get_friends(user, ex_friend)
+    if friends is None:
+        return Response({"message": "You're already not friend of this user"}, status=400)
+    if friends.token != "":
+        friends.delete()
+        return Response({"message": "Friends request deleted"}, status=200)
+    # delete chat entities
+    delete_chat_entities(friends)
+    friends.delete()
+    # send notification to the ex friend
+    Notification.objects.send_info_ntf(ex_friend, f"{user.username} isn't no more your friend")
+    return Response({"message": f"You and {ex_friend.username} are no more friends"}, status=200)
+
+# TODO: the following endpoints have the same incipit, try to reduce code
+
+@api_view(['GET'])
+@permission_classes([IsUser])
 def accept_friends_request(request):
     user = request.user
     token = request.query_params.get("token", "")
@@ -81,7 +111,3 @@ def reject_friends_request(request):
     # send notification back to the requester
     Notification.objects.send_info_ntf(requester, f"{user.username} rejected your friends request")
     return Response({"message": "Request rejected"}, status=200)
-
-#@api_view(['GET'])
-#@permission_classes([IsUser])
-#def delete_friends(request):

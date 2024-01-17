@@ -1,6 +1,7 @@
 from django.db import models
 from django.core import validators
-from chat.managers import ChatManager, ChatMemberManager
+from chat.managers import ChatManager, ChatMemberManager, MessageManager
+from chat.utils import MessageTypes
 from accounts.models import User, UserWebsockets
 
 import logging
@@ -11,6 +12,8 @@ logger = logging.getLogger(__name__)
 
 # Create your models here.
 
+# TODO: The chat system can be improved implementing a status of the chat 
+# that will be checked istead of deleting the entire chat
 
 class Chat(models.Model):
     class Meta:
@@ -76,5 +79,16 @@ class Message(models.Model):
         auto_now_add=True,
     )
 
+    objects = MessageManager()
+
+    def to_json(self):
+        json = {
+            "type": MessageTypes.PRIVATE,
+            "body": self.body,
+            "sender": self.from_user.user_id,
+            "sent_time": self.sent_time.strftime("%Y/%m/%d:%H.%M.%S"),
+        }
+        return json
+
     def __str__(self):
-        return f"from_user: {self.from_user.username}, body: {self.body}, sent_time: {self.sent_time}"
+        return f"from_user: {self.from_user.user_id}, body: {self.body}, sent_time: {self.sent_time}"

@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 import logging
 
 logger = logging.getLogger(__name__)
@@ -17,3 +18,17 @@ class ChatMemberManager(models.Manager):
         chat_member.full_clean()
         chat_member.save()
         return chat_member
+
+class MessageManager(models.Manager):
+    def create(self, chat, from_user, body):
+        message = self.model(chat=chat, from_user=from_user, body=body)
+        message.full_clean()
+        message.save()
+        self.limit_messages(chat)
+        return message
+
+    # limits messages per chat
+    def limit_messages(self, chat):
+        messages = self.get_queryset().filter(chat=chat).order_by("sent_time")
+        if len(messages) > settings.MAX_MESSAGES:
+            messages[0].delete()

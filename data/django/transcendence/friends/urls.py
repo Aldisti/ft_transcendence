@@ -7,6 +7,7 @@ urlpatterns = [
         path('send/', views.make_friends_request, name="api-make-friends-request"),
         path('accept/', views.accept_friends_request, name="api-accept-friends-request"),
         path('reject/', views.reject_friends_request, name="api-reject-friends-request"),
+        path('delete/', views.delete_friends, name="api-delete-friends-request"),
     ])),
 ]
 

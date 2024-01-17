@@ -1,20 +1,14 @@
 from channels.generic.websocket import WebsocketConsumer
 from asgiref.sync import async_to_sync
 from accounts.models import User, UserWebsockets
+from chat.models import Message, Chat
+from chat.utils import G_GROUP, MessageTypes
+from friends.models import FriendsList
 import logging
 import json
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
-
-# name of global group
-G_GROUP = "global_group"
-
-# class used in order to define accepted type of messages
-class ValidTypes:
-    GLOBAL = "global"
-    PRIVATE = "private"
-    TYPE_CHOICES = [GLOBAL, PRIVATE]
-
 
 class ChatConsumer(WebsocketConsumer):
     def connect(self):
@@ -38,6 +32,9 @@ class ChatConsumer(WebsocketConsumer):
         UserWebsockets.objects.update_chat_channel(user_websockets, chat_channel="")
         logger.warning(f"[{close_code}]: {user.username} disconnected")
 
+    def chat_message(self, event):
+        self.send(text_data=event["text"])
+
     def receive(self, text_data):
         user = self.scope["user"]
         data = json.loads(text_data)
@@ -46,7 +43,7 @@ class ChatConsumer(WebsocketConsumer):
         message_body = data.get("body", "")
         logger.warning(f"data: {data}")
 
-        if message_type not in ValidTypes.TYPE_CHOICES:
+        if message_type not in MessageTypes.TYPE_CHOICES_LIST:
             new_data = {"type": "error", "message": "Invalid values for type"}
             self.send(text_data=json.dumps(new_data))
             return
@@ -54,8 +51,13 @@ class ChatConsumer(WebsocketConsumer):
             new_data = {"type": "error", "message": "Invalid values for body"}
             self.send(text_data=json.dumps(new_data))
             return
-        elif message_type == ValidTypes.GLOBAL:
-            new_data = {"type": message_type, "sender": user.username, "message": message_body}
+        elif message_type == MessageTypes.GLOBAL:
+            # TODO: sent_time is missing
+            new_data = {
+                "type": message_type,
+                "sender": user.username,
+                "message": message_body,
+                "sent_time": datetime.now().strftime("%Y/%m/%d:%H.%M.%S")}
             async_to_sync(self.channel_layer.group_send)(
                 G_GROUP,
                 {
@@ -68,6 +70,7 @@ class ChatConsumer(WebsocketConsumer):
         # check if receiver exists in database
         try:
             receiver = User.objects.get(pk=message_receiver)
+            logger.warning(f"receiver: {receiver}")
         except User.DoesNotExist:
             new_data = {"type": "error", "message": "Invalid values for receiver"}
             self.send(text_data=json.dumps(new_data))
@@ -75,9 +78,23 @@ class ChatConsumer(WebsocketConsumer):
         if receiver.username == user.username:
             new_data = {"type": "error", "message": "Invalid values for receiver"}
             self.send(text_data=json.dumps(new_data))
-        # TODO: check if actual user is a friend of receiver and get the chat_id
+        # TODO: check if actual user is a friend of receiver
+        if not FriendsList.objects.are_friends(user, receiver):
+            new_data = {"type": "error", "message": "Invalid values for receiver, he isn't your friend"}
+            self.send(text_data=json.dumps(new_data))
+        # TODO: get the chat_id
+        chat = Chat.objects.filter(chat_member__user_id=user.username).filter(chat_member__user_id=receiver.username)[0]
         # TODO: store the message in the database
+        message = Message.objects.create(chat=chat, from_user=user.user_websockets, body=message_body)
+        # TODO: check if the receicer is online
+        rec_channel = receiver.user_websockets.chat_channel
+        if rec_channel != "":
         # TODO: send the message back to the reciever if he is online
-
+            json_data = message.to_json()
+            logger.warning(f"data: {json_data}")
+            async_to_sync(self.channel_layer.send)(
+                rec_channel,
+                {"type": "chat.message", "text": json.dumps(json_data)}
+            )
         # temp
-        self.send(text_data=json.dumps({"message": message_body}))
+        #self.send(text_data=json.dumps({"message": message_body}))
