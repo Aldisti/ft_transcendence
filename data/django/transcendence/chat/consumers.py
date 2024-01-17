@@ -7,6 +7,7 @@ from friends.models import FriendsList
 import logging
 import json
 from datetime import datetime
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -48,6 +49,10 @@ class ChatConsumer(WebsocketConsumer):
             self.send(text_data=json.dumps(new_data))
             return
         elif message_body == "":
+            new_data = {"type": "error", "message": "Invalid values for body"}
+            self.send(text_data=json.dumps(new_data))
+            return
+        elif len(message_body) > settings.MAX_MESSAGE_LENGTH:
             new_data = {"type": "error", "message": "Invalid values for body"}
             self.send(text_data=json.dumps(new_data))
             return

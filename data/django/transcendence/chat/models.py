@@ -1,5 +1,6 @@
 from django.db import models
 from django.core import validators
+from django.conf import settings
 from chat.managers import ChatManager, ChatMemberManager, MessageManager
 from chat.utils import MessageTypes
 from accounts.models import User, UserWebsockets
@@ -71,7 +72,7 @@ class Message(models.Model):
 
     body = models.CharField(
         db_column="body",
-        max_length=512,
+        max_length=settings.MAX_MESSAGE_LENGTH,
     )
 
     sent_time = models.DateTimeField(

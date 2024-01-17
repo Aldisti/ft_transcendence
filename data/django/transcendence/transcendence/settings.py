@@ -254,4 +254,6 @@ ALLOWED_TYPES = ["jpeg", "png", "gif"]
 FILE_CATEGORY = "image"
 
 # messages
+
 MAX_MESSAGES = 500
+MAX_MESSAGE_LENGTH = 512
