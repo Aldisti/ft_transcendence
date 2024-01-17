@@ -4,6 +4,7 @@ COMPOSE_TMP="./srcs/docker-compose.yml.tmp"
 COMPOSE="./srcs/docker-compose.yml"
 PG_VOL="./data/postgres"
 ENV_FILE="./srcs/.env"
+POSTGRES_ENV="./srcs/cron/.env"
 
 ENV_VARS=("PROJECT_NAME" "DB_NAME" \
 	"DB_USER" "DB_PASSWORD" \
@@ -22,6 +23,7 @@ create_env() {
 	EMAIL_HOST_USER="transcendence.trinity@gmail.com"
 	EMAIL_HOST_PASSWORD="awmvotojcdvmdwge"
 
+	k=""
 	for var in ${ENV_VARS[@]}; do
 		tmp="$(grep $var= $ENV_FILE | cut -d '=' -f2-)"
 		if [ -z "$tmp" ]; then
@@ -48,8 +50,28 @@ create_env() {
 			else
 				echo "$var=${!var}" >> "$ENV_FILE"
 			fi
+			k="1"
 		fi
-	done && echo "'.env' updated"
+	done
+	if [ -n "$k" ]; then
+		echo "'.env' updated"
+	fi
+}
+
+cron_env() {
+#	if [ -n "$POSTGRES_ENV" ]; then
+#		touch "$POSTGRES_ENV"
+#	fi
+#	if ! grep -q "DB_NAME=" "$POSTGRES_ENV"; then
+#
+#	fi
+	grep \
+	-e "DB_NAME" \
+	-e "DB_USER" \
+	-e "DB_PASSWORD" \
+	-e "DB_HOST" \
+	-e "DB_PORT" \
+	"$ENV_FILE" > "$POSTGRES_ENV"
 }
 
 if ! [ -d $PG_VOL ]; then
@@ -61,4 +83,7 @@ sed "s&PLACEHOLDER&$PWD&g" $COMPOSE_TMP > $COMPOSE
 if [ ! -f "$ENV_FILE" ]; then
 	touch "$ENV_FILE"
 fi
+
 create_env
+cron_env
+

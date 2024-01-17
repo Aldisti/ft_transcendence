@@ -28,7 +28,6 @@ services:
       postgres:
         condition: service_healthy
 
-
   postgres:
     container_name: postgres
     build:
@@ -51,6 +50,19 @@ services:
       - PGDATA=${PGDATA}
     networks:
       - postgres-net
+
+  cron:
+    container_name: cron
+    build:
+      context: ./cron
+    image: trinity/cron
+    restart: always
+    networks:
+      - postgres-net
+    depends_on:
+      postgres:
+        condition: service_healthy
+
 
 volumes:
   django:

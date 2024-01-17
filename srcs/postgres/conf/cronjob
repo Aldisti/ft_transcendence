@@ -1,3 +1,0 @@
-# runs every hour a query to delete all expired tokens
-0 * * * * /usr/local/bin/query.sh > /var/log/query.log
-
