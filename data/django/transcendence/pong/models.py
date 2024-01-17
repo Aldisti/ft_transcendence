@@ -1,6 +1,8 @@
 from django.core import validators
 from django.db import models
 
+from pong.managers import LobbyManager, MatchManager, StatisticsManager
+
 from accounts.models import UserGame
 
 
@@ -9,7 +11,12 @@ class Lobby(models.Model):
     class Meta:
         db_table = 'lobby'
 
-    guest = models.ForeignKey(
+    guests = models.ManyToManyField(
+        to=UserGame,
+        # TODO: on_delete what?
+        related_name='lobbies',
+    )
+    tmp = models.ForeignKey(
         to=UserGame,
         on_delete=models.CASCADE,
         related_name="lobbies",
@@ -37,11 +44,13 @@ class Lobby(models.Model):
         auto_now_add=True,
     )
 
+    objects = LobbyManager()
+
     def __str__(self) -> str:
         return (f"id: {self.id}, "
                 f"name: {self.name}, "
                 f"host: {self.host}, "
-                f"guest: {self.guest}, "
+                f"guest: {len(self.guests.all())}, "
                 f"tournament: {self.is_tournament}, "
                 f"creation_time: {self.creation_time}")
 
@@ -51,7 +60,7 @@ class Match(models.Model):
     class Meta:
         db_table = 'match'
 
-    lobby_id = models.ForeignKey(
+    lobby = models.ForeignKey(
         to=Lobby,
         on_delete=models.CASCADE,
         related_name="matches",
@@ -77,6 +86,8 @@ class Match(models.Model):
         help_text="match duration in seconds",
     )
 
+    objects = MatchManager()
+
     def __str__(self) -> str:
         return (f"id: {self.id}, "
                 f"lobby_id: {self.lobby_id}, "
@@ -91,12 +102,12 @@ class Statistics(models.Model):
     class Meta:
         db_table = 'stats'
 
-    id = models.OneToOneField(
+    match = models.OneToOneField(
         to=Match,
         on_delete=models.CASCADE,
         related_name="stats",
         primary_key=True,
-        db_column="id",
+        db_column="match",
     )
     winner = models.CharField(
         db_column="winner",
@@ -137,4 +148,4 @@ class Statistics(models.Model):
         default=0,
     )
 
-
+    objects = StatisticsManager()
