@@ -23,6 +23,84 @@
     height: 8svh;
 }
 
+@keyframes bounce {
+    0%{
+        transform: translateX(0);
+    }
+    50%{
+        transform: translateX(10%);
+        background-color: var(--bs-success);
+    }  
+    100%{
+        transform: translateX(0);
+        transform: rotate(0deg);
+        background-color: var(--bs-cyan);
+    }
+}
+
+.last{
+    animation: bounce 0.5s ease-out;
+}
+
+.notificationClose{
+    position: absolute;
+    padding: 15px;
+    width: 10%;
+    height: 30%;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 5px;
+    right: 5px;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+}
+
+.notificationContainer{
+    margin: 20px;
+    background-color: var(--bs-teal);
+    width: 30svw;
+    height: fit-content;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    justify-content: space-between;
+    z-index: 10000000000000;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+}
+
+.notificationTitle{
+    width: 100%;
+    height: fit-content;
+    text-align: center;
+}
+
+.notificationBody{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    height: fit-content;
+    margin: 20px 0 20px 0;
+
+}
+
+.notificationBtns{
+    width: 100%;
+    height: 5svh;
+    display: flex;
+    justify-content: space-between;
+}
+
+.notificationBtns button{
+    height: 100%;
+    width: 45%;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+    border: none;
+}
+
 
 #clock
 {
@@ -47,6 +125,7 @@ html, body
     min-height: 100svh;
     margin: 0;
     position: relative;
+    overflow-x: hidden;
 }
 
 .navbar-brand
@@ -154,8 +233,8 @@ html, body
     width: 32%;
     height: 100%;
     display: flex;
-    justify-content: center;
-    align-items: flex-start;
+    justify-content: flex-start;
+    align-content: flex-start;
     flex-wrap: wrap;
     overflow: scroll;
     gap: 20px;
@@ -204,7 +283,7 @@ html, body
 .chatUserPict img{
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
 }
 
 .chatFull
@@ -224,10 +303,13 @@ html, body
 {
     width: 100%;
     height: 80%;
-    background-color: var(--bs-warning);
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    overflow: scroll;
+    /* background-color: var(--bs-warning); */
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
 }
-
 .chatInput
 {
     width: 100%;
@@ -256,13 +338,86 @@ html, body
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
 }
 
-.open{
-    transform: translateX(0);
+.messageLine{
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 10px 0 10px 0;
+}
+
+.rightColor{
+    background-color: var(--bs-teal);
+    color: white;
+}
+
+.leftColor{
+    background-color: var(--bs-cyan);
+    color: white;
+}
+
+.userMessage{
+    min-width: 15%;
+    width: fit-content;
+    max-width: 80%;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 13px;
+    justify-content: flex-start;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+
+}
+
+.messageRight
+{
+    margin-left: auto;
+}
+
+.chatUsername
+{
+    width: fit-content;
+    height: fit-content;
+    padding: 1px 5px 1px 5px;
+    color: black;
+    background-color: white;
+}
+
+.textContainer
+{
+    padding: 4px;
+    height: fit-content;
+    width: fit-content;
+}
+
+.reply{
+    min-width: 15%;
+    width: fit-content;
+    max-width: 80%;
+    height: fit-content;
+    margin-left: auto;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    align-items: flex-start;
+    justify-content: flex-start;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+}
+
+.showUserList{
+    transform: translateX(66.5%);
+}
+.fullOpen{
+    transform: translateX(0) ;
 }
 
 .dropdown-menu {
     z-index: 100000000000 !important;
 }
+
+
 
 @media screen and (max-width: 900px) {
     .account

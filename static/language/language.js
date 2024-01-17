@@ -7,7 +7,8 @@ let language = {
 			games: "Games",
 			changeLanguage: "Change Language",
 			changeStyle: "Change Style",
-			accountMenu: "Account"
+			accountMenu: "Account",
+			notification: "Notification"
 		},
 		login: {
 			login: "Login",

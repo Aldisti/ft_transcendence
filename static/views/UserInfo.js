@@ -39,7 +39,7 @@ export default class extends Aview {
     }
 
     async getGeneralForm() {
-        API.getUserInfo(1).then(res => {
+        API.getUserInfo(localStorage.getItem("username")).then(res => {
             res = res.user_info
             document.querySelector(".formMenu").innerHTML = `
                 <div class="formContainer">
@@ -222,6 +222,14 @@ export default class extends Aview {
                 <h5 id="googleLink" class=" retroBtn google" style="background-color: var(${localStorage.getItem("googleLinked") != null ? "--bs-success" : "--bs-warning"});"><div class="imgWrap"><img src="/imgs/logoGoogle.png"></div><span>${labelGoogle}</span></h5>
             </div>
         </div>
+        <div class="formContainer">
+            <div class="decisionBox">
+                <p class="googleInfo">
+                    Logout from all Devices
+                </p>
+                <button class="retroBtn logoutAll" style="background-color: var(--bs-danger)">Logout da tutti i dispositibi</button>
+            </div>
+        </div>
             <div class="formContainer">
                 <div class="decisionBox">
                     <h4>Enable TFA</h4>
@@ -332,7 +340,14 @@ export default class extends Aview {
                 <h5 id="googleLink" class=" retroBtn google" style="background-color: var(${localStorage.getItem("googleLinked") != null ? "--bs-success" : "--bs-warning"});"><div class="imgWrap"><img src="/imgs/logoGoogle.png"></div><span>${labelGoogle}</span></h5>
             </div>
         </div>
-
+        <div class="formContainer">
+            <div class="decisionBox">
+                <p class="googleInfo">
+                    Logout from all Devices
+                </p>
+                <button class="retroBtn logoutAll" style="background-color: var(--bs-danger)">Logout da tutti i dispositibi</button>
+            </div>
+        </div>
             <div class="formContainer">
                 <div class="decisionBox">
                     <h4>Disable TFA</h4>
@@ -442,6 +457,9 @@ export default class extends Aview {
         else if (e.classList.contains("google") || e.parentNode.classList.contains("google")) {
             pages.triggerGoogleLink(this);
         }
+        else if (e.classList.contains("logoutAll")) {
+            pages.triggerLogoutAll(this);
+        }
     }
 
     highlightFormMenu(formName) {
@@ -458,7 +476,7 @@ export default class extends Aview {
     }
 
     setup() {
-        this.defineWallpaper("/imgs/backLogin.png", "https://c4.wallpaperflare.com/wallpaper/105/526/545/blur-gaussian-gradient-multicolor-wallpaper-preview.jpg")
+        this.defineWallpaper("/imgs/backLogin.png", "/imgs/backLogin.png")
 
         //defining the start menu item that need to be highlighted
         if (localStorage.getItem("selectedForm") == null)

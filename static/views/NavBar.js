@@ -1,4 +1,5 @@
 import allLanguage from "/language/language.js"
+import Router from "/router/mainRouterFunc.js"
 import * as API from "/API/APICall.js"
 
 let language = allLanguage[localStorage.getItem("language")];
@@ -23,7 +24,15 @@ document.querySelector("#navbar").innerHTML = `
           <li class="nav-item">
             <a class="nav-link active" data-link href="/games" >${language.navbar.games}</a>
           </li>
+          <li class="nav-item">
+            <button class="nav-link active" >${language.navbar.notification}</a>
+          </li>
         </ul>
+        <div style="display: flex; margin: 0 20px 0 20px">
+          <input class="form-control navBarSearchInput mr-sm-2" type="search" placeholder="Search" aria-label="Search" style="display: flex; margin: 0 20px 0 20px">
+          <button class="btn searchBtn btn-success my-2 my-sm-0" type="submit">Search</button>
+        </div>
+      
         <div class="dropdown">
           <button class="btn btn-secondary dropdown-toggle account" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
             <span>
@@ -52,7 +61,30 @@ document.querySelector("#navbar").innerHTML = `
     </div>
     </nav>
 `
-API.getUserInfo(1).then(res=>{
+
+function escapeHTML(input) {
+  return input.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function searchUser(input)
+{
+  console.log(input)
+
+}
+
+document.querySelector(".searchBtn").addEventListener("click", ()=>{
+  let inputRegex = /^[A-Za-z0-9!?*@$~_-]{1,32}$/
+  let input = document.querySelector(".navBarSearchInput").value;
+  console.log(input)
+
+  if (inputRegex.test(input))
+    history.pushState(null, null, `/search/user/?username=${input}`);
+  else
+    alert("bad input retry...")
+  Router();
+});  
+
+API.getUserInfo(localStorage.getItem("username")).then(res=>{
   if (res.user_info.picture != null)
   //console.log(res)
     document.querySelector(".profilePictureUrl").src = res.user_info.picture;

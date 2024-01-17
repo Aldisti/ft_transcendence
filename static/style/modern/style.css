@@ -30,6 +30,7 @@
 
 }
 
+
 #timeTravel:hover > #clock
 {
     transform: rotate(360deg);
@@ -42,6 +43,7 @@ html, body
     min-height: 100svh;
     margin: 0;
     position: relative;
+    overflow-x: hidden;
 }
 
 .navbar-brand

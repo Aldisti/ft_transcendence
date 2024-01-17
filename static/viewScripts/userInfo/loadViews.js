@@ -111,7 +111,7 @@ export function loadPicturePage(dupThis)
 {
     localStorage.setItem("selectedForm", "picture")
     document.querySelector(".formMenu").innerHTML = dupThis.getProfilePictureForm();
-    API.getUserInfo(1).then(res=>{
+    API.getUserInfo(localStorage.getItem("username")).then(res=>{
         if (res.user_info.picture != null)
         document.querySelector(".updateImgForm").src = res.user_info.picture;
     })
@@ -178,5 +178,10 @@ export function triggerGoogleLink(dupThis)
             window.location.reload();
         });
     }
+}
+export function triggerLogoutAll(dupThis)
+{
+    if (confirm("Do you really want to logout from all devices?"))
+        API.logoutAll(1)
 }
 

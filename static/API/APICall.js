@@ -131,19 +131,17 @@ export async function unlinkGoogle(recursionProtection){
     return (false);
 }
 
-export async function getUserInfo(recursionProtection) {
-    const res = await fetch(`${URL.general.USER_INFO}${localStorage.getItem("username")}/`, {
+export async function getUserInfo(username) {
+    const res = await fetch(`${URL.general.USER_INFO}?search=${username}`, {
         method: "GET",
         headers: {
             // Authorization: `Bearer ${localStorage.getItem("token")}`
         },
         // credentials: "include",
     })
-    if (res.status == 401 && recursionProtection)
-        return await refreshAndRetry(getUserInfo, 0);
     if (res.ok) {
         let jsonBody = await res.json();
-        return (jsonBody);
+        return (jsonBody.results[0]);
     }
     return ({});
 }
@@ -266,6 +264,27 @@ export async function updateEmail(data) {
 
 export async function logout(recursionProtection) {
     const res = await fetch(URL.userAction.LOGOUT, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+        },
+    });
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(logout, 0);
+    if (res.ok) {
+        cleanLocalStorage()
+        history.pushState(null, null, "/home");
+        Router();
+        window.location.reload();
+        return;
+    }
+    alert("Something went wrong retry...");
+    return;
+}
+
+export async function logoutAll(recursionProtection) {
+    const res = await fetch(URL.userAction.LOGOUT_ALL, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -615,4 +634,110 @@ export async function googleLogin(recursionProtection, code, state) {
         // window.location.reload();
     }
     console.log(res);
+}
+
+export async function removeFriend(recursionProtection, username){
+    const res = await fetch(`${URL.friendship.REMOVE_FRIEND}?username=${username}`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        credentials: "include",
+    });
+    if (res.ok) {
+        alert("friend removed")
+        return;
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(getIntraStatus, 0);
+    alert("error ha occured..")
+}
+
+export async function sendFriendRequest(recursionProtection, username){
+    const res = await fetch(`${URL.friendship.SEND_REQUEST}?username=${username}`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        credentials: "include",
+    });
+    if (res.ok) {
+        alert("request sent!")
+        return {};
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(getIntraStatus, 0);
+    alert("error ha occured..")
+    let parsed = await res.json();
+    return parsed;
+}
+
+export async function friendStatus(recursionProtection, username){
+    const res = await fetch(`${URL.friendship.FRIEND_STATUS}?username=${username}`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        credentials: "include",
+    });
+    if (res.ok) {
+        let parsed = await res.json();
+        return (parsed);
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(getIntraStatus, 0);
+    alert("error ha occured..")
+    return ({})
+}
+
+export async function acceptRequest(recursionProtection, token){
+    const res = await fetch(`${URL.friendship.ACCEPT_REQUEST}?token=${token}`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        credentials: "include",
+    });
+    if (res.ok) {
+        let parsed = await res.json();
+        return (parsed);
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(getIntraStatus, 0);
+    alert("error ha occured..")
+    return ({})
+}
+export async function denyRequest(recursionProtection, token){
+    const res = await fetch(`${URL.friendship.DENY_REQUEST}?token=${token}`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        credentials: "include",
+    });
+    if (res.ok) {
+        let parsed = await res.json();
+        return (parsed);
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(getIntraStatus, 0);
+    alert("error ha occured..")
+    return ({})
+}
+export async function getFriends(recursionProtection){
+    const res = await fetch(URL.friendship.GET_FRIENDS, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        credentials: "include",
+    });
+    if (res.ok) {
+        let parsed = await res.json();
+        return (parsed);
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(getIntraStatus, 0);
+    alert("error ha occured..")
+    return ({})
 }

@@ -31,10 +31,20 @@ export const auth = {
     LOGIN_WITH_GOOGLE: `http://${ip}:${port}/oauth2/google/v2/login/`,
 }
 
+export const friendship = {
+    SEND_REQUEST: `http://${ip}:${port}/friends/request/send/`,
+    REMOVE_FRIEND: `http://${ip}:${port}/friends/request/delete/`,
+    ACCEPT_REQUEST: `http://${ip}:${port}/friends/request/accept/`,
+    DENY_REQUEST: `http://${ip}:${port}/friends/request/reject/`,
+    FRIEND_STATUS: `http://${ip}:${port}/friends/`,
+    GET_FRIENDS: `http://${ip}:${port}/friends/all/`,
+}
+
 export const userAction = {
     REFRESH_TOKEN: `http://${ip}:${port}/auth/refresh/`,
     LOGIN: `http://${ip}:${port}/auth/login/`,
     LOGOUT: `http://${ip}:${port}/auth/logout/`,
+    LOGOUT_ALL: `http://${ip}:${port}/auth/logout/all/`,
     REGISTER: `http://${ip}:${port}/register/`,
     UPDATE_INFO: `http://${ip}:${port}/users/info/update/`,
     UPDATE_PHOTO: `http://${ip}:${port}/users/image/upload/`,

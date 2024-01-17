@@ -24,20 +24,16 @@
     </div>
     <div id="app">
     </div>
-    <div class="chatHandle">
-      
-    </div>
-    <div class="chatContainer">
-      <div class="chatSideList">
-        
+    <div class="chat chatContainer">
+      <div class="chat chatSideList">
+
       </div>
-      <div class="chatFull">
-        <div class="chatBox">
-  
+      <div class="chat chatFull">
+        <div class="chat chatBox">
         </div>
-        <div class="chatInput">
-          <textarea name="message" id="chatInputElement" cols="30" rows="10"></textarea>
-          <button class="submitChatInput"></button>
+        <div class="chat chatInput">
+          <textarea class="chat" name="message" id="chatInputElement" cols="30" rows="10"></textarea>
+          <button class="chat submitChatInput">></button>
         </div>
       </div>
     </div>
@@ -46,7 +42,9 @@
     <script src="/globalFunction/globalFunction.js"></script>
     <script type="module" src="/router/router.js"></script>
     <script src="/scripts/bootstrap.bundle.min.js"></script>
-    <script src="/viewScripts/chat/chat.js"></script>
+    <script type="module" src="/viewScripts/chat/chat.js"></script>
+    <script type="module" src="/viewScripts/notification/mainNotification.js"></script>
+    <script type="module" src="/viewScripts/notification/notificatioSocket.js"></script>
     <script src="/qrCode.js"></script>
 </body>
 </html>
