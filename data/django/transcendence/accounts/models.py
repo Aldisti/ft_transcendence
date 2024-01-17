@@ -52,6 +52,10 @@ class User(AbstractBaseUser):
         db_comment="True when oauth2 is active",
         default=False,
     )
+    last_logout = models.DateTimeField(
+        db_column="last_logout",
+        db_comment="the datetime of the last logout from all devices",
+    )
 
     USERNAME_FIELD = "username"
     EMAIL_FIELD = "email"

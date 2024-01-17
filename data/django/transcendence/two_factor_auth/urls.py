@@ -2,6 +2,7 @@ from django.urls import path, include
 
 from two_factor_auth import views
 
+
 urlpatterns = [
     path('manage/', views.ManageView.as_view(), name='manage'),
     path('validate/', include([

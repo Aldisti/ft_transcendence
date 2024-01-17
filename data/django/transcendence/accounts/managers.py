@@ -1,9 +1,11 @@
+
 from django.db import models
 from django.contrib.auth.base_user import BaseUserManager
-from accounts.utils import Roles
 from django.core.files.storage import default_storage
 from django.core.files.base import File
 from django.conf import settings
+from accounts.utils import Roles
+import datetime
 import logging
 
 
@@ -15,6 +17,7 @@ class UserManager(BaseUserManager):
         if not email:
             raise ValueError("Missing email")
         email = self.normalize_email(email)
+        kwargs.setdefault('last_logout', datetime.datetime.now(tz=settings.TZ))
         if kwargs.get("role") != Roles.ADMIN:
             kwargs.pop("role", "")
             kwargs["verified"] = False
@@ -96,6 +99,18 @@ class UserManager(BaseUserManager):
 
     def update_user_linked(self, user, linked: bool):
         user.linked = linked
+        user.full_clean()
+        user.save()
+        return user
+
+    def update_last_login(self, user):
+        user.last_login = datetime.datetime.now(tz=settings.TZ)
+        user.full_clean()
+        user.save()
+        return user
+
+    def update_last_logout(self, user):
+        user.logout = datetime.datetime.now(tz=settings.TZ)
         user.full_clean()
         user.save()
         return user

@@ -1,10 +1,11 @@
 from django.test import TestCase
 from django.conf import settings
+
 from accounts.models import User
 from accounts.serializers import UserSerializer, UserInfoSerializer, CompleteUserSerializer
 from accounts.utils import Roles
-from datetime import date, timedelta
-from django.conf import settings
+
+from datetime import date, timedelta, datetime
 
 
 class UserSerializerTests(TestCase):
@@ -50,7 +51,8 @@ class UserSerializerTests(TestCase):
     def test_user_serializer_valid_user(self):
         user = User(username=self.data["username"],
                     email=self.data["email"],
-                    password=self.data["password"])
+                    password=self.data["password"],
+                    last_logout=datetime.now(tz=settings.TZ))
         user.full_clean()
         serializer = UserSerializer(user)
         data = self.data
