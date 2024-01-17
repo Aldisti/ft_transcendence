@@ -126,3 +126,12 @@ def are_friends(request):
     if not FriendsList.objects.are_friends(user, other_user):
         return Response({"is_friend": False}, status=200)
     return Response({"is_friend": True}, status=200)
+
+# TODO: refactor the next endpoint
+@api_view(['GET'])
+@permission_classes([IsUser])
+def get_all_friends(request):
+    user = request.user
+    friends_list = FriendsList.get_all_friends(user.user_websockets)
+    friends = [{"username": friend.user.username, "picture": friend.user.picture, "status": True if friend.chat_channel != "" else False} for friend in friends_list]
+    return Reponse(friends, status=200)
