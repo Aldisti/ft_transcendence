@@ -36,10 +36,22 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
+# Asgi application
+
+ASGI_APPLICATION = "transcendence.asgi.application"
+
+# Channels layer
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
 
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     # 'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -52,6 +64,10 @@ INSTALLED_APPS = [
     'email_manager',
     'oauth2',
     'two_factor_auth',
+    'channels',
+    'chat',
+    'notifications',
+    'friends',
     # tmp for testing reasons
     'corsheaders',
 ]
@@ -97,7 +113,7 @@ REST_FRAMEWORK = {
 # https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=1),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 
     "ALGORITHM": "HS256",
@@ -244,3 +260,8 @@ MAX_SIZE = 1_000_000
 ALLOWED_EXT = ["jpg", "jpeg", "png", "gif"]
 ALLOWED_TYPES = ["jpeg", "png", "gif"]
 FILE_CATEGORY = "image"
+
+# messages
+
+MAX_MESSAGES = 500
+MAX_MESSAGE_LENGTH = 512

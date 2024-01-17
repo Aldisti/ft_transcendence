@@ -6,7 +6,7 @@ from django.dispatch import receiver
 
 from accounts.utils import Roles
 from accounts.validators import validate_birthdate
-from accounts.managers import UserManager, UserInfoManager
+from accounts.managers import UserManager, UserInfoManager, UserWebsocketsManager
 
 import logging
 
@@ -129,3 +129,34 @@ class UserInfo(models.Model):
 
     def __str__(self):
         return f"user: {self.user.username}, first_name: {self.first_name}, last_name: {self.last_name}, joined:{self.date_joined}"
+
+
+class UserWebsockets(models.Model):
+    class Meta:
+        db_table = "user_websockets"
+
+
+    user = models.OneToOneField(
+        to=User,
+        on_delete=models.CASCADE,
+        related_name="user_websockets",
+        primary_key=True,
+        db_column="username",
+    )
+
+    chat_channel = models.CharField(
+        db_column="chat_channel",
+        max_length=255,
+        blank=True,
+    )
+
+    ntf_channel = models.CharField(
+        db_column="ntf_channel",
+        max_length=255,
+        blank=True,
+    )
+
+    objects = UserWebsocketsManager()
+
+    def __str__(self):
+        return f"username: {self.user.username}, chat_channel: {self.chat_channel}, ntf_channel: {self.ntf_channel}"
