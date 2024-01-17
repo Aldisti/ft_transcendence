@@ -111,3 +111,18 @@ def reject_friends_request(request):
     # send notification back to the requester
     Notification.objects.send_info_ntf(requester, f"{user.username} rejected your friends request")
     return Response({"message": "Request rejected"}, status=200)
+
+@api_view(['GET'])
+@permission_classes([IsUser])
+def are_friends(request):
+    user = request.user
+    other_username = request.query_params.get("username", "")
+    if other_username == user.username:
+        return Response({"message": "You're already friend with yourself"}, status=400)
+    try:
+        other_user = User.objects.get(pk=other_username)
+    except User.DoesNotExist:
+        return Response({"message": "User not found"}, status=404)
+    if not FriendsList.objects.are_friends(user, other_user):
+        return Response({"is_friend": "false"}, status=200)
+    return Response({"is_friend": "true"}, status=200)

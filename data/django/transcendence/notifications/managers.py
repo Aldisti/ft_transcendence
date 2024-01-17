@@ -56,9 +56,9 @@ class NotificationManager(models.Manager):
         notification = self.create(receiver.user_websockets, body=ntf_body, ntf_type=ntf_type)
         self.send_notification(notification)
 
-    def send_allert_ntf(self, receiver, body):
+    def send_alert_ntf(self, receiver, body):
         ntf_body = body
-        ntf_type = NtfTypes.ALLERT
+        ntf_type = NtfTypes.ALERT
         notification = self.create(receiver.user_websockets, body=ntf_body, ntf_type=ntf_type)
         self.send_notification(notification)
 

@@ -9,6 +9,7 @@ urlpatterns = [
         path('reject/', views.reject_friends_request, name="api-reject-friends-request"),
         path('delete/', views.delete_friends, name="api-delete-friends-request"),
     ])),
+    path('', views.are_friends, name="api-are-friends-request"),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
