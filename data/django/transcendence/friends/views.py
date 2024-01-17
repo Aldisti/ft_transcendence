@@ -124,5 +124,5 @@ def are_friends(request):
     except User.DoesNotExist:
         return Response({"message": "User not found"}, status=404)
     if not FriendsList.objects.are_friends(user, other_user):
-        return Response({"is_friend": "false"}, status=200)
-    return Response({"is_friend": "true"}, status=200)
+        return Response({"is_friend": False}, status=200)
+    return Response({"is_friend": True}, status=200)
