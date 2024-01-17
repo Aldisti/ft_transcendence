@@ -132,6 +132,6 @@ def are_friends(request):
 @permission_classes([IsUser])
 def get_all_friends(request):
     user = request.user
-    friends_list = FriendsList.objects.get_all_friends(user.user_websockets)
+    friends_list = FriendsList.objects.get_all_friends(user)
     friends = [{"username": friend.user.username, "picture": friend.user.picture, "status": True if friend.chat_channel != "" else False} for friend in friends_list]
     return Reponse(friends, status=200)
