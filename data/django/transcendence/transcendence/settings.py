@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     'chat',
     'notifications',
     'friends',
+    'pong',
     # tmp for testing reasons
     'corsheaders',
 ]

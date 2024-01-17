@@ -16,12 +16,6 @@ class Lobby(models.Model):
         # TODO: on_delete what?
         related_name='lobbies',
     )
-    tmp = models.ForeignKey(
-        to=UserGame,
-        on_delete=models.CASCADE,
-        related_name="lobbies",
-        db_column="guest",
-    )
     name = models.CharField(
         db_column="name",
         max_length=32,
