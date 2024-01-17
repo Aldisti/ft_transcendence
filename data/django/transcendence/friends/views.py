@@ -51,7 +51,7 @@ def make_friends_request(request):
 @permission_classes([IsUser])
 def delete_friends(request):
     user = request.user
-    r_username = request.query_params["username"]
+    r_username = request.query_params.get("username", "")
     # check that requested username
     if r_username == user.username:
         return Response({"message": "You're already friend with yourself"}, status=400)
