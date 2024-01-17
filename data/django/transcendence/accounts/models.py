@@ -6,7 +6,7 @@ from django.dispatch import receiver
 
 from accounts.utils import Roles
 from accounts.validators import validate_birthdate
-from accounts.managers import UserManager, UserInfoManager, UserWebsocketsManager
+from accounts.managers import UserManager, UserInfoManager, UserWebsocketsManager, UserGameManager
 
 import logging
 
@@ -160,3 +160,24 @@ class UserWebsockets(models.Model):
 
     def __str__(self):
         return f"username: {self.user.username}, chat_channel: {self.chat_channel}, ntf_channel: {self.ntf_channel}"
+
+
+class UserGame(models.Model):
+    class Meta:
+        db_table = "user_game"
+
+    user = models.OneToOneField(
+        to=User,
+        on_delete=models.CASCADE,
+        related_name="user_game",
+        primary_key=True,
+        db_column="username",
+    )
+    display_name = models.CharField(
+        db_column="display_name",
+        max_length=32,
+        unique=True,
+        validators=[validators.RegexValidator(regex="^[A-Za-z0-9!?*$~_-]{5,32}$")],
+    )
+
+    objects = UserGameManager()

@@ -172,3 +172,17 @@ class UserWebsocketsManager(models.Manager):
         user_websockets.full_clean()
         user_websockets.save()
         return user_websockets
+
+
+class UserGameManager(models.Manager):
+    def create(self, user):
+        user_game = self.model(user=user, display_name=user.username)
+        user_game.full_clean()
+        user_game.save()
+        return user_game
+
+    def update_display_name(self, user_game, display_name: str):
+        user_game.display_name = display_name
+        user_game.full_clean()
+        user_game.save()
+        return user_game
