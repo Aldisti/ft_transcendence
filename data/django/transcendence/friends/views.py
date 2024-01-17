@@ -133,5 +133,5 @@ def are_friends(request):
 def get_all_friends(request):
     user = request.user
     friends_list = FriendsList.objects.get_all_friends(user)
-    friends = [{"username": friend.user.username, "picture": friend.user.picture, "status": True if friend.chat_channel != "" else False} for friend in friends_list]
+    friends = [{"username": friend.username, "picture": friend.picture, "status": True if friend.user_websocket.chat_channel != "" else False} for friend in friends_list]
     return Response(friends, status=200)
