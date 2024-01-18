@@ -42,65 +42,14 @@
     animation: bounce 0.5s ease-out;
 }
 
-.notificationClose{
-    position: absolute;
-    padding: 15px;
-    width: 10%;
-    height: 30%;
-    background-color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    top: 5px;
-    right: 5px;
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+@keyframes notificationSlide {
+    0%{
+        transform: translateX(-100%);
+    }
+    100%{
+        transform: translateX(0);
+    }
 }
-
-.notificationContainer{
-    margin: 20px;
-    background-color: var(--bs-teal);
-    width: 30svw;
-    height: fit-content;
-    position: absolute;
-    top: 0;
-    left: 0;
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    justify-content: space-between;
-    z-index: 10000000000000;
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
-}
-
-.notificationTitle{
-    width: 100%;
-    height: fit-content;
-    text-align: center;
-}
-
-.notificationBody{
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    height: fit-content;
-    margin: 20px 0 20px 0;
-
-}
-
-.notificationBtns{
-    width: 100%;
-    height: 5svh;
-    display: flex;
-    justify-content: space-between;
-}
-
-.notificationBtns button{
-    height: 100%;
-    width: 45%;
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
-    border: none;
-}
-
 
 #clock
 {

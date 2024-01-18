@@ -8,6 +8,7 @@ export const availabilityCheck = {
 
 export const general = {
     USER_INFO: `http://${ip}:${port}/users/`,
+    GET_USERS: `http://${ip}:${port}/users/`,
     INTRA_URL: `http://${ip}:${port}/oauth2/intra/url/`,
     CONVERT_INTRA_TOKEN: `http://${ip}:${port}/oauth2/intra/login/`,
     LINK_INTRA_TOKEN_ACCOUNT: `http://${ip}:${port}/oauth2/intra/link/`,
@@ -38,6 +39,11 @@ export const friendship = {
     DENY_REQUEST: `http://${ip}:${port}/friends/request/reject/`,
     FRIEND_STATUS: `http://${ip}:${port}/friends/`,
     GET_FRIENDS: `http://${ip}:${port}/friends/all/`,
+}
+
+export const socket = {
+    CHAT_SOCKET: `ws://${ip}:${port}/ws/chat/socket/`,
+    NOTIFICATION_SOCKET: `ws://${ip}:${port}/ws/notification/socket/`
 }
 
 export const userAction = {

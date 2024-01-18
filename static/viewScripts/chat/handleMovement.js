@@ -71,9 +71,7 @@ export function sendSocketMessage(e){
 
     general.localStoragePush(newMessage);
     delete newMessage.sender;
-    console.log(newMessage)
     socket.send(JSON.stringify(newMessage))
-    console.log("ho fatto la chiamata")
     general.updateChatHistory(chatBox.getAttribute("name"));
     chatBox.scrollTop = chatBox.scrollHeight;
     message.value = "";

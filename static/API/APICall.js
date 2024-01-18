@@ -292,7 +292,7 @@ export async function logoutAll(recursionProtection) {
         },
     });
     if (res.status == 401 && recursionProtection)
-        return await refreshAndRetry(logout, 0);
+        return await refreshAndRetry(logoutAll, 0);
     if (res.ok) {
         cleanLocalStorage()
         history.pushState(null, null, "/home");
@@ -377,7 +377,7 @@ export async function getEmailCode(recursionProtection, token)
         headers: header
     })
     if (token == undefined && res.status == 401 && recursionProtection)
-        return await refreshAndRetry(activateTfa, 0, token);
+        return await refreshAndRetry(getEmailCode, 0, token);
     if (res.status == 429)
     {
         //console.log(res.headers)
@@ -649,7 +649,7 @@ export async function removeFriend(recursionProtection, username){
         return;
     }
     if (res.status == 401 && recursionProtection)
-        return await refreshAndRetry(getIntraStatus, 0);
+        return await refreshAndRetry(removeFriend, 0);
     alert("error ha occured..")
 }
 
@@ -666,7 +666,7 @@ export async function sendFriendRequest(recursionProtection, username){
         return {};
     }
     if (res.status == 401 && recursionProtection)
-        return await refreshAndRetry(getIntraStatus, 0);
+        return await refreshAndRetry(sendFriendRequest, 0);
     alert("error ha occured..")
     let parsed = await res.json();
     return parsed;
@@ -685,8 +685,7 @@ export async function friendStatus(recursionProtection, username){
         return (parsed);
     }
     if (res.status == 401 && recursionProtection)
-        return await refreshAndRetry(getIntraStatus, 0);
-    alert("error ha occured..")
+        return await refreshAndRetry(friendStatus, 0);
     return ({})
 }
 
@@ -703,7 +702,7 @@ export async function acceptRequest(recursionProtection, token){
         return (parsed);
     }
     if (res.status == 401 && recursionProtection)
-        return await refreshAndRetry(getIntraStatus, 0);
+        return await refreshAndRetry(acceptRequest, 0);
     alert("error ha occured..")
     return ({})
 }
@@ -720,7 +719,7 @@ export async function denyRequest(recursionProtection, token){
         return (parsed);
     }
     if (res.status == 401 && recursionProtection)
-        return await refreshAndRetry(getIntraStatus, 0);
+        return await refreshAndRetry(denyRequest, 0);
     alert("error ha occured..")
     return ({})
 }
@@ -737,7 +736,25 @@ export async function getFriends(recursionProtection){
         return (parsed);
     }
     if (res.status == 401 && recursionProtection)
-        return await refreshAndRetry(getIntraStatus, 0);
+        return await refreshAndRetry(getFriends, 0);
+    alert("error ha occured..")
+    return ({})
+}
+
+export async function getUsers(recursionProtection){
+    const res = await fetch(URL.general.GET_USERS, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        credentials: "include",
+    });
+    if (res.ok) {
+        let parsed = await res.json();
+        return (parsed);
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(getUsers, 0);
     alert("error ha occured..")
     return ({})
 }

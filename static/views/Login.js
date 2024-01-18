@@ -28,7 +28,7 @@ export default class extends Aview {
                     </div>
                 </div>
                 <div class=" btnLeft">
-                    <button id="recoveryBtn" class="retroBtn retroShade btnColor-green">Get Email</button>
+                    <button id="recoveryBtn" class="retroBtn retroShade btnColor-green importantSubmit">Get Email</button>
                 </div>
             </div>
         </div>
@@ -60,7 +60,7 @@ export default class extends Aview {
                         </p>
                     </div>
                 	<div class="linebtn">
-                    	<button id="loginBtn" class="retroBtn fullWidth retroShade btnColor-green">${this.language.login.submit}</button>
+                    	<button id="loginBtn" class="retroBtn fullWidth importantSubmit retroShade btnColor-green">${this.language.login.submit}</button>
                     </div>
                     <div class="linebtn">
                     	<button class="retroBtn tfa intraBtn retroShade btnColor-blue"><img src="/imgs/logo42.png"><span>${this.language.login.intraLogin}</span></button>
@@ -89,7 +89,7 @@ export default class extends Aview {
                 </div>
                 <div class="line" style="flex-direction: row;">
                     <button class="retroBtn resendBtn" style="background-color: var(--bs-warning)">send email</button>
-                    <button class="retroBtn sendCode" style="background-color: var(--bs-success)">Submit</button>
+                    <button class="retroBtn sendCode" id="submit" style="background-color: var(--bs-success)">Submit</button>
                 </div>
             </div>
         `

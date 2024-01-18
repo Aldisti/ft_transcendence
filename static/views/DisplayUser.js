@@ -43,9 +43,12 @@ export default class extends Aview {
                         <h6>Birth Date:</h6>
                         <h3>${data.user_info.birthdate}</h3>
                     </div>
-                    <button class="askFriend friendRequest friendRequestBtn" name="${data.username}">
+                    <button class="askFriend friendRequest friendRequestBtn" style="${data.username == localStorage.getItem("username") ? `display: none;` : `` }" name="${data.username}">
                         <h3>Add friend +</h3>
                     </button>
+                    <a data-link class="askFriend" href="/account/" style="${data.username == localStorage.getItem("username") ? `` : `display: none;` }">
+                        Manage Account
+                    </a>
                 </div>
             `
             this.username = document.querySelector(".friendRequest").getAttribute("name");

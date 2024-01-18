@@ -6,12 +6,10 @@ export function localStoragePush(obj){
     let username = obj.sender == localStorage.getItem("username") ? document.querySelector(".chatBox").getAttribute('name') : obj.sender;
     if (obj.type == "global")
         username = "global";
-    console.log(obj, username)
 
     if (toAdd[username] == undefined)
         toAdd[username] = [];
     toAdd[username].push(obj)
-    console.log("testGlob", toAdd)
     localStorage.setItem("chat", JSON.stringify(toAdd));
 }
 
@@ -30,7 +28,6 @@ export function updateChatHistory()
 }
 
 export function getTimeSplitted(str){
-    console.log(str)
     let time = str.split(":")[1];
     let hour = time.split(".")[0];
     let minute = time.split(".")[1];

@@ -1,6 +1,7 @@
 import allLanguage from "/language/language.js"
 import Router from "/router/mainRouterFunc.js"
 import * as API from "/API/APICall.js"
+import * as NOTIFICATION from "/viewScripts/notification/notification.js"
 
 let language = allLanguage[localStorage.getItem("language")];
 let defaultProfilePicture = "https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg";
@@ -15,10 +16,10 @@ document.querySelector("#navbar").innerHTML = `
         <ul class="navbar-nav me-auto mb-lg-0">
           ${localStorage.getItem("username") != undefined ? `` : `
             <li class="nav-item">
-                <a class="nav-link active" data-link href="/login" >${language.navbar.login}</a>
+                <a class="nav-link active" data-link href="/login/" >${language.navbar.login}</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link active" data-link href="/signup" >${language.navbar.register}</a>
+                <a class="nav-link active" data-link href="/register/" >${language.navbar.register}</a>
             </li>
           `}
           <li class="nav-item">
@@ -30,7 +31,7 @@ document.querySelector("#navbar").innerHTML = `
         </ul>
         <div style="display: flex; margin: 0 20px 0 20px">
           <input class="form-control navBarSearchInput mr-sm-2" type="search" placeholder="Search" aria-label="Search" style="display: flex; margin: 0 20px 0 20px">
-          <button class="btn searchBtn btn-success my-2 my-sm-0" type="submit">Search</button>
+          <button class="btn searchBtn btn-success my-2 my-sm-0" id="navbarSearch" type="submit">Search</button>
         </div>
       
         <div class="dropdown">
@@ -54,22 +55,57 @@ document.querySelector("#navbar").innerHTML = `
               </select>
             </li>
             <li id="timeTravel"><p>${language.navbar.changeStyle}</p><div id="clock"></div></li>
-            ${localStorage.getItem("username") == undefined ? `` : `<li><a class="nav-link active" data-link href="/userInfo" >${language.navbar.accountMenu}</a></li>`}
+            ${localStorage.getItem("username") == undefined ? `` : `<li><a class="nav-link active" data-link href="/account/" >${language.navbar.accountMenu}</a></li>`}
           </ul>
         </div>
       </div>
     </div>
     </nav>
 `
+function createUser(obj){
+  return `
+      <a class="userBox" href="/user/?username=${obj.username}" data-link>
+          <h2>${obj.username}</h2>
+          <div class="imgContainer">
+              <img class="profPict" src="${obj.user_info.picture}">
+          </div>
+      </a>
+  `
+}
+function concatenateUsers(objs){
+  let users = "";
 
+  for (let i = 0; i < objs.length; i++)
+      users += this.createUser(objs[i]);
+  return users;
+}
+function getHtml(objs){
+  let urlParams = new URLSearchParams(window.location.search);
+
+  return `
+      <div class="base">
+          <div class="userContainer">
+              ${this.concatenateUsers(objs)}
+          </div>
+      </div>
+  `
+}
 function escapeHTML(input) {
   return input.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
 function searchUser(input)
 {
-  console.log(input)
-
+    API.getUserInfo(input).then(res=>{
+		console.log(res)
+      if (res != undefined)
+	  {
+		history.pushState(null, null, `/user/?username=${input}`)
+		Router()
+	  }
+	  else
+	  	NOTIFICATION.simple({title: "Error", body: `user ${input} is not registered!`})
+    })
 }
 
 document.querySelector(".searchBtn").addEventListener("click", ()=>{
@@ -78,10 +114,9 @@ document.querySelector(".searchBtn").addEventListener("click", ()=>{
   console.log(input)
 
   if (inputRegex.test(input))
-    history.pushState(null, null, `/search/user/?username=${input}`);
+    searchUser(input);
   else
     alert("bad input retry...")
-  Router();
 });  
 
 API.getUserInfo(localStorage.getItem("username")).then(res=>{

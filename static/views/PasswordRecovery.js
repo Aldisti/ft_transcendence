@@ -53,7 +53,7 @@ export default class extends Aview {
                     </ul>
                 </div>
                 <div class="lineBtn">
-                    <button id="sendBtn" class="retroBtn retroShade btnColor-green">${language.login.submit}</button>
+                    <button id="sendBtn"class="retroBtn importantSubmit retroShade btnColor-green">${language.login.submit}</button>
                 </div>
             </div>
         </div>

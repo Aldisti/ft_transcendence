@@ -77,7 +77,7 @@ export default class extends Aview {
                         </div> 
                         <input value="${res.birthdate}" class="inputData" type="date" id="${this.language.update.birthDate[1]}">
                     </div>
-                    <button class="submit">Submit!</button>
+                    <button class="submit importantSubmit">Submit!</button>
                 </div>
             `
         })
@@ -140,7 +140,7 @@ export default class extends Aview {
                         <li>${this.language.register.errors[4]}</li>
                     </ul>
                 </div>
-                <button class="submit">Submit!</button>
+                <button class="submit" id="submit">Submit!</button>
             </div>
         `
     }
@@ -166,7 +166,7 @@ export default class extends Aview {
                         </div>
                     </div>
                 </div>
-                <button class="submit">Submit!</button>
+                <button class="submit importantSubmit"Submit!</button>
             </div>
         `
     }
@@ -182,7 +182,7 @@ export default class extends Aview {
                         <input onchange="window.test()" class="inputData" id="inpFile" type="file" id="${this.language.update.profilePicture[1]}">
                     </div>
                 </div>
-                    <button class="submit">Submit!</button>
+                    <button class="submit importantSubmit">Submit!</button>
                 </div>
             </div>
         `

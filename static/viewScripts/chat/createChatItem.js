@@ -15,7 +15,6 @@ export function createUser(info){
 }
 
 export function createMessage(message){
-    console.log(message)
     let messageEl = `
         <div class="messageLine chat">
             <div class="${message.sender == localStorage.getItem("username") ? `reply rightColor` : `userMessage leftColor`} chat">
