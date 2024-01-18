@@ -1,11 +1,15 @@
 #!/bin/bash
 
 PROJECT="./data/django/transcendence/"
-APPS=('accounts' 'authentication' 'email_manager' 'oauth2' 'two_factor_auth' 'chat' 'notifications' 'friends')
 DEL_PATH="migrations/0"
 
-for i in ${APPS[@]}; do
-	echo "$PROJECT$i/$DEL_PATH"*
-	rm -f "$PROJECT$i/$DEL_PATH"*
+APPS=('accounts' 'authentication' 'email_manager' 'oauth2' \
+		'two_factor_auth' 'chat' 'notifications' 'friends' 'pong')
+
+for app in ${APPS[@]}; do
+	if ! echo "$PROJECT$app/$DEL_PATH"* | grep -q '*'; then
+		echo "$PROJECT$app/$DEL_PATH"*
+		rm -f "$PROJECT$app/$DEL_PATH"*
+	fi
 done
 
