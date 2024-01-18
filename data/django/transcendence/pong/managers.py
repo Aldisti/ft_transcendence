@@ -5,7 +5,7 @@ from accounts.models import UserGame
 
 
 class LobbyManager(models.Manager):
-    def create_lobby(self, guests: list[UserGame] = (), **kwargs):
+    def create(self, guests: list[UserGame] | tuple[UserGame] = (), **kwargs):
         kwargs.setdefault('name', '')
         kwargs.setdefault('host', '')
         kwargs.setdefault('is_tournament', False)

@@ -91,7 +91,7 @@ class Match(models.Model):
                 f"duration_time: {self.duration_time}")
 
 
-class Statistics(models.Model):
+class Statistic(models.Model):
 
     class Meta:
         db_table = 'stats'
