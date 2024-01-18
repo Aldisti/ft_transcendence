@@ -4,6 +4,7 @@ from django.conf import settings
 from chat.managers import ChatManager, ChatMemberManager, MessageManager
 from chat.utils import MessageTypes
 from accounts.models import User, UserWebsockets
+from datetime import datetime
 
 import logging
 
@@ -81,6 +82,14 @@ class Message(models.Model):
     )
 
     objects = MessageManager()
+
+    def get_sender(self):
+        return self.from_user.user_id
+
+    def get_time(self):
+        if self.sent_time is None:
+            return datetime.now().strftime("%Y/%m/%d:%H.%M.%S")
+        return self.sent_time.strftime("%Y/%m/%d:%H.%M.%S")
 
     def to_json(self):
         json = {

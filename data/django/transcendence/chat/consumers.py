@@ -3,6 +3,7 @@ from asgiref.sync import async_to_sync
 from accounts.models import User, UserWebsockets
 from chat.models import Message, Chat
 from chat.utils import G_GROUP, MessageTypes
+from chat.builders import MessageBuilder
 from friends.models import FriendsList
 import logging
 import json
@@ -39,67 +40,7 @@ class ChatConsumer(WebsocketConsumer):
     def receive(self, text_data):
         user = self.scope["user"]
         data = json.loads(text_data)
-        message_type = data.get("type", "")
-        message_receiver = data.get("receiver", "")
-        message_body = data.get("body", "")
-        logger.warning(f"data: {data}")
-
-        if message_type not in MessageTypes.TYPE_CHOICES_LIST:
-            new_data = {"type": "error", "message": "Invalid values for type"}
-            self.send(text_data=json.dumps(new_data))
-            return
-        elif message_body == "":
-            new_data = {"type": "error", "message": "Invalid values for body"}
-            self.send(text_data=json.dumps(new_data))
-            return
-        elif len(message_body) > settings.MAX_MESSAGE_LENGTH:
-            new_data = {"type": "error", "message": "Invalid values for body"}
-            self.send(text_data=json.dumps(new_data))
-            return
-        elif message_type == MessageTypes.GLOBAL:
-            # TODO: sent_time is missing
-            new_data = {
-                "type": message_type,
-                "sender": user.username,
-                "message": message_body,
-                "sent_time": datetime.now().strftime("%Y/%m/%d:%H.%M.%S")}
-            async_to_sync(self.channel_layer.group_send)(
-                G_GROUP,
-                {
-                    "type": "send",
-                    "text": json.dumps(new_data),
-                },
-            )
-            return
-
-        # check if receiver exists in database
-        try:
-            receiver = User.objects.get(pk=message_receiver)
-            logger.warning(f"receiver: {receiver}")
-        except User.DoesNotExist:
-            new_data = {"type": "error", "message": "Invalid values for receiver"}
-            self.send(text_data=json.dumps(new_data))
-        # check that receiver isn't the sender
-        if receiver.username == user.username:
-            new_data = {"type": "error", "message": "Invalid values for receiver"}
-            self.send(text_data=json.dumps(new_data))
-        # TODO: check if actual user is a friend of receiver
-        if not FriendsList.objects.are_friends(user, receiver):
-            new_data = {"type": "error", "message": "Invalid values for receiver, he isn't your friend"}
-            self.send(text_data=json.dumps(new_data))
-        # TODO: get the chat_id
-        chat = Chat.objects.filter(chat_member__user_id=user.username).filter(chat_member__user_id=receiver.username)[0]
-        # TODO: store the message in the database
-        message = Message.objects.create(chat=chat, from_user=user.user_websockets, body=message_body)
-        # TODO: check if the receicer is online
-        rec_channel = receiver.user_websockets.chat_channel
-        if rec_channel != "":
-        # TODO: send the message back to the reciever if he is online
-            json_data = message.to_json()
-            logger.warning(f"data: {json_data}")
-            async_to_sync(self.channel_layer.send)(
-                rec_channel,
-                {"type": "chat.message", "text": json.dumps(json_data)}
-            )
-        # temp
-        #self.send(text_data=json.dumps({"message": message_body}))
+        message_builder = (MessageBuilder().builder(user.user_websockets)
+                           .set_msg_type(data.get("type", ""))
+                           .set_msg_body(data.get("body", "")))
+        Message.objects.message_controller(message_builder, data.get("receiver"))

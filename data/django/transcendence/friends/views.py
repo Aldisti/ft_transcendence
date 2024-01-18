@@ -118,6 +118,7 @@ def reject_friends_request(request):
     Notification.objects.send_info_ntf(requester, f"{user.username} rejected your friends request")
     return Response({"message": "Request rejected"}, status=200)
 
+
 @api_view(['GET'])
 @permission_classes([IsUser])
 def are_friends(request):
@@ -132,6 +133,7 @@ def are_friends(request):
     if not FriendsList.objects.are_friends(user, other_user):
         return Response({"is_friend": False}, status=200)
     return Response({"is_friend": True}, status=200)
+
 
 @api_view(['GET'])
 @permission_classes([IsUser])
