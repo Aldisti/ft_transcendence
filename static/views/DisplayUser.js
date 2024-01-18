@@ -9,12 +9,20 @@ export default class extends Aview {
         this.friendStatus = false;
     }
 
-    handleFriendRequest(status){
-        let username = document.querySelector(".friendRequest").getAttribute("name")
-        if (status && confirm(`Do you really want to remove ${username} from your friends?`))
-            API.removeFriend(1, username);
-        else if (!status && confirm(`Do you really want to add ${username} to your friends?`))
-            API.sendFriendRequest(1, username);
+    handleFriendRequest(usernameToSearch){
+        API.friendStatus(1, usernameToSearch).then(res=>{
+            let username = document.querySelector(".friendRequest").getAttribute("name")
+            if (res.is_friend && confirm(`Do you really want to remove ${username} from your friends?`))
+            {
+                API.removeFriend(1, username);
+                document.querySelector(".friendRequest").children[0].innerHTML = "Add Friend"
+            }
+            else if (!res.is_friend && confirm(`Do you really want to add ${username} to your friends?`))
+            {
+                API.sendFriendRequest(1, username);
+                document.querySelector(".friendRequest").children[0].innerHTML = "Pending..."
+            }
+        })
     }
 
     getUserCard(){
@@ -44,7 +52,7 @@ export default class extends Aview {
                         <h3>${data.user_info.birthdate}</h3>
                     </div>
                     <button class="askFriend friendRequest friendRequestBtn" style="${data.username == localStorage.getItem("username") ? `display: none;` : `` }" name="${data.username}">
-                        <h3>Add friend +</h3>
+                        <h3>Add friend</h3>
                     </button>
                     <a data-link class="askFriend" href="/account/" style="${data.username == localStorage.getItem("username") ? `` : `display: none;` }">
                         Manage Account
@@ -60,7 +68,7 @@ export default class extends Aview {
                 }
                 else
                     this.friendStatus = false;
-                document.querySelector(".friendRequest").addEventListener("click", this.handleFriendRequest.bind(null, this.friendStatus));
+                document.querySelector(".friendRequest").addEventListener("click", this.handleFriendRequest.bind(null, this.username));
             })
         })
     }

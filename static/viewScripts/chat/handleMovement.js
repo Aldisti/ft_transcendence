@@ -1,5 +1,6 @@
 import * as general from "/viewScripts/chat/helpFunction.js"
 import socket from "/viewScripts/chat/chatSocket.js"
+import * as API from "/API/APICall.js";
 
 
 function isChildOfSpecificClass(element, className) {

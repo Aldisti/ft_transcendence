@@ -8,8 +8,12 @@ const socket = new WebSocket(URL.socket.NOTIFICATION_SOCKET);
 
 function choiceCallback(config, notificationElement){
     notificationElement.querySelector(".notificationAccept").addEventListener("click", ()=>{
+        let currentSearchedUser = document.querySelector(".userAndImage") != undefined ? document.querySelector(".userAndImage h2").innerHTML : null;
         API.acceptRequest(1, config.token)
+        if (config.body.split(" ")[0] == currentSearchedUser)
+            document.querySelector(".askFriend h3").innerHTML = "Remove Friend";
         document.body.removeChild(notificationElement);
+
     })
     notificationElement.querySelector(".notificationDeny").addEventListener("click", ()=>{
         API.denyRequest(1, config.token)
@@ -18,8 +22,15 @@ function choiceCallback(config, notificationElement){
 }
 
 function handleInfoNotification(notification){
-    notSimple.simpleNotification("Info", notification.body)
+    let currentSearchedUser = document.querySelector(".userAndImage") != undefined ? document.querySelector(".userAndImage h2").innerHTML : null;
     NOTIFICATION.simple({title: "Info", body: notification.body})
+    if (notification.body.substring(notification.body.indexOf(" ")) == " isn't no more your friend" && currentSearchedUser == notification.body.split(" ")[0])
+        document.querySelector(".askFriend h3").innerHTML = "Add Friend";
+    if (notification.body.substring(notification.body.indexOf(" ")) == " accepted your friends request" && currentSearchedUser == notification.body.split(" ")[0])
+        document.querySelector(".askFriend h3").innerHTML = "Remove Friend";
+
+
+    console.log(notification)
 }
 function handleBanNotification(){
 
