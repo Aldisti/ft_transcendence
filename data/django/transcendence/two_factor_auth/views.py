@@ -3,15 +3,13 @@ from rest_framework.decorators import APIView, api_view, permission_classes, thr
 from rest_framework.response import Response
 
 from django.core.exceptions import ValidationError
+from django.conf import settings
 
 from email_manager.models import UserTokens
 from two_factor_auth.models import UserTFA, OtpCode
 
 from authentication.throttles import HighLoadThrottle, MediumLoadThrottle, LowLoadThrottle
-
 from authentication.serializers import TokenPairSerializer
-
-from transcendence.settings import TZ
 
 from datetime import datetime
 import pyotp
@@ -28,7 +26,8 @@ def verify_otp_code(user_tfa: UserTFA, code: str) -> bool:
         totp = pyotp.TOTP(user_tfa.otp_token)
     else:
         return False
-    return totp.verify(code, for_time=datetime.now(tz=TZ), valid_window=1)
+    # TODO: timezone thing
+    return totp.verify(code, for_time=datetime.now(tz=settings.TZ), valid_window=1)
 
 
 class ManageView(APIView):
@@ -94,7 +93,8 @@ def validate_login(request) -> Response:
     user_tfa = UserTFA.objects.delete_url_token(user_tfa)
 
     refresh_token = TokenPairSerializer.get_token(user_tfa.user)
-    exp = datetime.fromtimestamp(refresh_token['exp'], tz=TZ) - datetime.now(tz=TZ)
+    # TODO: timezone thing
+    exp = datetime.fromtimestamp(refresh_token['exp'], tz=settings.TZ) - datetime.now(tz=settings.TZ)
     response = Response(data={'access_token': str(refresh_token.access_token)}, status=200)
     response.set_cookie(
         key='refresh_token',

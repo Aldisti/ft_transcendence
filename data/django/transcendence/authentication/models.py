@@ -2,8 +2,7 @@ from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import Token
 
 from django.db import models
-
-from transcendence.settings import TZ
+from django.conf import settings
 
 from datetime import datetime
 
@@ -12,8 +11,10 @@ class JwtTokenManager(models.Manager):
     def create(self, token: Token):
         if token is None or 'csrf' not in token.payload:
             raise TokenError("invalid token")
-        expiry = datetime.fromtimestamp(token['exp'], tz=TZ)
-        if expiry < datetime.now(tz=TZ):
+        # TODO: timezone thing
+        expiry = datetime.fromtimestamp(token['exp'], tz=settings.TZ)
+        # TODO: timezone thing
+        if expiry < datetime.now(tz=settings.TZ):
             raise TokenError("token already expired")
         jwt_token = self.model(token=token['csrf'], exp=expiry)
         jwt_token.full_clean()

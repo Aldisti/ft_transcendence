@@ -17,6 +17,7 @@ class UserManager(BaseUserManager):
         if not email:
             raise ValueError("Missing email")
         email = self.normalize_email(email)
+        # TODO: timezone thing
         kwargs.setdefault('last_logout', datetime.datetime.now(tz=settings.TZ))
         if kwargs.get("role") != Roles.ADMIN:
             kwargs.pop("role", "")

@@ -1,5 +1,6 @@
 
 from django.core.exceptions import ValidationError
+from django.conf import settings
 
 from rest_framework import status
 from rest_framework.decorators import APIView, api_view, permission_classes, throttle_classes
@@ -18,8 +19,6 @@ from authentication.models import JwtToken
 
 from accounts.models import User
 from accounts.serializers import UserSerializer
-
-from transcendence.settings import TZ
 
 from datetime import datetime
 import logging
@@ -49,7 +48,6 @@ class LoginView(APIView):
         #     return Response(data={'message': 'user not verified yet'}, status=400)
         if not user.active:
             return Response(data={'message': "user isn't active"}, status=400)
-        # TODO: @gpanico should check this line
         UserTokens.objects.clear_password_token(user.user_tokens)
         if user.user_tfa.is_active():
             user_tfa = UserTFA.objects.generate_url_token(user.user_tfa)
@@ -59,7 +57,8 @@ class LoginView(APIView):
             }, status=200)
         user = User.objects.update_last_login(user)
         refresh_token = TokenPairSerializer.get_token(user)
-        exp = datetime.fromtimestamp(refresh_token['exp'], tz=TZ) - datetime.now(tz=TZ)
+        # TODO: timezone thing
+        exp = datetime.fromtimestamp(refresh_token['exp'], tz=settings.TZ) - datetime.now(tz=settings.TZ)
         response = Response(data={
             'access_token': str(refresh_token.access_token)
         }, status=200)
@@ -126,7 +125,8 @@ class RefreshView(APIView):
         if not user.active:
             error_response.data({'message': "user isn't active"})
             return error_response
-        token_exp = datetime.fromtimestamp(refresh_token['exp'], tz=TZ)
+        # TODO: timezone thing
+        token_exp = datetime.fromtimestamp(refresh_token['exp'], tz=settings.TZ)
         if user.last_logout > user.last_login and user.last_logout > token_exp:
             return error_response
         return Response({'access_token': str(refresh_token.access_token)}, status=200)
