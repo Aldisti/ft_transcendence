@@ -175,8 +175,9 @@ class UserWebsocketsManager(models.Manager):
 
 
 class UserGameManager(models.Manager):
-    def create(self, user):
-        user_game = self.model(user=user, display_name=user.username)
+    def create(self, user, **kwargs):
+        kwargs.setdefault('display_name', user.username)
+        user_game = self.model(user=user, **kwargs)
         user_game.full_clean()
         user_game.save()
         return user_game

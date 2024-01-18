@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.shortcuts import render
 from django.core.mail import send_mail
 from django.conf import settings
@@ -8,7 +9,7 @@ from rest_framework.exceptions import APIException
 from rest_framework import filters
 from accounts.paginations import MyPageNumberPagination
 from accounts.serializers import CompleteUserSerializer, UploadImageSerializer, UserInfoSerializer
-from accounts.models import User, UserInfo
+from accounts.models import User, UserInfo, UserGame
 from friends.models import FriendsList
 from accounts.validators import image_validator
 from email_manager.email_sender import send_verification_email
@@ -134,3 +135,15 @@ def check_user(request):
     email = request.query_params.get("email", "")
     found = User.objects.is_already_registered(username, email)
     return Response({"found": found}, status=200)
+
+
+@api_view(['POST'])
+def change_display_name(request) -> Response:
+    display_name = request.data.get("display_name", "")
+    if display_name == '':
+        return Response({'message': 'invalid name'}, status=400)
+    try:
+        UserGame.objects.update_display_name(request.user.user_game, display_name)
+    except ValidationError:
+        return Response({'message': 'invalid name'}, status=400)
+    return Response(status=200)
