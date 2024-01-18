@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes, APIView
 from rest_framework.response import Response
 
-from email_manager.models import UserTokens
+from authentication.models import UserTokens
 from email_manager.email_sender import send_password_email, send_tfa_code_email
 
 from accounts.models import User

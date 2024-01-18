@@ -16,7 +16,7 @@ from channels.security.websocket import AllowedHostsOriginValidator
 
 from chat.routing import chat_urlpatterns
 from notifications.routing import notifications_urlpatterns
-from chat.middleware import CustomAuthMiddlewareStack
+from transcendence.middleware import CustomAuthMiddlewareStack
 
 import logging
 

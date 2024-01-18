@@ -1,4 +1,3 @@
-
 from django.core.exceptions import ValidationError
 
 from rest_framework import status
@@ -9,15 +8,16 @@ from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from authentication.throttles import LowLoadThrottle, MediumLoadThrottle
-from email_manager.models import UserTokens
 
 from two_factor_auth.models import UserTFA
 
 from authentication.serializers import TokenPairSerializer
-from authentication.models import JwtToken
+from authentication.models import JwtToken, UserTokens, WebsocketTicket
 
 from accounts.models import User
 from accounts.serializers import UserSerializer
+
+from authentication.permissions import IsUser
 
 from transcendence.settings import TZ
 
@@ -27,6 +27,12 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+@api_view(['GET'])
+@permission_classes([IsUser])
+def generate_ticket(request) -> Response:
+    user = request.user
+    websocket_ticket = WebsocketTicket.objects.create(user.user_tokens)
+    return Response({"ticket": websocket_ticket.ticket}, status=200)
 
 class LoginView(APIView):
     throttle_classes = [MediumLoadThrottle]

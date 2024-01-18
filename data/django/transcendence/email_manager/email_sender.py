@@ -3,7 +3,7 @@ from uuid import UUID, uuid4
 from pyotp import TOTP
 
 from accounts.models import User
-from email_manager.models import UserTokens
+from authentication.models import UserTokens
 from django.core.mail import send_mail
 from django.conf import settings
 from django.urls import reverse

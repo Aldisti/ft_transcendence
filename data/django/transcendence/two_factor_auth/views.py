@@ -4,7 +4,7 @@ from rest_framework.response import Response
 
 from django.core.exceptions import ValidationError
 
-from email_manager.models import UserTokens
+from authentication.models import UserTokens
 from two_factor_auth.models import UserTFA, OtpCode
 
 from authentication.throttles import HighLoadThrottle, MediumLoadThrottle, LowLoadThrottle
