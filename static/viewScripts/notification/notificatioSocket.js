@@ -1,6 +1,7 @@
 
 import * as NOTIFICATION from "/viewScripts/notification/notification.js"
 import * as URL from "/API/URL.js"
+import * as create from "/viewScripts/chat/createChatItem.js"
 import * as API from "/API/APICall.js";
 
 
@@ -10,6 +11,7 @@ function choiceCallback(config, notificationElement){
     notificationElement.querySelector(".notificationAccept").addEventListener("click", ()=>{
         let currentSearchedUser = document.querySelector(".userAndImage") != undefined ? document.querySelector(".userAndImage h2").innerHTML : null;
         API.acceptRequest(1, config.token)
+        
         if (config.body.split(" ")[0] == currentSearchedUser)
             document.querySelector(".askFriend h3").innerHTML = "Remove Friend";
         document.body.removeChild(notificationElement);
@@ -24,10 +26,29 @@ function choiceCallback(config, notificationElement){
 function handleInfoNotification(notification){
     let currentSearchedUser = document.querySelector(".userAndImage") != undefined ? document.querySelector(".userAndImage h2").innerHTML : null;
     NOTIFICATION.simple({title: "Info", body: notification.body})
-    if (notification.body.substring(notification.body.indexOf(" ")) == " isn't no more your friend" && currentSearchedUser == notification.body.split(" ")[0])
-        document.querySelector(".askFriend h3").innerHTML = "Add Friend";
-    if (notification.body.substring(notification.body.indexOf(" ")) == " accepted your friends request" && currentSearchedUser == notification.body.split(" ")[0])
-        document.querySelector(".askFriend h3").innerHTML = "Remove Friend";
+    if (notification.body.substring(notification.body.indexOf(" ")) == " isn't no more your friend")
+    {
+        if (currentSearchedUser == notification.body.split(" ")[0])
+            document.querySelector(".askFriend h3").innerHTML = "Add Friend";
+        document.querySelector(".chatSideList").innerHTML = ""; 
+        create.createUser(create.global);
+        API.getFriends(1).then(users=>{
+            for (let i = 0; i < users.length; i++)
+                create.createUser(users[i]);
+        })
+    }
+    if (notification.body.substring(notification.body.indexOf(" ")) == " accepted your friends request")
+    {
+        console.log(currentSearchedUser, notification.body.split(" ")[0])
+        if (currentSearchedUser == notification.body.split(" ")[0])
+            document.querySelector(".askFriend h3").innerHTML = "Remove Friend";
+        document.querySelector(".chatSideList").innerHTML = ""; 
+        create.createUser(create.global);
+        API.getFriends(1).then(users=>{
+            for (let i = 0; i < users.length; i++)
+                create.createUser(users[i]);
+        })
+    }
 
 
     console.log(notification)

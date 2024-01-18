@@ -1,4 +1,5 @@
 import Router from "/router/mainRouterFunc.js"
+import * as create from "/viewScripts/chat/createChatItem.js"
 import * as URL from "/API/URL.js"
 
 function cleanLocalStorage()
@@ -645,6 +646,12 @@ export async function removeFriend(recursionProtection, username){
         credentials: "include",
     });
     if (res.ok) {
+        document.querySelector(".chatSideList").innerHTML = ""; 
+        create.createUser(create.global);
+        getFriends(1).then(users=>{
+            for (let i = 0; i < users.length; i++)
+                create.createUser(users[i]);
+        })
         alert("friend removed")
         return;
     }
@@ -698,6 +705,12 @@ export async function acceptRequest(recursionProtection, token){
         credentials: "include",
     });
     if (res.ok) {
+        document.querySelector(".chatSideList").innerHTML = ""; 
+        create.createUser(create.global);
+        getFriends(1).then(users=>{
+            for (let i = 0; i < users.length; i++)
+                create.createUser(users[i]);
+        })
         let parsed = await res.json();
         return (parsed);
     }

@@ -1,5 +1,11 @@
 import * as general from "/viewScripts/chat/helpFunction.js"
 
+export const global = {
+    username: "global",
+    picture: "https://i.pinimg.com/originals/7d/34/d9/7d34d9d53640af5cfd2614c57dfa7f13.png",
+    status: true
+}
+
 export function createUser(info){
     let userLine = `
         <div class="chat userLine">
