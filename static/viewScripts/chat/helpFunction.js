@@ -1,5 +1,19 @@
 import * as create from "/viewScripts/chat/createChatItem.js"
 
+export function chatInitializer(userArray){
+    let chatHistory;
+
+    if (localStorage.getItem("chat") == null)
+        localStorage.setItem("chat", "{}");
+    chatHistory = JSON.parse(localStorage.getItem("chat"));
+    for (let i = 0; i < userArray.length; i++)
+    {
+        if (chatHistory[userArray[i].username] == undefined)
+            chatHistory[userArray[i].username] = [];
+    }
+    localStorage.setItem("chat", JSON.stringify(chatHistory));
+}
+
 export function localStoragePush(obj){
     let chatString = localStorage.getItem("chat") != null ? localStorage.getItem("chat") : "{}";
     let toAdd = JSON.parse(chatString);
@@ -9,6 +23,8 @@ export function localStoragePush(obj){
 
     if (toAdd[username] == undefined)
         toAdd[username] = [];
+    if (toAdd[username].length > 100)
+        toAdd[username].shift();
     toAdd[username].push(obj)
     localStorage.setItem("chat", JSON.stringify(toAdd));
 }

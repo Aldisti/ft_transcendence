@@ -5,7 +5,23 @@ import * as create from "/viewScripts/chat/createChatItem.js"
 import * as API from "/API/APICall.js";
 
 
-const socket = new WebSocket(URL.socket.NOTIFICATION_SOCKET);
+let socket;
+
+if (localStorage.getItem("token") != null)
+{
+    API.getTicket(1).then(res=>{
+        console.log(res)
+        socket = new WebSocket(`${URL.socket.NOTIFICATION_SOCKET}?ticket=${res.ticket}`);
+        
+        socket.addEventListener("message", (message)=>{
+            let parsed = JSON.parse(message.data);
+            console.log(parsed)
+        
+            for (let i = 0; i < parsed.length; i++)
+                notificationRouter(parsed[i]);
+        })
+    })
+}
 
 function choiceCallback(config, notificationElement){
     notificationElement.querySelector(".notificationAccept").addEventListener("click", ()=>{
@@ -82,13 +98,3 @@ function notificationRouter(notification){
     else if (notification.type == "match_req")
         handleFriendNotification();
 }
-
-socket.addEventListener("message", (message)=>{
-    let parsed = JSON.parse(message.data);
-    console.log(parsed)
-
-    for (let i = 0; i < parsed.length; i++)
-        notificationRouter(parsed[i]);
-})
-
-export default socket;

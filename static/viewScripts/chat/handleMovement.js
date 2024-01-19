@@ -1,5 +1,4 @@
 import * as general from "/viewScripts/chat/helpFunction.js"
-import socket from "/viewScripts/chat/chatSocket.js"
 import * as API from "/API/APICall.js";
 
 
@@ -57,23 +56,4 @@ export function clickHandle(e){
         if (!document.querySelector(".chatContainer").classList.contains("fullOpen"))
             document.querySelector(".chatContainer").classList.add("fullOpen");
     }
-}
-
-export function sendSocketMessage(e){
-    let message = e.target.parentNode.querySelector("textarea");
-    let chatBox = document.querySelector(".chatBox")
-    let newMessage = {
-        type: chatBox.getAttribute("name") == "global" ? "global" : "private",
-        receiver: chatBox.getAttribute("name"),
-        sender: localStorage.getItem("username"),
-        body: message.value,
-        sent_time: general.getTimeStamp()
-    }
-
-    general.localStoragePush(newMessage);
-    delete newMessage.sender;
-    socket.send(JSON.stringify(newMessage))
-    general.updateChatHistory(chatBox.getAttribute("name"));
-    chatBox.scrollTop = chatBox.scrollHeight;
-    message.value = "";
 }

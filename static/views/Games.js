@@ -67,6 +67,6 @@ export default class extends Aview{
         `
     }
     setup(){
-        this.defineWallpaper("/imgs/backLogin.png", "https://c4.wallpaperflare.com/wallpaper/105/526/545/blur-gaussian-gradient-multicolor-wallpaper-preview.jpg")
+        this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.avif")
     }
 }

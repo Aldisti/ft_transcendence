@@ -13,7 +13,7 @@ export function createUser(info){
                 ${info.username}
             </div>
             <div class="chat chatUserPict">
-                <img class="chat" src="${info.picture}">
+            ${info.username == "global" ? `<img class="chat" src="/imgs/globe.png">` : `<img class="chat" src="${info.picture != null ? info.picture : "/imgs/defaultImg.jpg"}">`}
             </div>
         </div>
     `

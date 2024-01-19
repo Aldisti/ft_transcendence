@@ -67,7 +67,7 @@ export default class extends Aview {
                     	<button class="retroBtn tfa googleBtn retroShade btnColor-blue"><img src="/imgs/logoGoogle.png"><span>${this.language.login.googleLogin}</span></button>
                 	</div>
                     <div class="extra">
-                        <a class="retroShade registerLink" href="/signup" data-link>${this.language.login.register}</a>
+                        <a class="retroShade registerLink" href="/signup/" data-link>${this.language.login.register}</a>
                         <span class="recovery" href="#">Password Dimenticata?</span>
                     </div>
             	</div>

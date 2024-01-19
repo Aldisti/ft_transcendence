@@ -166,7 +166,7 @@ html, body
 {
     width: 80svw;
     height: 92svh;
-    background-color: var(--bs-primary);
+    background-color: var(--bs-cyan);
     position: absolute;
     z-index: 10000000000;
     bottom: 0;

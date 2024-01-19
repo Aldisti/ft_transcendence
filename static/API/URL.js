@@ -1,4 +1,4 @@
-let ip = "localhost";
+let ip = "192.168.1.32";
 let port = "8000";
 
 export const availabilityCheck = {
@@ -43,7 +43,8 @@ export const friendship = {
 
 export const socket = {
     CHAT_SOCKET: `ws://${ip}:${port}/ws/chat/socket/`,
-    NOTIFICATION_SOCKET: `ws://${ip}:${port}/ws/notification/socket/`
+    NOTIFICATION_SOCKET: `ws://${ip}:${port}/ws/notification/socket/`,
+    GET_TICKET: `http://${ip}:${port}/auth/ticket/`
 }
 
 export const userAction = {

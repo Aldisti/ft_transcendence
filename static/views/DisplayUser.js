@@ -32,7 +32,7 @@ export default class extends Aview {
             document.querySelector(".cardBody").innerHTML = `
                 <div class="userAndImage">
                     <div class="imgContainer">
-                        <img src="${data.user_info.picture}">
+                        <img src="${data.user_info.picture != null ? data.user_info.picture : "/imgs/defaultImg.jpg"}">
                     </div>
                     <h2>${data.username}</h2>
                 </div>

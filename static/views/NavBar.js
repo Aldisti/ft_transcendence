@@ -23,7 +23,7 @@ document.querySelector("#navbar").innerHTML = `
             </li>
           `}
           <li class="nav-item">
-            <a class="nav-link active" data-link href="/games" >${language.navbar.games}</a>
+            <a class="nav-link active" data-link href="/games/" >${language.navbar.games}</a>
           </li>
           <li class="nav-item">
             <button class="nav-link active" >${language.navbar.notification}</a>

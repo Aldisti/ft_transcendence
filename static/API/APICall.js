@@ -1,6 +1,7 @@
 import Router from "/router/mainRouterFunc.js"
 import * as create from "/viewScripts/chat/createChatItem.js"
 import * as URL from "/API/URL.js"
+import * as help from "/viewScripts/chat/helpFunction.js"
 
 function cleanLocalStorage()
 {
@@ -10,6 +11,7 @@ function cleanLocalStorage()
     localStorage.removeItem("googleLinked");
     localStorage.removeItem("isActive");
     localStorage.removeItem("selectedForm");
+    localStorage.removeItem("chat");
 }
 
 function getCookie(name) {
@@ -656,7 +658,7 @@ export async function removeFriend(recursionProtection, username){
         return;
     }
     if (res.status == 401 && recursionProtection)
-        return await refreshAndRetry(removeFriend, 0);
+        return await refreshAndRetry(removeFriend, 0, username);
     alert("error ha occured..")
 }
 
@@ -673,7 +675,7 @@ export async function sendFriendRequest(recursionProtection, username){
         return {};
     }
     if (res.status == 401 && recursionProtection)
-        return await refreshAndRetry(sendFriendRequest, 0);
+        return await refreshAndRetry(sendFriendRequest, 0, username);
     alert("error ha occured..")
     let parsed = await res.json();
     return parsed;
@@ -692,7 +694,7 @@ export async function friendStatus(recursionProtection, username){
         return (parsed);
     }
     if (res.status == 401 && recursionProtection)
-        return await refreshAndRetry(friendStatus, 0);
+        return await refreshAndRetry(friendStatus, 0, username);
     return ({})
 }
 
@@ -715,7 +717,7 @@ export async function acceptRequest(recursionProtection, token){
         return (parsed);
     }
     if (res.status == 401 && recursionProtection)
-        return await refreshAndRetry(acceptRequest, 0);
+        return await refreshAndRetry(acceptRequest, 0, token);
     alert("error ha occured..")
     return ({})
 }
@@ -732,7 +734,7 @@ export async function denyRequest(recursionProtection, token){
         return (parsed);
     }
     if (res.status == 401 && recursionProtection)
-        return await refreshAndRetry(denyRequest, 0);
+        return await refreshAndRetry(denyRequest, 0, token);
     alert("error ha occured..")
     return ({})
 }
@@ -746,6 +748,7 @@ export async function getFriends(recursionProtection){
     });
     if (res.ok) {
         let parsed = await res.json();
+        help.chatInitializer(parsed);
         return (parsed);
     }
     if (res.status == 401 && recursionProtection)
@@ -769,5 +772,21 @@ export async function getUsers(recursionProtection){
     if (res.status == 401 && recursionProtection)
         return await refreshAndRetry(getUsers, 0);
     alert("error ha occured..")
+    return ({})
+}
+export async function getTicket(recursionProtection){
+    const res = await fetch(URL.socket.GET_TICKET, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        credentials: "include",
+    });
+    if (res.ok) {
+        let parsed = await res.json();
+        return (parsed);
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(getTicket, 0);
     return ({})
 }
