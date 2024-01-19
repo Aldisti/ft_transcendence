@@ -1,36 +1,49 @@
-Web
-10:	backend framework
- 5:	frontend framework
- 5:	backend database
 
 
-User management
-10:	user auth...
-10:	remote auth
 
-Gameplay
-10:	remote players
-10:	multiple players ?
-10:	another game
- 5:	game customization
-10:	live chat
 
-IA-Algo
-10:	AI opponent
- 5:	user/game stats
 
-Cybersecurity
-10:	2FA
+• Web
+[x] ◦ 10: Use a Framework as backend.
+[x] ◦  5: Use a front-end framework or toolkit.
+[x] ◦  5: Use a database for the backend.
+[ ] ◦ 10: Store the score of a tournament in the Blockchain.
 
-Devops
- 5: monitoring system
-10:	microservices
+• User Management
+[x] ◦ 10: Standard user management, authentication, users across tournaments.
+[x] ◦ 10: Implementing a remote authentication.
 
-Graphics
-10:	3D techniques ?
+• Gameplay and user experience
+[-] ◦ 10: Remote players
+[-] ◦ 10: Multiplayers (more than 2 in the same game).
+[-] ◦ 10: Add Another Game with User History and Matchmaking.
+[ ] ◦  5: Game Customization Options.
+[x] ◦ 10: Live chat.
 
-Accessibility
- 5:	support all devices
- 5:	browser compatibility
- 5:	language support
+• AI-Algo
+[ ] ◦ 10: Introduce an AI Opponent.
+[-] ◦  5: User and Game Stats Dashboards
 
+• Cybersecurity
+[ ] ◦ 10: Implement WAF/ModSecurity with Hardened Configuration and HashiCorp Vault for Secrets Management.
+[ ] ◦  5: GDPR Compliance Options with User Anonymization, Local, Data Management, and Account Deletion.
+[x] ◦ 10: Implement Two-Factor Authentication (2FA) and JWT.
+
+• Devops
+[ ] ◦ 10: Infrastructure Setup for Log Management.
+[ ] ◦  5: Monitoring system.
+[ ] ◦ 10: Designing the Backend as Microservices.
+
+• Graphics
+[-] ◦ 10: Use of advanced 3D techniques.
+
+• Accessibility
+[ ] ◦  5: Support on all devices.
+[x] ◦  5: Expanding Browser Compatibility.
+[x] ◦  5: Multiple language supports.
+[ ] ◦  5: Add accessibility for Visually Impaired Users.
+[ ] ◦  5: Server-Side Rendering (SSR) Integration.
+
+• Server-Side Pong
+[ ] ◦ 10: Replacing Basic Pong with Server-Side Pong and Implementing an API.
+[ ] ◦ 10: Enabling Pong Gameplay via CLI against Web Users with API Integration.
