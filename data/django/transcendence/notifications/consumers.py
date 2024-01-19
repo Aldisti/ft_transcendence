@@ -1,6 +1,6 @@
 from channels.generic.websocket import WebsocketConsumer
 from asgiref.sync import async_to_sync
-from accounts.models import UserWebsockets
+from accounts.models import NtfChannel
 from notifications.models import Notification
 from notifications.utils import G_N_GROUP
 import json
@@ -14,10 +14,7 @@ class NotificationConsumer(WebsocketConsumer):
         user = self.scope["user"]
         logger.warning(f"{user.username} connected to ntf sock")
         # update channel name when client connects
-        try:
-            UserWebsockets.objects.update_ntf_channel(user.user_websockets, self.channel_name)
-        except UserWebsockets.DoesNotExist:
-            UserWebsockets.objects.create(user.user_websockets, ntf_channel=self.channel_name)
+        NtfChannel.objects.create(user_websockets=user.user_websockets, channel_name=self.channel_name)
         # add client to global group
         async_to_sync(self.channel_layer.group_add)(G_N_GROUP, self.channel_name)
         self.accept()
@@ -34,8 +31,8 @@ class NotificationConsumer(WebsocketConsumer):
         # remove client to global group
         async_to_sync(self.channel_layer.group_discard)(G_N_GROUP, self.channel_name)
         # update channel name when client disconnects
-        user_websockets = UserWebsockets.objects.get(user=user)
-        UserWebsockets.objects.update_ntf_channel(user_websockets, ntf_channel="")
+        ntf_channel = NtfChannel.objects.get(channel_name=self.channel_name)
+        ntf_channel.delete()
         logger.warning(f"[{close_code}]: {user.username} disconnected from ntf sock")
 
     def notification_message(self, event):

@@ -172,3 +172,19 @@ class UserWebsocketsManager(models.Manager):
         user_websockets.full_clean()
         user_websockets.save()
         return user_websockets
+
+
+class ChatChannelManager(models.Manager):
+    def create(self, user_websockets, channel_name):
+        chat_channel = self.model(user_websockets=user_websockets, channel_name=channel_name)
+        chat_channel.full_clean()
+        chat_channel.save()
+        return chat_channel
+
+
+class NtfChannelManager(models.Manager):
+    def create(self, user_websockets, channel_name):
+        ntf_channel = self.model(user_websockets=user_websockets, channel_name=channel_name)
+        ntf_channel.full_clean()
+        ntf_channel.save()
+        return ntf_channel

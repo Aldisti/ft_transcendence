@@ -20,7 +20,7 @@ def get_user(query_params: dict) -> User:
     except WebsocketTicket.DoesNotExist:
         raise ValueError("Ticket not found in database")
     user = ticket.user_tokens.user
-    ticket.delete()
+    #ticket.delete()
     return user
 
 

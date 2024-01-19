@@ -6,7 +6,11 @@ from django.dispatch import receiver
 
 from accounts.utils import Roles
 from accounts.validators import validate_birthdate
-from accounts.managers import UserManager, UserInfoManager, UserWebsocketsManager
+from accounts.managers import (UserManager,
+                               UserInfoManager,
+                               UserWebsocketsManager,
+                               ChatChannelManager,
+                               NtfChannelManager)
 
 import logging
 
@@ -66,7 +70,14 @@ class User(AbstractBaseUser):
         db_table = "user_auth"
 
     def get_status(self):
-        return self.user_websockets.chat_channel != ""
+        if self.user_websockets.chat_channels.all():
+            return True
+        return False
+
+    def get_ntf_status(self):
+        if self.user_websockets.ntf_channels.all():
+            return True
+        return False
 
     def get_picture(self):
         return self.user_info.picture
@@ -137,6 +148,8 @@ class UserInfo(models.Model):
         return f"user: {self.user.username}, first_name: {self.first_name}, last_name: {self.last_name}, joined:{self.date_joined}"
 
 
+# TODO: connect another websocket used only to detect status and save it in UserWebsockets
+
 class UserWebsockets(models.Model):
     class Meta:
         db_table = "user_websockets"
@@ -150,19 +163,53 @@ class UserWebsockets(models.Model):
         db_column="username",
     )
 
-    chat_channel = models.CharField(
-        db_column="chat_channel",
-        max_length=255,
-        blank=True,
-    )
-
-    ntf_channel = models.CharField(
-        db_column="ntf_channel",
-        max_length=255,
-        blank=True,
-    )
-
     objects = UserWebsocketsManager()
 
     def __str__(self):
         return f"username: {self.user.username}, chat_channel: {self.chat_channel}, ntf_channel: {self.ntf_channel}"
+
+
+class ChatChannel(models.Model):
+    class Meta:
+        db_table="chat_channel"
+
+    channel_name = models.CharField(
+        primary_key=True,
+        db_column="channel_name",
+        max_length=255,
+    )
+
+    user_websockets = models.ForeignKey(
+        UserWebsockets,
+        on_delete=models.CASCADE,
+        db_column="user_websockets",
+        related_name="chat_channels",
+    )
+
+    objects = ChatChannelManager()
+
+    def __str__(self):
+        return f"user: {self.user_websockets_id}, chat_channel: {self.channel_name}"
+
+
+class NtfChannel(models.Model):
+    class Meta:
+        db_table="ntf_channel"
+
+    channel_name = models.CharField(
+        primary_key=True,
+        db_column="channel_name",
+        max_length=255,
+    )
+
+    user_websockets = models.ForeignKey(
+        UserWebsockets,
+        on_delete=models.CASCADE,
+        db_column="user_websockets",
+        related_name="ntf_channels",
+    )
+
+    objects = NtfChannelManager()
+
+    def __str__(self):
+        return f"user: {self.user_websockets_id}, ntf_channel: {self.channel_name}"

@@ -23,16 +23,17 @@ class NotificationManager(models.Manager):
 
     def send_notification(self, notification):
         user_websocket = notification.user
-        ntf_channel = user_websocket.ntf_channel
-        if ntf_channel != "":
-            channel_layer = layers.get_channel_layer()
+        ntf_channels = user_websocket.ntf_channels.all()
+        channel_layer = layers.get_channel_layer()
+        for ntf_channel in ntf_channels:
             json_data = [notification.to_json()]
             #logger.warning(f"data to send: {json_data}")
             #logger.warning(f"notification will be sent at {ntf_channel}")
             async_to_sync(channel_layer.send)(
-                ntf_channel,
+                ntf_channel.channel_name,
                 {"type": "notification.message", "text": json.dumps(json_data)})
             #logger.warning(f"notification sent")
+        if ntf_channels:
             notification.delete()
 
     # TODO: this function should be tested

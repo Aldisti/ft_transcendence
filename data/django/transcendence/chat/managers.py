@@ -6,7 +6,7 @@ from asgiref.sync import async_to_sync
 from chat.utils import MessageTypes, G_GROUP
 from chat.serializers import MessageSerializer
 from friends.models import FriendsList
-from accounts.models import User
+from accounts.models import User, ChatChannel
 import json
 
 logger = logging.getLogger(__name__)
@@ -53,15 +53,15 @@ class MessageManager(models.Manager):
         if len(messages) > settings.MAX_MESSAGES:
             messages[0].delete()
 
-    # TODO: test
     def send_message(self, serialized_data, recv):
         channel_layer = layers.get_channel_layer()
-        async_to_sync(channel_layer.send)(
-            recv.chat_channel,
-            {"type": "chat.message", "text": serialized_data}
-        )
+        chat_channels = ChatChannel.objects.filter(user_websockets=recv)
+        for chat_channel in chat_channels:
+            async_to_sync(channel_layer.send)(
+                chat_channel.channel_name,
+                {"type": "chat.message", "text": serialized_data}
+            )
 
-    # TODO: test
     def send_message_group(self, serialized_data, group):
         channel_layer = layers.get_channel_layer()
         async_to_sync(channel_layer.group_send)(
@@ -69,7 +69,6 @@ class MessageManager(models.Manager):
             {"type": "chat.message", "text": serialized_data}
         )
 
-    # TODO: test
     def send_global_message(self, message):
         data = MessageSerializer().get_data(message)
         data.setdefault("type", MessageTypes.GLOBAL)
@@ -81,7 +80,6 @@ class MessageManager(models.Manager):
         data.setdefault("type", MessageTypes.ERROR)
         self.send_message(json.dumps(data), message.from_user)
 
-    # TODO: test
     def send_private_message(self, message, receiver: str):
         from chat.models import Chat
 
@@ -106,6 +104,9 @@ class MessageManager(models.Manager):
     # TODO: test
     def message_controller(self, message_builder, receiver: str):
         message = message_builder.build()
+        #logger.warning(f"MESSAGE: {message['message']}")
+        #logger.warning(f"RECEIVER: {receiver}")
+        #logger.warning(f"TYPE: {message['msg_type']}")
         if message["msg_type"] == MessageTypes.ERROR:
             self.send_error_message(message["message"])
         elif message["msg_type"] == MessageTypes.GLOBAL:
