@@ -3,6 +3,9 @@ import Router from "/router/mainRouterFunc.js"
 import * as API from "/API/APICall.js"
 import * as NOTIFICATION from "/viewScripts/notification/notification.js"
 
+if (localStorage.getItem("language") == null)
+	localStorage.setItem("language", "en")
+
 let language = allLanguage[localStorage.getItem("language")];
 let defaultProfilePicture = "https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg";
 document.querySelector("#navbar").innerHTML = `
@@ -62,37 +65,14 @@ document.querySelector("#navbar").innerHTML = `
     </div>
     </nav>
 `
-function createUser(obj){
-  return `
-      <a class="userBox" href="/user/?username=${obj.username}" data-link>
-          <h2>${obj.username}</h2>
-          <div class="imgContainer">
-              <img class="profPict" src="${obj.user_info.picture}">
-          </div>
-      </a>
-  `
-}
-function concatenateUsers(objs){
-  let users = "";
 
-  for (let i = 0; i < objs.length; i++)
-      users += this.createUser(objs[i]);
-  return users;
-}
-function getHtml(objs){
-  let urlParams = new URLSearchParams(window.location.search);
+if (localStorage.getItem("language") != null)
+  document.querySelector("#languageSwitch").value = localStorage.getItem("language")
 
-  return `
-      <div class="base">
-          <div class="userContainer">
-              ${this.concatenateUsers(objs)}
-          </div>
-      </div>
-  `
-}
-function escapeHTML(input) {
-  return input.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-}
+document.querySelector("#languageSwitch").addEventListener("change", (e)=>{
+	localStorage.setItem("language", e.target.value)
+	window.location.reload()
+})
 
 function searchUser(input)
 {
@@ -120,7 +100,6 @@ document.querySelector(".searchBtn").addEventListener("click", ()=>{
 });  
 
 API.getUserInfo(localStorage.getItem("username")).then(res=>{
-  if (res.user_info.picture != null)
-  //console.log(res)
+  if (res != undefined && res.user_info.picture != null)
     document.querySelector(".profilePictureUrl").src = res.user_info.picture;
 })

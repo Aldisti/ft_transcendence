@@ -160,27 +160,44 @@ html, body
     right: 0;
 }
 
-
+@keyframes bounce {
+    0%{
+        transform: translateX(120%);
+    }
+    25%{
+        transform: translateX(90%);
+    }
+    50%{
+        transform: translateX(120%);
+    }
+    75%{
+        transform: translateX(90%);
+    }
+    100%{
+        transform: translateX(120%);
+    }
+}
 
 .chatContainer
 {
-    width: 80svw;
+    width: 50svw;
     height: 92svh;
-    background-color: var(--bs-cyan);
     position: absolute;
     z-index: 10000000000;
     bottom: 0;
     right: 0;
     transform: translateX(100%);
     display: flex;
+    align-items: center;
     justify-content: space-between;
     padding: 20px;
 }
 
 .chatSideList
 {
-    width: 32%;
-    height: 100%;
+    width: 42%;
+    height: fit-content;
+    max-height: 100%;
     display: flex;
     justify-content: flex-start;
     align-content: flex-start;
@@ -189,12 +206,13 @@ html, body
     gap: 20px;
     padding: 20px;
     background-color: white;
+    z-index: 1000000;
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
 }
 
 .userLine{
     width: 100%;
-    height: 8%;
+    height: 8svh;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -211,7 +229,7 @@ html, body
 }
 
 .nameContainer{
-    width: 80%;
+    width: 70%;
     height: 100%;
     background-color: white;
     display: flex;
@@ -222,7 +240,7 @@ html, body
 }
 
 .chatUserPict{
-    width: 10%;
+    width: 25%;
     height: 100%;
     background-color: var(--bs-success);
 
@@ -237,15 +255,33 @@ html, body
 
 .chatFull
 {
-    width: 65%;
+    width: 55%;
     height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
+    gap: 20px;
     padding: 20px;
     background-color: white;
+    z-index: 10000000;
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+}
+
+.imgTitle{
+    width: 20%;
+    height: 100%;
+}
+
+.imgTitle img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hideUsersList{
+    transform: translateX(115%);
+    animation: bounce 2s ease-in-out;
 }
 
 .chatBox
@@ -256,6 +292,7 @@ html, body
     flex-direction: column;
     padding: 15px;
     overflow: scroll;
+    background-color: white;
     /* background-color: var(--bs-warning); */
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
 }
@@ -267,6 +304,22 @@ html, body
     justify-content: space-between;
     padding: 20px;
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+}
+
+.chatTitleLine{
+    width: 100%;
+    height: 100%;
+    padding: 8px;
+    background-color: var(--bs-dark);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.chatTitle{
+    width: 100%;
+    height: 8svh;
+    overflow: hidden ;
 }
 
 #chatInputElement{
@@ -356,7 +409,7 @@ html, body
 }
 
 .showUserList{
-    transform: translateX(66.5%);
+    transform: translateX(56.5%);
 }
 .fullOpen{
     transform: translateX(0) ;

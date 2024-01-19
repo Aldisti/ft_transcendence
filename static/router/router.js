@@ -1,13 +1,8 @@
 import Router from "/router/mainRouterFunc.js"
 import * as styleH from "/router/styleSheetsHandling.js"
 
-if (localStorage.getItem("language") == null)
-	localStorage.setItem("language", "en")
-else
-	document.querySelector("#languageSwitch").value = localStorage.getItem("language")
-
 if (localStorage.getItem("style") == null)
-	localStorage.setItem("style", "old")
+	localStorage.setItem("style", "modern")
 
 const navigateTo = url => {
 	history.pushState(null, null, url);
@@ -36,11 +31,6 @@ document.addEventListener("click", (e)=>{
 
 //make the back key works
 window.addEventListener("popstate", Router);
-
-document.querySelector("#languageSwitch").addEventListener("change", (e)=>{
-	localStorage.setItem("language", e.target.value)
-	window.location.reload()
-})
 
 addEventListener("DOMContentLoaded", (event) => {
 	styleH.loadStyles();

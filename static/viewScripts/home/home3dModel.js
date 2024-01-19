@@ -17,10 +17,11 @@ class Obj{
         //defining base object for 3d model
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera( 75, canv.clientWidth/canv.clientHeight, 0.1, 1000 );
-        this.renderer = new THREE.WebGLRenderer({canvas: canv});
+        this.renderer = new THREE.WebGLRenderer({canvas: canv, alpha: true});
+        this.renderer.setClearColor(0x000000, 0);
 
         //defining background color
-        this.scene.background = new THREE.Color(0x000000);
+        // this.scene.background = new THREE.Color(0x000000);
 
         //setting up controls and window size
         this.renderer.setSize( canv.clientWidth, canv.clientWidth);

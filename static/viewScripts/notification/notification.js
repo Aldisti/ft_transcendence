@@ -5,6 +5,7 @@ let notificationCss = `
     width: 10%;
     height: 30%;
     background-color: white;
+    color: black;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -15,7 +16,8 @@ let notificationCss = `
 
 .notificationContainer{
     margin: 20px;
-    background-color: var(--bs-teal);
+    background-color: var(--bs-dark);
+    color: white;
     width: 30svw;
     height: fit-content;
     position: absolute;

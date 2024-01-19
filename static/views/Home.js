@@ -58,6 +58,6 @@ export default class extends Aview{
             })
         }
         animation();
-        this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.avif")
+        this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpg")
 	}
 }
