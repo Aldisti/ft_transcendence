@@ -22,16 +22,16 @@ function getCookie(name) {
 
 async function refreshAndRetry(retryFunc, ...args)
 {
-    await refreshToken().then(res=>{
-        if (!res.ok)
-        {
-            alert("Something went wrong please login again...")
-            cleanLocalStorage();
-            // history.pushState(null, null, "/login");
-            // Router();
-            // window.location.reload();
-        }
-    })
+    let res = await refreshToken()
+    if (!res.ok)
+    {
+        alert("Something went wrong please login again...")
+        cleanLocalStorage();
+        history.pushState(null, null, "/login");
+        Router();
+        window.location.reload();
+        return ;
+    }
     return await retryFunc(...args);
 }
 

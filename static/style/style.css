@@ -14,6 +14,10 @@
     transition: 0.3s;
 }
 
+input textarea{
+    font-size: 18px !important;
+}
+
 *::-webkit-scrollbar{
     display: none;
 }
@@ -128,6 +132,14 @@ html, body
     border: 2px solid black;
 }
 
+.dropdown{
+    margin: 10px;
+}
+
+#navbarSearch{
+    margin: 0px 10px 0 10px;
+}
+
 .dropdown-menu li
 {
     display: flex;
@@ -160,18 +172,18 @@ html, body
     right: 0;
 }
 
-@keyframes bounce {
+@keyframes userListBounce {
     0%{
-        transform: translateX(120%);
+        transform: translateX(0);
     }
     25%{
-        transform: translateX(90%);
-    }
-    50%{
         transform: translateX(120%);
     }
-    75%{
+    50%{
         transform: translateX(90%);
+    }
+    75%{
+        transform: translateX(120%);
     }
     100%{
         transform: translateX(120%);
@@ -184,7 +196,7 @@ html, body
     height: 92svh;
     position: absolute;
     z-index: 10000000000;
-    bottom: 0;
+    top: 8svh;
     right: 0;
     transform: translateX(100%);
     display: flex;
@@ -204,10 +216,11 @@ html, body
     flex-wrap: wrap;
     overflow: scroll;
     gap: 20px;
-    padding: 20px;
+    padding: 30px;
     background-color: white;
     z-index: 1000000;
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+    box-shadow: 7px 7px black;
+    border: 2px solid black;
 }
 
 .userLine{
@@ -218,8 +231,8 @@ html, body
     align-items: center;
     background-color: var(--bs-success);
     padding: 10px;
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
-
+    box-shadow: 7px 7px black;
+    border: 2px solid black;
 }
 
 .userLine:hover
@@ -235,16 +248,17 @@ html, body
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
-
+    box-shadow: 7px 7px black;
+    border: 2px solid black;
 }
 
 .chatUserPict{
     width: 25%;
     height: 100%;
     background-color: var(--bs-success);
-
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+    box-shadow: 7px 7px black;
+    background-color: white;
+    border: 2px solid black;
 }
 
 .chatUserPict img{
@@ -265,7 +279,9 @@ html, body
     padding: 20px;
     background-color: white;
     z-index: 10000000;
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+    box-shadow: 7px 7px black;
+    background-color: white;
+    border: 2px solid black;
 }
 
 .imgTitle{
@@ -281,7 +297,7 @@ html, body
 
 .hideUsersList{
     transform: translateX(115%);
-    animation: bounce 2s ease-in-out;
+    animation: userListBounce 2s ease-in-out;
 }
 
 .chatBox
@@ -294,17 +310,20 @@ html, body
     overflow: scroll;
     background-color: white;
     /* background-color: var(--bs-warning); */
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
-}
+    box-shadow: 7px 7px black;
+    background-color: white;
+    border: 2px solid black;}
 .chatInput
 {
     width: 100%;
     height: 15%;
+    font-size: 20px;
     display: flex;
     justify-content: space-between;
     padding: 20px;
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
-}
+    box-shadow: 7px 7px black;
+    background-color: white;
+    border: 2px solid black;}
 
 .chatTitleLine{
     width: 100%;
@@ -315,11 +334,15 @@ html, body
     display: flex;
     justify-content: space-between;
     align-items: center;
+    
 }
 .chatTitle{
     width: 100%;
     height: 8svh;
     overflow: hidden ;
+    box-shadow: 7px 7px black;
+    background-color: white;
+    border: 2px solid black;
 }
 
 #chatInputElement{
@@ -329,16 +352,18 @@ html, body
     resize: none;
     border: none;
     outline: none;
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
-
+    box-shadow: 7px 7px black;
+    background-color: white;
+    border: 2px solid black;
 }
 
 .submitChatInput{
     width: 10%;
     height: 100%;
     border: none;
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
-}
+    box-shadow: 7px 7px black;
+    background-color: white;
+    border: 2px solid black;}
 
 .messageLine{
     width: 100%;
@@ -346,6 +371,7 @@ html, body
     display: flex;
     flex-direction: column;
     justify-content: center;
+    gap: 10px;
     margin: 10px 0 10px 0;
 }
 
@@ -369,8 +395,8 @@ html, body
     align-items: flex-start;
     padding: 13px;
     justify-content: flex-start;
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
-
+    box-shadow: 7px 7px black;
+    border: 2px solid black;
 }
 
 .messageRight
@@ -384,6 +410,7 @@ html, body
     height: fit-content;
     padding: 1px 5px 1px 5px;
     color: black;
+    border: 2px solid black;
     background-color: white;
 }
 
@@ -405,8 +432,8 @@ html, body
     padding: 10px;
     align-items: flex-start;
     justify-content: flex-start;
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
-}
+    box-shadow: 7px 7px black;
+    border: 2px solid black;}
 
 .showUserList{
     transform: translateX(56.5%);
@@ -422,6 +449,44 @@ html, body
 
 
 @media screen and (max-width: 900px) {
+
+    @keyframes userListBounce {
+        0%{
+            transform: translateX(0);
+        }
+        25%{
+            transform: translateX(-10%);
+        }
+        50%{
+            transform: translateX(100%);
+        }
+        75%{
+            transform: translateX(-10%);
+        }
+        100%{
+            transform: translateX(100%);
+        }
+    }
+    .chatSideList{
+        flex-direction: row;
+        width: 50%;
+    }
+    .hideUsersList{
+        animation: none;
+        transform: translateX(0);
+    }
+    .showUserList{
+        transform: translateX(50%);
+    }
+    .fullOpen{
+        transform: translateX(1%) ;
+    }
+    .chatContainer{
+        width: 200%;
+    }
+    .chatFull{
+        width: 50%;
+    }
     .account
     {
         flex-direction: row-reverse;

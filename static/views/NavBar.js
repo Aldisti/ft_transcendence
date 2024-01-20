@@ -32,9 +32,9 @@ document.querySelector("#navbar").innerHTML = `
             <button class="nav-link active" >${language.navbar.notification}</a>
           </li>
         </ul>
-        <div style="display: flex; margin: 0 20px 0 20px">
-          <input class="form-control navBarSearchInput mr-sm-2" type="search" placeholder="Search" aria-label="Search" style="display: flex; margin: 0 20px 0 20px">
-          <button class="btn searchBtn btn-success my-2 my-sm-0" id="navbarSearch" type="submit">Search</button>
+        <div style="display: flex;">
+          <input class="form-control navBarSearchInput" type="search" placeholder="Search" aria-label="Search" style="display: flex;">
+          <button class="btn searchBtn btn-success" id="navbarSearch" type="submit">Search</button>
         </div>
       
         <div class="dropdown">

@@ -9,6 +9,12 @@ const navigateTo = url => {
 	Router();
 };
 
+if (localStorage.getItem("style") == "modern")
+	document.querySelector(".baseStyle").href = "/style/modern/style.css"
+else
+	document.querySelector(".baseStyle").href = "/style/style.css"
+
+
 // define the behaviour when clicking links making them internal routing
 document.addEventListener("click", (e)=>{
 	if (e.target.id == "timeTravel" || e.target.parentNode.id == "timeTravel")

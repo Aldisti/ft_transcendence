@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-wkldsdvnwkl8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/style/style.css">
+    <link class="baseStyle" rel="stylesheet" href="/style/style.css">
     <link rel="stylesheet" href="/style/bootstrap.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,8 +22,6 @@
     <div id="navbar">
 
     </div>
-    <div id="app">
-    </div>
     <div class="chat chatContainer">
       <div class="chat chatSideList">
 
@@ -40,7 +38,8 @@
         </div>
       </div>
     </div>
-
+    <div id="app">
+    </div>
     <script type="module" src="/router/router.js"></script>
     <script type="module" src="/views/NavBar.js"></script>
     <script src="/globalFunction/globalFunction.js"></script>
@@ -48,6 +47,7 @@
     <script type="module" src="/viewScripts/chat/chat.js"></script>
     <script type="module" src="/viewScripts/chat/chatSocket.js"></script>
     <script type="module" src="/viewScripts/notification/notificatioSocket.js"></script>
+    <script src="/viewScripts/touchHandler.js"></script>
     <script src="/qrCode.js"></script>
     <script>
       document.addEventListener("keypress", e=>{

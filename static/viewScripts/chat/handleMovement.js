@@ -19,41 +19,45 @@ window.userList = true;
 
 //function responsible for chat component movement 
 export function hoverHandle(e){
-
-    //show user list element when hoverig on outer container
-    if (e.target.classList.contains("chatContainer") && document.querySelector(".chatSideList").classList.contains("hideUsersList") && window.userList)
-        document.querySelector(".chatSideList").classList.remove("hideUsersList")
-
-    //hide user list element when hoverig on outer container
-    if (e.target.classList.contains("actualChat") && !document.querySelector(".chatSideList").classList.contains("hideUsersList"))
-        document.querySelector(".chatSideList").classList.toggle("hideUsersList")
-
-    //defining the side width to trigger the chat open
-    if (window.innerWidth - e.clientX < 50 && window.finish && !e.target.classList.contains("chat"))
+    if (window.innerWidth > 900)
     {
-        window.finish = false;
-        document.querySelector(".chatContainer").classList.toggle("showUserList");
-        setTimeout(() => {
-            window.finish = true;
-        }, 1000);
-    }
-
-    //handle the chat container close movement
-    else if ((document.querySelector(".chatContainer").classList.contains("fullOpen") || document.querySelector(".chatContainer").classList.contains("showUserList")) && !e.target.classList.contains("chat") && window.finish)
-    {
-        window.finish = false;
-
-        //if full open will close the chat
-        if (document.querySelector(".chatContainer").classList.contains("fullOpen"))
-            document.querySelector(".chatContainer").classList.toggle("fullOpen");
-
-        //if the users tab is visible and hover out close the tab
-        if (document.querySelector(".chatContainer").classList.contains("showUserList"))
+        //show user list element when hoverig on outer container
+        if (e.target.classList.contains("chatContainer") && document.querySelector(".chatSideList").classList.contains("hideUsersList") && window.userList)
+            document.querySelector(".chatSideList").classList.remove("hideUsersList")
+    
+        //hide user list element when hoverig on outer container
+        if (e.target.classList.contains("actualChat") && !document.querySelector(".chatSideList").classList.contains("hideUsersList"))
+        {
+            document.querySelector(".chatSideList").classList.toggle("hideUsersList")
+        }
+        //defining the side width to trigger the chat open
+        if (window.innerWidth - e.clientX < 50 && window.finish && !e.target.classList.contains("chat"))
+        {
+            window.finish = false;
             document.querySelector(".chatContainer").classList.toggle("showUserList");
-        setTimeout(() => {
-            window.finish = true;
-        }, 1000);
+            setTimeout(() => {
+                window.finish = true;
+            }, 1000);
+        }
+    
+        //handle the chat container close movement
+        else if ((document.querySelector(".chatContainer").classList.contains("fullOpen") || document.querySelector(".chatContainer").classList.contains("showUserList")) && !e.target.classList.contains("chat") && window.finish)
+        {
+            window.finish = false;
+    
+            //if full open will close the chat
+            if (document.querySelector(".chatContainer").classList.contains("fullOpen"))
+                document.querySelector(".chatContainer").classList.toggle("fullOpen");
+    
+            //if the users tab is visible and hover out close the tab
+            if (document.querySelector(".chatContainer").classList.contains("showUserList"))
+                document.querySelector(".chatContainer").classList.toggle("showUserList");
+            setTimeout(() => {
+                window.finish = true;
+            }, 1000);
+        }
     }
+
 }
 
 //handle chat movement on click input

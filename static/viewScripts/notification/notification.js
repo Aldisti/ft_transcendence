@@ -1,4 +1,4 @@
-let notificationCss = `
+let modernStyleCss = `
 .notificationClose{
     position: absolute;
     padding: 15px;
@@ -52,6 +52,7 @@ let notificationCss = `
     width: 100%;
     height: 5svh;
     display: flex;
+    padding: 5px;
     justify-content: space-between;
 }
 
@@ -61,9 +62,97 @@ let notificationCss = `
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
     border: none;
 }
+@media screen and (max-width: 900px){
+    .notificationContainer{
+        width: 90svw;
+        height: 25svh
+    }
+    .notificationBtns{
+        height: 8svh;
+    }
+}
 `
+let oldStyleCss = `
+.notificationClose{
+    position: absolute;
+    padding: 15px;
+    width: 10%;
+    height: 30%;
+    background-color: white;
+    color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 5px;
+    right: 5px;
+    box-shadow: 7px 7px black;
+    background-color: white;
+    border: 2px solid black;}
+
+.notificationContainer{
+    margin: 20px;
+    background-color: var(--bs-dark);
+    color: white;
+    width: 40svw;
+    height: fit-content;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    transform: translateX(-100%);
+    animation: notificationSlide 0.5s ease-out;
+    flex-direction: column;
+    padding: 20px;
+    justify-content: space-between;
+    z-index: 10000000000000;
+    box-shadow: 7px 7px black;
+    border: 2px solid black;}
+
+.notificationTitle{
+    width: 100%;
+    height: fit-content;
+    text-align: center;
+}
+
+.notificationBody{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    height: fit-content;
+    margin: 20px 0 20px 0;
+}
+
+.notificationBtns{
+    width: 100%;
+    height: 5svh;
+    display: flex;
+    padding: 5px;
+    justify-content: space-between;
+}
+
+.notificationBtns button{
+    height: 100%;
+    width: 45%;
+    box-shadow: 7px 7px black;
+    border: 2px solid black;    border: none;
+    font-size: x-small;
+}
+@media screen and (max-width: 900px){
+    .notificationContainer{
+        width: 90svw;
+        height: 25svh
+    }
+    .notificationBtns{
+        height: 8svh;
+    }
+}
+`
+
 var styleSheet = document.createElement("style")
-styleSheet.innerText = notificationCss
+if (localStorage.getItem("style") == "modern")
+    styleSheet.innerText = modernStyleCss;
+if (localStorage.getItem("style") == "old")
+    styleSheet.innerText = oldStyleCss;
 document.head.appendChild(styleSheet)
 
 function defaultChoiceCallback(notificationContent, notificationElement){

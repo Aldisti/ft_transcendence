@@ -162,28 +162,65 @@ align-items: flex-start;
 {
     width: 100%;
     height: 90%;
-    backdrop-filter: blur(10px);
-    background-color: rgba(255, 255, 255, 0.3);    gap: 20px;
-    padding: 20px;
     display: flex;
     justify-content: space-around;
     align-items: center;
     flex-wrap: wrap;
-    background-color: white;
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important; 
 }
 
 
 .canvContainer{
     width: 100%;
-    height: 80%;
-}
+    height: 80%;}
 
 .chart{
     display: flex;
     flex-direction: column;
-    width: 48%;
-    height: 48%;
+    width: 45%;
+    height: 45%;
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important; 
      padding: 20px;
+     background-color: white;
+
+}
+
+@media screen and (max-width: 900px){
+    .base{
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 5px;
+    }
+    .left{
+        width: 100%;
+    }
+    .filler{
+        height: fit-content;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 20px;
+        backdrop-filter: blur(10px);
+        background-color: rgba(255, 255, 255, 0.3);
+    }
+    .gameStat{
+        width: 45%;
+        height: 13svh;
+    }
+    .statsContainer{
+        width: 100%;
+        height: fit-content;
+    }
+    .stats{
+        width: 100%;
+        height: fit-content;
+        gap: 30px;
+    }
+    .chart{
+        width: 100%;
+        height: 30svh;
+    }
 }
