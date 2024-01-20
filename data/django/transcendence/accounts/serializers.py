@@ -4,6 +4,7 @@ from rest_framework import serializers
 
 from accounts.models import User, UserInfo, UserWebsockets
 from two_factor_auth.models import UserTFA
+from authentication.models import UserTokens
 from accounts.validators import image_validator
 from django.core.validators import RegexValidator, EmailValidator
 from django.core.files.storage import default_storage
@@ -78,6 +79,7 @@ class CompleteUserSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(**validated_data)
         user.user_info = UserInfo.objects.create(user, **user_info)
         user.user_tfa = UserTFA.objects.create(user=user)
+        user.user_tokens = UserTokens.objects.create(user=user)
         user.user_websockets = UserWebsockets.objects.create(user=user)
         return user
 

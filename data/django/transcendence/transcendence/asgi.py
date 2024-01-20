@@ -16,6 +16,7 @@ from channels.security.websocket import AllowedHostsOriginValidator
 
 from chat.routing import chat_urlpatterns
 from notifications.routing import notifications_urlpatterns
+from multiplayer_test.routing import multiplayer_test_urlpatterns
 from transcendence.middleware import CustomAuthMiddlewareStack
 
 import logging
@@ -30,13 +31,15 @@ django_asgi_app = get_asgi_application()
 websocket_urlpatterns = []
 websocket_urlpatterns.extend(chat_urlpatterns)
 websocket_urlpatterns.extend(notifications_urlpatterns)
+websocket_urlpatterns.extend(multiplayer_test_urlpatterns)
 
 logger.warning(f"websocket_urlpatterns: {websocket_urlpatterns}")
 
 application = ProtocolTypeRouter({
         "http": django_asgi_app,
-        "websocket": AllowedHostsOriginValidator(
-            CustomAuthMiddlewareStack(URLRouter(websocket_urlpatterns))
-        )
+        #"websocket": AllowedHostsOriginValidator(
+        #    CustomAuthMiddlewareStack(URLRouter(websocket_urlpatterns))
+        #)
+        "websocket": URLRouter(websocket_urlpatterns),
     }
 )

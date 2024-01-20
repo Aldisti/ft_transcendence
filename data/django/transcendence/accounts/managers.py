@@ -153,10 +153,8 @@ class UserInfoManager(models.Manager):
 
 
 class UserWebsocketsManager(models.Manager):
-    def create(self, user, **kwargs):
-        kwargs.setdefault("chat_channel", "")
-        kwargs.setdefault("ntf_channel", "")
-        user_websockets = self.model(user=user, **kwargs)
+    def create(self, user):
+        user_websockets = self.model(user=user)
         user_websockets.full_clean()
         user_websockets.save()
         return user_websockets
