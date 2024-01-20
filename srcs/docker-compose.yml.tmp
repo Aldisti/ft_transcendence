@@ -71,14 +71,14 @@ volumes:
     driver_opts:
       type: "none"
       o: "bind"
-      device: "PLACEHOLDER/data/django"
+      device: "$PWD/data/django"
   postgres:
     name: "postgres"
     driver: local
     driver_opts:
       type: "none"
       o: "bind"
-      device: "PLACEHOLDER/data/postgres"
+      device: "$PWD/data/postgres"
 
 networks:
   django-net:
