@@ -26,7 +26,7 @@ export default class extends Aview {
         <div class="passwordPage">
             <div class="passwordContainer">
                 <div class="line">
-                <h3>Enter new password:</h3>
+                <h3>${language.passwordRecovery.enterPassword}</h3>
                 <div class="passInp">
                     <input size="small" type="password" class="data retroShade" name="password">
                     <div onclick="window.switchVisibility(this)" class="passwordSwitch">
@@ -35,7 +35,7 @@ export default class extends Aview {
                 </div>
                 </div>
                 <div class="line">
-                    <h3>Enter new password:</h3>
+                    <h3>${language.passwordRecovery.enterPassword}</h3>
                     <div class="passInp">
                         <input size="small" type="password" class="data retroShade" name="confirmPassword">
                         <div onclick="window.switchVisibility(this)" class="passwordSwitch">
@@ -79,7 +79,6 @@ export default class extends Aview {
             for (let el of list)
                 toSend[el.name] = sha256(el.value);
             API.recoveryPassword(toSend, urlParams.get("token"));
-            //console.log(toSend, urlParams.get("token"))
         })
     }
 }

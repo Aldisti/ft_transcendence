@@ -1,249 +1,220 @@
-*{
+* {
     border-radius: 8px !important;
     font-family: 'Arial', sans-serif;
     font-weight: bold;
-	border: none;
+    border: none;
 }
 
-.account{
+.account {
     border-radius: 10px !important;
 }
 
-.profilePictureUrl{
+.profilePictureUrl {
     border-radius: 10px !important;
 }
 
-.loginForm
-{
-	background-image: url("/imgs/login.png");
-	background-size: cover;
-	background-repeat: no-repeat;
-	color: white;
-	width: 40svw;
-	height: fit-content;
-	display: flex;
-	justify-content: space-between;
-	flex-direction: column;
-	align-items: center;
-	padding: 20px;
-	box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+.loginForm {
+    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    width: 40svw;
+    height: fit-content;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
 }
 
-.tfa
-{
+.tfa {
     padding: 0 !important;
     justify-content: space-between !important;
 }
 
-.tfa span
-{
-	flex-grow: 1;
-	padding: 10px;
+.tfa span {
+    flex-grow: 1;
+    padding: 10px;
 }
 
-.registerLink
-{
-	color: white;
-	width: fit-content;
+.registerLink {
+    color: white;
+    width: fit-content;
 }
 
-.recovery
-{
-	width: fit-content;
-	margin: 10px 0 10px 0;
-	text-align: start;
-	color: white;
-	text-decoration: underline;
+.recovery {
+    width: fit-content;
+    margin: 10px 0 10px 0;
+    text-align: start;
+    color: white;
+    text-decoration: underline;
 }
 
-.recovery:hover, .registerLink:hover
-{
-	cursor: pointer;
+.recovery:hover,
+.registerLink:hover {
+    cursor: pointer;
 }
 
-.base
-{
-	width: 100svw;
+.base {
+    width: 100svw;
     height: 92svh;
-	display: flex;
-	justify-content: center;
-	align-items: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-#title
-{
-	width: 100%;
-	text-align: start;
+#title {
+    width: 100%;
+    text-align: start;
 }
 
-.loginError
-{
-	background-color: var(--bs-danger);
-	width: 100%;
-	height: 8svh;
-	display: none;
-	justify-content: center;
-	align-items: center;
-	margin: 10px;
-	box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
-}
-
-.loginError p
-{
-	margin: 0;
-	width: fit-content;
-	height: fit-content;
-}
-
-.retroBtn
-{
-	width: 30%;
-	height: 100%;
-	padding: 5px;
-	border: none;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	color: white;
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
-	font-weight: bolder;
-	text-decoration: none;
-	font-size: 10px;
-}
-
-.btnColor-blue
-{
-	background-color: lightskyblue;
-	color: white;
-}
-.btnColor-yellow
-{
-	background-color: var(--bs-warning);
-}
-
-.btnColor-green
-{
-	background-color: var(--bs-success);
-	color: white;
-}
-
-h4
-{
-	color: black;
-	margin: 0;
-}
-
-input
-{
-	border: 1px solid gray !important;	
-}
-
-.retroShade
-{
-	transition: 0.2s;
-}
-
-.retroShade:hover
-{
-	box-shadow: none;
-}
-
-.line
-{
-	width: 100%;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	align-items: flex-start;
-	box-shadow: 7px 7px black;
-	background-color: white;
-	padding: 10px;
-	margin-top: 20px;
-	margin-bottom: 20px;
+.loginError {
+    background-color: var(--bs-danger);
+    width: 100%;
+    height: 8svh;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
 }
 
-.line input
-{
-	width: 100%;
-	height: 4svh;
-	border: none;
-	font-size: 15px;
-	border: 2px solid black;
+.loginError p {
+    margin: 0;
+    width: fit-content;
+    height: fit-content;
 }
 
-.line input[size="small"]
-{
-	width: 90%;
+.retroBtn {
+    width: 30%;
+    height: 100%;
+    padding: 5px;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+    font-weight: bolder;
+    text-decoration: none;
+    font-size: 10px;
 }
 
-.linebtn
-{
-	width: 100%;
-	height: 5vh;
-	flex-wrap: wrap;
-	display: flex;
-	justify-content: space-between;
-	margin: 20px;
+.btnColor-blue {
+    background-color: lightskyblue;
+    color: white;
 }
 
-.fullWidth
-{
-	width: 100% !important;
+.btnColor-yellow {
+    background-color: var(--bs-warning);
 }
 
-.extra
-{
-	width: 100%;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
+.btnColor-green {
+    background-color: var(--bs-success);
+    color: white;
 }
 
-.linebtn img
-{
-	width: 30%;
-	height: 100%;
-	box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
-	object-fit: contain;
-	background-color: white;
-	padding: 10px;
+h4 {
+    color: black;
+    margin: 0;
 }
 
-.passInp
-{
+input {
+    border: 1px solid gray !important;
+}
+
+.retroShade {
+    transition: 0.2s;
+}
+
+.retroShade:hover {
+    box-shadow: none;
+}
+
+.line {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    box-shadow: 7px 7px black;
+    background-color: white;
+    padding: 10px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+}
+
+.line input {
+    width: 100%;
+    height: 4svh;
+    border: none;
+    font-size: 20px;
+    border: 2px solid black;
+}
+
+.line input[size="small"] {
+    width: 90%;
+}
+
+.linebtn {
+    width: 100%;
+    height: 5vh;
+    flex-wrap: wrap;
+    display: flex;
+    justify-content: space-between;
+    margin: 20px;
+}
+
+.fullWidth {
+    width: 100% !important;
+}
+
+.extra {
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.passwordSwitch
-{
-	width: 4svh;
-	height: 4svh;
+.linebtn img {
+    width: 30%;
+    height: 100%;
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
-	padding: 5px;
-	background-color: white;
+    object-fit: contain;
+    background-color: white;
+    padding: 10px;
+}
+
+.passInp {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.passwordSwitch {
+    width: 4svh;
+    height: 4svh;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+    padding: 5px;
+    background-color: white;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.passwordSwitch:hover
-{
-	cursor: pointer;
+.passwordSwitch:hover {
+    cursor: pointer;
 }
 
-.passwordSwitch img
-{
-	width: 100%;
-	height: 100%;
-	object-fit: contain;
+.passwordSwitch img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 
-.passwordContainer
-{
+.passwordContainer {
     width: 60svw;
     height: fit-content;
     display: flex;
@@ -251,19 +222,16 @@ input
     justify-content: space-between;
     background: url("/imgs/backUpdate.jpg");
     padding: 30px;
-	box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
-
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
 }
 
-.btnLeft
-{
-	height: 5svh;
-	display: flex;
-	justify-content: center;
+.btnLeft {
+    height: 5svh;
+    display: flex;
+    justify-content: center;
 }
 
-.passwordPage
-{
+.passwordPage {
     width: 100svw;
     height: 100svh;
     display: flex;
@@ -271,18 +239,15 @@ input
     align-items: center;
 }
 
-.formContainer
-{
-	width: 100%;
+.formContainer {
+    width: 100%;
 }
 
-@media only screen and (max-width: 900px){
-	.loginForm
-	{
-		width: 90svw;
-	}
-
-	.retroBtn{
-		width: 33%;
-	}
+@media only screen and (max-width: 900px) {
+    .loginForm {
+        width: 90svw;
+    }
+    .retroBtn {
+        width: 33%;
+    }
 }

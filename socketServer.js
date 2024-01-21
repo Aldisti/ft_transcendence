@@ -1,81 +1,41 @@
-const http = require('http');
 const WebSocket = require('ws');
 
-const server = http.createServer();
-const wss = new WebSocket.Server({ server });
+const server = new WebSocket.Server({ port: 3000 });
 
-function padZero(num) {
-    return num.toString().padStart(2, '0');
-  }
+server.on('connection', (socket) => {
+  console.log('Client connected');
 
-function getCurrentTimestampString() {
-    const currentDate = new Date();
-  
-    const year = currentDate.getFullYear();
-    const month = padZero(currentDate.getMonth() + 1); // Months are zero-indexed
-    const day = padZero(currentDate.getDate());
-    const hours = padZero(currentDate.getHours());
-    const minutes = padZero(currentDate.getMinutes());
-    const seconds = padZero(currentDate.getSeconds());
-  
-    return `${year}/${month}/${day}:${hours}.${minutes}.${seconds}`;
-  }
-  let toSend = {
-    type: "private",
-    sender: "gpanico",
-    body: "ciao a te ciao a te ciao a te ciao a te ciao a te ciao a te ciao a te ciao a te ciao a te ciao a te ciao a te ciao a te ciao a te ciao a te ciao a te ciao a te ciao a te ciao a te ciao a te ciao a te ciao a te ciao a te ",
-    time_sent: getCurrentTimestampString()
-}
-  let global = {
-    type: "global",
-    sender: "adi-stef",
-    body: "ciao a te",
-    time_sent: getCurrentTimestampString()
-}
-  let global1 = {
-    type: "global",
-    sender: "testw",
-    body: "ciao a te",
-    time_sent: getCurrentTimestampString()
-}
-  let global2 = {
-    type: "global",
-    sender: "luigi",
-    body: "ciao a te",
-    time_sent: getCurrentTimestampString()
-}
-  let global3 = {
-    type: "global",
-    sender: "mario",
-    body: "ciao a te",
-    time_sent: getCurrentTimestampString()
-}
-let arr = [global, global1, global2, global3,]
+  let x = 0;
+  let direction = 1; // 1 for moving right, -1 for moving left
 
+  // Update coordinates every second
+  const interval = setInterval(() => {
+    x += direction * 5; // Adjust the step size as needed
 
-wss.on('connection', (ws) => {
-    setInterval(() => {
-        console.log(Math.floor(Math.random() * 10))
-        toSend.time_sent = getCurrentTimestampString();
-        global.time_sent = getCurrentTimestampString();
-        if (Math.floor(Math.random() * 10) % 2 == 0)
-            ws.send(JSON.stringify(toSend));
-        else
-            ws.send(JSON.stringify(arr[Math.floor(Math.random() * 10)]));
-    }, 1000);
-  console.log('A user connected');
+    // If the point reaches the right or left boundary, change direction
+    if (x >= 800 || x <= 0) {
+      direction *= -1;
+    }
 
-  ws.on('message', (message) => {
-    console.log('Received message:', message);
-    
+    const coordinates = {
+      x: x,
+      y: 100
+    };
+
+    // Convert the coordinates to JSON and send to the connected client
+    socket.send(JSON.stringify(coordinates));
+  }, 10);
+
+  // Listen for messages from the client (optional)
+  socket.on('message', (message) => {
+    console.log(`Received message: ${message}`);
   });
 
-  ws.on('close', () => {
-    console.log('User disconnected');
+  // Handle socket closure
+  socket.on('close', () => {
+    console.log('Client disconnected');
+    clearInterval(interval); // Stop sending coordinates when the client disconnects
   });
 });
 
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-  console.log(`WebSocket server listening on port ${PORT}`);
-});
+console.log('WebSocket server running on ws://localhost:3000');

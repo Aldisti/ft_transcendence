@@ -36,7 +36,6 @@ document.querySelector("#navbar").innerHTML = `
           <input class="form-control navBarSearchInput" type="search" placeholder="Search" aria-label="Search" style="display: flex;">
           <button class="btn searchBtn btn-success" id="navbarSearch" type="submit">Search</button>
         </div>
-      
         <div class="dropdown">
           <button class="btn btn-secondary dropdown-toggle account" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
             <span>
@@ -53,8 +52,6 @@ document.querySelector("#navbar").innerHTML = `
                 <option value="fr">fr</option>
                 <option value="es">esp</option>
                 <option value="de">de</option>
-                <option value="el">el</option>
-                <option value="ru">ru</option>
               </select>
             </li>
             <li id="timeTravel"><p>${language.navbar.changeStyle}</p><div id="clock"></div></li>

@@ -31,7 +31,7 @@ export function hoverHandle(e){
             document.querySelector(".chatSideList").classList.toggle("hideUsersList")
         }
         //defining the side width to trigger the chat open
-        if (window.innerWidth - e.clientX < 50 && window.finish && !e.target.classList.contains("chat"))
+        if (window.innerWidth - e.clientX < 50 && window.finish && !e.target.classList.contains("chat") && !isChildOfSpecificClass(e.target, "navbar"))
         {
             window.finish = false;
             document.querySelector(".chatContainer").classList.toggle("showUserList");

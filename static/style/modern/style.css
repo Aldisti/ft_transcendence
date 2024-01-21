@@ -3,9 +3,9 @@
     --blue: #1D3557;
     --light-blue: #A8DADC;
     --red: #E63946;
-  }
+}
 
-*{
+* {
     box-sizing: border-box;
     font-family: 'Press Start 2P', sans-serif;
     font-size: 15px;
@@ -14,66 +14,66 @@
     transition: 0.3s;
 }
 
-input{
-    font-size: 18px;
+input textarea {
+    font-size: 18px !important;
 }
 
-*::-webkit-scrollbar{
+.form-control{
+    font-size: 20px !important;
+}
+
+*::-webkit-scrollbar {
     display: none;
 }
 
-.navbar
-{
+.navbar {
     height: 8svh;
 }
 
 @keyframes bounce {
-    0%{
+    0% {
         transform: translateX(0);
     }
-    50%{
+    50% {
         transform: translateX(10%);
         background-color: var(--bs-success);
-    }  
-    100%{
+    }
+    100% {
         transform: translateX(0);
         transform: rotate(0deg);
         background-color: var(--bs-cyan);
     }
 }
 
-.last{
+.last {
     animation: bounce 0.5s ease-out;
 }
 
 @keyframes notificationSlide {
-    0%{
+    0% {
         transform: translateX(-100%);
     }
-    100%{
+    100% {
         transform: translateX(0);
     }
 }
 
-#clock
-{
+#clock {
     width: 5svh;
     height: 5svh;
     background-image: url("/imgs/timeTravel.png");
     background-size: cover;
     margin-right: 1svw;
     transition: 0.8s;
-
 }
 
-#timeTravel:hover > #clock
-{
+#timeTravel:hover>#clock {
     transform: rotate(360deg);
     cursor: pointer;
 }
 
-html, body
-{
+html,
+body {
     width: 100svw;
     min-height: 100svh;
     margin: 0;
@@ -81,32 +81,27 @@ html, body
     overflow-x: hidden;
 }
 
-.navbar-brand
-{
+.navbar-brand {
     font-size: 20px !important;
     color: white !important;
 }
 
-.nav{
+.nav {
     width: 100svw !important;
 }
 
-
-.nav-link
-{
+.nav-link {
     font-size: 30px;
     color: white !important;
 }
 
-#app
-{
+#app {
     width: 100svw;
     min-height: 92svh;
     height: fit-content;
 }
 
-.account
-{
+.account {
     width: fit-content;
     height: 7svh;
     display: flex !important;
@@ -117,23 +112,21 @@ html, body
     border: 2px solid white !important;
 }
 
-.retroBtn:hover, .submit:hover
-{
+.retroBtn:hover,
+.submit:hover {
     background-color: var(--bs-primary) !important;
-    color:white !important;
+    color: white !important;
     box-shadow: none;
 }
 
-.account img
-{
+.account img {
     width: 5svh;
     height: 5svh;
     object-fit: cover;
     border: 2px solid black;
 }
 
-.dropdown-menu li
-{
+.dropdown-menu li {
     display: flex;
     color: white;
     margin: 10px;
@@ -143,18 +136,15 @@ html, body
     gap: 10px;
 }
 
-.account span
-{
+.account span {
     width: fit-content;
 }
 
-.dropdown-menu li p
-{
+.dropdown-menu li p {
     margin: 0;
 }
 
-.chatHandle
-{
+.chatHandle {
     width: 15svh;
     height: 8svh;
     background-color: var(--bs-danger);
@@ -165,25 +155,24 @@ html, body
 }
 
 @keyframes userListBounce {
-    0%{
+    0% {
         transform: translateX(0);
     }
-    25%{
+    25% {
         transform: translateX(120%);
     }
-    50%{
+    50% {
         transform: translateX(90%);
     }
-    75%{
+    75% {
         transform: translateX(120%);
     }
-    100%{
+    100% {
         transform: translateX(120%);
     }
 }
 
-.chatContainer
-{
+.chatContainer {
     width: 50svw;
     height: 92svh;
     position: absolute;
@@ -197,8 +186,7 @@ html, body
     padding: 20px;
 }
 
-.chatSideList
-{
+.chatSideList {
     width: 42%;
     height: fit-content;
     max-height: 100%;
@@ -214,7 +202,7 @@ html, body
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
 }
 
-.userLine{
+.userLine {
     width: 100%;
     height: 8svh;
     display: flex;
@@ -223,16 +211,14 @@ html, body
     background-color: var(--bs-success);
     padding: 10px;
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
-
 }
 
-.userLine:hover
-{
+.userLine:hover {
     cursor: pointer;
     transform: translateX(4%);
 }
 
-.nameContainer{
+.nameContainer {
     width: 70%;
     height: 100%;
     background-color: white;
@@ -240,25 +226,22 @@ html, body
     justify-content: center;
     align-items: center;
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
-
 }
 
-.chatUserPict{
+.chatUserPict {
     width: 25%;
     height: 100%;
     background-color: var(--bs-success);
-
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
 }
 
-.chatUserPict img{
+.chatUserPict img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.chatFull
-{
+.chatFull {
     width: 55%;
     height: 100%;
     display: flex;
@@ -272,27 +255,27 @@ html, body
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
 }
 
-.imgTitle{
+.imgTitle {
     width: 20%;
     height: 100%;
 }
-.dropdown{
+
+.dropdown {
     margin: 0px 0px 0 20px;
 }
 
-.imgTitle img{
+.imgTitle img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.hideUsersList{
+.hideUsersList {
     transform: translateX(115%);
     animation: userListBounce 2s ease-in-out;
 }
 
-.chatBox
-{
+.chatBox {
     width: 100%;
     height: 80%;
     display: flex;
@@ -303,8 +286,8 @@ html, body
     /* background-color: var(--bs-warning); */
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
 }
-.chatInput
-{
+
+.chatInput {
     width: 100%;
     height: 15%;
     font-size: 20px;
@@ -314,7 +297,7 @@ html, body
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
 }
 
-.chatTitleLine{
+.chatTitleLine {
     width: 100%;
     height: 100%;
     padding: 8px;
@@ -324,13 +307,14 @@ html, body
     justify-content: space-between;
     align-items: center;
 }
-.chatTitle{
+
+.chatTitle {
     width: 100%;
     height: 8svh;
-    overflow: hidden ;
+    overflow: hidden;
 }
 
-#chatInputElement{
+#chatInputElement {
     width: 85%;
     padding: 10px;
     height: 100%;
@@ -338,17 +322,16 @@ html, body
     border: none;
     outline: none;
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
-
 }
 
-.submitChatInput{
+.submitChatInput {
     width: 10%;
     height: 100%;
     border: none;
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
 }
 
-.messageLine{
+.messageLine {
     width: 100%;
     height: fit-content;
     display: flex;
@@ -357,17 +340,17 @@ html, body
     margin: 10px 0 10px 0;
 }
 
-.rightColor{
+.rightColor {
     background-color: var(--bs-teal);
     color: white;
 }
 
-.leftColor{
+.leftColor {
     background-color: var(--bs-cyan);
     color: white;
 }
 
-.userMessage{
+.userMessage {
     min-width: 15%;
     width: fit-content;
     max-width: 80%;
@@ -378,20 +361,17 @@ html, body
     padding: 13px;
     justify-content: flex-start;
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
-
 }
 
-#navbarSearch{
+#navbarSearch {
     margin: 0px 10px 0 10px;
 }
 
-.messageRight
-{
+.messageRight {
     margin-left: auto;
 }
 
-.chatUsername
-{
+.chatUsername {
     width: fit-content;
     height: fit-content;
     padding: 1px 5px 1px 5px;
@@ -399,14 +379,13 @@ html, body
     background-color: white;
 }
 
-.textContainer
-{
+.textContainer {
     padding: 4px;
     height: fit-content;
     width: fit-content;
 }
 
-.reply{
+.reply {
     min-width: 15%;
     width: fit-content;
     max-width: 80%;
@@ -420,76 +399,73 @@ html, body
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
 }
 
-.showUserList{
+.showUserList {
     transform: translateX(56.5%);
 }
-.fullOpen{
-    transform: translateX(0) ;
+
+.fullOpen {
+    transform: translateX(0);
 }
 
 .dropdown-menu {
     z-index: 100000000000 !important;
 }
 
-
-
 @media screen and (max-width: 900px) {
-
     @keyframes userListBounce {
-        0%{
+        0% {
             transform: translateX(0);
         }
-        25%{
+        25% {
             transform: translateX(-10%);
         }
-        50%{
+        50% {
             transform: translateX(100%);
         }
-        75%{
+        75% {
             transform: translateX(-10%);
         }
-        100%{
+        100% {
             transform: translateX(100%);
         }
     }
-    .chatSideList{
+    .chatSideList {
         flex-direction: row;
         width: 50%;
     }
-    .hideUsersList{
+    .hideUsersList {
         animation: none;
         transform: translateX(0);
     }
-    .showUserList{
+    .showUserList {
         transform: translateX(50%);
     }
-    .fullOpen{
-        transform: translateX(1%) ;
+    .fullOpen {
+        transform: translateX(1%);
     }
-    .chatContainer{
+    .chatContainer {
         width: 200%;
     }
-    .chatFull{
+    .chatFull {
         width: 50%;
     }
-    .account
-    {
+    .account {
         flex-direction: row-reverse;
         width: fit-content;
     }
-
     .navbar-collapse {
-        background-color: rgba(var(--bs-dark-rgb),var(--bs-bg-opacity)) !important; /* Set the background color of the collapsed menu */
+        background-color: rgba(var(--bs-dark-rgb), var(--bs-bg-opacity)) !important;
+        /* Set the background color of the collapsed menu */
         height: fit-content;
         z-index: 1000000;
         padding: 20px;
     }
-    
-    .navbar-brand, .navbar-nav .nav-link {
-        line-height: 60px; /* Center content vertically within the navbar */
+    .navbar-brand,
+    .navbar-nav .nav-link {
+        line-height: 60px;
+        /* Center content vertically within the navbar */
     }
-    .dropdown{
+    .dropdown {
         margin: 20px 0px 0 0px;
     }
-    
 }

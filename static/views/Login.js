@@ -19,16 +19,16 @@ export default class extends Aview {
         <div class="passwordPage">
             <div class="passwordContainer">
                 <div class="line">
-                    <h1 style="margin: 0;">Recover Your Password</h1>
+                    <h1 style="margin: 0;">${this.language.login.passwordRecovery}</h1>
                 </div>
                 <div class="line">
-                    <h3>Enter username:</h3>
+                    <h3>${this.language.login.enetrUsername}</h3>
                     <div class="passInp">
                         <input type="text" class="data retroShade" name="username">
                     </div>
                 </div>
                 <div class=" btnLeft">
-                    <button id="recoveryBtn" class="retroBtn retroShade btnColor-green importantSubmit">Get Email</button>
+                    <button id="recoveryBtn" class="retroBtn retroShade btnColor-green importantSubmit">${this.language.login.getEmail}</button>
                 </div>
             </div>
         </div>
@@ -84,12 +84,12 @@ export default class extends Aview {
                     </div>
                 </div>
                 <div class="line codeInputLine">
-                    <label for="emailTfaCode">Insert Code:</label>
+                    <label for="emailTfaCode">${this.language.login.insertTfaCode}</label>
                     <input id="emailTfaCode" type="text">
                 </div>
                 <div class="line" style="flex-direction: row;">
-                    <button class="retroBtn resendBtn" style="background-color: var(--bs-warning)">send email</button>
-                    <button class="retroBtn sendCode" id="submit" style="background-color: var(--bs-success)">Submit</button>
+                    <button class="retroBtn resendBtn" style="background-color: var(--bs-warning)">${this.language.login.getEmail}</button>
+                    <button class="retroBtn sendCode" id="submit" style="background-color: var(--bs-success)">${this.language.login.submit}</button>
                 </div>
             </div>
         `
@@ -117,7 +117,7 @@ export default class extends Aview {
                     handleLogin.Tfa(this, res)
             })
         })
-        this.defineWallpaper("/imgs/backLogin.png", "https://c4.wallpaperflare.com/wallpaper/105/526/545/blur-gaussian-gradient-multicolor-wallpaper-preview.jpg")
+        this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpg")
     }
 
 }

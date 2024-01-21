@@ -3,8 +3,7 @@ import * as create from "/viewScripts/chat/createChatItem.js"
 import * as URL from "/API/URL.js"
 import * as help from "/viewScripts/chat/helpFunction.js"
 
-function cleanLocalStorage()
-{
+function cleanLocalStorage() {
     localStorage.removeItem("username");
     localStorage.removeItem("token");
     localStorage.removeItem("intraLinked");
@@ -20,17 +19,15 @@ function getCookie(name) {
     if (parts.length === 2) return parts.pop().split(';').shift();
 }
 
-async function refreshAndRetry(retryFunc, ...args)
-{
+async function refreshAndRetry(retryFunc, ...args) {
     let res = await refreshToken()
-    if (!res.ok)
-    {
-        alert("Something went wrong please login again...")
+
+    if (!res.ok) {
         cleanLocalStorage();
-        history.pushState(null, null, "/login");
+        history.pushState(null, null, "/login/");
         Router();
         window.location.reload();
-        return ;
+        return;
     }
     return await retryFunc(...args);
 }
@@ -55,7 +52,7 @@ export async function checkForEmailAvailability(email) {
     return (false)
 }
 
-export async function convertIntraToken(){
+export async function convertIntraToken() {
     if (getCookie("api_token") == undefined)
         return (false);
 
@@ -74,7 +71,7 @@ export async function convertIntraToken(){
     }
     return (false);
 }
-export async function convertIntraTokenAccount(recursionProtection){
+export async function convertIntraTokenAccount(recursionProtection) {
     if (getCookie("api_token") == undefined)
         return (false);
     const res = await fetch(URL.general.LINK_INTRA_TOKEN_ACCOUNT, {
@@ -98,7 +95,7 @@ export async function convertIntraTokenAccount(recursionProtection){
     return (false);
 }
 
-export async function unlinkIntra(recursionProtection){
+export async function unlinkIntra(recursionProtection) {
     const res = await fetch(URL.general.LINK_INTRA_TOKEN_ACCOUNT, {
         method: "DELETE",
         headers: {
@@ -116,7 +113,7 @@ export async function unlinkIntra(recursionProtection){
     return (false);
 }
 
-export async function unlinkGoogle(recursionProtection){
+export async function unlinkGoogle(recursionProtection) {
     const res = await fetch(URL.auth.UNLINK_GOOGLE_ACCOUNT, {
         method: "DELETE",
         headers: {
@@ -158,12 +155,10 @@ export async function login(data) {
         },
         body: JSON.stringify(data),
     })
-    if (!res.ok)
-    {
+    if (!res.ok) {
         document.querySelector(".loginError").style.display = "flex";
     }
-    if (res.ok)
-    {
+    if (res.ok) {
         localStorage.setItem("username", data.username);
         let token = await res.json();
         localStorage.setItem("otp_token", token.token);
@@ -176,14 +171,12 @@ export async function refreshToken() {
         method: "GET",
         credentials: 'include',
     })
-    if (!res.ok) {
-        history.pushState(null, null, "/login");
-        Router();
-        window.location.reload();
-    }
-    let token = await res.json();
-    localStorage.setItem("token", token.access_token);
-    return (res);
+    let resCpy = res;
+    try {
+        let token = await res.json();
+        localStorage.setItem("token", token.access_token);
+    } catch (e) {}
+    return (resCpy);
 }
 
 export async function register(data) {
@@ -238,14 +231,12 @@ export async function updatePassword(recursionProtection, data, dupThis) {
     })
     if (res.status == 401 && recursionProtection)
         return await refreshAndRetry(updatePassword, 0, data, dupThis);
-    if (!res.ok)
-    {
+    if (!res.ok) {
         document.querySelector(`#${dupThis.language.update.oldPassword[1]}-tooltip`).innerHTML = dupThis.language.update.passwordErrors[0];
         document.querySelectorAll("input")[0].style.backgroundColor = "#A22C29";
         document.querySelectorAll("input")[0].style.color = "white"
     }
-    if (res.status == 400)
-    {
+    if (res.status == 400) {
         alert("Old password is not correct...")
     }
     if (res.ok)
@@ -319,11 +310,11 @@ export async function getIntraUrl(parameter) {
     return ("");
 }
 
-export async function uploadImage(recursionProtection, file){
+export async function uploadImage(recursionProtection, file) {
     //console.log("hey")
     const form = new FormData();
 
-    if (file.files.length > 0){
+    if (file.files.length > 0) {
         form.append("image", file.files[0]);
     }
     const res = await fetch(URL.userAction.UPDATE_PHOTO, {
@@ -336,15 +327,13 @@ export async function uploadImage(recursionProtection, file){
     })
     if (res.status == 401 && recursionProtection)
         return await refreshAndRetry(uploadImage, 0, file);
-    if (res.ok)
-    {
+    if (res.ok) {
         window.location.reload();
     }
 }
 
 
-export async function activateTfa(recursionProtection, type)
-{
+export async function activateTfa(recursionProtection, type) {
     const res = await fetch(URL.auth.ACTIVATE_TFA, {
         method: "POST",
         credentials: "include",
@@ -358,20 +347,17 @@ export async function activateTfa(recursionProtection, type)
     })
     if (res.status == 401 && recursionProtection)
         return await refreshAndRetry(activateTfa, 0, type);
-    if (res.ok)
-    {
+    if (res.ok) {
         let resJson = await res.json();
         return (resJson);
     }
     return ({})
 }
 
-export async function getEmailCode(recursionProtection, token)
-{
+export async function getEmailCode(recursionProtection, token) {
     let header = {};
-    if (token == undefined)
-    {
-        header =  {
+    if (token == undefined) {
+        header = {
             Authorization: `Bearer ${localStorage.getItem("token")}`
         }
     }
@@ -787,6 +773,9 @@ export async function getTicket(recursionProtection){
         return (parsed);
     }
     if (res.status == 401 && recursionProtection)
+    {
+        console.log(res.status, recursionProtection)        
         return await refreshAndRetry(getTicket, 0);
+    }
     return ({})
 }

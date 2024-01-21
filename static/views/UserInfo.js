@@ -8,21 +8,6 @@ import * as pages from "/viewScripts/userInfo/loadViews.js"
 import handleClick from "/viewScripts/userInfo/handleClick.js"
 import * as prepare from "/viewScripts/userInfo/prepareForms.js"
 
-let emailError = `
-    <ul style="margin: 0;">
-        <li>An Email has been sent Check you Inbox!</li>
-        <li>insert the Code in the box below</li>
-        <li>Submit and activate your 2FA</li>
-    </ul>
-`
-let qrError = `
-    <ul style="margin: 0;">
-        <li>Open your app and look for your code</li>
-        <li>insert it in the box below</li>
-        <li>submit and login</li>
-    </ul>
-`
-
 window.goHome = ()=>{
     history.pushState(null, null, "/home");
     Router();
@@ -77,7 +62,7 @@ export default class extends Aview {
                         </div> 
                         <input value="${res.birthdate}" class="inputData" type="date" id="${this.language.update.birthDate[1]}">
                     </div>
-                    <button class="submit importantSubmit">Submit!</button>
+                    <button class="submit importantSubmit">${this.language.update.submit}</button>
                 </div>
             `
         })
@@ -140,7 +125,7 @@ export default class extends Aview {
                         <li>${this.language.register.errors[4]}</li>
                     </ul>
                 </div>
-                <button class="submit" id="submit">Submit!</button>
+                <button class="submit" id="submit">${this.language.update.submit}</button>
             </div>
         `
     }
@@ -166,7 +151,7 @@ export default class extends Aview {
                         </div>
                     </div>
                 </div>
-                <button class="submit importantSubmit"Submit!</button>
+                <button class="submit importantSubmit">${this.language.update.submit}</button>
             </div>
         `
     }
@@ -178,31 +163,31 @@ export default class extends Aview {
                         <img class="updateImgForm" src="https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg">
                     </div>
                     <div class="inputLineFile">
-                        <label id="labelInpFile" for="inpFile"><img class="fileIcon" src="/imgs/fileIcon.png"><span class="selectFileText">Select New Photo...</span></label>
+                        <label id="labelInpFile" for="inpFile"><img class="fileIcon" src="/imgs/fileIcon.png"><span class="selectFileText">${this.language.update.selectPhoto}</span></label>
                         <input onchange="window.test()" class="inputData" id="inpFile" type="file" id="${this.language.update.profilePicture[1]}">
                     </div>
                 </div>
-                    <button class="submit importantSubmit">Submit!</button>
+                    <button class="submit importantSubmit">${this.language.update.submit}</button>
                 </div>
             </div>
         `
     }
 
     get2faChoice(){
-        let intraAdvice = "Click the button to link your intra profile"
-        let googleAdvice = "Click the button to link your google profile"
-        let labelIntra = "Link 42 Account"
-        let labelGoogle = "Link Google Account"
+        let intraAdvice = this.language.update.intraAdviceLink
+        let googleAdvice = this.language.update.googleAdviceLink
+        let labelIntra = this.language.update.labelIntraLink
+        let labelGoogle = this.language.update.labelGoogleLink
 
         if (localStorage.getItem("intraLinked") != null)
         {
-            intraAdvice = "your intra profile is linked click the button to unlink";
-            labelIntra = "Unlink 42 Account"
+            intraAdvice = this.language.update.intraAdviceUnLink;
+            labelIntra = this.language.update.labelIntraUnLink;
         }
         if (localStorage.getItem("googleLinked") != null)
         {
-            googleAdvice = "your google profile is linked click the button to unlink";
-            labelGoogle = "Unlink google Account"
+            googleAdvice = this.language.update.googleAdviceUnLink;
+            labelGoogle = this.language.update.labelGoogleUnLink;
         }
         return `
         <div class="formContainer">
@@ -225,18 +210,18 @@ export default class extends Aview {
         <div class="formContainer">
             <div class="decisionBox">
                 <p class="googleInfo">
-                    Logout from all Devices
+                    ${this.language.update.logoutAll}
                 </p>
-                <button class="retroBtn logoutAll" style="background-color: var(--bs-danger)">Logout da tutti i dispositibi</button>
+                <button class="retroBtn logoutAll" style="background-color: var(--bs-danger)">${this.language.update.logoutAllBtn}</button>
             </div>
         </div>
             <div class="formContainer">
                 <div class="decisionBox">
-                    <h4>Enable TFA</h4>
+                    <h4>${this.language.update.enableTfa}</h4>
                 </div>
                 <div class="decisionBox">
-                    <button class="retroBtn emailChoice" style="background-color: var(--bs-success)">email</button>
-                    <button class="retroBtn appChoice" style="background-color: var(--bs-success)">app</button>
+                    <button class="retroBtn emailChoice" style="background-color: var(--bs-success)">${this.language.update.enableTfaMail}</button>
+                    <button class="retroBtn appChoice" style="background-color: var(--bs-success)">${this.language.update.enableTfaApp}</button>
                 </div>
                 <div class="showForm">
                 </div>
@@ -252,36 +237,43 @@ export default class extends Aview {
                     </div>
                     <div class="qrInfo">
                         <ul style="margin: 0;">
-                            <li>Scan the QR code With your App</li>
-                            <li>the code will be automatically added</li>
-                            <li>Insert the given displayed code end Submit</li>
+                            <li>${this.language.update.qrSuggest[0]}</li>
+                            <li>${this.language.update.qrSuggest[1]}</li>
+                            <li>${this.language.update.qrSuggest[2]}</li>
                         </ul>
                     </div>
                 </div>
                 <div class="line codeInputLine">
-                    <label for="emailTfaCode">Insert Code:</label>
+                    <label for="emailTfaCode">${this.language.update.insertTfaCode}</label>
                     <div class="codeSend">
                         <input id="appTfaCode" type="text">
-                        <button class="retroBtn sendCode" style="background-color: var(--bs-success)">Submit</button>
+                        <button class="retroBtn sendCode" style="background-color: var(--bs-success)">${this.language.update.submit}</button>
                     </div>
                 </div>
                 <div class="line submitLine">
-                <button onclick="window.showCode()" class="retroBtn" style="background-color: var(--bs-danger)">show code</button>
+                    <button onclick="window.showCode()" class="retroBtn" style="background-color: var(--bs-danger)">${this.language.update.showCode}</button>
                 <p class="codeDisplay" style="display: none;">
-                Nothing to Show yet
+                    ${this.language.update.tempCode}
                 </p>
                 
                 </div>
                 <div class="line">
                     <div class="codeSend">
-                        <button class="retroBtn downloadKeys" style="background-color: var(--bs-warning)">Download Recovery Keys</button>
-                        <button disabled="true" class="retroBtn finishBtn" onclick="window.goHome()" style="background-color: var(--bs-warning)">Finish!</button>
+                        <button class="retroBtn downloadKeys" style="background-color: var(--bs-warning)">${this.language.update.downloadKeys}</button>
+                        <button disabled="true" class="retroBtn finishBtn" onclick="window.goHome()" style="background-color: var(--bs-warning)">${this.language.update.done}</button>
                     </div>
                 </div>
             </div>
         `
     }
     get2faEmailForm(){
+        let emailError = `
+            <ul style="margin: 0;">
+                <li>${this.language.update.emailSuggest[0]}</li>
+                <li>${this.language.update.emailSuggest[1]}</li>
+                <li>${this.language.update.emailSuggest[2]}</li>
+            </ul>
+        `
         return `
             <div class="formContainerInner">
                 <div class="line infoLine">
@@ -290,37 +282,50 @@ export default class extends Aview {
                     </div>
                 </div>
                 <div class="line codeInputLine">
-                    <label for="emailTfaCode">Insert Code:</label>
+                    <label for="emailTfaCode">${this.language.update.insertTfaCode}</label>
                     <input id="emailTfaCode" type="text">
                 </div>
                 <div class="line" >
-                    <button class="retroBtn resendBtn" style="background-color: var(--bs-warning)">send email</button>
-                    <button class="retroBtn sendCode" style="background-color: var(--bs-success)">Submit</button>
+                    <button class="retroBtn resendBtn" style="background-color: var(--bs-warning)">${this.language.update.sendEmail}</button>
+                    <button class="retroBtn sendCode" style="background-color: var(--bs-success)">${this.language.update.done}</button>
                 </div>
                 <div class="line">
                     <div class="codeSend">
-                        <button class="retroBtn downloadKeys" style="background-color: var(--bs-warning)">Download Recovery Keys</button>
-                        <button disabled="true" class="retroBtn finishBtn" onclick="window.goHome()" style="background-color: var(--bs-warning)">Finish!</button>
+                        <button class="retroBtn downloadKeys" style="background-color: var(--bs-warning)">${this.language.update.downloadKeys}</button>
+                        <button disabled="true" class="retroBtn finishBtn" onclick="window.goHome()" style="background-color: var(--bs-warning)">${this.language.update.done}</button>
                     </div>
                 </div>
             </div>
         `
     }
     get2faRemoveForm(){
-        let intraAdvice = "Click the button to link your intra profile"
-        let googleAdvice = "Click the button to link your google profile"
-        let labelIntra = "Link 42 Account"
-        let labelGoogle = "Link Google Account"
-
+        let intraAdvice = this.language.update.intraAdviceLink
+        let googleAdvice = this.language.update.googleAdviceLink
+        let labelIntra = this.language.update.labelIntraLink
+        let labelGoogle = this.language.update.labelGoogleLink
+        let qrError = `
+        <ul style="margin: 0;">
+            <li>${this.language.update.qrSuggest[0]}</li>
+            <li>${this.language.update.qrSuggest[1]}</li>
+            <li>${this.language.update.qrSuggest[2]}</li>
+        </ul>
+        `
+        let emailError = `
+            <ul style="margin: 0;">
+                <li>${this.language.update.emailSuggest[0]}</li>
+                <li>${this.language.update.emailSuggest[1]}</li>
+                <li>${this.language.update.emailSuggest[2]}</li>
+            </ul>
+        `
         if (localStorage.getItem("intraLinked") != null)
         {
-            intraAdvice = "your intra profile is linked click the button to unlink";
-            labelIntra = "Unlink 42 Account"
+            intraAdvice = this.language.update.intraAdviceUnLink;
+            labelIntra = this.language.update.labelIntraUnLink;
         }
         if (localStorage.getItem("googleLinked") != null)
         {
-            googleAdvice = "your google profile is linked click the button to unlink";
-            labelGoogle = "Unlink google Account"
+            googleAdvice = this.language.update.googleAdviceUnLink;
+            labelGoogle = this.language.update.labelGoogleUnLink;
         }
         return `
         <div class="formContainer">
@@ -350,7 +355,7 @@ export default class extends Aview {
         </div>
             <div class="formContainer">
                 <div class="decisionBox">
-                    <h4>Disable TFA</h4>
+                    <h4>${this.language.update.disableTfa}</h4>
                 </div>
                 <div class="line infoLine">
                     <div>
@@ -358,12 +363,12 @@ export default class extends Aview {
                     </div>
                 </div>
                 <div class="line codeInputLine">
-                    <label for="emailTfaCode">Insert Code:</label>
+                    <label for="emailTfaCode">${this.language.update.insertTfaCode}</label>
                     <input id="removeTfaCode" type="text">
                 </div>
                 <div class="line" >
-                    ${localStorage.getItem("is_active") == "EM" ? '<button class="retroBtn sendBtn" style="background-color: var(--bs-warning)">send email</button>' : ""}
-                    <button class="retroBtn sendCode" style="background-color: var(--bs-success)">Submit</button>
+                    ${localStorage.getItem("is_active") == "EM" ? `<button class="retroBtn sendBtn" style="background-color: var(--bs-warning)">${this.language.update.sendEmail}</button>` : ""}
+                    <button class="retroBtn sendCode" style="background-color: var(--bs-success)">${this.language.update.done}</button>
                 </div>
             </div>
         `

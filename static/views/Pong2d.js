@@ -32,7 +32,7 @@ export default class extends Aview{
     }
 	setup(){
         let script = document.createElement("script");
-        script.src = "/games/pong2d/pong.js";
+        script.src = "/games/pong2d/mainLoop.js";
         script.type = "module";
         document.body.appendChild(script);
         this.defineWallpaper("/imgs/backLogin.png", "https://c4.wallpaperflare.com/wallpaper/105/526/545/blur-gaussian-gradient-multicolor-wallpaper-preview.jpg")

@@ -18,6 +18,10 @@ input textarea{
     font-size: 18px !important;
 }
 
+.form-control{
+    font-size: 20px !important;
+}
+
 *::-webkit-scrollbar{
     display: none;
 }

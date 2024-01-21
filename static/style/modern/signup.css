@@ -1,13 +1,12 @@
-*{
+* {
     border-radius: 8px !important;
     font-family: 'Arial', sans-serif;
     font-weight: bold;
 }
 
 .signupForm {
-    background-image: url("/imgs/register.png");
-    background-size: cover;
-    background-repeat: no-repeat;
+    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.1);
     color: black;
     width: 40svw;
     height: fit-content;
@@ -21,11 +20,11 @@
     box-shadow: 15px 15px black;
 }
 
-.account{
+.account {
     border-radius: 10px !important;
 }
 
-.profilePictureUrl{
+.profilePictureUrl {
     border-radius: 10px !important;
 }
 
@@ -79,8 +78,7 @@ h3 {
     transition: 0.2s;
 }
 
-input
-{
+input {
     border: 1px solid gray !important;
 }
 
@@ -156,8 +154,7 @@ input
     margin: 0;
 }
 
-.loginLink
-{
+.loginLink {
     height: fit-content;
     font-size: larger;
     color: black;
@@ -184,7 +181,7 @@ input
     width: 100%;
     height: 3svh;
     border: none;
-    font-size: 15px;
+    font-size: 20px;
     border: 2px solid black;
     outline: none;
 }
@@ -293,6 +290,9 @@ input
     border-style: solid;
     border-color: #555 transparent transparent transparent;
 }
+#title{
+    color: white;
+}
 
 
 /* Show the tooltip text when you mouse over the tooltip container */
@@ -307,10 +307,14 @@ input
         width: 90svw;
     }
     .line {
-        width: 98%;
+        width: 100%;
+    }
+    #title{
+        width: 100%;
+        color: white;
     }
     .linebtn {
-        width: 95%;
+        width: 100%;
     }
     .retroBtn {
         font-size: 10px;

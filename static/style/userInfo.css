@@ -1,5 +1,4 @@
-.userInfoContainer
-{
+.userInfoContainer {
     width: 100svw;
     height: 92svh;
     position: relative;
@@ -7,8 +6,7 @@
     align-items: center;
 }
 
-.imageForm
-{
+.imageForm {
     background-color: white;
     display: flex;
     flex-direction: column;
@@ -18,44 +16,41 @@
     height: 60svh;
     border: 2px solid black;
     box-shadow: 15px 15px black;
-
 }
 
-.formLink
-{
+.formLink {
     transition: 0.5s;
-
 }
 
-.intraInfo, .googleInfo
-{
+.intraInfo,
+.googleInfo {
     width: 60%;
     margin: 0;
 }
 
-.intra, .google
-{
+.intra,
+.google {
     justify-content: space-between !important;
     padding: 0 !important;
     padding: 5px;
 }
 
 @keyframes slide {
-    0%{
+    0% {
         transform: rotate(0);
     }
-    25%{
+    25% {
         transform: rotate(40deg);
     }
-    75%{
+    75% {
         transform: rotate(-40deg);
     }
-    100%{
+    100% {
         transform: rotate(0);
-
     }
 }
-.imgWrap{
+
+.imgWrap {
     width: 15%;
     height: 100%;
     padding: 5px;
@@ -64,13 +59,11 @@
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
 }
 
-.retroBtn:hover .imgWrap
-{
+.retroBtn:hover .imgWrap {
     animation: slide 1s;
 }
 
-.imgWrap img
-{
+.imgWrap img {
     width: 100%;
     height: 100%;
     border-radius: 8px !important;
@@ -78,28 +71,25 @@
     background-color: white;
 }
 
-.intra span, .google span
-{
+.intra span,
+.google span {
     padding: 5px;
     font-size: 10px;
     flex-grow: 1;
     text-align: center;
 }
 
-#intraLink
-{
+#intraLink {
     background-color: var(--bs-danger);
 }
 
-.formLink:hover
-{
+.formLink:hover {
     cursor: pointer;
     background-color: black !important;
     color: white !important;
 }
 
-.leftSide
-{
+.leftSide {
     z-index: 1000000000;
     transition: 0.6s;
     width: 30%;
@@ -116,8 +106,7 @@
     border: 2px solid black;
 }
 
-.leftSide h6
-{
+.leftSide h6 {
     padding: 10px;
     width: 90%;
     height: fit-content;
@@ -126,8 +115,7 @@
     background-color: #f0ead2;
 }
 
-.title
-{
+.title {
     padding: 10px;
     background-color: #f0ead2;
     border: 2px solid black;
@@ -135,8 +123,8 @@
     width: 80%;
 }
 
-.formContainer, .imageContainer
-{
+.formContainer,
+.imageContainer {
     background: url("/imgs/backUpdate.jpg");
     background-size: cover;
     background-repeat: no-repeat;
@@ -153,14 +141,12 @@
     margin-bottom: 40px;
 }
 
-.showForm
-{
+.showForm {
     display: flex;
     justify-content: center;
 }
 
-.formContainerInner
-{
+.formContainerInner {
     width: 100%;
     height: fit-content;
     display: flex;
@@ -169,13 +155,11 @@
     align-items: center;
 }
 
-.imageContainer{
+.imageContainer {
     width: 50% !important;
 }
 
-
-.formMenu
-{
+.formMenu {
     overflow: scroll;
     width: 70%;
     height: 92svh;
@@ -187,8 +171,7 @@
     overflow: scroll;
 }
 
-.inputLine
-{
+.inputLine {
     background-color: #f0ead2;
     padding: 10px;
     font-size: 20px;
@@ -196,33 +179,31 @@
     height: fit-content;
     display: flex;
     flex-direction: column;
-    justify-content: space-between; 
+    justify-content: space-between;
     align-items: flex-start;
     border: 2px solid black;
     box-shadow: 15px 15px black;
     margin: 15px;
 }
 
-.inputLineFile
-{
+.inputLineFile {
     background-color: white;
     padding: 10px;
     font-size: 20px;
     width: 90%;
     height: 8svh;
     display: flex;
-    justify-content: space-between; 
+    justify-content: space-between;
     align-items: center;
     border: 2px solid black;
     box-shadow: 7px 7px black;
 }
 
-.inputLine label
-{
+.inputLine label {
     width: 90%;
 }
-.inputLine input
-{
+
+.inputLine input {
     border: 2px solid black;
     width: 100%;
     height: 3.5svh;
@@ -232,60 +213,52 @@
     font-size: 10px;
 }
 
-.inputLine input[size="small"]
-{
+.inputLine input[size="small"] {
     width: 90%;
 }
 
-.passInp
-{
+.passInp {
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.errors
-{
-	width: 90%;
-	background-color: #A22C29;
-	box-shadow: 7px 7px black;
-	border: 2px solid black;
-	display: flex;
-	align-items: center;
-	justify-content: start;
-	padding: 20px;
+.errors {
+    width: 90%;
+    background-color: #A22C29;
+    box-shadow: 7px 7px black;
+    border: 2px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    padding: 20px;
     color: white;
-	display: none;
+    display: none;
 }
 
-.errors ul
-{
-	margin: 0;
+.errors ul {
+    margin: 0;
 }
 
-.passwordSwitch
-{
-	width: 4svh;
-	height: 4svh;
-	border: 2px solid black;
-	padding: 5px;
-	background-color: white;
+.passwordSwitch {
+    width: 4svh;
+    height: 4svh;
+    border: 2px solid black;
+    padding: 5px;
+    background-color: white;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.passwordSwitch img
-{
-	width: 100%;
-	height: 100%;
-	object-fit: contain;
+.passwordSwitch img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 
-
-.submit
-{
+.submit {
     background-color: var(--bs-success);
     border: 2px solid black;
     width: 90%;
@@ -295,11 +268,9 @@
     box-shadow: 15px 15px black;
     margin: 30px;
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
-
 }
 
-.profilePict
-{
+.profilePict {
     width: 90%;
     height: 70%;
     padding: 10px;
@@ -307,130 +278,126 @@
     border: 2px solid black;
 }
 
-.profilePict img
-{
+.profilePict img {
     object-fit: contain;
     background-color: black;
     width: 100%;
     height: 100%;
 }
 
-#inpFile
-{
-	position: absolute;
-	left: -300svw;
+#inpFile {
+    position: absolute;
+    left: -300svw;
 }
 
-#labelInpFile
-{
-	width: 100%;
-	height: 80%;
-	display: flex;
-	align-items: center;
-}
-
-#labelInpFile span{
+#labelInpFile {
+    width: 100%;
+    height: 80%;
     display: flex;
     align-items: center;
 }
 
-#labelInpFile:hover
-{
-	cursor: pointer;
+#labelInpFile span {
+    display: flex;
+    align-items: center;
 }
 
-.fileIcon
-{
-	width: 10%;
-	height: 80%;
-	object-fit: contain;
+#labelInpFile:hover {
+    cursor: pointer;
 }
 
-.selectFileText
-{
-	display: flex;
-	align-items: flex-end;
-	height: 100%;
+.fileIcon {
+    width: 10%;
+    height: 80%;
+    object-fit: contain;
+}
+
+.selectFileText {
+    display: flex;
+    align-items: flex-end;
+    height: 100%;
     width: 100%;
-	font-size: larger;
+    font-size: larger;
     margin-left: 20px;
 }
 
 .myTooltip {
-	padding: 10px;
+    padding: 10px;
     width: 1.5svw;
     height: 1.5svw;
-	background-color: #000;
+    background-color: #000;
     justify-content: center;
     align-items: center;
-	position: relative;
-	display: flex;
-	color: white;
-  }
-  
-  /* Tooltip text */
-  .myTooltip .tooltiptext {
-	visibility: hidden;
-	min-width: 20svw;
-	background-color: #555;
-	color: #fff;
-	padding: 15px;
-	border-radius: 6px;
-  
-	/* Position the tooltip text */
-	position: absolute;
-	z-index: 1;
-	bottom: 125%;
-	left: 50%;
-	margin-left: -60px;
-  
-	/* Fade in tooltip */
-	opacity: 0;
-	transition: opacity 0.3s;
-  }
-  
-  /* Tooltip arrow */
-  .myTooltip .tooltiptext::after {
-	content: "";
-	position: absolute;
-	top: 100%;
-	left: 15%;
-	margin-left: -5px;
-	border-width: 5px;
-	border-style: solid;
-	border-color: #555 transparent transparent transparent;
-  }
-  
-  /* Show the tooltip text when you mouse over the tooltip container */
-  .myTooltip:hover .tooltiptext {
-	visibility: visible;
-	opacity: 1;
-  }
-  
-  .handle
-  {
+    position: relative;
+    display: flex;
+    color: white;
+}
+
+
+/* Tooltip text */
+
+.myTooltip .tooltiptext {
+    visibility: hidden;
+    min-width: 20svw;
+    background-color: #555;
+    color: #fff;
+    padding: 15px;
+    border-radius: 6px;
+    /* Position the tooltip text */
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    /* Fade in tooltip */
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+
+/* Tooltip arrow */
+
+.myTooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 15%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+
+/* Show the tooltip text when you mouse over the tooltip container */
+
+.myTooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+.handle {
     width: 10svw;
     height: 10svw;
     background-color: var(--bs-danger);
     position: absolute;
     bottom: 0;
-    left:0;
+    left: 0;
     transition: 0.6s;
     display: none;
     justify-content: center;
     align-items: center;
     color: white;
-  } 
-  .f-line
-  {
-	    display: flex;
-	    justify-content: flex-start;
-	    align-items: flex-end;
-	    gap: 10px;
-  }
+}
 
-  .line
-  {
+.f-line {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.line {
     width: 100%;
     margin-top: 10px;
     margin-bottom: 10px;
@@ -441,125 +408,140 @@
     align-items: center;
     border: 2px solid black;
     gap: 20px;
-  }
+}
 
-  .formContainer{
+.formContainer {
     display: flex;
-  }
+}
 
-  .codeSend
-  {
+.codeSend {
     display: flex;
     width: 100%;
     justify-content: space-between;
-  }
+}
 
-  .codeSend input
-  {
+.codeSend input {
     width: 60% !important;
-  }
-  .retroBtn
-    {
-    	width: 30%;
-    	height: 4svh;
-    	padding: 5px;
-    	border: none;
-    	display: flex;
-    	justify-content: center;
-    	align-items: center;
-    	color: white;
-    	border: 2px solid black;
-    	box-shadow: 7px 7px black;
-    	font-weight: bolder;
-    	text-decoration: none;
-    	font-size: 10px;
+}
+
+.retroBtn {
+    width: 30%;
+    height: 4svh;
+    padding: 5px;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    border: 2px solid black;
+    box-shadow: 7px 7px black;
+    font-weight: bolder;
+    text-decoration: none;
+    font-size: 10px;
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+}
 
-    }
-    .retroBtn:hover
-    {
-        cursor: pointer;
-    }
-    .submitLine
-    {
-        height: 100%;
-        display: flex;
-    }
-    .codeDisplay
-    {
-        width: 60%;
-        height: 100%;
-        overflow: scroll;
-        margin: 0;
-        align-items: center;
+.retroBtn:hover {
+    cursor: pointer;
+}
 
-    }
-    .decisionBox
-    {
-        width: 100%;
-        height: 8svh;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background-color: white;
-        border: 2px solid black;
-        padding: 10px;
-        margin: 20px;
+.submitLine {
+    height: 100%;
+    display: flex;
+}
 
-    }
-    .qrInfo{
-        background-color: var(--bs-success);
-        flex-grow: 1;
-        height: 250px;
-        border: 2px solid black;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: white;
-    }
-    .codeInputLine
-    {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    .codeInputLine input
-    {
-        width: 100%;
-    }
+.codeDisplay {
+    width: 60%;
+    height: 100%;
+    overflow: scroll;
+    margin: 0;
+    align-items: center;
+}
 
-    .showForm
-    {
-        width: 100%;
-    }
+.decisionBox {
+    width: 100%;
+    height: 8svh;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    border: 2px solid black;
+    padding: 10px;
+    margin: 20px;
+}
+
+.qrInfo {
+    background-color: var(--bs-success);
+    flex-grow: 1;
+    height: 250px;
+    border: 2px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.codeInputLine {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.codeInputLine input {
+    width: 100%;
+}
+
+.showForm {
+    width: 100%;
+}
+
 @media screen and (max-width: 900px) {
-    .handle
-    {
+    .handle {
         display: flex;
-    } 
-
-    .userInfoContainer
-    {
+    }
+    .userInfoContainer {
         justify-content: center;
         align-items: center;
     }
-    .formContainer
-    {
+    .formContainer {
         width: 90svw;
     }
-    .formMenu
-    {
+    .formMenu {
         width: 100%;
+        padding: 0;
     }
-    .leftSide
-    {
+    .leftSide {
         width: 90%;
         position: absolute;
         top: 0;
         left: 0;
         transform: translateX(-91svw);
     }
-    .imageContainer{
-        width: 80% !important;
+    .imageContainer {
+        width: 90% !important;
+    }
+    .googleInfo,
+    .intraInfo {
+        display: none;
+    }
+    .retroBtn {
+        width: 45%;
+    }
+    .intra,
+    .google,
+    .logoutAll {
+        width: 70%;
+        margin: auto;
+    }
+    .decisionBox {
+        padding: 5px;
+    }
+    .qrInfo {
+        padding: 20px;
+        width: 100%;
+        height: fit-content;
+    }
+    .qrLine {
+        flex-direction: column;
     }
 }

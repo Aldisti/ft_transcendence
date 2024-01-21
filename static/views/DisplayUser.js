@@ -20,7 +20,7 @@ export default class extends Aview {
             else if (!res.is_friend && confirm(`Do you really want to add ${username} to your friends?`))
             {
                 API.sendFriendRequest(1, username);
-                document.querySelector(".friendRequest").children[0].innerHTML = "Pending..."
+                document.querySelector(".friendRequest").children[0].innerHTML = this.language.displayUser.pending
             }
         })
     }
@@ -38,24 +38,24 @@ export default class extends Aview {
                 </div>
                 <div class="name">
                     <div class="anagraph">
-                        <h6>Name:</h6>
+                        <h6>${this.language.displayUser.userInfo.firstName}</h6>
                         <h3>${data.user_info.first_name}</h3>
                     </div>
                     <div class="anagraph">
-                        <h6>Last Name:</h6>
+                        <h6>${this.language.displayUser.userInfo.lastName}</h6>
                         <h3>${data.user_info.last_name}</h3>
                     </div>
                 </div>
                 <div class="name">
                     <div class="anagraph">
-                        <h6>Birth Date:</h6>
+                        <h6>${this.language.displayUser.userInfo.birthDate}</h6>
                         <h3>${data.user_info.birthdate}</h3>
                     </div>
                     <button class="askFriend friendRequest friendRequestBtn" style="${data.username == localStorage.getItem("username") ? `display: none;` : `` }" name="${data.username}">
-                        <h3>Add friend</h3>
+                        <h3>${this.language.displayUser.userInfo.addFriend}</h3>
                     </button>
                     <a data-link class="askFriend" href="/account/" style="${data.username == localStorage.getItem("username") ? `` : `display: none;` }">
-                        Manage Account
+                        ${this.language.displayUser.userInfo.manageAccount}
                     </a>
                 </div>
             `
@@ -63,7 +63,7 @@ export default class extends Aview {
             API.friendStatus(1, this.username).then(res=>{
                 if (res.is_friend)
                 {
-                    document.querySelector(".friendRequest").children[0].innerHTML = "Remove Friend";
+                    document.querySelector(".friendRequest").children[0].innerHTML = this.language.displayUser.removeFriend;
                     this.friendStatus = true;
                 }
                 else
@@ -82,25 +82,25 @@ export default class extends Aview {
                     </div>
                     <div class="filler">
                         <div class="gameStat">
-                            <h6>Game Won:</h6>
+                            <h6>${this.language.displayUser.gameStats[0]}</h6>
                             <h3>34</h3>
                         </div>
                         <div class="gameStat">
-                            <h6>Game Lost:</h6>
+                            <h6>${this.language.displayUser.gameStats[1]}</h6>
                             <h3>54</h3>
                         </div>
                         <div class="gameStat">
-                            <h6>Tournament Won:</h6>
+                            <h6>${this.language.displayUser.gameStats[2]}</h6>
                             <h3>98</h3>
                         </div>
                         <div class="gameStat">
-                            <h6>Tournament Lost:</h6>
+                            <h6>${this.language.displayUser.gameStats[3]}</h6>
                             <h3>200</h3>
                         </div>
                     </div>
                 </div>
                 <div class="statsContainer">
-                    <h1 class="title">Statistiche</h1>
+                    <h1 class="title">${this.language.displayUser.statisticTitle}</h1>
                     <div class="stats">
                         <div class="chart">
                             <h3>test</h3>
