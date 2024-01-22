@@ -18,7 +18,7 @@ class MultiplayerConsumer(AsyncWebsocketConsumer):
     players = {}
 
     BALL_VELOCITY = 1
-    PLAYER_VELOCITY = 1
+    PLAYER_VELOCITY = 10
 
     update_lock = asyncio.Lock()
     ball = Ball(object_id="ball", radius=10, pos_x=400, pos_y=225, vel_x=50, vel_y=0)
@@ -85,6 +85,20 @@ class MultiplayerConsumer(AsyncWebsocketConsumer):
                 }
             )
         )
+
+    async def receive(self, text_data):
+        text_data_json = json.loads(text_data)
+        message_type = text_data_json.get("type", "")
+
+        if message_type == "up":
+            paddle_left.vel_y = - PLAYER_VELOCITY
+            paddle_right.vel_y = - PLAYER_VELOCITY
+        elif message_type == "down":
+            paddle_left.vel_y = PLAYER_VELOCITY
+            paddle_right.vel_y = PLAYER_VELOCITY
+        else:
+            paddle_left.vel_y = 0
+
 
     async def game_loop(self):
         while len(self.players) > 0:
