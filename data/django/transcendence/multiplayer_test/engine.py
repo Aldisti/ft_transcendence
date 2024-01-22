@@ -148,10 +148,10 @@ class Field:
             if dist_x < min_dist_x and dist_y < min_dist_y:
                 return True
             elif dist_x < min_dist_x and dist_y < min_dist_y_with_radius:
-                high_emishepere_y_1 = object_1.pos_y + object_1.height / 2
-                low_emishepere_y_1 = object_1.pos_y - object_1.height / 2
-                high_emishepere_y_2 = object_2.pos_y + object_2.height / 2
-                low_emishepere_y_2 = object_2.pos_y - object_2.height / 2
+                high_emispheres_y_1 = object_1.pos_y + object_1.height / 2
+                low_emispheres_y_1 = object_1.pos_y - object_1.height / 2
+                high_emispheres_y_2 = object_2.pos_y + object_2.height / 2
+                low_emispheres_y_2 = object_2.pos_y - object_2.height / 2
                 dist_emispheres_1_2 = (object_1.pos_x - object_2.pos_x) ** 2 + (high_emisphere_y_1 - low_emisphere_y_2) ** 2
                 dist_emispheres_2_1 = (object_1.pos_x - object_2.pos_x) ** 2 + (low_emisphere_y_1 - high_emisphere_y_2) ** 2
                 dist_emispheres = min(dist_emispheres_1_2, dist_emispheres_2_1)
@@ -171,11 +171,12 @@ class Field:
             if dist_y < min_dist_y:
                 return True
             elif dist_y < min_dist_y_with_radius:
-                high_emishepere_y_2 = object_2.pos_y + object_2.collider.height / 2
-                low_emishepere_y_2 = object_2.pos_y - object_2.collider.height / 2
+                high_emispheres_y_2 = object_2.pos_y + object_2.collider.height / 2
+                low_emispheres_y_2 = object_2.pos_y - object_2.collider.height / 2
                 dist_emispheres_low = (object_1.pos_x - object_2.pos_x) ** 2 + (object_1.pos_y - low_emisphere_y_2) ** 2
                 dist_emispheres_high = (object_1.pos_x - object_2.pos_x) ** 2 + (object_1.pos_y - high_emisphere_y_2) ** 2
                 dist_emispheres = min(dist_emispheres_low, dist_emispheres_high)
+                min_dist_emispheres = object_1.collider.radius ** 2 + object_2.collider.radius ** 2
                 if dist_emispheres < min_dist_emispheres:
                     return True
             else:
@@ -191,8 +192,8 @@ class Field:
             if dist_y < min_dist_y:
                 return True
             elif dist_y < min_dist_y_with_radius:
-                high_emishepere_y_1 = object_1.pos_y + object_1.height / 2
-                low_emishepere_y_1 = object_1.pos_y - object_1.height / 2
+                high_emispheres_y_1 = object_1.pos_y + object_1.height / 2
+                low_emispheres_y_1 = object_1.pos_y - object_1.height / 2
                 dist_emispheres_low = (object_1.pos_x - object_2.pos_x) ** 2 + (object_2.pos_y - low_emisphere_y_1) ** 2
                 dist_emispheres_high = (object_1.pos_x - object_2.pos_x) ** 2 + (object_2.pos_y - high_emisphere_y_1) ** 2
                 dist_emispheres = min(dist_emispheres_low, dist_emispheres_high)
@@ -211,11 +212,11 @@ class Paddle(MyObject):
         pass
 
     def hit_bottom_wall(self, wall_pos):
-        self.pos_y = wall_pos - self.collider.radius
+        self.pos_y = wall_pos - self.collider.box_height
         self.vel_y = 0
 
     def hit_top_wall(self, wall_pos):
-        self.pos_y = wall_pos + self.collider.radius
+        self.pos_y = wall_pos + self.collider.box_height
         self.vel_y = 0
 
 
@@ -229,19 +230,19 @@ class Ball(MyObject):
             self.vel_x = - self.vel_x
 
     def hit_left_wall(self, wall_pos):
-        self.pos_x = wall_pos + self.collider.radius
+        self.pos_x = wall_pos + self.collider.box_width
         self.vel_x = - self.vel_x
 
     def hit_right_wall(self, wall_pos):
-        self.pos_x = wall_pos - self.collider.radius
+        self.pos_x = wall_pos - self.collider.box_width
         self.vel_x = - self.vel_x
 
     def hit_bottom_wall(self, wall_pos):
-        self.pos_y = wall_pos - self.collider.radius
+        self.pos_y = wall_pos - self.collider.box_height
         self.vel_y = - self.vel_y
 
     def hit_top_wall(self, wall_pos):
-        self.pos_y = wall_pos + self.collider.radius
+        self.pos_y = wall_pos + self.collider.box_height
         self.vel_y = - self.vel_y
 
 
