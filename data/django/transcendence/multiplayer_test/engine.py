@@ -171,8 +171,8 @@ class Field:
             if dist_y < min_dist_y:
                 return True
             elif dist_y < min_dist_y_with_radius:
-                high_emishepere_y_2 = object_2.pos_y + object_2.height / 2
-                low_emishepere_y_2 = object_2.pos_y - object_2.height / 2
+                high_emishepere_y_2 = object_2.pos_y + object_2.collider.height / 2
+                low_emishepere_y_2 = object_2.pos_y - object_2.collider.height / 2
                 dist_emispheres_low = (object_1.pos_x - object_2.pos_x) ** 2 + (object_1.pos_y - low_emisphere_y_2) ** 2
                 dist_emispheres_high = (object_1.pos_x - object_2.pos_x) ** 2 + (object_1.pos_y - high_emisphere_y_2) ** 2
                 dist_emispheres = min(dist_emispheres_low, dist_emispheres_high)
