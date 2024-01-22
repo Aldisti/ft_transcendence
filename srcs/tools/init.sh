@@ -27,6 +27,11 @@ create_env() {
 	for var in ${ENV_VARS[@]}; do
 		tmp="$(grep $var= $ENV_FILE | cut -d '=' -f2-)"
 		if [ -z "$tmp" ]; then
+			if grep -q "$var" <<< "DB_USER DB_PASSWORD"; then
+				echo -n "*"
+			else
+				echo -n " "
+			fi
 			if grep -q "PASSWORD" <<< "$var"; then
 				read -sp "Insert '$var' value: " value; echo
 			else
