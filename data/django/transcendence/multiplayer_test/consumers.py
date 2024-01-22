@@ -3,45 +3,14 @@ import asyncio
 import uuid
 import math
 import logging
+import time
+import random
 
 from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import async_to_sync
+from multiplayer_test.engine import Ball, Paddle, Field, newton_dynamics
 
 logger = logging.getLogger(__name__)
-
-
-#class Field:
-#    UPDATE_RATE = 1
-#    def __init__(self, objs: list, physics, width: int, length: int):
-#        self.objs = objs
-#        self.physics = physics
-#        self.width = width
-#        self.length = length
-#
-#    def add_objects(self, objs: list):
-#        self.objs.extend(objs)
-#
-#    def remove_objects(self, objs: list):
-#        for obj in objs
-#            self.objs.remove(obj)
-#
-#    # the time accepted has to be at least equal to UPDATE_RATE
-#    def update(self, delta_time):
-#        for _ in range(delta_time // self.UPDATE_RATE):
-#           self.update_position()
-#           self.resolve_collision()
-#           self.resolve_interactions()
-#
-#
-#
-#
-#
-#class Object:
-#    def __init__(self, object_id, collider, pos_x, pos_y):
-#        self.object_id = object_id
-#        self.collider = collider
-#        self.pos_x = pos_x
-#        self.pos_y = pos_y
 
 
 class MultiplayerConsumer(AsyncWebsocketConsumer):
@@ -52,6 +21,10 @@ class MultiplayerConsumer(AsyncWebsocketConsumer):
     PLAYER_VELOCITY = 1
 
     update_lock = asyncio.Lock()
+    ball = Ball(object_id="ball", radius=10, pos_x=400, pos_y=225, vel_x=50, vel_y=0)
+    paddle_left = Paddle(object_id="player_left", width=20, height=80, pos_y=225, pos_x=40)
+    paddle_right = Paddle(object_id="player_right", width=20, height=80, pos_y=225, pos_x=760)
+    game = Field(objs=[ball, paddle_left, paddle_right], dinamics=newton_dynamics, width=800, height=450)
 
 
     async def connect(self):
@@ -62,6 +35,10 @@ class MultiplayerConsumer(AsyncWebsocketConsumer):
             self.game_group_name, self.channel_name
         )
 
+        #await self.channel_layer.group_add(
+        #    self.player_id, self.channel_name
+        #)
+
         await self.send(
             text_data=json.dumps({"type": "playerId", "playerId": self.player_id})
         )
@@ -71,12 +48,19 @@ class MultiplayerConsumer(AsyncWebsocketConsumer):
                 "id": self.player_id,
             }
 
-        if len(self.players) == 2:
+        if len(self.players) == 1:
             await self.channel_layer.group_send(
                 self.game_group_name,
                 {"type": "state.update", "objects": "game started"}
             )
             asyncio.create_task(self.game_loop())
+
+        #await self.channel_layer.group_send(
+        #    self.player_id,
+        #    {"type": "state.update", "objects": "game started"}
+        #)
+
+        asyncio.create_task(self.game_loop())
 
 
     async def disconnect(self, close_code):
@@ -87,6 +71,10 @@ class MultiplayerConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_discard(
             self.game_group_name, self.channel_name
         )
+
+        #await self.channel_layer.group_discard(
+        #    self.player_id, self.channel_name
+        #)
 
     async def state_update(self, event):
         await self.send(
@@ -100,9 +88,35 @@ class MultiplayerConsumer(AsyncWebsocketConsumer):
 
     async def game_loop(self):
         while len(self.players) > 0:
+            self.game.update()
+            x = self.ball.pos_x - self.ball.collider.radius
+            y = self.ball.pos_y - self.ball.collider.radius
+            paddle_left_x = self.paddle_left.pos_x - self.paddle_left.collider.box_width
+            paddle_left_y = self.paddle_left.pos_y - self.paddle_left.collider.box_height
+            paddle_right_x = self.paddle_right.pos_x - self.paddle_right.collider.box_width
+            paddle_right_y = self.paddle_right.pos_y - self.paddle_right.collider.box_height
             await self.channel_layer.group_send(
                 self.game_group_name,
-                {"type": "state.update", "objects": [key for key, values in self.players.items()]}
+                {
+                    "type": "state.update", "objects": {
+                        "ball": {
+                            "x": x,
+                            "y": y,
+                        },
+                        "paddle_left": {
+                            "x": paddle_left_x,
+                            "y": paddle_left_y,
+                        },
+                        "paddle_right": {
+                            "x": paddle_right_x,
+                            "y": paddle_right_y,
+                        },
+                    }
+                }
             )
+            #await self.channel_layer.group_send(
+            #    self.player_id,
+            #    {"type": "state.update", "objects": {"x": x, "y": y}}
+            #)
             
-            await asyncio.sleep(0.5)
+            await asyncio.sleep(0.01)
