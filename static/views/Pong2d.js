@@ -17,14 +17,6 @@ export default class extends Aview{
                         <p>LeftPlayer keys: (w:up, s:down)</p>
                         <p>RightPlayer keys: (o:up, l:down)</p>
                     </div>
-                    <div class="switch">
-                        <button class="single">
-                            Single Player
-                        </button>
-                        <button class="multi">
-                            Two Player
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>
