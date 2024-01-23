@@ -18,10 +18,10 @@ class MultiplayerConsumer(AsyncWebsocketConsumer):
     players = {}
 
     BALL_VELOCITY = 1
-    PLAYER_VELOCITY = 120
+    PLAYER_VELOCITY = 500
 
     update_lock = asyncio.Lock()
-    ball = Ball(object_id="ball", radius=10, pos_x=10, pos_y=10, vel_x=60, vel_y=0)
+    ball = Ball(object_id="ball", radius=10, pos_x=10, pos_y=10, vel_x=360, vel_y=360)
     paddle_left = Paddle(object_id="player_left", width=20, height=80, pos_y=225, pos_x=40)
     paddle_right = Paddle(object_id="player_right", width=20, height=80, pos_y=225, pos_x=760)
     game = Field(objs=[ball, paddle_left, paddle_right], dinamics=newton_dynamics, width=800, height=450)
@@ -142,4 +142,5 @@ class MultiplayerConsumer(AsyncWebsocketConsumer):
             #    {"type": "state.update", "objects": {"x": x, "y": y}}
             #)
             
-            await asyncio.sleep(0.03)
+            await asyncio.sleep(0.05)
+
