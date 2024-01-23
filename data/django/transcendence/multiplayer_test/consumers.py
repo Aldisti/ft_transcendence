@@ -30,6 +30,7 @@ class MultiplayerConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
         self.player_id = str(uuid.uuid4())
+        self.start_time = time.time()
         await self.accept()
 
         await self.channel_layer.group_add(
@@ -50,18 +51,16 @@ class MultiplayerConsumer(AsyncWebsocketConsumer):
             }
 
         if len(self.players) == 1:
-            await self.channel_layer.group_send(
-                self.game_group_name,
-                {"type": "state.update", "objects": "game started"}
-            )
+            #await self.channel_layer.group_send(
+            #    self.game_group_name,
+            #    {"type": "state.update", "objects": "game started"}
+            #)
             asyncio.create_task(self.game_loop())
 
         #await self.channel_layer.group_send(
         #    self.player_id,
         #    {"type": "state.update", "objects": "game started"}
         #)
-
-        asyncio.create_task(self.game_loop())
 
 
     async def disconnect(self, close_code):
@@ -108,7 +107,7 @@ class MultiplayerConsumer(AsyncWebsocketConsumer):
     async def game_loop(self):
         while len(self.players) > 0:
             async with self.update_lock:
-                await self.game.update()
+                self.game.update()
                 x = self.ball.pos_x - self.ball.collider.radius
                 y = self.ball.pos_y - self.ball.collider.radius
                 vel_x = self.ball.vel_x / 60
