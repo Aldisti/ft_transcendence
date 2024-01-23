@@ -101,7 +101,7 @@ class MultiplayerConsumer(AsyncWebsocketConsumer):
             self.paddle_right.vel_y = self.PLAYER_VELOCITY
         elif message_type == "left":
             self.paddle_left.vel_y = 0
-        elif message_type == "right"
+        elif message_type == "right":
             self.paddle_right.vel_y = 0
 
 
