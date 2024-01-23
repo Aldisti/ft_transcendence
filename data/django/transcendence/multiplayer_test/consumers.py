@@ -91,14 +91,17 @@ class MultiplayerConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         message_type = text_data_json.get("type", "")
 
-        if message_type == "up":
+        if message_type == "up_left":
             self.paddle_left.vel_y = - self.PLAYER_VELOCITY
+        elif message_type == "up_right":
             self.paddle_right.vel_y = - self.PLAYER_VELOCITY
-        elif message_type == "down":
+        elif message_type == "down_left":
             self.paddle_left.vel_y = self.PLAYER_VELOCITY
+        elif message_type == "down_right":
             self.paddle_right.vel_y = self.PLAYER_VELOCITY
-        else:
+        elif message_type == "left":
             self.paddle_left.vel_y = 0
+        elif message_type == "right"
             self.paddle_right.vel_y = 0
 
 
