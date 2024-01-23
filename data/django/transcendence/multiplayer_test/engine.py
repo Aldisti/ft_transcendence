@@ -1,8 +1,11 @@
 from itertools import combinations
 import time
+import logging
+
+logger = logging.getLogger(__name__)
 
 
-def newton_dynamics(obj, delta_time):
+async def newton_dynamics(obj, delta_time):
     delta_time_sec = delta_time / 1000 # convert to seconds
     obj.pos_x = obj.pos_x + obj.vel_x * delta_time_sec + 0.5 * obj.acc_x * (delta_time_sec ** 2)
     obj.pos_y = obj.pos_y + obj.vel_y * delta_time_sec + 0.5 * obj.acc_y * (delta_time_sec ** 2)
@@ -43,19 +46,19 @@ class MyObject:
         self.acc_y = acc_y
         self.colliding = False
 
-    def on_hit(self, hitted):
+    async def on_hit(self, hitted):
         pass
 
-    def hit_left_wall(self, wall_pos):
+    async def hit_left_wall(self, wall_pos):
         pass
 
-    def hit_right_wall(self, wall_pos):
+    async def hit_right_wall(self, wall_pos):
         pass
 
-    def hit_bottom_wall(self, wall_pos):
+    async def hit_bottom_wall(self, wall_pos):
         pass
 
-    def hit_top_wall(self, wall_pos):
+    async def hit_top_wall(self, wall_pos):
         pass
 
 
@@ -80,24 +83,26 @@ class Field:
         for obj in objs:
             self.objs.remove(obj)
 
-    def update(self):
+    async def update(self):
         self.current_time = time.time_ns() // 1_000_000 # convert to millisencods
         self.delta_time = self.current_time - self.last_time
+        logger.warning(f"DELTA_TIME_PRE: {self.delta_time}")
         if self.delta_time > self.DELTA_LOW_LIMIT:
             self.delta_time = self.DELTA_LOW_LIMIT
         elif self.delta_time < self.DELTA_HIGH_LIMIT:
             self.delta_time = self.DELTA_HIGH_LIMIT
-        self.update_position()
-        self.resolve_collisions()
-        self.resolve_interactions()
+        logger.warning(f"DELTA_TIME_POST: {self.delta_time}")
+        await self.update_position()
+        await self.resolve_collisions()
+        await self.resolve_interactions()
         self.last_time = time.time_ns() // 1_000_000 # convert to milliseconds
 
-    def update_position(self):
+    async def update_position(self):
         for obj in self.objs:
-            self.dinamics(obj, self.delta_time)
-            self.constraints(obj)
+            await self.dinamics(obj, self.delta_time)
+            await self.constraints(obj)
 
-    def constraints(self, obj):
+    async def constraints(self, obj):
         left_pos = obj.pos_x - obj.collider.box_width
         right_pos = obj.pos_x + obj.collider.box_width
         top_pos = obj.pos_y - obj.collider.box_height
@@ -112,7 +117,7 @@ class Field:
         elif bottom_pos > self.height:
             obj.hit_bottom_wall(self.height)
 
-    def resolve_collisions(self):
+    async def resolve_collisions(self):
         for pair in combinations(self.objs, 2):
             if self.collides(pair):
                 if pair not in self.colliding:
@@ -126,10 +131,10 @@ class Field:
                 pair[0].colliding = False
                 pair[1].colliding = False
 
-    def resolve_interactions(self):
+    async def resolve_interactions(self):
         pass
 
-    def collides(self, pair):
+    async def collides(self, pair):
         object_1 = pair[0]
         object_2 = pair[1]
         if isinstance(object_1.collider, CircleCollider) and isinstance(object_2.collider, CircleCollider):
@@ -208,14 +213,14 @@ class Paddle(MyObject):
         pill_collider = PillCollider(height=height, width=width)
         super().__init__(object_id=object_id, collider=pill_collider, pos_x=pos_x, pos_y=pos_y, vel_x=vel_x, vel_y=vel_y, acc_x=acc_x, acc_y=acc_y)
 
-    def on_hit(self, hitted):
+    async def on_hit(self, hitted):
         pass
 
-    def hit_bottom_wall(self, wall_pos):
+    async def hit_bottom_wall(self, wall_pos):
         self.pos_y = wall_pos - self.collider.box_height
         self.vel_y = 0
 
-    def hit_top_wall(self, wall_pos):
+    async def hit_top_wall(self, wall_pos):
         self.pos_y = wall_pos + self.collider.box_height
         self.vel_y = 0
 
@@ -225,23 +230,23 @@ class Ball(MyObject):
         circle_collider = CircleCollider(radius=radius)
         super().__init__(object_id=object_id, collider=circle_collider, pos_x=pos_x, pos_y=pos_y, vel_x=vel_x, vel_y=vel_y, acc_x=acc_x, acc_y=acc_y)
 
-    def on_hit(self, hitted):
+    async def on_hit(self, hitted):
         if isinstance(hitted, Paddle):
             self.vel_x = - self.vel_x
 
-    def hit_left_wall(self, wall_pos):
+    async def hit_left_wall(self, wall_pos):
         self.pos_x = wall_pos + self.collider.box_width
         self.vel_x = - self.vel_x
 
-    def hit_right_wall(self, wall_pos):
+    async def hit_right_wall(self, wall_pos):
         self.pos_x = wall_pos - self.collider.box_width
         self.vel_x = - self.vel_x
 
-    def hit_bottom_wall(self, wall_pos):
+    async def hit_bottom_wall(self, wall_pos):
         self.pos_y = wall_pos - self.collider.box_height
         self.vel_y = - self.vel_y
 
-    def hit_top_wall(self, wall_pos):
+    async def hit_top_wall(self, wall_pos):
         self.pos_y = wall_pos + self.collider.box_height
         self.vel_y = - self.vel_y
 
