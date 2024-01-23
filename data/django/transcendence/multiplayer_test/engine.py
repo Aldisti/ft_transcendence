@@ -109,13 +109,13 @@ class Field:
         bottom_pos = obj.pos_y + obj.collider.box_height
 
         if left_pos < 0:
-            obj.hit_left_wall(0)
+            await obj.hit_left_wall(0)
         elif right_pos > self.width:
-            obj.hit_right_wall(self.width)
+            await obj.hit_right_wall(self.width)
         if top_pos < 0:
-            obj.hit_top_wall(0)
+            await obj.hit_top_wall(0)
         elif bottom_pos > self.height:
-            obj.hit_bottom_wall(self.height)
+            await obj.hit_bottom_wall(self.height)
 
     async def resolve_collisions(self):
         for pair in combinations(self.objs, 2):

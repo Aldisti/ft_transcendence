@@ -107,15 +107,16 @@ class MultiplayerConsumer(AsyncWebsocketConsumer):
 
     async def game_loop(self):
         while len(self.players) > 0:
-            await self.game.update()
-            x = self.ball.pos_x - self.ball.collider.radius
-            y = self.ball.pos_y - self.ball.collider.radius
-            vel_x = self.ball.vel_x / 60
-            vel_y = self.ball.vel_y / 60
-            paddle_left_x = self.paddle_left.pos_x - self.paddle_left.collider.box_width
-            paddle_left_y = self.paddle_left.pos_y - self.paddle_left.collider.box_height
-            paddle_right_x = self.paddle_right.pos_x - self.paddle_right.collider.box_width
-            paddle_right_y = self.paddle_right.pos_y - self.paddle_right.collider.box_height
+            async with self.update_lock:
+                await self.game.update()
+                x = self.ball.pos_x - self.ball.collider.radius
+                y = self.ball.pos_y - self.ball.collider.radius
+                vel_x = self.ball.vel_x / 60
+                vel_y = self.ball.vel_y / 60
+                paddle_left_x = self.paddle_left.pos_x - self.paddle_left.collider.box_width
+                paddle_left_y = self.paddle_left.pos_y - self.paddle_left.collider.box_height
+                paddle_right_x = self.paddle_right.pos_x - self.paddle_right.collider.box_width
+                paddle_right_y = self.paddle_right.pos_y - self.paddle_right.collider.box_height
             await self.channel_layer.group_send(
                 self.game_group_name,
                 {
