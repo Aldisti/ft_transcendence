@@ -107,6 +107,8 @@ class MultiplayerConsumer(AsyncWebsocketConsumer):
             self.game.update()
             x = self.ball.pos_x - self.ball.collider.radius
             y = self.ball.pos_y - self.ball.collider.radius
+            vel_x = self.ball.vel_x / 60
+            vel_y = self.ball.vel_y / 60
             paddle_left_x = self.paddle_left.pos_x - self.paddle_left.collider.box_width
             paddle_left_y = self.paddle_left.pos_y - self.paddle_left.collider.box_height
             paddle_right_x = self.paddle_right.pos_x - self.paddle_right.collider.box_width
@@ -118,6 +120,8 @@ class MultiplayerConsumer(AsyncWebsocketConsumer):
                         "ball": {
                             "x": x,
                             "y": y,
+                            "vel_x": vel_x,
+                            "vel_y": vel_y,
                         },
                         "paddle_left": {
                             "x": paddle_left_x,
