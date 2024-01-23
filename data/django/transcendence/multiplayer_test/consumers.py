@@ -25,6 +25,7 @@ class MultiplayerConsumer(AsyncWebsocketConsumer):
     paddle_left = Paddle(object_id="player_left", width=20, height=80, pos_y=225, pos_x=40)
     paddle_right = Paddle(object_id="player_right", width=20, height=80, pos_y=225, pos_x=760)
     game = Field(objs=[ball, paddle_left, paddle_right], dinamics=newton_dynamics, width=800, height=450)
+    games = {}
 
 
     async def connect(self):

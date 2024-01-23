@@ -83,9 +83,9 @@ class Field:
     def update(self):
         self.current_time = time.time_ns() // 1_000_000 # convert to millisencods
         self.delta_time = self.current_time - self.last_time
-        if self.delta_time < self.DELTA_LOW_LIMIT:
+        if self.delta_time > self.DELTA_LOW_LIMIT:
             self.delta_time = self.DELTA_LOW_LIMIT
-        elif self.delta_time > self.DELTA_HIGH_LIMIT:
+        elif self.delta_time < self.DELTA_HIGH_LIMIT:
             self.delta_time = self.DELTA_HIGH_LIMIT
         self.update_position()
         self.resolve_collisions()
