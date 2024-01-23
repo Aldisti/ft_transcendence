@@ -148,10 +148,10 @@ class Field:
             if dist_x < min_dist_x and dist_y < min_dist_y:
                 return True
             elif dist_x < min_dist_x and dist_y < min_dist_y_with_radius:
-                high_emispheres_y_1 = object_1.pos_y + object_1.height / 2
-                low_emispheres_y_1 = object_1.pos_y - object_1.height / 2
-                high_emispheres_y_2 = object_2.pos_y + object_2.height / 2
-                low_emispheres_y_2 = object_2.pos_y - object_2.height / 2
+                high_emisphere_y_1 = object_1.pos_y + object_1.height / 2
+                low_emisphere_y_1 = object_1.pos_y - object_1.height / 2
+                high_emisphere_y_2 = object_2.pos_y + object_2.height / 2
+                low_emisphere_y_2 = object_2.pos_y - object_2.height / 2
                 dist_emispheres_1_2 = (object_1.pos_x - object_2.pos_x) ** 2 + (high_emisphere_y_1 - low_emisphere_y_2) ** 2
                 dist_emispheres_2_1 = (object_1.pos_x - object_2.pos_x) ** 2 + (low_emisphere_y_1 - high_emisphere_y_2) ** 2
                 dist_emispheres = min(dist_emispheres_1_2, dist_emispheres_2_1)
@@ -171,8 +171,8 @@ class Field:
             if dist_y < min_dist_y:
                 return True
             elif dist_y < min_dist_y_with_radius:
-                high_emispheres_y_2 = object_2.pos_y + object_2.collider.height / 2
-                low_emispheres_y_2 = object_2.pos_y - object_2.collider.height / 2
+                high_emisphere_y_2 = object_2.pos_y + object_2.collider.height / 2
+                low_emisphere_y_2 = object_2.pos_y - object_2.collider.height / 2
                 dist_emispheres_low = (object_1.pos_x - object_2.pos_x) ** 2 + (object_1.pos_y - low_emisphere_y_2) ** 2
                 dist_emispheres_high = (object_1.pos_x - object_2.pos_x) ** 2 + (object_1.pos_y - high_emisphere_y_2) ** 2
                 dist_emispheres = min(dist_emispheres_low, dist_emispheres_high)
