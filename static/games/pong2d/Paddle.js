@@ -27,9 +27,9 @@ export default class{
         this.ctx.fillStyle = "#ffffff";
         let img = new Image();
         img.src = "/imgs/pill.png"
-		this.ctx.fillRect(this.x, this.y, this.width, this.height);
-        this.drawCircle(this.x + this.width / 2, this.y)
-        this.drawCircle(this.x + this.width / 2, this.y + this.height)
-        this.ctx.drawImage(img, this.x, this.y - 17, this.width, this.height + 30)
+		this.ctx.fillRect(this.x, this.y + 10, this.width, this.height -20);
+        this.drawCircle(this.x + (this.width / 2), this.y + 10)
+        this.drawCircle(this.x + this.width / 2, this.y + this.height - 10)
+        this.ctx.drawImage(img, this.x, this.y, this.width, this.height)
     }
 }
