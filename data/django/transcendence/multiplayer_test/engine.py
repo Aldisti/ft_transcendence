@@ -64,8 +64,8 @@ class MyObject:
 
 class Field:
     UPDATE_RATE = 1
-    DELTA_LOW_LIMIT = 1_000 / 10 
-    DELTA_HIGH_LIMIT = 1_000 / 60
+    DELTA_LOW_LIMIT = 1_000 / 1 
+    DELTA_HIGH_LIMIT = 1_000 / 120
     def __init__(self, objs: list, dinamics, width: int, height: int):
         self.objs = objs
         self.dinamics = dinamics

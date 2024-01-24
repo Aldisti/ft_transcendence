@@ -2,13 +2,19 @@
 
 COMPOSE_TMP="./srcs/docker-compose.yml.tmp"
 COMPOSE="./srcs/docker-compose.yml"
+DJANGO_VOL="./data/django"
+PONG_VOL="./data/pong"
 PG_VOL="./data/postgres"
+PONGDB_VOL="./data/pongdb"
 ENV_FILE="./srcs/.env"
 
 ENV_VARS=("PROJECT_NAME" "DB_NAME" \
 	"DB_USER" "DB_PASSWORD" \
 	"DB_HOST" "DB_PORT" "PGDATA" \
-	"EMAIL_HOST" "EMAIL_HOST_USER" "EMAIL_HOST_PASSWORD")
+	"EMAIL_HOST" "EMAIL_HOST_USER" "EMAIL_HOST_PASSWORD" \
+	"PROJECT_NAME" "PONGDB_NAME" \
+	"PONGDB_USER" "PONGDB_PASSWORD" \
+	"PONGDB_HOST" "PONGDB_PORT")
 
 
 create_env() {
@@ -21,6 +27,12 @@ create_env() {
 	EMAIL_HOST="smtp.gmail.com"
 	EMAIL_HOST_USER="transcendence.trinity@gmail.com"
 	EMAIL_HOST_PASSWORD="awmvotojcdvmdwge"
+	PONGAPP_NAME="pong"
+	PONGDB_NAME="pong"
+	PONGDB_USER="gpanico"
+	PONGDB_PASSWORD="password"
+	PONGDB_HOST="pongdb"
+	PONGDB_PORT=5432
 
 	for var in ${ENV_VARS[@]}; do
 		tmp="$(grep $var= $ENV_FILE | cut -d '=' -f2-)"
@@ -52,11 +64,21 @@ create_env() {
 	done && echo "'.env' updated"
 }
 
+if ! [ -d $DJANGO_VOL ]; then
+	mkdir -p $DJANGO_VOL
+fi
+
+if ! [ -d $PONG_VOL ]; then
+	mkdir -p $PONG_VOL
+fi
+
 if ! [ -d $PG_VOL ]; then
 	mkdir -p $PG_VOL
 fi
 
-sed "s&PLACEHOLDER&$PWD&g" $COMPOSE_TMP > $COMPOSE
+if ! [ -d $PONGDB_VOL ]; then
+	mkdir -p $PONGDB_VOL
+fi
 
 if [ ! -f "$ENV_FILE" ]; then
 	touch "$ENV_FILE"

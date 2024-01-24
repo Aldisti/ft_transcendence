@@ -142,5 +142,5 @@ class MultiplayerConsumer(AsyncWebsocketConsumer):
             #    {"type": "state.update", "objects": {"x": x, "y": y}}
             #)
             
-            await asyncio.sleep(0.05)
+            await asyncio.sleep(0.03)
 
