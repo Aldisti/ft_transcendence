@@ -27,28 +27,22 @@ import Game from "/games/pong2d/Game.js"
 			y: 0,
 		}
 	}
-	window.sync = false
 	let game = new Game(gameConfig)
+
 	socket.addEventListener("message", (message)=>{
 		let coordinates = JSON.parse(message.data).objects;
-		if (coordinates != undefined && coordinates.ball != undefined && coordinates.paddle_left != undefined && coordinates.paddle_right != undefined)
-		{
-			console.log(window.sync)
-			if (window.sync)
-			{
-					game.ball.updatePosition(coordinates.ball.x, coordinates.ball.y, coordinates.ball.vel_x, coordinates.ball.vel_y);
-				
-					sync = false;
-					console.log("ho syncato!")
-				}
-				game.ballTesting.updatePosition(coordinates.ball.x, coordinates.ball.y, coordinates.ball.vel_x, coordinates.ball.vel_y);
+
+		if (coordinates.ball)
+			game.ball.updatePosition(coordinates.ball.x, coordinates.ball.y, coordinates.ball.vel_x, coordinates.ball.vel_y);
+		if (coordinates.paddle_left != undefined)
 			game.paddleLeft.updatePosition(coordinates.paddle_left.x, coordinates.paddle_left.y)
+		if (coordinates.paddle_right != undefined)
 			game.paddleRight.updatePosition(coordinates.paddle_right.x, coordinates.paddle_right.y)
-		}
 	})
 
 	let sendMessage = true;
 	let sendMessageRight = true;
+	
 	document.addEventListener("keydown", (e)=>{
 		if (e.key == "p"){
 			console.log("test")
@@ -96,7 +90,8 @@ import Game from "/games/pong2d/Game.js"
 	{
 		const deltaTime = currentTime - previousTime;
 
-		if (deltaTime > frameInterval) {
+		game.ball.calculatePosition();
+		if (deltaTime >= frameInterval) {
 			previousTime = currentTime - (deltaTime % frameInterval);
 			game.draw();
 		}
