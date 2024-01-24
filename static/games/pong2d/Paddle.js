@@ -4,15 +4,27 @@ export default class{
         this.height = paddleConfig.height;
         this.canvas = canvas,
         this.ctx = canvas.getContext("2d")
+        this.deltaY = 1.6;
         this.x = paddleConfig.x;
         this.y = paddleConfig.y;
         this.padding = paddleConfig.padding
-
+        this.upInterval;
+        this.downInterval;
+        this.texture = paddleConfig.texture == undefined ? "" : paddleConfig.texture;
+        this.img = new Image();
+        this.img.src = this.texture;
     }
 
     updatePosition(x, y){
         this.x = x;
         this.y = y;
+    }
+
+    calculatePosition(direction){
+        if (direction == true && this.y + this.height + this.deltaY <= this.canvas.height)
+            this.y += this.deltaY;
+        else if (direction == false && this.y - this.deltaY > 0)
+            this.y -= this.deltaY;        
     }
 
     drawCircle(x, y){
@@ -25,11 +37,10 @@ export default class{
 
     draw(){
         this.ctx.fillStyle = "#ffffff";
-        let img = new Image();
-        img.src = "/imgs/pill.png"
 		this.ctx.fillRect(this.x, this.y + 10, this.width, this.height -20);
         this.drawCircle(this.x + (this.width / 2), this.y + 10)
         this.drawCircle(this.x + this.width / 2, this.y + this.height - 10)
-        this.ctx.drawImage(img, this.x, this.y, this.width, this.height)
+        if (this.texture != "")
+            this.ctx.drawImage(this.img, this.x, this.y, this.width, this.height)
     }
 }

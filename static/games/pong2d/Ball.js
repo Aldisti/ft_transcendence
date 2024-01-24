@@ -43,9 +43,8 @@ export default class {
     }
 
     draw(){
-        if (this.texture == "")
-            this.drawCircle(this.x + this.ballOffSet, this.y + this.ballOffSet);
-        else
+        this.drawCircle(this.x + this.ballOffSet, this.y + this.ballOffSet);
+        if (this.texture != "")
             this.ctx.drawImage(this.image, this.x, this.y , this.ballSize, this.ballSize)
     }
 }
