@@ -16,6 +16,7 @@ from channels.security.websocket import AllowedHostsOriginValidator
 
 from chat.routing import chat_urlpatterns
 from notifications.routing import notifications_urlpatterns
+from pong.routing import pong_urlpatterns
 from chat.middleware import CustomAuthMiddlewareStack
 
 import logging
@@ -30,6 +31,7 @@ django_asgi_app = get_asgi_application()
 websocket_urlpatterns = []
 websocket_urlpatterns.extend(chat_urlpatterns)
 websocket_urlpatterns.extend(notifications_urlpatterns)
+websocket_urlpatterns.extend(pong_urlpatterns)
 
 logger.warning(f"websocket_urlpatterns: {websocket_urlpatterns}")
 

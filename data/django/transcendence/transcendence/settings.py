@@ -233,6 +233,7 @@ AUTH_USER_MODEL = "accounts.User"
 # tmp for testing reasons
 
 CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOWED_ORIGINS = ['http://localhost:4201']
 CORS_ALLOW_CREDENTIALS = True
 APPEND_SLASH = False
 
