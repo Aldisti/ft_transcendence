@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.contenttypes',
     'django.contrib.sites',
+    'django.contrib.staticfiles',
     'rest_framework',
     'channels',
     'users',
@@ -65,6 +66,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'pong.middlewares.MyMiddleware',
     'django.middleware.common.CommonMiddleware',
 ]
 
