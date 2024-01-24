@@ -81,6 +81,19 @@ services:
         condition: service_healthy
 
 
+  cron:
+    container_name: cron
+    build:
+      context: ./cron
+    image: trinity/cron
+    restart: always
+    networks:
+      - postgres-net
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+
   pongdb:
     container_name: pongdb
     build:
