@@ -13,7 +13,7 @@ ENV_VARS=("PROJECT_NAME" "DB_NAME" \
 	"DB_USER" "DB_PASSWORD" \
 	"DB_HOST" "DB_PORT" "PGDATA" \
 	"EMAIL_HOST" "EMAIL_HOST_USER" "EMAIL_HOST_PASSWORD" \
-	"PROJECT_NAME" "PONGDB_NAME" \
+	"PONGAPP_NAME" "PONGDB_NAME" \
 	"PONGDB_USER" "PONGDB_PASSWORD" \
 	"PONGDB_HOST" "PONGDB_PORT")
 
@@ -30,8 +30,6 @@ create_env() {
 	EMAIL_HOST_PASSWORD="awmvotojcdvmdwge"
 	PONGAPP_NAME="pong"
 	PONGDB_NAME="pong"
-	PONGDB_USER="gpanico"
-	PONGDB_PASSWORD="password"
 	PONGDB_HOST="pongdb"
 	PONGDB_PORT=5432
 
@@ -39,7 +37,7 @@ create_env() {
 	for var in ${ENV_VARS[@]}; do
 		tmp="$(grep $var= $ENV_FILE | cut -d '=' -f2-)"
 		if [ -z "$tmp" ]; then
-			if grep -q "$var" <<< "DB_USER DB_PASSWORD"; then
+			if [ -z "${!var}" ]; then
 				echo -n "*"
 			else
 				echo -n " "
