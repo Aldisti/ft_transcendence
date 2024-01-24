@@ -7,7 +7,19 @@ let downFlag = true;
 let upMsg = true;
 let downMsg = true;
 
+function handleUnload(game) {
+    document.removeEventListener("keydown", game.downHandler);
+    document.removeEventListener("keyup", game.upHandler);
+
+    clearInterval(game[game.currentUser].downInterval)
+    clearInterval(game[game.currentUser].upInterval)
+}
+
 function handleKeyDown(game, e){
+    if (window.location.href != game.actualHref){
+        handleUnload(game);
+        return ;
+    }
     if (e.key == "w" && upFlag){
         upFlag = false;
         game[game.currentUser].upInterval = setInterval(() => {
@@ -31,6 +43,10 @@ function handleKeyDown(game, e){
 }
 
 function handleKeyUp(game, e){
+    if (window.location.href != game.actualHref){
+        handleUnload(game);
+        return ;
+    }
     if (e.key == "w"){
         upFlag = true
         game.socket.send(JSON.stringify({type: `${game.currentUser == "paddleLeft" ? `left` : `right`}`}))
@@ -72,12 +88,18 @@ export default class {
         this.paddleRight = new Paddle(this.canvas, gameCfg.padleRightConfig)
         this.ball = new Ball(this.canvas, gameCfg.ballConfig)
         this.ctx = gameCfg.canvas.getContext("2d");
+
+        this.actualHref = window.location.href;
+        this.upHandler = handleKeyUp.bind(null, this)
+        this.downHandler = handleKeyDown.bind(null, this)
+
+        document.addEventListener("keyup", this.upHandler)
+        document.addEventListener("keydown", this.downHandler)
+
         this.socket = new WebSocket(`ws://localhost:8000/ws/game/socket/`);
-        
-        document.addEventListener("keyup", handleKeyUp.bind(null, this))
-        document.addEventListener("keydown", handleKeyDown.bind(null, this))
         this.socket.addEventListener("message", handleSocketMesssage.bind(null, this))
     }
+    
     draw(x, y){
         this.ctx.fillStyle = "#000000";
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);

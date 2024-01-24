@@ -1,5 +1,7 @@
 import Aview from "/views/abstractView.js";
 import language from "/language/language.js";
+import startGame from "/games/pong2d/mainLoop.js"
+
 
 export default class extends Aview{
     constructor(){
@@ -23,11 +25,34 @@ export default class extends Aview{
         `
     }
 	setup(){
-        let script = document.createElement("script");
-        script.src = "/games/pong2d/mainLoop.js";
-        script.type = "module";
-        document.body.appendChild(script);
         this.defineWallpaper("/imgs/backLogin.png", "https://c4.wallpaperflare.com/wallpaper/105/526/545/blur-gaussian-gradient-multicolor-wallpaper-preview.jpg")
-	}
+        startGame({ 
+            previousTime: window.performance.now(),
+            canvas: document.querySelector("#myCanv"),
+            width: 800,
+            height: 451,
+            frameInterval: 1000 / 60,
+            ratio: 1.77,
+            currentUser: "paddleRight",
+            ballConfig: {
+                texture: "/imgs/ball.png", 
+                size: 20
+            },
+            padleRightConfig: {
+                width: 20,
+                height: 100,
+                texture: "/imgs/pill.png",
+                x: 0,
+                y: 0,
+            },
+            padleLeftConfig: {
+                width: 20,
+                height: 100,
+                texture: "/imgs/pill.png",
+                x: 0,
+                y: 0,
+            }
+        });
+    }
 	
 }
