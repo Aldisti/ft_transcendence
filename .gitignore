@@ -7,7 +7,6 @@ Pipfile
 Pipfile*
 **/Pipfile
 **/Pipfile/*
-srcs/docker-compose.yml
 **/migrations/0*
 **/images/*
 .*~
@@ -17,6 +16,8 @@ srcs/docker-compose.yml
 data/django/transcendence/APIDocs.md
 data/postgres
 data/postgres/*
+data/pongdb
+data/pongdb/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
