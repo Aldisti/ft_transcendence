@@ -13,6 +13,7 @@ urlpatterns = [
         path('role/', views.change_role, name="api-change-role"),
         path('ban/', views.change_active, name="api-change-active"),
         path('<username>/', views.RetrieveDestroyUser.as_view(), name="user-retrieve-destroy"),
+        path('game/update/', views.change_display_name, name="api-change-display-name"),
     ])),
 ]
 

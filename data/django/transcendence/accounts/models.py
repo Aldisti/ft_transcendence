@@ -10,7 +10,8 @@ from accounts.managers import (UserManager,
                                UserInfoManager,
                                UserWebsocketsManager,
                                ChatChannelManager,
-                               NtfChannelManager)
+                               NtfChannelManager,
+							   UserGameManager)
 
 import logging
 
@@ -213,3 +214,28 @@ class NtfChannel(models.Model):
 
     def __str__(self):
         return f"user: {self.user_websockets_id}, ntf_channel: {self.channel_name}"
+
+
+class UserGame(models.Model):
+    class Meta:
+        db_table = "user_game"
+
+    user = models.OneToOneField(
+        to=User,
+        on_delete=models.CASCADE,
+        related_name="user_game",
+        primary_key=True,
+        db_column="username",
+    )
+    display_name = models.CharField(
+        db_column="display_name",
+        max_length=32,
+        unique=True,
+        validators=[validators.RegexValidator(regex="^[A-Za-z0-9!?*$~_-]{5,32}$")],
+    )
+
+    objects = UserGameManager()
+
+    def __str__(self) -> str:
+        return f"username: {self.user.username}, display_name: {self.display_name}"
+

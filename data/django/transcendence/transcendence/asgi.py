@@ -17,6 +17,7 @@ from channels.security.websocket import AllowedHostsOriginValidator
 from chat.routing import chat_urlpatterns
 from notifications.routing import notifications_urlpatterns
 from multiplayer_test.routing import multiplayer_test_urlpatterns
+from pong.routing import pong_urlpatterns
 from transcendence.middleware import CustomAuthMiddlewareStack
 
 import logging
@@ -32,6 +33,7 @@ websocket_urlpatterns = []
 websocket_urlpatterns.extend(chat_urlpatterns)
 websocket_urlpatterns.extend(notifications_urlpatterns)
 websocket_urlpatterns.extend(multiplayer_test_urlpatterns)
+websocket_urlpatterns.extend(pong_urlpatterns)
 
 logger.warning(f"websocket_urlpatterns: {websocket_urlpatterns}")
 

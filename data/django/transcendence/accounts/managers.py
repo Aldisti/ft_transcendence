@@ -17,6 +17,7 @@ class UserManager(BaseUserManager):
         if not email:
             raise ValueError("Missing email")
         email = self.normalize_email(email)
+        # TODO: timezone thing
         kwargs.setdefault('last_logout', datetime.datetime.now(tz=settings.TZ))
         if kwargs.get("role") != Roles.ADMIN:
             kwargs.pop("role", "")
@@ -186,3 +187,18 @@ class NtfChannelManager(models.Manager):
         ntf_channel.full_clean()
         ntf_channel.save()
         return ntf_channel
+
+
+class UserGameManager(models.Manager):
+    def create(self, user, **kwargs):
+        kwargs.setdefault('display_name', user.username)
+        user_game = self.model(user=user, **kwargs)
+        user_game.full_clean()
+        user_game.save()
+        return user_game
+
+    def update_display_name(self, user_game, display_name: str):
+        user_game.display_name = display_name
+        user_game.full_clean()
+        user_game.save()
+        return user_game

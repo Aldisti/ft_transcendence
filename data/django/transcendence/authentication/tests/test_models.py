@@ -1,11 +1,10 @@
 from django.test import TestCase
+from django.conf import settings
 
 from authentication.models import JwtToken, UserTokens
 from authentication.serializers import TokenPairSerializer
 
 from accounts.models import User
-
-from transcendence.settings import TZ
 
 from datetime import datetime, timedelta
 
@@ -79,7 +78,8 @@ class JwtTokenManagerTests(TestCase):
         cls.token = token
         invalid_token = TokenPairSerializer.get_token(user)
         invalid_token.set_exp(
-            from_time=datetime.now(tz=TZ) - timedelta(days=2),
+            # TODO: remove tz
+            from_time=datetime.now(tz=settings.TZ) - timedelta(days=2),
             lifetime=timedelta(days=1)
         )
         cls.invalid_token = invalid_token

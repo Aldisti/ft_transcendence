@@ -1,0 +1,9 @@
+
+# runs every minute at XX:XX:00
+* * * * * /usr/local/bin/query.sh >> /var/log/query.log 2 >> /var/log/query.error
+
+# runs every hour at XX:00
+# 0 * * * *
+# runs once a day at 00:00
+# 0 0 * * *
+

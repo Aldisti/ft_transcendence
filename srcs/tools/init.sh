@@ -7,6 +7,7 @@ PONG_VOL="./data/pong"
 PG_VOL="./data/postgres"
 PONGDB_VOL="./data/pongdb"
 ENV_FILE="./srcs/.env"
+POSTGRES_ENV="./srcs/cron/.env"
 
 ENV_VARS=("PROJECT_NAME" "DB_NAME" \
 	"DB_USER" "DB_PASSWORD" \
@@ -34,9 +35,15 @@ create_env() {
 	PONGDB_HOST="pongdb"
 	PONGDB_PORT=5432
 
+	k=""
 	for var in ${ENV_VARS[@]}; do
 		tmp="$(grep $var= $ENV_FILE | cut -d '=' -f2-)"
 		if [ -z "$tmp" ]; then
+			if grep -q "$var" <<< "DB_USER DB_PASSWORD"; then
+				echo -n "*"
+			else
+				echo -n " "
+			fi
 			if grep -q "PASSWORD" <<< "$var"; then
 				read -sp "Insert '$var' value: " value; echo
 			else
@@ -60,8 +67,28 @@ create_env() {
 			else
 				echo "$var=${!var}" >> "$ENV_FILE"
 			fi
+			k="1"
 		fi
-	done && echo "'.env' updated"
+	done
+	if [ -n "$k" ]; then
+		echo "'.env' updated"
+	fi
+}
+
+cron_env() {
+#	if [ -n "$POSTGRES_ENV" ]; then
+#		touch "$POSTGRES_ENV"
+#	fi
+#	if ! grep -q "DB_NAME=" "$POSTGRES_ENV"; then
+#
+#	fi
+	grep \
+	-e "DB_NAME" \
+	-e "DB_USER" \
+	-e "DB_PASSWORD" \
+	-e "DB_HOST" \
+	-e "DB_PORT" \
+	"$ENV_FILE" > "$POSTGRES_ENV"
 }
 
 if ! [ -d $DJANGO_VOL ]; then
@@ -83,4 +110,7 @@ fi
 if [ ! -f "$ENV_FILE" ]; then
 	touch "$ENV_FILE"
 fi
+
 create_env
+cron_env
+

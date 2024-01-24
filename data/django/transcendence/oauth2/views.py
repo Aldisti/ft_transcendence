@@ -1,19 +1,17 @@
-from urllib.parse import unquote
 
-from django.core.exceptions import ValidationError, ObjectDoesNotExist
-from django.shortcuts import render
+from django.core.exceptions import ValidationError
+from django.conf import settings
 from rest_framework import status
 from rest_framework.decorators import APIView, api_view, permission_classes, throttle_classes
 from rest_framework.response import Response
 
 from accounts.models import User
-from oauth2.settings import *
+
 from oauth2.models import UserOpenId
+from oauth2.settings import *
 
 from authentication.serializers import TokenPairSerializer as Tokens
 from authentication.throttles import HighLoadThrottle, MediumLoadThrottle, LowLoadThrottle
-
-from transcendence.settings import TZ
 
 from secrets import token_urlsafe
 from datetime import datetime
@@ -156,7 +154,8 @@ def intra_login(request) -> Response:
         return Response(data={'message': 'user not linked'}, status=404)
 
     refresh_token = Tokens.get_token(user_openid.user)
-    exp = datetime.fromtimestamp(refresh_token['exp'], tz=TZ) - datetime.now(tz=TZ)
+    # TODO: timezone thing
+    exp = datetime.fromtimestamp(refresh_token['exp'], tz=settings.TZ) - datetime.now(tz=settings.TZ)
     response = Response(data={
         'username': user_openid.user.username,
         'access_token': f"Bearer {str(refresh_token.access_token)}"
@@ -250,7 +249,8 @@ def google_login(request) -> Response:
     except UserOpenId.DoesNotExist:
         return Response(data={'user not found'}, status=404)
     refresh_token = Tokens.get_token(user_openid.user)
-    exp = datetime.fromtimestamp(refresh_token['exp'], tz=TZ) - datetime.now(tz=TZ)
+    # TODO: timezone thing
+    exp = datetime.fromtimestamp(refresh_token['exp'], tz=settings.TZ) - datetime.now(tz=settings.TZ)
     response = Response(data={
         'access_token': str(refresh_token.access_token),
         'username': user_openid.user.username,
