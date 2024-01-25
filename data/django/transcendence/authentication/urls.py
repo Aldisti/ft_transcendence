@@ -10,7 +10,8 @@ urlpatterns = [
         path('', views.logout, name='logout'),
         path('all/', views.logout, name='logout_all'),
     ])),
-    path('ticket/', views.generate_ticket, name='api-generate-ticket')
+    path('ticket/', views.generate_ticket, name='api-generate-ticket'),
+    path('ticket/matchmaking/', views.generate_ticket, name='api-generate-matchmaking-ticket'),
     # path('test/', views.test),
     # path('test/v2/', views.test),
 ]
