@@ -233,7 +233,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = "accounts.User"
 
 # tmp for testing reasons
-SERVER_FRONTEND_IP = environ.get('SERVER_FRONTEND_IP', 'localhost')
+SERVER_FRONTEND_IP = environ['SERVER_FRONTEND_IP'] or 'localhost'
 # CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [f"http://{SERVER_FRONTEND_IP}:4200"]
 CORS_ALLOW_CREDENTIALS = True
