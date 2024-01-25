@@ -13,7 +13,6 @@ all: $(NAME)
 
 migrations:
 	@sudo ./srcs/tools/clean_migrations.sh
-	@sudo ./srcs/tools/clean_migrations_pong.sh
 
 clean:
 	@if [ -f $(COMPOSE) ]; then \

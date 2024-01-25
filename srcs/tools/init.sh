@@ -9,13 +9,14 @@ PONGDB_VOL="./data/pongdb"
 ENV_FILE="./srcs/.env"
 POSTGRES_ENV="./srcs/cron/.env"
 
-ENV_VARS=("PROJECT_NAME" "DB_NAME" \
-	"DB_USER" "DB_PASSWORD" \
-	"DB_HOST" "DB_PORT" "PGDATA" \
-	"EMAIL_HOST" "EMAIL_HOST_USER" "EMAIL_HOST_PASSWORD" \
-	"PONGAPP_NAME" "PONGDB_NAME" \
-	"PONGDB_USER" "PONGDB_PASSWORD" \
-	"PONGDB_HOST" "PONGDB_PORT" "SERVER_FRONTEND_IP")
+ENV_VARS=( \
+"PROJECT_NAME" "DB_NAME" "DB_USER" "DB_PASSWORD" \
+"DB_HOST" "DB_PORT" "PGDATA" \
+"EMAIL_HOST" "EMAIL_HOST_USER" "EMAIL_HOST_PASSWORD" \
+"PONGAPP_NAME" "PONGDB_NAME" "PONGDB_USER" "PONGDB_PASSWORD" \
+"PONGDB_HOST" "PONGDB_PORT" "SERVER_FRONTEND_IP"
+"INTRA_ID" "INTRA_SECRET" "GOOGLE_ID" "GOOGLE_SECRET" \
+)
 
 
 create_env() {
@@ -27,17 +28,22 @@ create_env() {
 	PGDATA="/var/lib/postgresql/data/pgdata"
 	EMAIL_HOST="smtp.gmail.com"
 	EMAIL_HOST_USER="transcendence.trinity@gmail.com"
-	echo -e "\033[31;1;5mWARNING: remove sensible data from init.sh\033[0m"
-	EMAIL_HOST_PASSWORD="awmvotojcdvmdwge"
 	PONGAPP_NAME="pong"
 	PONGDB_NAME="pong"
 	PONGDB_HOST="pongdb"
 	PONGDB_PORT=5432
 	SERVER_FRONTEND_IP="localhost"
+	# default sensible data
+	echo -e "\033[31;1;5mWARNING: remove default sensible data\033[0m"
+	EMAIL_HOST_PASSWORD="awmvotojcdvmdwge"
+	INTRA_ID="u-s4t2ud-eff0cd3d5bfca5625c1acb7d97431e26ec2965c19596f83a6e2428d0870432d0"
+	INTRA_SECRET="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"
+	GOOGLE_ID="608692791188-2nkebjcfel5f7n5mlsvmtd1662i6bebl.apps.googleusercontent.com"
+	GOOGLE_SECRET="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"
 
 	k=""
 	for var in ${ENV_VARS[@]}; do
-		tmp="$(grep $var= $ENV_FILE | cut -d '=' -f2-)"
+		tmp="$(grep ^$var= $ENV_FILE | cut -d '=' -f2-)"
 		if [ -z "$tmp" ]; then
 			if [ -z "${!var}" ]; then
 				echo -n "*"
@@ -60,10 +66,10 @@ create_env() {
 			fi
 			# if the variable name is present inside the file
 			# then the value will be added after the '='
-			if grep -q "$var" "$ENV_FILE"; then
-				sed -i "s/$var=.*/$var=\"${!var}\"/" "$ENV_FILE"
 			# else a new line containing the variable name followed
 			# by its value is appended to the end of the file
+			if grep -q "$var" "$ENV_FILE"; then
+				sed -i "s/$var=.*/$var=\"${!var}\"/" "$ENV_FILE"
 			else
 				echo "$var=\"${!var}\"" >> "$ENV_FILE"
 			fi
@@ -72,6 +78,8 @@ create_env() {
 	done
 	if [ -n "$k" ]; then
 		echo "'.env' updated"
+	else
+		echo "'.env' already up-to-date"
 	fi
 }
 
