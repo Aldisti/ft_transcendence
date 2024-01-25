@@ -27,6 +27,8 @@ class PongConsumer(AsyncWebsocketConsumer):
     game = Field(objs=[ball, paddle_left, paddle_right], dinamics=newton_dynamics, width=800, height=450)
     games = {}
 
+    tickets = {}
+
 
     async def connect(self):
         self.player_id = str(uuid.uuid4())

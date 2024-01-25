@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 # Create your models here.
 
 # TODO: The chat system can be improved implementing a status of the chat 
-# that will be checked istead of deleting the entire chat
+# that will be checked instead of deleting the entire chat
 
 class Chat(models.Model):
     class Meta:
