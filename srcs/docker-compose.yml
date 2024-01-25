@@ -22,6 +22,10 @@ services:
       - EMAIL_HOST_USER=${EMAIL_HOST_USER}
       - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
       - SERVER_FRONTEND_IP=${SERVER_FRONTEND_IP}
+      - INTRA_ID=${INTRA_ID}
+      - INTRA_SECRET=${INTRA_SECRET}
+      - GOOGLE_ID=${GOOGLE_ID}
+      - GOOGLE_SECRET=${GOOGLE_SECRET}
     networks:
       - django-net
       - pong-net
