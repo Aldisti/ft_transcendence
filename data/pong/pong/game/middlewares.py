@@ -2,9 +2,10 @@ from channels.sessions import CookieMiddleware
 from channels.middleware import BaseMiddleware
 from channels.auth import UserLazyObject
 from channels.db import database_sync_to_async
-from authentication.models import WebsocketTicket
-from accounts.models import User
+
 from rest_framework_simplejwt.tokens import RefreshToken
+
+from users.models import PongUser
 
 import logging
 
@@ -14,14 +15,15 @@ logger = logging.getLogger(__name__)
 @database_sync_to_async
 def get_user(query_params: dict) -> User:
     if "ticket" not in query_params:
-        raise ValueError("Ticket not found")
+        raise ValueError("Ticket not found in url")
+    if "username" not in query_params:
+        raise ValueError("Username not found in url")
     try:
-        ticket = WebsocketTicket.objects.get(ticket=query_params["ticket"])
-    except WebsocketTicket.DoesNotExist:
-        raise ValueError("Ticket not found in database")
-    user = ticket.user_tokens.user
-    ticket.delete()
-    return user
+        user = PongUser.objects.get(pk=query_params['username'], ticket=query_params["ticket"])
+    except PongUser.DoesNotExist:
+        raise ValueError("User not found")
+    user = PongUser.objects.delete_ticket(user)
+    return (user, query_params["ticket"])
 
 
 class QueryParamMiddleware(BaseMiddleware):
@@ -52,7 +54,7 @@ class CustomAuthMiddleware(BaseMiddleware):
         # check if the scope has cookies set an fill user with a useful placeholder
         self.populate_scope(scope)
         # get user from database
-        scope["user"] = await get_user(scope["query_params"])
+        scope["user"], scope["ticket"] = await get_user(scope["query_params"])
         #logger.warning(f"user: {scope['user']}")
         return await super().__call__(scope, receive, send)
 
