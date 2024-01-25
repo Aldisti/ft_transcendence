@@ -54,6 +54,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'channels',
     'users',
+    'game',
+    'matchmaking',
     'corsheaders',
 ]
 

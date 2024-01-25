@@ -16,6 +16,8 @@ Including another URLconf
 """
 from django.urls import path, include
 
+
 urlpatterns = [
     path("user/", include("users.urls")),
+    path('matchmaking/', include('matchmaking.urls'))
 ]

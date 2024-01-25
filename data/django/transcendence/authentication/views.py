@@ -15,17 +15,17 @@ from two_factor_auth.models import UserTFA
 from authentication.serializers import TokenPairSerializer
 from authentication.models import JwtToken, UserTokens, WebsocketTicket
 from authentication.permissions import IsUser
+from authentication.settings import MATCHMAKING_TOKEN
 
 from accounts.models import User
 from accounts.serializers import UserSerializer
 
-from transcendence.settings import TZ
-
+from requests import post as post_request
 from datetime import datetime
 import logging
 
-
 logger = logging.getLogger(__name__)
+
 
 @api_view(['GET'])
 @permission_classes([IsUser])
@@ -33,6 +33,7 @@ def generate_ticket(request) -> Response:
     user = request.user
     websocket_ticket = WebsocketTicket.objects.create(user.user_tokens)
     return Response({"ticket": websocket_ticket.ticket}, status=200)
+
 
 class LoginView(APIView):
     throttle_classes = [MediumLoadThrottle]
@@ -137,3 +138,15 @@ class RefreshView(APIView):
         if user.last_logout > user.last_login and user.last_logout > token_exp:
             return error_response
         return Response({'access_token': str(refresh_token.access_token)}, status=200)
+
+
+@api_view(['GET'])
+def get_queue_ticket(request) -> Response:
+    username = request.user.username
+    data = {'username': username}
+    api_response = post_request(MATCHMAKING_TOKEN, json=data)
+    if api_response != 200:
+        logger.warning(f"status code: {api_response.status_code}")
+        logger.warning(f"json: {api_response.json()}")
+        return Response(data={'message': f'api: {api_response.status_code}'}, status=503)
+    return Response(data=api_response.json(), status=200)
