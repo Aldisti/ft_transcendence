@@ -15,8 +15,11 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.security.websocket import AllowedHostsOriginValidator
 
 from game.routing import game_urlpatterns
+from matchmaking.routing import urlpatterns as queue_urlpatterns
+from game.middlewares import CustomAuthMiddlewareStack
 
 import logging
+
 
 logger = logging.getLogger(__name__)
 
@@ -27,11 +30,12 @@ django_asgi_app = get_asgi_application()
 # put in one place all the urlpatterns
 websocket_urlpatterns = []
 websocket_urlpatterns.extend(game_urlpatterns)
+websocket_urlpatterns.extend(queue_urlpatterns)
 
 logger.warning(f"websocket_urlpatterns: {websocket_urlpatterns}")
 
 application = ProtocolTypeRouter({
         "http": django_asgi_app,
-        "websocket": URLRouter(websocket_urlpatterns),
+        "websocket": CustomAuthMiddlewareStack(URLRouter(websocket_urlpatterns)),
     }
 )
