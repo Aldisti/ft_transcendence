@@ -46,7 +46,7 @@ export const socket = {
     NOTIFICATION_SOCKET: `ws://${ip}:${port}/ws/notification/socket/`,
     GET_TICKET: `http://${ip}:${port}/auth/ticket/`,
 
-    GET_QUEQUE_TICKET: `http://${ip}:${port}/ticket/matchmaking/`
+    GET_QUEQUE_TICKET: `http://${ip}:${port}/auth/ticket/matchmaking/`
 }
 
 export const userAction = {

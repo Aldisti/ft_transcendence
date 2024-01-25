@@ -2,6 +2,7 @@ export default class {
     constructor(canvas, ballConfig){
         this.texture = ballConfig.texture == undefined ? "" : ballConfig.texture;
         this.canvas = canvas;
+        this.color = ballConfig.color == undefined ? "black" : ballConfig.color;
         this.objOffSet = this.canvas.getBoundingClientRect();
         this.centerX = (canvas.width / 2);
         this.centerY = (canvas.height / 2);
@@ -9,18 +10,19 @@ export default class {
 		this.ballOffSet = (this.ballSize / 2);
         this.x = 0;
 		this.y = 0;
-        this.deltaX = 6;
-		this.deltaY = 6;
+        this.deltaX = 2.5;
+		this.deltaY = 2.5;
         this.ctx = canvas.getContext("2d");
         this.needToCalculate = true;
         this.image =  new Image()
         this.image.src = this.texture;
+        this.fps = 60;
     }
 
     drawCircle(x, y){
         this.ctx.beginPath();
         this.ctx.arc(x , y, this.ballSize / 2, 0, 2 * Math.PI, false);
-        this.ctx.fillStyle = 'blue'; // You can set your preferred color
+        this.ctx.fillStyle = this.color; // You can set your preferred color
         this.ctx.fill()
         this.ctx.closePath();
     }
@@ -36,10 +38,11 @@ export default class {
     }
 
     updatePosition(x, y, deltaX, deltaY){
-        this.x = x  * this.canvas.width / 800;
-        this.y = y * this.canvas.height / 451;
-        this.deltaX = deltaX * this.canvas.width / 800;
-        this.deltaY = deltaY * this.canvas.height / 451;
+        this.x = x;
+        this.y = y;
+        this.deltaX = (deltaX * 60) / this.fps;
+        this.deltaY = (deltaY * 60) / this.fps;
+        // console.log(deltaX, deltaY, this.deltaX, this.deltaY)
     }
 
     draw(){

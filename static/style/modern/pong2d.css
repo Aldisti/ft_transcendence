@@ -47,6 +47,40 @@
     margin: 20px;
 }
 
+#startQueque{
+    width: 100%;
+    height: fit-content;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border: none;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+}
+
+.btnContainer{
+    width: 100svw;
+    height: 92svh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btnWindow{
+    width: 25%;
+    height: 30%;
+    padding: 20px;
+    color: white;
+    display: flex;
+    background-color: rgba(255, 255, 255, 0.1);
+    flex-direction: column;
+    backdrop-filter: blur(10px);
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+}
+
 #opponentDisplay, #currentUserDisplay{
     display: flex;
     width: 25%;
@@ -55,9 +89,9 @@
     padding: 20px;
     border: 3px solid white;
 }
-#myCanv
+#myCanv, #waitCanv
 {
-    border: 3px solid white;
+    /* border: 3px solid white;
     border-left: 3px dotted white;
-    border-right: 3px dotted white;
+    border-right: 3px dotted white; */
 }

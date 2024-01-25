@@ -1,7 +1,7 @@
 export default class{
     constructor(canvas, paddleConfig){
-        this.width = paddleConfig.width  * canvas.width / 800;
-        this.height = paddleConfig.height * canvas.height / 451;
+        this.width = paddleConfig.width;
+        this.height = paddleConfig.height ;
         this.canvas = canvas,
         this.ctx = canvas.getContext("2d")
         this.deltaY = 1.6;
@@ -16,8 +16,8 @@ export default class{
     }
 
     updatePosition(x, y){
-        this.x = x * this.canvas.width / 800;
-        this.y = y * this.canvas.height / 451;
+        this.x = x;
+        this.y = y;
     }
 
     calculatePosition(direction){
@@ -30,13 +30,13 @@ export default class{
     drawCircle(x, y){
         this.ctx.beginPath();
         this.ctx.arc(x , y, this.width / 2, 0, 2 * Math.PI, false);
-        this.ctx.fillStyle = '#ffffff'; // You can set your preferred color
+        this.ctx.fillStyle = '#000000'; // You can set your preferred color
         this.ctx.fill();
         this.ctx.closePath();
     }
 
     draw(){
-        this.ctx.fillStyle = "#ffffff";
+        this.ctx.fillStyle = "#000000";
 		this.ctx.fillRect(this.x, this.y + 10, this.width, this.height -20);
         this.drawCircle(this.x + (this.width / 2), this.y + 10)
         this.drawCircle(this.x + this.width / 2, this.y + this.height - 10)
