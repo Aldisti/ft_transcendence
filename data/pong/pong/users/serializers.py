@@ -1,4 +1,7 @@
+from django.core import validators
+
 from rest_framework import serializers
+
 from users.models import PongUser
 
 import logging
@@ -8,15 +11,7 @@ logger = logging.getLogger(__name__)
 class PongUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = PongUser
-        fields = ["username", "ticket"]
+        fields = ["username"]
         extra_kwargs = {
-            "ticket": {"read_only": True},
+            "username": {"validators": [validators.RegexValidator(regex="^[A-Za-z0-9!?*$~_-]{5,32}$")]}
         }
-
-    def create(self, validated_data):
-        username = validated_data.get("username", "")
-        logger.warning(f"DATA: {validated_data}")
-        if username == "":
-            raise ValueError("Invalid username")
-        pong_user = PongUser.objects.create(username)
-        return pong_user
