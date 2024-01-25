@@ -7,7 +7,16 @@
 </head>
 <body>
     <button onclick="apriWebSocket()">start</button>
+    <button onclick="faiRichiesta()">send</button>
 
+    <script>
+        function faiRichiesta() {
+            fetch('http://localhost:7000/matchmaking/token/', {
+                method: 'POST',
+            })
+        }
+    </script>
+    
     <script>
         var socket;
 
