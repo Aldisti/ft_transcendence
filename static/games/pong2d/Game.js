@@ -84,10 +84,13 @@ export default class {
         this.currentUser = gameCfg.currentUser;
         this.canvas.width =  gameCfg.width;
         this.canvas.height = gameCfg.height;
+        this.texture = gameCfg.texture == undefined ? "" : gameCfg.texture;
         this.paddleLeft = new Paddle(this.canvas, gameCfg.padleLeftConfig)
         this.paddleRight = new Paddle(this.canvas, gameCfg.padleRightConfig)
         this.ball = new Ball(this.canvas, gameCfg.ballConfig)
         this.ctx = gameCfg.canvas.getContext("2d");
+        this.image =  new Image()
+        this.image.src = this.texture;
 
         this.actualHref = window.location.href;
         this.upHandler = handleKeyUp.bind(null, this)
@@ -99,10 +102,14 @@ export default class {
         this.socket = new WebSocket(`ws://localhost:8000/ws/game/socket/`);
         this.socket.addEventListener("message", handleSocketMesssage.bind(null, this))
     }
-    
+
     draw(x, y){
-        this.ctx.fillStyle = "#000000";
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        if (this.texture == ""){
+            this.ctx.fillStyle = "#000000";
+            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        }else{
+            this.ctx.drawImage(this.image, 0, 0, this.canvas.width, this.canvas.height)
+        }
         this.ball.draw();
         this.paddleLeft.draw();
         this.paddleRight.draw();

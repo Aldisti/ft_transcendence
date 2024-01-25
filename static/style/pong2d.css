@@ -4,64 +4,15 @@
     width: 100svw;
     margin: 0;
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
-    background-color: black;
 }
 
-span
-{
-    width: 20svw;
-}
-
-h1
-{
-    color: white;
-    font-size: 65px;
-}
-
-p{
-    color: white;
-    font-size: 25px;
-}
-
-.container
-{
-    display: flex;
-    width: 600px;
-    justify-content: space-between;
-    padding: 30px;
-}
-
-.switch
-{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.switch button
-{
-    height: 40%;
-    border: 2px solid white;
-    background-color: black;
-    color: white;
-    transition: 0.5s;
-    font-size: 25px;
-}
-
-.switch button:hover
-{
-    cursor: pointer;
-    background-color: white;
-    color: black;
-}
-
-.gameContainer
-{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.left, .right{
+    flex-grow: 1;
+    padding: 20px;
+    background-color: red;
+    height: 100svh;
 }
 
 #myCanv

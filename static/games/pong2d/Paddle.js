@@ -1,7 +1,7 @@
 export default class{
     constructor(canvas, paddleConfig){
-        this.width = paddleConfig.width;
-        this.height = paddleConfig.height;
+        this.width = paddleConfig.width  * canvas.width / 800;
+        this.height = paddleConfig.height * canvas.height / 451;
         this.canvas = canvas,
         this.ctx = canvas.getContext("2d")
         this.deltaY = 1.6;
@@ -16,8 +16,8 @@ export default class{
     }
 
     updatePosition(x, y){
-        this.x = x;
-        this.y = y;
+        this.x = x * this.canvas.width / 800;
+        this.y = y * this.canvas.height / 451;
     }
 
     calculatePosition(direction){

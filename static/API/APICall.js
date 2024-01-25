@@ -779,3 +779,22 @@ export async function getTicket(recursionProtection){
     }
     return ({})
 }
+export async function startQueque(recursionProtection){
+    const res = await fetch(URL.socket.GET_QUEQUE_TICKET, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        credentials: "include",
+    });
+    if (res.ok) {
+        let parsed = await res.json();
+        return (parsed);
+    }
+    if (res.status == 401 && recursionProtection)
+    {
+        console.log(res.status, recursionProtection)        
+        return await refreshAndRetry(startQueque, 0);
+    }
+    return ({})
+}

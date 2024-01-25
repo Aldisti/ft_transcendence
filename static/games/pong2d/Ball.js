@@ -36,10 +36,10 @@ export default class {
     }
 
     updatePosition(x, y, deltaX, deltaY){
-        this.x = x;
-        this.y = y;
-        this.deltaX = deltaX;
-        this.deltaY = deltaY;
+        this.x = x  * this.canvas.width / 800;
+        this.y = y * this.canvas.height / 451;
+        this.deltaX = deltaX * this.canvas.width / 800;
+        this.deltaY = deltaY * this.canvas.height / 451;
     }
 
     draw(){

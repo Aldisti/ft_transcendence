@@ -44,7 +44,9 @@ export const friendship = {
 export const socket = {
     CHAT_SOCKET: `ws://${ip}:${port}/ws/chat/socket/`,
     NOTIFICATION_SOCKET: `ws://${ip}:${port}/ws/notification/socket/`,
-    GET_TICKET: `http://${ip}:${port}/auth/ticket/`
+    GET_TICKET: `http://${ip}:${port}/auth/ticket/`,
+
+    GET_QUEQUE_TICKET: `http://${ip}:${port}/ticket/matchmaking/`
 }
 
 export const userAction = {

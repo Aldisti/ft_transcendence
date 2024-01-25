@@ -1,58 +1,86 @@
 import Aview from "/views/abstractView.js";
 import language from "/language/language.js";
 import startGame from "/games/pong2d/mainLoop.js"
+import * as API from"/API/APICall.js"
 
 
 export default class extends Aview{
     constructor(){
         super();
     }
-    getHtml(){
+
+    getGameHtml(){
         return `
         <div class="base">
-            <div class="gameContainer">
-                <h1 id="display">P1: <span id="p1Score">0</span> | P2: <span id="p2Score">0</span></h1>
-                <canvas id="myCanv"></canvas>
-                <div class="container">
-                    <div class="info">
-                        <p>Press space to start</p>
-                        <p>LeftPlayer keys: (w:up, s:down)</p>
-                        <p>RightPlayer keys: (o:up, l:down)</p>
+            <div class="left">
+            </div>
+            <div class="center">
+                <div id="usersDisplay">
+                    <div id="opponentDisplay">
+                        <h4>gpanico</h4>
+                        <h2>28</h2>
+                    </div>
+                    <div id="currentUserDisplay">
+                        <h4>mpaterno</h4>
+                        <h2>48</h2>
                     </div>
                 </div>
+                <canvas id="myCanv"></canvas>
+            </div>
+            <div class="right">
             </div>
         </div>
         `
     }
+    getHtml(){
+        return `
+        <div class="base">
+            <button id="startQueque">
+                ciaoooo
+            </button>
+        </div>
+        `
+    }
 	setup(){
-        this.defineWallpaper("/imgs/backLogin.png", "https://c4.wallpaperflare.com/wallpaper/105/526/545/blur-gaussian-gradient-multicolor-wallpaper-preview.jpg")
-        startGame({ 
-            previousTime: window.performance.now(),
-            canvas: document.querySelector("#myCanv"),
-            width: 800,
-            height: 451,
-            frameInterval: 1000 / 60,
-            ratio: 1.77,
-            currentUser: "paddleRight",
-            ballConfig: {
-                texture: "/imgs/ball.png", 
-                size: 20
-            },
-            padleRightConfig: {
-                width: 20,
-                height: 100,
-                texture: "/imgs/pill.png",
-                x: 0,
-                y: 0,
-            },
-            padleLeftConfig: {
-                width: 20,
-                height: 100,
-                texture: "/imgs/pill.png",
-                x: 0,
-                y: 0,
-            }
-        });
+        this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpg")
+        document.querySelector("#startQueque").addEventListener("click", async ()=>{
+            API.startQueque(1).then(res=>{
+                let socket = new WebSocket(`ws://localhost:7000/ws/matchmaking/queue/?ticket=${res.ticket}&username=${localStorage.getItem("username")}`);
+                socket.addEventListener("mesaage", (message)=>{
+                    console.log(message.data)
+                })
+            })
+        })
+        // let gameCanvas = 1100;
+        // document.querySelector(".center").style.width = `${gameCanvas}px`;
+        // startGame({ 
+        //     previousTime: window.performance.now(),
+        //     canvas: document.querySelector("#myCanv"),
+        //     width: gameCanvas,
+        //     height: (gameCanvas / 1.77),
+        //     frameInterval: 1000 / 60,
+        //     ratio: 1.77,
+        //     texture: "https://img.freepik.com/free-vector/vector-green-soccer-field-football-field-gridiron_1284-41290.jpg",
+        //     currentUser: "paddleRight",
+        //     ballConfig: {
+        //         // texture: "/imgs/ball.png", 
+        //         size: 20
+        //     },
+        //     padleRightConfig: {
+        //         width: 20,
+        //         height: 100,
+        //         texture: "/imgs/pill.png",
+        //         x: 0,
+        //         y: 0,
+        //     },
+        //     padleLeftConfig: {
+        //         width: 20,
+        //         height: 100,
+        //         texture: "/imgs/pill.png",
+        //         x: 0,
+        //         y: 0,
+        //     }
+        // });
     }
 	
 }
