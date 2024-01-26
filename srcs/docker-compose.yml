@@ -1,0 +1,124 @@
+version: "3.8"
+
+services:
+  nginx:
+    container_name: nginx
+    build:
+      context: ./nginx
+    image: trinity/nginx
+    restart: always
+    ports:
+      - "8000:8000"
+    volumes:
+      - static:/static
+      - nginx_template:/etc/nginx/templates
+      - ssl_certs:/etc/nginx/certs
+    environment:
+      - DAPHNE_PORT="8000"
+      - DAPHNE_HOST="pong"
+    networks:
+      - pong-net
+    depends_on:
+      - pong
+
+  pong:
+    container_name: pong
+    build:
+      context: ./pong
+    image: trinity/pong
+    restart: always
+    expose:
+      - "8000"
+    volumes:
+      - pong:/etc/develop
+      - static:/static
+    environment:
+      - PROJECT_NAME=${PONGAPP_NAME}
+      - DB_USER=${PONGDB_USER}
+      - DB_NAME=${PONGDB_NAME}
+      - DB_PASSWORD=${PONGDB_PASSWORD}
+      - DB_HOST=${PONGDB_HOST}
+      - DB_PORT=${PONGDB_PORT}
+    networks:
+      - pong-net
+      - pongdb-net
+    depends_on:
+      pongdb:
+        condition: service_healthy
+
+
+  pongdb:
+    container_name: pongdb
+    build:
+      context: ./pongdb
+    image: trinity/pongdb
+    restart: always
+    expose:
+      - "$PONGDB_PORT"
+    volumes:
+      - pongdb:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-p$PONGDB_PORT", "-h127.0.0.1", "-d$PONGDB_NAME", "-U$PONGDB_USER"]
+      retries: 10
+      interval: 5s
+      start_interval: 3s
+    environment:
+      - POSTGRES_PASSWORD=${PONGDB_PASSWORD}
+      - POSTGRES_USER=${PONGDB_USER}
+      - POSTGRES_DB=${PONGDB_NAME}
+      - PGDATA=${PGDATA}
+    networks:
+      - pongdb-net
+
+
+volumes:
+  pong:
+    name: "pong"
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "$PWD/data/pong"
+  pongdb:
+    name: "pongdb"
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "$PWD/data/pongdb"
+  static_files:
+    name: "static_files"
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "$PWD/srcs/nginx/static"
+  nginx_template:
+    name: "nginx_template"
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "$PWD/srcs/nginx/conf"
+  static:
+    name: "static"
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "$PWD/static"
+  ssl_certs:
+    name: "ssl_certs"
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "$PWD/certs"
+
+
+networks:
+  pong-net:
+    name: "pong-net"
+
+  pongdb-net:
+    name: "pongdb-net"
