@@ -12,6 +12,7 @@ urlpatterns = [
     ])),
     path('ticket/', include([
         path('', views.generate_ticket, name='api-generate-ticket'),
-        path('matchmaking/', views.generate_ticket, name='api-generate-matchmaking-ticket'),
+        path('matchmaking/', views.get_queue_ticket, name='api-generate-matchmaking-ticket'),
     ])),
+    # path('test/', views.test),
 ]

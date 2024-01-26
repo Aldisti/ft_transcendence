@@ -27,5 +27,4 @@ def generate_matchmaking_token(request) -> Response:
         logger.warning(f"{username} not found")
         return Response(data={'message': 'user not found'}, status=404)
     pong_user = PongUser.objects.generate_ticket(pong_user)
-    logger.warning(PongUser.objects.all())
     return Response(data={'ticket': pong_user.ticket}, status=200)
