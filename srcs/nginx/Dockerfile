@@ -1,0 +1,12 @@
+FROM nginx:1.25.3
+
+ENV NGINX_PORT=8080
+ENV NGINX_HOST="localhost"
+ENV WSGI_PORT=8080
+ENV WSGI_HOST="localhost"
+ENV GAME_PORT=8080
+ENV GAME_HOST="localhost"
+ENV CHAT_PORT=8080
+ENV CHAT_HOST="localhost"
+
+RUN mkdir /static
