@@ -62,7 +62,7 @@ export default class extends Aview{
             height: (gameCanvas / 1.77),
             frameInterval: 1000 / 60,
             ratio: 1.77,
-            texture: "https://img.freepik.com/free-vector/vector-green-soccer-field-football-field-gridiron_1284-41290.jpg",
+            texture: "",
             currentUser: "paddleRight",
             ballConfig: {
                 texture: "/imgs/ball.png", 

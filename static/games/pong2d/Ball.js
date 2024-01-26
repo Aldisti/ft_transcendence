@@ -42,7 +42,6 @@ export default class {
         this.y = y;
         this.deltaX = (deltaX * 60) / this.fps;
         this.deltaY = (deltaY * 60) / this.fps;
-        // console.log(deltaX, deltaY, this.deltaX, this.deltaY)
     }
 
     draw(){

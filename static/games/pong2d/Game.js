@@ -114,11 +114,12 @@ export default class {
             this.socket.addEventListener("message", handleSocketMesssage.bind(null, this))
         })
         this.getRefreshRate(2).then((estimatedFps)=>{
+            console.log(estimatedFps)
             this.ball.fps = estimatedFps
         })
     }
 
-    draw(x, y){
+    draw(){
         if (this.texture == ""){
             this.ctx.fillStyle = "#000000";
             this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
@@ -160,7 +161,6 @@ export default class {
                     requestAnimationFrame(countFrames);
                 }
             }
-    
             requestAnimationFrame(countFrames);
         });
     }
