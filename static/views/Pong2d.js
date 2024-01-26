@@ -5,6 +5,7 @@ import Ball from "/games/pong2d/Ball.js"
 import Paddle from "/games/pong2d/Paddle.js"
 
 import * as API from"/API/APICall.js"
+import * as URL from"/API/URL.js"
 
 let gameStarted = false;
 
@@ -17,9 +18,13 @@ export default class extends Aview{
         return `
         <div class="base">
             <div class="left">
+                <div id="opponentDisplay">
+                    <h4>gpanico</h4>
+                    <h2>28</h2>
+                </div>
             </div>
             <div class="center">
-                <div id="usersDisplay">
+                <div class="display">
                     <div id="opponentDisplay">
                         <h4>gpanico</h4>
                         <h2>28</h2>
@@ -30,8 +35,16 @@ export default class extends Aview{
                     </div>
                 </div>
                 <canvas id="myCanv"></canvas>
+                <div class="mobileControl">
+                    <div class="mobile up">⬆</div>
+                    <div class="mobile down">⬇</div>
+                </div>
             </div>
             <div class="right">
+                <div id="currentUserDisplay">
+                    <h4>mpaterno</h4>
+                    <h2>48</h2>
+                </div>
             </div>
         </div>
         `
@@ -52,17 +65,17 @@ export default class extends Aview{
         `
     }
     startGame(){
-        let gameCanvas = 800;
+        let gameCanvas = document.querySelector(".center").clientWidth;
 
         document.querySelector(".center").style.width = `${gameCanvas}px`;
         startGame({ 
             previousTime: window.performance.now(),
             canvas: document.querySelector("#myCanv"),
             width: gameCanvas,
-            height: (gameCanvas / 1.77),
+            height: gameCanvas / 1.77,
             frameInterval: 1000 / 60,
             ratio: 1.77,
-            texture: "",
+            texture: "https://t4.ftcdn.net/jpg/03/98/58/17/360_F_398581781_slNozTpXlCevO60U2I0z8CPvf2eT9Gas.jpg",
             currentUser: "paddleRight",
             ballConfig: {
                 texture: "/imgs/ball.png", 
@@ -133,11 +146,10 @@ export default class extends Aview{
             document.querySelector(".btnWindow").style.height = "40%";
             document.querySelector("#waitCanv").style.display= "flex";
 
-            document.querySelector("#startQueque").innerHTML = `<span>Searching opponent...</span><div class="spinner-border text-warning" style="border-radius: 50% !important"></div>`
-
+            document.querySelector("#startQueque").innerHTML = `<span>Searching opponent...</span><div class="spinner-border text-warning" style="border-radius: 50% !important"></div>` 
             API.startQueque(1).then(res=>{
                 gameStarted = true;
-                let socket = new WebSocket(`ws://localhost:7000/ws/matchmaking/queue/?ticket=${res.ticket}&username=${localStorage.getItem("username")}`);
+                let socket = new WebSocket(`${URL.socket.QUEUE_SOCKET}?ticket=${res.ticket}&username=${localStorage.getItem("username")}`);
                 document.querySelector("#app").innerHTML = this.getGameHtml();
                 this.startGame();
                 socket.addEventListener("message", (message)=>{

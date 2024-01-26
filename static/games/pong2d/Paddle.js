@@ -1,7 +1,9 @@
+const ORIGINAL_WIDTH = 800;
+const ORIGINAL_HEIGHT = 451;
 export default class{
     constructor(canvas, paddleConfig){
-        this.width = paddleConfig.width;
-        this.height = paddleConfig.height ;
+        this.width = paddleConfig.width  * canvas.width / ORIGINAL_WIDTH;
+        this.height = paddleConfig.height * canvas.height / ORIGINAL_HEIGHT ;
         this.canvas = canvas,
         this.ctx = canvas.getContext("2d")
         this.deltaY = 1.6;
@@ -16,8 +18,8 @@ export default class{
     }
 
     updatePosition(x, y){
-        this.x = x;
-        this.y = y;
+        this.x = x * this.canvas.width / ORIGINAL_WIDTH;
+        this.y = y * this.canvas.height / ORIGINAL_HEIGHT;
     }
 
     calculatePosition(direction){
@@ -37,9 +39,10 @@ export default class{
 
     draw(){
         this.ctx.fillStyle = "#000000";
-		this.ctx.fillRect(this.x, this.y + 10, this.width, this.height -20);
-        this.drawCircle(this.x + (this.width / 2), this.y + 10)
-        this.drawCircle(this.x + this.width / 2, this.y + this.height - 10)
+        let verticalOffest = 20 * this.canvas.height / ORIGINAL_HEIGHT
+		this.ctx.fillRect(this.x, this.y + (verticalOffest / 2), this.width, this.height - verticalOffest);
+        this.drawCircle(this.x + (this.width / 2), this.y + (verticalOffest / 2))
+        this.drawCircle(this.x + this.width / 2, this.y + this.height - (verticalOffest / 2))
         if (this.texture != "")
             this.ctx.drawImage(this.img, this.x, this.y, this.width, this.height)
     }

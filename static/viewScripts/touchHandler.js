@@ -13,11 +13,15 @@ if (window.innerWidth < 900)
     let touchendX;
     let touchendY;
     document.addEventListener('touchstart', function (event) {
+        if (event.target.classList.contains("mobile"))
+            return ;
         touchstartX = event.changedTouches[0].screenX;
         touchstartY = event.changedTouches[0].screenY;
     }, false);
     
     document.addEventListener('touchend', function (event) {
+        if (event.target.classList.contains("mobile"))
+            return ;
         touchendX = event.changedTouches[0].screenX;
         touchendY = event.changedTouches[0].screenY;
 

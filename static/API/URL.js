@@ -1,5 +1,6 @@
-let ip = "localhost";
+let ip = "192.168.1.32";
 let port = "8000";
+let pongPort = "7000";
 
 export const availabilityCheck = {
     USERNAME: `http://${ip}:${port}/users/check/`,
@@ -46,7 +47,9 @@ export const socket = {
     NOTIFICATION_SOCKET: `ws://${ip}:${port}/ws/notification/socket/`,
     GET_TICKET: `http://${ip}:${port}/auth/ticket/`,
 
-    GET_QUEQUE_TICKET: `http://${ip}:${port}/auth/ticket/matchmaking/`
+    GET_QUEQUE_TICKET: `http://${ip}:${port}/auth/ticket/matchmaking/`,
+    GAME_SOCKET: `ws://${ip}:${pongPort}/ws/game/socket/`,
+    QUEUE_SOCKET: `ws://${ip}:${pongPort}/ws/matchmaking/queue/`
 }
 
 export const userAction = {

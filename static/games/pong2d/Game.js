@@ -1,7 +1,11 @@
 import Ball from "/games/pong2d/Ball.js"
 import Paddle from "/games/pong2d/Paddle.js"
 import * as API from"/API/APICall.js"
+import * as URL from"/API/URL.js"
+import * as NOTIFICATION from"/viewScripts/notification/notification.js"
 
+const ORIGINAL_WIDTH = 800;
+const ORIGINAL_HEIGHT = 451;
 
 let upFlag = true;
 let downFlag = true;
@@ -15,6 +19,54 @@ function handleUnload(game) {
 
     clearInterval(game[game.currentUser].downInterval)
     clearInterval(game[game.currentUser].upInterval)
+}
+
+function handleTouchCommands(game){
+
+    //handle the UP and DOWN control when pressing the relative button (MOBILE)
+    document.querySelector(".up").addEventListener("touchstart", (e)=>{
+        if (upFlag)
+        {
+            upFlag = false;
+            game[game.currentUser].upInterval = setInterval(() => {
+                if (upMsg){
+                    game.socket.send(JSON.stringify({type: `up_${game.currentUser == "paddleLeft" ? `left` : `right`}`}))
+                    upMsg = false;
+                }
+                game[game.currentUser].calculatePosition(false)
+            }, game.frameInterval / 10);
+        }
+    })
+    document.querySelector(".down").addEventListener("touchstart", (e)=>{
+        if (downFlag)
+        {
+            downFlag = false;
+            game[game.currentUser].downInterval = setInterval(() => {
+                if (downMsg){
+                    game.socket.send(JSON.stringify({type: `down_${game.currentUser == "paddleLeft" ? `left` : `right`}`}))
+                    downMsg = false;
+                }
+                game[game.currentUser].calculatePosition(true)
+            }, game.frameInterval / 10);
+        }
+    })
+
+    //handle the UP and DOWN control when releasing the relative button (MOBILE)
+    document.querySelector(".up").addEventListener("touchend", (e)=>{
+        upFlag = true
+        game.socket.send(JSON.stringify({type: `${game.currentUser == "paddleLeft" ? `left` : `right`}`}))
+        upMsg = true;
+        downMsg = true;
+        clearInterval(game[game.currentUser].upInterval)
+    })
+    
+    document.querySelector(".down").addEventListener("touchend", (e)=>{
+        downFlag = true
+        game.socket.send(JSON.stringify({type: `${game.currentUser == "paddleLeft" ? `left` : `right`}`}))
+        downMsg = true;
+        upMsg = true;
+        clearInterval(game[game.currentUser].downInterval)
+    })
 }
 
 function handleKeyDown(game, e){
@@ -42,6 +94,8 @@ function handleKeyDown(game, e){
             game[game.currentUser].calculatePosition(true)
         }, game.frameInterval / 10);
     }
+    if (e.key == " ")
+        document.querySelector("#myCanv").requestFullscreen();
 }
 
 let sync = false;
@@ -71,9 +125,13 @@ function handleKeyUp(game, e){
 
 function handleSocketMesssage(game, message){
 	let coordinates = JSON.parse(message.data).objects;
+    coordinates.ball.vel_x = coordinates.ball.vel_x  * game.canvas.width / ORIGINAL_WIDTH;
+    coordinates.ball.vel_y = coordinates.ball.vel_y  * game.canvas.height / ORIGINAL_HEIGHT;
+    coordinates.ball.x = coordinates.ball.x  * game.canvas.width / ORIGINAL_WIDTH;
+    coordinates.ball.y = coordinates.ball.y  * game.canvas.height / ORIGINAL_HEIGHT;
 	if (coordinates != undefined){
         if ((coordinates.ball.vel_x != game.ball.deltaX || coordinates.ball.vel_y != game.ball.deltaY)
-            || (Math.abs(coordinates.ball.x - game.ball.x) > 5  || Math.abs(coordinates.ball.y - game.ball.y) > 5)){
+            || (Math.abs(coordinates.ball.x - game.ball.x) > 3  || Math.abs(coordinates.ball.y - game.ball.y) > 3)){
             game.ball.updatePosition(coordinates.ball.x, coordinates.ball.y, coordinates.ball.vel_x, coordinates.ball.vel_y);
             game.positionUpdated = true
         }
@@ -106,17 +164,31 @@ export default class {
         this.upHandler = handleKeyUp.bind(null, this)
         this.downHandler = handleKeyDown.bind(null, this)
 
-        document.addEventListener("keyup", this.upHandler)
-        document.addEventListener("keydown", this.downHandler)
+        if (window.innerWidth > 900){
+            document.addEventListener("keyup", this.upHandler)
+            document.addEventListener("keydown", this.downHandler)
+        }else{
+            handleTouchCommands(this);
+        }
 
         API.startQueque(1).then(res=>{
-            this.socket = new WebSocket(`ws://localhost:7000/ws/game/socket/?ticket=${res.ticket}&username=${localStorage.getItem("username")}`);
+            this.socket = new WebSocket(`${URL.socket.GAME_SOCKET}?ticket=${res.ticket}&username=${localStorage.getItem("username")}`);
             this.socket.addEventListener("message", handleSocketMesssage.bind(null, this))
         })
         this.getRefreshRate(2).then((estimatedFps)=>{
             console.log(estimatedFps)
             this.ball.fps = estimatedFps
         })
+        NOTIFICATION.simple({
+            title: "Fullscreen:",
+            body: "press spacebar to enter fullscreen"
+        })
+    }
+
+    canvasRotate(){
+        this.ctx.translate(400, -400);
+        this.ctx.rotate(Math.PI / 2)
+        this.ctx.translate(400, -400)
     }
 
     draw(){

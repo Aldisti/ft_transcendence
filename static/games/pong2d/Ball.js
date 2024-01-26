@@ -1,3 +1,5 @@
+const ORIGINAL_HEIGHT = 451
+
 export default class {
     constructor(canvas, ballConfig){
         this.texture = ballConfig.texture == undefined ? "" : ballConfig.texture;
@@ -6,12 +8,12 @@ export default class {
         this.objOffSet = this.canvas.getBoundingClientRect();
         this.centerX = (canvas.width / 2);
         this.centerY = (canvas.height / 2);
-        this.ballSize = ballConfig.size == undefined ? 20 : ballConfig.size;
+        this.ballSize = ballConfig.size == undefined ? 20 : ballConfig.size * this.canvas.height / ORIGINAL_HEIGHT;
 		this.ballOffSet = (this.ballSize / 2);
         this.x = 0;
 		this.y = 0;
-        this.deltaX = 2.5;
-		this.deltaY = 2.5;
+        this.deltaX = 6;
+		this.deltaY = 6;
         this.ctx = canvas.getContext("2d");
         this.needToCalculate = true;
         this.image =  new Image()
@@ -34,14 +36,14 @@ export default class {
             this.deltaY *= -1;
 
         this.x += this.deltaX;
-        this.y += this.deltaY;
+        this.y += this.deltaY ;
     }
 
     updatePosition(x, y, deltaX, deltaY){
-        this.x = x;
+        this.x = x ;
         this.y = y;
-        this.deltaX = (deltaX * 60) / this.fps;
-        this.deltaY = (deltaY * 60) / this.fps;
+        this.deltaX = ((deltaX * 60) / this.fps);
+        this.deltaY = ((deltaY * 60) / this.fps);
     }
 
     draw(){
