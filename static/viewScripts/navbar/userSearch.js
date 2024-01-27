@@ -3,15 +3,14 @@ import * as NOTIFICATION from "/viewScripts/notification/notification.js"
 
 function searchUser(input)
 {
-    API.getUserInfo(input).then(res=>{
-		console.log(res)
+    API.getUserInfo(window.escapeHtml(input)).then(res=>{
       if (res != undefined)
 	  {
-		history.pushState(null, null, `/user/?username=${input}`)
+		history.pushState(null, null, `/user/?username=${window.escapeHtml(input)}`)
 		Router()
 	  }
 	  else
-	  	NOTIFICATION.simple({title: "Error", body: `user ${input} is not registered!`})
+	  	NOTIFICATION.simple({title: "Error", body: `user ${window.escapeHtml(input)} is not registered!`})
     })
 }
 
@@ -20,8 +19,8 @@ export default function handleSearchUser(){
     let input = document.querySelector(".navBarSearchInput").value;
     console.log(input)
   
-    if (inputRegex.test(input))
+    // if (inputRegex.test(input))
       searchUser(input);
-    else
-      alert("bad input retry...")
+    // else
+    //   alert("bad input retry...")
   }

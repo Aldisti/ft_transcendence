@@ -109,7 +109,7 @@ if (localStorage.getItem("token") != null)
     API.getTicket(1).then(res=>{
 
         //establish connection with socket
-        // const socket = new WebSocket(`${URL.socket.NOTIFICATION_SOCKET}?ticket=${res.ticket}`);
+        const socket = new WebSocket(`${URL.socket.NOTIFICATION_SOCKET}?ticket=${res.ticket}`);
         
         //define a listener that wait for INCOMING NOTIFICATION
         socket.addEventListener("message", (message)=>{

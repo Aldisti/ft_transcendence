@@ -66,7 +66,7 @@ export function createMessage(message){
                     ${message.sender == localStorage.getItem("username") ? `Tu` : message.sender }
                 </div>
                 <span class="chat textContainer actualChat">
-                    ${message.body}
+                    ${window.escapeHtml(message.body)}
                 </span>
             </div>
             <span class="chat actualChat ${message.sender == localStorage.getItem("username") ? `messageRight ` : ``}">

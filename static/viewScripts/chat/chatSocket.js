@@ -35,7 +35,7 @@ if (localStorage.getItem("token") != null)
     API.getTicket(1).then(res=>{
 
         //actual connection to the socket 
-        // socket = new WebSocket(`${URL.socket.CHAT_SOCKET}?ticket=${res.ticket}`);
+        socket = new WebSocket(`${URL.socket.CHAT_SOCKET}?ticket=${res.ticket}`);
 
         //listener for INCOMING MESSAGE
         socket.addEventListener('message', (event) => {
