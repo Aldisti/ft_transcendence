@@ -2,14 +2,21 @@ import Aview from "/views/abstractView.js";
 import language from "/language/language.js";
 import pongLoader from "/viewScripts/pong2d/loader.js"
 import startGame from "/viewScripts/pong2d/startMatch.js"
+import handleSlider from "/viewScripts/pong2d/sliders.js"
 
 import * as API from"/API/APICall.js"
 import * as URL from"/API/URL.js"
 
+let pills = [ "/imgs/pillsTexture/pill1.png", "/imgs/pillsTexture/pill.png"]
+let grounds = [ "/imgs/groundTexture/ground1.jpg", "/imgs/groundTexture/ground2.avif", "/imgs/groundTexture/ground3.jpg"]
+let balls = [ "/imgs/ballTexture/tennis.png", "/imgs/ballTexture/basket.png", "/imgs/ballTexture/soccer.png"]
 
 export default class extends Aview{
     constructor(){
         super();
+        this.pillTexture = pills[0];
+        this.groundTexture = grounds[0];
+        this.ballTexture = balls[0];
     }
 
     getGameHtml(){
@@ -50,6 +57,35 @@ export default class extends Aview{
     getHtml(){
         return `
         <div class="base">
+            <div class="themeContainer">
+                <div class="pillsTheme">
+                    <div class="themeDisplay">
+                        <div class="sliderPill">
+                        </div>
+                    </div>
+                    <div class="nextPill">
+                        >
+                    </div>
+                </div>
+                <div class="groundTheme">
+                    <div class="themeDisplay">
+                        <div class="sliderGround">
+                        </div>
+                    </div>
+                    <div class="nextGround">
+                        >
+                    </div>
+                </div>
+                <div class="ballTheme">
+                    <div class="themeDisplay">
+                        <div class="sliderBall">
+                        </div>
+                    </div>
+                    <div class="nextBall">
+                        >
+                    </div>
+                </div>
+            </div>
             <div class="btnContainer">
                 <div class="btnWindow">
                     <h1>Pong Queue</h1>
@@ -68,7 +104,9 @@ export default class extends Aview{
         document.querySelector("#waitCanv").style.width = "50%"
         document.querySelector("#waitCanv").style.height = "30%"
         localStorage.setItem("gameStarted", "false");
-
+        handleSlider(".sliderPill", ".nextPill", pills, "pillTexture", this);
+        handleSlider(".sliderGround", ".nextGround", grounds, "groundTexture", this);
+        handleSlider(".sliderBall", ".nextBall", balls, "ballTexture", this);
         pongLoader();
         document.querySelector("#startQueque").addEventListener("click", async ()=>{
             document.querySelector(".btnWindow").style.height = "40%";
@@ -81,7 +119,7 @@ export default class extends Aview{
                     console.log(message.data)
                 })
                 document.querySelector("#app").innerHTML = this.getGameHtml();
-                startGame();
+                startGame(this.ballTexture, this.groundTexture, this.pillTexture);
             })
         })
     }

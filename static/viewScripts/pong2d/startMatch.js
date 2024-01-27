@@ -1,6 +1,6 @@
 import startGame from "/games/pong2d/mainLoop.js"
 
-export default function game(){
+export default function game(ballTexture, groundTexture, pillTexture){
 
     let gameCanvas = document.querySelector(".center").clientWidth;
 
@@ -12,23 +12,23 @@ export default function game(){
         height: window.innerWidth > 900 ? gameCanvas / 1.77 : document.querySelector(".center").clientHeight * 60 / 100,
         frameInterval: 1000 / 60,
         ratio: 1.77,
-        texture: "https://t4.ftcdn.net/jpg/03/98/58/17/360_F_398581781_slNozTpXlCevO60U2I0z8CPvf2eT9Gas.jpg",
+        texture: groundTexture,
         currentUser: window.innerWidth > 900 ? "paddleRight" : "paddleLeft",
         ballConfig: {
-            texture: "/imgs/ball.png", 
+            texture: ballTexture, 
             size: 20
         },
         padleRightConfig: {
             width: 20,
             height: 100,
-            texture: "/imgs/pill.png",
+            texture: pillTexture,
             x: 0,
             y: 0,
         },
         padleLeftConfig: {
             width: 20,
             height: 100,
-            texture: "/imgs/pill.png",
+            texture: pillTexture,
             x: 0,
             y: 0,
         }

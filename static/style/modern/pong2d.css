@@ -19,7 +19,7 @@
     margin: 0;
     display: flex;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center;
 }
 
 .left, .right{
@@ -60,8 +60,8 @@
 }
 
 .btnContainer{
-    width: 100svw;
-    height: 92svh;
+    width: 40%;
+    height: 80%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -76,7 +76,7 @@
 }
 
 .btnWindow{
-    width: 25%;
+    width: 45%;
     height: 30%;
     padding: 20px;
     color: white;
@@ -105,6 +105,91 @@
     border-left: 3px dotted white;
     border-right: 3px dotted white; */
 }
+
+.themeContainer{
+    width: 50%;
+    height: 80%;
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.2);
+    overflow: scroll;
+}
+
+.pillsTheme, .groundTheme, .ballTheme{
+    width: 100%;
+    height: 31%;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 20px;
+    flex-shrink: 0;
+}
+
+.themeDisplay{
+    background-color: var(--bs-dark);
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+    width: 40%;
+    height: 100%;
+    display: flex;
+    justify-content: flex-start;
+    overflow-x: scroll;
+    padding: 20px;
+}
+
+.nextPill, .nextGround, .nextBall{
+    width: 20%;
+    height: 30%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--bs-dark);
+    color: white;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+    font-size: xx-large;
+}
+
+.nextPill:hover{
+    cursor: pointer;
+    box-shadow: none;
+}
+
+.sliderPill{
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+.nextGround:hover{
+    cursor: pointer;
+    box-shadow: none;
+}
+
+.sliderGround{
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+.sliderBall{
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+
+.sliderGround img, .sliderPill img, .sliderBall img{
+    width: 100%;
+    height: 100%;
+    margin-right: 40px;
+    flex-shrink: 0;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+    padding: 10px;
+}
+
 
 @media screen and (max-width: 900px) {
     .base{
