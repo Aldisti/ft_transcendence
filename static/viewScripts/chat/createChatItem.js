@@ -33,9 +33,11 @@ export function createTitle(){
                     <div class="imgTitle chat">
                         <img class="chat" src="${res.user_info.picture != null ? res.user_info.picture : "/imgs/defaultImg.jpg"}">
                     </div>
+                    <a class="chat" href="/user/?username=${document.querySelector(".chatBox").getAttribute("name")}" data-link>
                     <h2 class=" chat">
                         ${document.querySelector(".chatBox").getAttribute("name")}
                     </h2>
+                    </a>
                 </div>
             `
             document.querySelector(".chatTitle").innerHTML = userLine; 
@@ -62,9 +64,11 @@ export function createMessage(message){
     let messageEl = `
         <div class="messageLine chat actualChat">
             <div class="${message.sender == localStorage.getItem("username") ? `reply rightColor` : `userMessage leftColor`} chat actualChat">
-                <div class=" chat chatUsername actualChat">
-                    ${message.sender == localStorage.getItem("username") ? `Tu` : message.sender }
-                </div>
+                <a class="chat" href="/user/?username=${message.sender == localStorage.getItem("username") ? localStorage.getItem("username") : message.sender }" data-link>
+                    <div class=" chat chatUsername actualChat">
+                        ${message.sender == localStorage.getItem("username") ? `Tu` : message.sender }
+                    </div>
+                </a>
                 <span class="chat textContainer actualChat">
                     ${window.escapeHtml(message.body)}
                 </span>

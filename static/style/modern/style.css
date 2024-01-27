@@ -314,6 +314,14 @@ body {
     overflow: hidden;
 }
 
+.chat a{
+    text-decoration: none;
+}
+
+.chat a:hover{
+    cursor: pointer;
+}
+
 #chatInputElement {
     width: 85%;
     padding: 10px;

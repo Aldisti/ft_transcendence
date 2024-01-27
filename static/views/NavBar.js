@@ -1,5 +1,4 @@
 import allLanguage from "/language/language.js"
-import Router from "/router/mainRouterFunc.js"
 import setupDarkMode from "/viewScripts/navbar/darkMode.js"
 import handleSearchUser from "/viewScripts/navbar/userSearch.js"
 import * as API from "/API/APICall.js"

@@ -1,5 +1,6 @@
 import * as API from "/API/APICall.js"
 import * as NOTIFICATION from "/viewScripts/notification/notification.js"
+import Router from "/router/mainRouterFunc.js"
 
 function searchUser(input)
 {
@@ -19,8 +20,8 @@ export default function handleSearchUser(){
     let input = document.querySelector(".navBarSearchInput").value;
     console.log(input)
   
-    // if (inputRegex.test(input))
+    if (inputRegex.test(input))
       searchUser(input);
-    // else
-    //   alert("bad input retry...")
+    else
+      alert("bad input retry...")
   }
