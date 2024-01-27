@@ -1,52 +1,41 @@
-export default function setupDarkMode(){
-//     let darkMode = false;
-//     let interval;
+let bringBack = [];
+let interval;
 
-//     document.querySelector("#flexSwitchCheckDefault").addEventListener("change", ()=>{
-//       if (darkMode){
-//         darkMode = false;
-//         return ;
-//       }
-//       darkMode = true;
-//       interval = setInterval(() => {
-//         console.log(darkMode)
-//         let collection = document.querySelectorAll("#app div, #app h1, #app h6, input, button, .chat");
-//         for (let el of collection)
-//         {
-// console.log(el, window.getComputedStyle(el).backgroundColor)
-            
-//           if (window.getComputedStyle(el).backgroundColor == "rgb(255, 255, 255)" && darkMode){
-//                 el.style.backgroundColor = (el.tagName == "INPUT" || el.tagName == "H6") ? "var(--bs-gray)" : "var(--bs-dark)";
-//                 el.style.color = "white"
-//             }
-//             else if (window.getComputedStyle(el).backgroundColor == "rgb(33, 37, 41)" && !darkMode){
-//                 el.style.backgroundColor = "white";
-//                 el.style.color = "black"
-//             }
-//         }
-//       }, 1000);
-//     })
-    let bringBack = [];
-    let interval;
-    document.querySelector("#darkMode").addEventListener("click", ()=>{
-        if (localStorage.getItem("darkMode") == null){
-            localStorage.setItem("darkMode", "true");
-            interval = setInterval(() => {
-                document.querySelectorAll("#app div, #app h1, #app h6, input, button, .chat").forEach(el=>{
-                    if (window.getComputedStyle(el).backgroundColor == "rgb(255, 255, 255)" && darkMode){
-                        bringBack.push(el);
-                        el.style.backgroundColor = (el.tagName == "INPUT" || el.tagName == "H6") ? "var(--bs-gray)" : "var(--bs-dark)";
-                        el.style.color = "white"
-                    }
-                })
-            }, 500);
-        }else{
-            clearInterval(interval);
-            localStorage.removeItem("darkMode");
-            bringBack.forEach(el=>{
-                el.style.backgroundColor = "rgb(255, 255, 255)";
-                el.style.color = "black";
+export default function darkHandler(e){
+
+    if ((localStorage.getItem("darkMode") == "false" || localStorage.getItem("darkMode") == null) || (e == undefined && localStorage.getItem("darkMode") == "true")){
+
+         //add cookie and apply css
+        document.querySelector(".highlight").classList.add("highlightMoon");
+        localStorage.setItem("darkMode", "true");
+
+        //start a loop that will constantly check for div to make dark a change their color uploading each element to an array so later color can be restored
+        interval = setInterval(() => {
+            document.querySelectorAll("#app div, #app h1, #app h6, input, button, .chat").forEach(el=>{
+                if (window.getComputedStyle(el).backgroundColor == "rgb(255, 255, 255)" && darkMode){
+                    bringBack.push(el);
+                    el.style.backgroundColor = (el.tagName == "INPUT" || el.tagName == "H6") ? "var(--bs-gray)" : "var(--bs-dark)";
+                    el.style.color = "white"
+                }
             })
-        }
-    })
+        }, 500);
+
+    }else{
+
+        //removing cookie and apply css
+        document.querySelector(".highlight").classList.remove("highlightMoon");
+        localStorage.setItem("darkMode", "false");
+
+        clearInterval(interval);
+
+        //looping trough memory array and restore original color
+        bringBack.forEach(el=>{
+            el.style.backgroundColor = "rgb(255, 255, 255)";
+            el.style.color = "black";
+        })
+    }
+
+    //if this function is called on click avoid the outer div to collapse
+    if (e != undefined)
+        e.stopPropagation();
 }

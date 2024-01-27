@@ -1,5 +1,5 @@
 import allLanguage from "/language/language.js"
-import setupDarkMode from "/viewScripts/navbar/darkMode.js"
+import darkHandler from "/viewScripts/navbar/darkMode.js"
 import handleSearchUser from "/viewScripts/navbar/userSearch.js"
 import * as API from "/API/APICall.js"
 
@@ -56,8 +56,18 @@ document.querySelector("#navbar").innerHTML = `
               </select>
             </li>
             <li>
-            <li id="darkMode"><p>darkMode</p><div id="clock"></div></li>
-
+            <li id="darkMode">
+              <p>Light</p>
+                <div class="darkSwitch">
+                  <div class="highlight">
+                  </div>
+                  <div class="sunIcon">
+                    </div>
+                  <div class="moonIcon">
+                    </div>
+                  </div>
+                <p>Dark</p>
+              </li>
             </li>
             <li id="timeTravel"><p>${language.navbar.changeStyle}</p><div id="clock"></div></li>
             ${localStorage.getItem("username") == undefined ? `` : `<li><a class="nav-link active" data-link href="/account/" >${language.navbar.accountMenu}</a></li>`}
@@ -76,7 +86,10 @@ document.querySelector("#languageSwitch").addEventListener("change", (e)=>{
 	window.location.reload()
 })
 
-setupDarkMode()
+if (localStorage.getItem("darkMode") == "true"){
+  darkHandler();
+}
+document.querySelector(".darkSwitch").addEventListener("click", darkHandler)
 
 document.querySelector(".searchBtn").addEventListener("click", handleSearchUser);  
 

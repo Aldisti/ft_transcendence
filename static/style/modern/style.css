@@ -419,6 +419,49 @@ body {
     z-index: 100000000000 !important;
 }
 
+.darkSwitch{
+    height: 4svh;
+    width: 40%;
+    background-color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+.highlight{
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    background-color: rgb(255, 183, 3, 0.7);
+}
+
+.highlightMoon{
+    transform: translateX(100%);
+    background-color: rgb(33, 158, 188, 0.7);
+}
+.sunIcon{
+    width: 50%;
+    height: 100%;
+    background-image: url("/imgs/sun.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: 20;
+}
+.moonIcon{
+    width: 50%;
+    height: 100%;
+    background-image: url("/imgs/moon.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: 20;
+}
+
+
+
 @media screen and (max-width: 900px) {
     @keyframes userListBounce {
         0% {

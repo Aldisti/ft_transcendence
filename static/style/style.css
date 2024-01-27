@@ -178,6 +178,12 @@ html, body
     right: 0;
 }
 
+.darkSwitch{
+    height: 4svh;
+    width: 100%;
+    
+}
+
 @keyframes userListBounce {
     0%{
         transform: translateX(0);

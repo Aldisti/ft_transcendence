@@ -9,7 +9,7 @@ export default function game(ballTexture, groundTexture, pillTexture){
         previousTime: window.performance.now(),
         canvas: document.querySelector("#myCanv"),
         width: gameCanvas,
-        height: window.innerWidth > 900 ? gameCanvas / 1.77 : document.querySelector(".center").clientHeight * 60 / 100,
+        height: gameCanvas / 1.77,
         frameInterval: 1000 / 60,
         ratio: 1.77,
         texture: groundTexture,

@@ -63,8 +63,11 @@ export default class extends Aview{
                         <div class="sliderPill">
                         </div>
                     </div>
+                    <div class="info">
+                    <h3>Choose Pill Style</h3>
                     <div class="nextPill">
                         >
+                    </div>
                     </div>
                 </div>
                 <div class="groundTheme">
@@ -72,8 +75,11 @@ export default class extends Aview{
                         <div class="sliderGround">
                         </div>
                     </div>
-                    <div class="nextGround">
-                        >
+                    <div class="info">
+                    <h3>Choose Ground Style</h3>
+                        <div class="nextGround">
+                            >
+                        </div>
                     </div>
                 </div>
                 <div class="ballTheme">
@@ -81,8 +87,11 @@ export default class extends Aview{
                         <div class="sliderBall">
                         </div>
                     </div>
+                    <div class="info">
+                    <h3>Choose Ball Style</h3>
                     <div class="nextBall">
                         >
+                    </div>
                     </div>
                 </div>
             </div>
