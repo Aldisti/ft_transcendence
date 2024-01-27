@@ -63,7 +63,7 @@ export default class extends Aview {
             API.friendStatus(1, this.username).then(res=>{
                 if (res.is_friend)
                 {
-                    document.querySelector(".friendRequest").children[0].innerHTML = this.language.displayUser.removeFriend;
+                    document.querySelector(".friendRequest").children[0].innerHTML = this.language.displayUser.userInfo.removeFriend;
                     this.friendStatus = true;
                 }
                 else
