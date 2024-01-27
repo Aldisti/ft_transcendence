@@ -1,13 +1,11 @@
 import Aview from "/views/abstractView.js";
 import language from "/language/language.js";
-import startGame from "/games/pong2d/mainLoop.js"
-import Ball from "/games/pong2d/Ball.js"
-import Paddle from "/games/pong2d/Paddle.js"
+import pongLoader from "/viewScripts/pong2d/loader.js"
+import startGame from "/viewScripts/pong2d/startMatch.js"
 
 import * as API from"/API/APICall.js"
 import * as URL from"/API/URL.js"
 
-let gameStarted = false;
 
 export default class extends Aview{
     constructor(){
@@ -64,97 +62,26 @@ export default class extends Aview{
         </div>
         `
     }
-    startGame(){
-        let gameCanvas = document.querySelector(".center").clientWidth;
 
-        document.querySelector(".center").style.width = `${gameCanvas}px`;
-        startGame({ 
-            previousTime: window.performance.now(),
-            canvas: document.querySelector("#myCanv"),
-            width: gameCanvas,
-            height: gameCanvas / 1.77,
-            frameInterval: 1000 / 60,
-            ratio: 1.77,
-            texture: "https://t4.ftcdn.net/jpg/03/98/58/17/360_F_398581781_slNozTpXlCevO60U2I0z8CPvf2eT9Gas.jpg",
-            currentUser: "paddleRight",
-            ballConfig: {
-                texture: "/imgs/ball.png", 
-                size: 20
-            },
-            padleRightConfig: {
-                width: 20,
-                height: 100,
-                texture: "/imgs/pill.png",
-                x: 0,
-                y: 0,
-            },
-            padleLeftConfig: {
-                width: 20,
-                height: 100,
-                texture: "/imgs/pill.png",
-                x: 0,
-                y: 0,
-            }
-        });
-    }
 	setup(){
         this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpg")
         document.querySelector("#waitCanv").style.width = "50%"
         document.querySelector("#waitCanv").style.height = "30%"
+        localStorage.setItem("gameStarted", "false");
 
-        let previousTime = window.performance.now();
-        let frameInterval = 1000 / 60;
-        let ball = new Ball(document.querySelector("#waitCanv"), {size:12});
-        let left = new Paddle(document.querySelector("#waitCanv"), {
-            width: 5,
-            height: 70,
-            x: 0,
-            y: 0,
-        });
-        let right = new Paddle(document.querySelector("#waitCanv"), {
-            width: 5,
-            height: 70,
-            x: 0,
-            y: 0,
-        });
-            
-        function animate()
-        {
-            if (gameStarted || document.querySelector("#waitCanv") == null)
-                return ;
-            requestAnimationFrame(animate);
-        	const now = window.performance.now();
-        	const deltaTime = now - previousTime;
-        	if (deltaTime < frameInterval) {
-        		return;
-        	}
-        	previousTime = now;
-            gameStarted
-        	ball.calculatePosition();
-            right.y = ball.y - 35
-            right.x = document.querySelector("#waitCanv").width - 5;
-            left.y = ball.y - 35
-            ball.ctx.fillStyle = "white";
-            ball.ctx.fillRect(0, 0, document.querySelector("#waitCanv").width, document.querySelector("#waitCanv").height);
-            ball.draw();
-            left.draw();
-            right.draw();
-        }
-
-        animate();
+        pongLoader();
         document.querySelector("#startQueque").addEventListener("click", async ()=>{
             document.querySelector(".btnWindow").style.height = "40%";
             document.querySelector("#waitCanv").style.display= "flex";
-
             document.querySelector("#startQueque").innerHTML = `<span>Searching opponent...</span><div class="spinner-border text-warning" style="border-radius: 50% !important"></div>` 
             API.startQueque(1).then(res=>{
-                gameStarted = true;
+                localStorage.setItem("gameStarted", "true");
                 let socket = new WebSocket(`${URL.socket.QUEUE_SOCKET}?ticket=${res.ticket}&username=${localStorage.getItem("username")}`);
-                document.querySelector("#app").innerHTML = this.getGameHtml();
-                this.startGame();
                 socket.addEventListener("message", (message)=>{
                     console.log(message.data)
                 })
+                document.querySelector("#app").innerHTML = this.getGameHtml();
+                startGame();
             })
         })
     }

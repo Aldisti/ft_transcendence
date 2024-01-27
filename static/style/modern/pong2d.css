@@ -71,6 +71,10 @@
     display: none;
 }
 
+.btnWindow button{
+    background-color: white;
+}
+
 .btnWindow{
     width: 25%;
     height: 30%;
@@ -97,7 +101,6 @@
 }
 #myCanv, #waitCanv
 {
-    overflow: visible !important;
     /* border: 3px solid white;
     border-left: 3px dotted white;
     border-right: 3px dotted white; */
@@ -113,6 +116,7 @@
     }
     .center{
         width: 100%;
+        height: 92svh;
         justify-content: space-between;
     }
 
@@ -120,11 +124,13 @@
         background-color: white;
         padding: 10px;
         width: 100%;
-        height: 15svh;
+        height: 20%;
         display: flex;
         justify-content: space-around;
     }
     .display{
+        height: 20%;
+        width: 100%;
         display: flex;
         padding: 20px;
         justify-content: space-between;
@@ -135,6 +141,10 @@
 
     #opponentDisplay, #currentUserDisplay{
         width: 45%;
+    }
+    .btnWindow{
+        width: 75%;
+        height: 30%;
     }
     .mobile{
         width: 30%;

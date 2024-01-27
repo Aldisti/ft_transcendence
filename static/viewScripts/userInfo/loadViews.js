@@ -59,7 +59,6 @@ function waitForAppBtn(dupThis) {
 async function handleIntraLink(dupThis) {
     //check if user has a 42 account linked setting localstorage
     await API.getIntraStatus(1).then(res => {
-        console.log(res)
         if (res.intra == true)
             localStorage.setItem("intraLinked", "true")
         else {

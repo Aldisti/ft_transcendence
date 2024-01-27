@@ -1,13 +1,15 @@
 import allLanguage from "/language/language.js"
 import Router from "/router/mainRouterFunc.js"
+import setupDarkMode from "/viewScripts/navbar/darkMode.js"
+import handleSearchUser from "/viewScripts/navbar/userSearch.js"
 import * as API from "/API/APICall.js"
-import * as NOTIFICATION from "/viewScripts/notification/notification.js"
 
 if (localStorage.getItem("language") == null)
 	localStorage.setItem("language", "en")
 
 let language = allLanguage[localStorage.getItem("language")];
 let defaultProfilePicture = "https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg";
+
 document.querySelector("#navbar").innerHTML = `
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark" >
     <div class="container-fluid">
@@ -54,6 +56,10 @@ document.querySelector("#navbar").innerHTML = `
                 <option value="de">de</option>
               </select>
             </li>
+            <li>
+            <li id="darkMode"><p>darkMode</p><div id="clock"></div></li>
+
+            </li>
             <li id="timeTravel"><p>${language.navbar.changeStyle}</p><div id="clock"></div></li>
             ${localStorage.getItem("username") == undefined ? `` : `<li><a class="nav-link active" data-link href="/account/" >${language.navbar.accountMenu}</a></li>`}
           </ul>
@@ -71,30 +77,9 @@ document.querySelector("#languageSwitch").addEventListener("change", (e)=>{
 	window.location.reload()
 })
 
-function searchUser(input)
-{
-    API.getUserInfo(input).then(res=>{
-		console.log(res)
-      if (res != undefined)
-	  {
-		history.pushState(null, null, `/user/?username=${input}`)
-		Router()
-	  }
-	  else
-	  	NOTIFICATION.simple({title: "Error", body: `user ${input} is not registered!`})
-    })
-}
+setupDarkMode()
 
-document.querySelector(".searchBtn").addEventListener("click", ()=>{
-  let inputRegex = /^[A-Za-z0-9!?*@$~_-]{1,32}$/
-  let input = document.querySelector(".navBarSearchInput").value;
-  console.log(input)
-
-  if (inputRegex.test(input))
-    searchUser(input);
-  else
-    alert("bad input retry...")
-});  
+document.querySelector(".searchBtn").addEventListener("click", handleSearchUser);  
 
 API.getUserInfo(localStorage.getItem("username")).then(res=>{
   if (res != undefined && res.user_info.picture != null)
