@@ -477,7 +477,7 @@ export default class extends Aview {
 
         //then the one passed as argument is colored in green to highlight it
         document.querySelector(`.${formName}`).style.backgroundColor = "var(--bs-success)";
-        document.querySelector(`.${formName}`).style.color = localStorage.getItem("darkMode") == "true" ? "var(--bs-gray)" : "white";
+        document.querySelector(`.${formName}`).style.color = "white";
     }
 
     setup() { 

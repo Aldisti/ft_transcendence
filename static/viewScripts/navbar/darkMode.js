@@ -20,11 +20,15 @@ export default function darkHandler(e){
                         bringBack.push(el);
                     el.style.backgroundColor = (el.tagName == "INPUT" || el.tagName == "H6") ? "var(--bs-gray)" : "var(--bs-dark)";
                     el.style.color = "white"
+                    if (localStorage.getItem("style") == "old")
+                        el.style.border = "2px solid white"
                 }
                 if (isNotInBringBack(el) && window.getComputedStyle(el).backgroundColor == "rgb(33, 37, 41)")
                 {
                     el.style.backgroundColor = "black";
                     el.style.color = "white"
+                    if (localStorage.getItem("style") == "old")
+                        el.style.border = "2px solid black"
                 }
             })
         }, 400);

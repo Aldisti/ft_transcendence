@@ -69,7 +69,7 @@ document.querySelector("#navbar").innerHTML = `
                 <p class="switchLable">Dark</p>
               </li>
             <li id="darkMode">
-              <p class="switchLable">Old </p>
+              <p class="switchLable">Retro</p>
                 <div class="styleSwitch">
                   <div class="highlightPc">
                   </div>
