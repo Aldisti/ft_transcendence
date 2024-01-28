@@ -6,31 +6,34 @@ let fRoute = 0;
 let cloneDocument = document.cloneNode(true);
 
 const Router =()=>{
-	let matechedLocation = 0;
-
-	styleH.disableStyleSheet(fRoute);
-	for (let route of Routes)
-	{
-		if (route.path == location.pathname)
-		{
-			matechedLocation = new route.view;
-			fRoute = route;
-			break ;
-		}
-	}
-	//if no path match the '/' is setted
-	if (matechedLocation == 0)
-	{
-		matechedLocation = new Routes[0].view;
-		fRoute = Routes[0];
-	}
-	matechedLocation.getLanguage();
-	styleH.enableStyleSheet(fRoute);
-	document.querySelector("#app").innerHTML = "";
+	document.querySelector(".loaderOverlay").style.left = "0";
 	setTimeout(() => {
-		document.querySelector("#app").innerHTML = matechedLocation.getHtml();
-		matechedLocation.setup();
-	}, 50);
+		let matechedLocation = 0;
+	
+		styleH.disableStyleSheet(fRoute);
+		for (let route of Routes)
+		{
+			if (route.path == location.pathname)
+			{
+				matechedLocation = new route.view;
+				fRoute = route;
+				break ;
+			}
+		}
+		//if no path match the '/' is setted
+		if (matechedLocation == 0)
+		{
+			matechedLocation = new Routes[0].view;
+			fRoute = Routes[0];
+		}
+		matechedLocation.getLanguage();
+		styleH.enableStyleSheet(fRoute);
+		setTimeout(() => {
+			document.querySelector("#app").innerHTML = matechedLocation.getHtml();
+			matechedLocation.setup();
+			document.querySelector(".loaderOverlay").style.left = "-100%";
+		}, 300);
+	}, 300);
 	
 	//setup the listener for submit button
 }

@@ -8,6 +8,19 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+      .loaderOverlay{
+    width: 100svw;
+    height: 100svh;
+    background-color: var(--bs-dark);
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 20000000000000000000000000;
+    transition: 0.2s !important;
+
+}
+    </style>
     <script type="importmap">
       {
         "imports": {
@@ -19,6 +32,8 @@
     <title>Transcendence</title>
 </head>
 <body>
+  <div class="loaderOverlay"></div>
+
     <div id="navbar">
 
     </div>

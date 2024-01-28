@@ -75,6 +75,7 @@ input textarea {
 
 html,
 body {
+    position: relative;
     width: 100svw;
     min-height: 100svh;
     margin: 0;
