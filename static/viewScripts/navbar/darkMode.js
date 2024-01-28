@@ -1,6 +1,10 @@
 let bringBack = [];
 let interval;
 
+function isNotInBringBack(el){
+return !bringBack.some(item => el === item);
+}
+
 export default function darkHandler(e){
 
     if ((localStorage.getItem("darkMode") == "false" || localStorage.getItem("darkMode") == null) || (e == undefined && localStorage.getItem("darkMode") == "true")){
@@ -13,12 +17,17 @@ export default function darkHandler(e){
         interval = setInterval(() => {
             document.querySelectorAll("#app div, #app h1, #app h6, input, button, .chat").forEach(el=>{
                 if (window.getComputedStyle(el).backgroundColor == "rgb(255, 255, 255)" && darkMode){
-                    bringBack.push(el);
+                        bringBack.push(el);
                     el.style.backgroundColor = (el.tagName == "INPUT" || el.tagName == "H6") ? "var(--bs-gray)" : "var(--bs-dark)";
                     el.style.color = "white"
                 }
+                if (isNotInBringBack(el) && window.getComputedStyle(el).backgroundColor == "rgb(33, 37, 41)")
+                {
+                    el.style.backgroundColor = "black";
+                    el.style.color = "white"
+                }
             })
-        }, 500);
+        }, 400);
 
     }else{
 
@@ -33,6 +42,7 @@ export default function darkHandler(e){
             el.style.backgroundColor = "rgb(255, 255, 255)";
             el.style.color = "black";
         })
+        bringBack = [];
     }
 
     //if this function is called on click avoid the outer div to collapse

@@ -471,16 +471,16 @@ export default class extends Aview {
         //console.log(formName)
         //first all the button is turned the same
         document.querySelectorAll(".formLink").forEach(el => {
-            el.style.backgroundColor = "white";
-            el.style.color = "black";
+            el.style.backgroundColor = localStorage.getItem("darkMode") == "true" ? "var(--bs-gray)" : "white";
+            el.style.color = localStorage.getItem("darkMode") == "true" ? "white" : "var(--bs-dark)";
         })
 
         //then the one passed as argument is colored in green to highlight it
         document.querySelector(`.${formName}`).style.backgroundColor = "var(--bs-success)";
-        document.querySelector(`.${formName}`).style.color = "white";
+        document.querySelector(`.${formName}`).style.color = localStorage.getItem("darkMode") == "true" ? "var(--bs-gray)" : "white";
     }
 
-    setup() {
+    setup() { 
         this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpg")
 
         //defining the start menu item that need to be highlighted

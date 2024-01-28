@@ -11,7 +11,7 @@
     font-size: 15px;
     font-weight: 500;
     scrollbar-width: none;
-    transition: 0.3s;
+    transition: 0.3s, background-color 0s;
 }
 
 input textarea {
@@ -28,6 +28,7 @@ input textarea {
 
 .navbar {
     height: 8svh;
+    border-radius: 0 !important;
 }
 
 @keyframes bounce {
@@ -99,6 +100,7 @@ body {
     width: 100svw;
     min-height: 92svh;
     height: fit-content;
+    border-radius: 0 !important;
 }
 
 .account {
@@ -421,46 +423,99 @@ body {
 
 .darkSwitch{
     height: 4svh;
-    width: 40%;
+    width: 6svw;
     background-color: white;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
     position: relative;
 }
 
 .highlight{
     position: absolute;
-    width: 50%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    z-index: 10;
+    width: 40%;
+    height: 75%;
+    top: 50%;
+    left: 5px;
+    transform: translateY(-50%);
+    border-radius: 10% !important;
     background-color: rgb(255, 183, 3, 0.7);
+    transition: 0.2s ease-in !important;
+    z-index: 20;
+    box-shadow: rgba(6, 24, 44, 0.4) 0px 0px 0px 2px, rgba(6, 24, 44, 0.65) 0px 4px 6px -1px, rgba(255, 255, 255, 0.08) 0px 1px 0px inset;
 }
 
 .highlightMoon{
-    transform: translateX(100%);
+    transform: translateY(-50%) translateX(120%);
     background-color: rgb(33, 158, 188, 0.7);
 }
 .sunIcon{
-    width: 50%;
-    height: 100%;
+    width: 30%;
+    height: 70%;
     background-image: url("/imgs/sun.png");
     background-size: contain;
     background-repeat: no-repeat;
-    z-index: 20;
+    z-index: 30;
+    background-position: center;
 }
 .moonIcon{
-    width: 50%;
-    height: 100%;
+    width: 30%;
+    height: 70%;
     background-image: url("/imgs/moon.png");
     background-size: contain;
     background-repeat: no-repeat;
-    z-index: 20;
+    z-index: 30;
+    background-position: center;
+}
+.styleSwitch{
+    height: 4svh;
+    width: 6svw;
+    background-color: white;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    position: relative;
 }
 
+.highlightPc{
+    position: absolute;
+    width: 40%;
+    height: 75%;
+    top: 50%;
+    left: 5px;
+    transform: translateY(-50%);
+    border-radius: 10% !important;
+    background-color: rgb(25,135,84, 0.5);
+    transition: 0.2s ease-in !important;
+    z-index: 20;
+    box-shadow: rgba(6, 24, 44, 0.4) 0px 0px 0px 2px, rgba(6, 24, 44, 0.65) 0px 4px 6px -1px, rgba(255, 255, 255, 0.08) 0px 1px 0px inset;
+}
+.highlightModernPc{
+    transform: translateY(-50%) translateX(120%);
+}
+.oldPcIcon{
+    width: 30%;
+    height: 70%;
+    background-image: url("/imgs/oldPc.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: 30;
+    background-position: center;
 
+}
+.newPcIcon{
+    width: 30%;
+    height: 70%;
+    background-image: url("/imgs/newPc.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: 30;
+    background-position: center;
+}
+
+.switchLable{
+    width: 7svw;
+}
 
 @media screen and (max-width: 900px) {
     @keyframes userListBounce {

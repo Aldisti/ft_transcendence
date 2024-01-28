@@ -17,14 +17,19 @@ else
 
 // define the behaviour when clicking links making them internal routing
 document.addEventListener("click", (e)=>{
-	if (e.target.id == "timeTravel" || e.target.parentNode.id == "timeTravel")
-	{
-		if (localStorage.getItem("style") == "old")
-			localStorage.setItem("style", "modern")
-		else
-			localStorage.setItem("style", "old")
-		window.location.reload();
-	}
+	// if (isChildOfSpecificClass(e.target, "styleSwitch")){
+	// 	console.log(isChildOfSpecificClass(e.target, "styleSwitch"))
+	// 	document.querySelector(".highlightPc").classList.toggle("highlightModernPc");
+	// 	e.stopPropagation();
+	// }
+	// if (e.target.id == "timeTravel" || e.target.parentNode.id == "timeTravel")
+	// {
+	// 	if (localStorage.getItem("style") == "old")
+	// 		localStorage.setItem("style", "modern")
+	// 	else
+	// 		localStorage.setItem("style", "old")
+	// 	window.location.reload();
+	// }
 	if (e.target.matches("[data-link]") || e.target.parentNode.matches("[data-link]"))
 	{
 		e.preventDefault();

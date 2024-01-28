@@ -1,6 +1,7 @@
 import allLanguage from "/language/language.js"
 import darkHandler from "/viewScripts/navbar/darkMode.js"
 import handleSearchUser from "/viewScripts/navbar/userSearch.js"
+import styleSwitchHandler from "/viewScripts/navbar/styleSwitch.js"
 import * as API from "/API/APICall.js"
 
 if (localStorage.getItem("language") == null)
@@ -55,9 +56,8 @@ document.querySelector("#navbar").innerHTML = `
                 <option value="de">de</option>
               </select>
             </li>
-            <li>
             <li id="darkMode">
-              <p>Light</p>
+              <p class="switchLable">Light</p>
                 <div class="darkSwitch">
                   <div class="highlight">
                   </div>
@@ -66,10 +66,20 @@ document.querySelector("#navbar").innerHTML = `
                   <div class="moonIcon">
                     </div>
                   </div>
-                <p>Dark</p>
+                <p class="switchLable">Dark</p>
               </li>
-            </li>
-            <li id="timeTravel"><p>${language.navbar.changeStyle}</p><div id="clock"></div></li>
+            <li id="darkMode">
+              <p class="switchLable">Old </p>
+                <div class="styleSwitch">
+                  <div class="highlightPc">
+                  </div>
+                  <div class="oldPcIcon">
+                    </div>
+                  <div class="newPcIcon">
+                    </div>
+                  </div>
+                <p class="switchLable">Modern</p>
+              </li>
             ${localStorage.getItem("username") == undefined ? `` : `<li><a class="nav-link active" data-link href="/account/" >${language.navbar.accountMenu}</a></li>`}
           </ul>
         </div>
@@ -90,6 +100,9 @@ if (localStorage.getItem("darkMode") == "true"){
   darkHandler();
 }
 document.querySelector(".darkSwitch").addEventListener("click", darkHandler)
+if (localStorage.getItem("style") == "modern")
+  document.querySelector(".highlightPc").classList.add("highlightModernPc");
+document.querySelector(".styleSwitch").addEventListener("click", styleSwitchHandler)
 
 document.querySelector(".searchBtn").addEventListener("click", handleSearchUser);  
 

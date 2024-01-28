@@ -181,7 +181,7 @@ html, body
 .darkSwitch{
     height: 4svh;
     width: 100%;
-    
+
 }
 
 @keyframes userListBounce {
@@ -458,8 +458,99 @@ html, body
     z-index: 100000000000 !important;
 }
 
+.darkSwitch{
+    height: 4svh;
+    width: 6svw;
+    background-color: white;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    position: relative;
+}
 
+.highlight{
+    position: absolute;
+    width: 40%;
+    height: 90%;
+    top: 50%;
+    left: 5px;
+    transform: translateY(-50%);
+    background-color: rgb(255, 183, 3, 0.7);
+    transition: 0.2s ease-in !important;
+    z-index: 20;
+    border: 2px solid black;
+}
 
+.highlightMoon{
+    transform: translateY(-50%) translateX(120%);
+    background-color: rgb(33, 158, 188, 0.7);
+}
+.sunIcon{
+    width: 30%;
+    height: 70%;
+    background-image: url("/imgs/sun.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: 30;
+    background-position: center;
+}
+.moonIcon{
+    width: 30%;
+    height: 70%;
+    background-image: url("/imgs/moon.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: 30;
+    background-position: center;
+}
+.styleSwitch{
+    height: 4svh;
+    width: 6svw;
+    background-color: white;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    position: relative;
+}
+
+.highlightPc{
+    position: absolute;
+    width: 40%;
+    height: 90%;
+    top: 50%;
+    left: 5px;
+    transform: translateY(-50%);
+    border: 2px solid black;
+    background-color: rgb(25,135,84, 0.5);
+    transition: 0.2s ease-in !important;
+    z-index: 20;
+}
+.highlightModernPc{
+    transform: translateY(-50%) translateX(120%);
+}
+.oldPcIcon{
+    width: 30%;
+    height: 70%;
+    background-image: url("/imgs/oldPc.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: 30;
+    background-position: center;
+
+}
+.newPcIcon{
+    width: 30%;
+    height: 70%;
+    background-image: url("/imgs/newPc.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: 30;
+    background-position: center;
+}
+
+.switchLable{
+    width: 7svw;
+}
 @media screen and (max-width: 900px) {
 
     @keyframes userListBounce {
