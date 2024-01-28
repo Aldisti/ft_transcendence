@@ -11,6 +11,8 @@ function cleanLocalStorage() {
     localStorage.removeItem("isActive");
     localStorage.removeItem("selectedForm");
     localStorage.removeItem("chat");
+    localStorage.removeItem("jwt")
+
 }
 
 function getCookie(name) {
@@ -161,6 +163,8 @@ export async function login(data) {
     if (res.ok) {
         localStorage.setItem("username", data.username);
         let token = await res.json();
+        if (token.access_token != undefined)
+            localStorage.setItem("jwt", token.access_token.split(".")[1])
         localStorage.setItem("otp_token", token.token);
         return (token)
     }

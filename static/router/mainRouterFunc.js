@@ -31,8 +31,16 @@ const Router =()=>{
 		setTimeout(() => {
 			document.querySelector("#app").innerHTML = matechedLocation.getHtml();
 			matechedLocation.setup();
-			document.querySelector(".loaderOverlay").style.left = "-100%";
+			document.querySelector(".loaderOverlay").style.left = "100%";
 		}, 300);
+		setTimeout(() => {
+			document.querySelector(".loaderOverlay").style.display = "none";
+			setTimeout(() => {
+				document.querySelector(".loaderOverlay").style.left = "-100%";
+				document.querySelector(".loaderOverlay").style.display = "flex";
+			}, 200);
+			
+		}, 600);
 	}, 300);
 	
 	//setup the listener for submit button

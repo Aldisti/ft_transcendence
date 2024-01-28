@@ -9,7 +9,6 @@ if (localStorage.getItem("language") == null)
 
 let language = allLanguage[localStorage.getItem("language")];
 let defaultProfilePicture = "https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg";
-document.querySelector(".loaderOverlay").style.left = "0"
 document.querySelector("#navbar").innerHTML = `
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark" >
     <div class="container-fluid">
@@ -81,6 +80,7 @@ document.querySelector("#navbar").innerHTML = `
                 <p class="switchLable">Modern</p>
               </li>
             ${localStorage.getItem("username") == undefined ? `` : `<li><a class="nav-link active" data-link href="/account/" >${language.navbar.accountMenu}</a></li>`}
+            <li><a class="nav-link active" data-link href="/admin/" >${language.navbar.adminPage}</a></li>
           </ul>
         </div>
       </div>

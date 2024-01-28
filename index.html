@@ -10,16 +10,32 @@
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
       .loaderOverlay{
-    width: 100svw;
-    height: 100svh;
-    background-color: var(--bs-dark);
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 20000000000000000000000000;
-    transition: 0.2s !important;
+        width: 100svw;
+        height: 100svh;
+        background-color: var(--bs-dark);
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 20000000000000000000000000;
+        transition: 0.4s !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
 
-}
+      .image {
+        background-image: url("/imgs/gameConstruction.jpeg");
+        border-radius: 10% !important;
+        width: 50%;
+        height: 80%;
+      }
+
+      .spinner-grow{
+        width: 20svw;
+        height: 20svw;
+        margin: 2svw;
+        border-radius: 50% !important;
+      }
     </style>
     <script type="importmap">
       {
@@ -32,8 +48,14 @@
     <title>Transcendence</title>
 </head>
 <body>
-  <div class="loaderOverlay"></div>
-
+  <div class="loaderOverlay">
+    <div class="spinner-grow text-warning" role="status">
+    </div>
+    <div class="image" role="status">
+    </div>
+    <div class="spinner-grow text-warning" role="status">
+    </div>
+  </div>
     <div id="navbar">
 
     </div>

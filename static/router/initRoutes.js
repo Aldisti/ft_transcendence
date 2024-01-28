@@ -7,6 +7,7 @@ import Pong2d from "/views/Pong2d.js"
 import UserInfo from "/views/UserInfo.js"
 import PasswordRecovery from "/views/PasswordRecovery.js"
 import UserDisplay from "/views/DisplayUser.js"
+import Admin from "/views/Admin.js"
 
 const   Routes = [
     { path: "/", view: Home, style: "/style/home.css", modernStyle: "/style/modern/home.css"},
@@ -19,6 +20,7 @@ const   Routes = [
     { path: "/password/recovery/", view: PasswordRecovery, style: "/style/passwordRecovery.css", modernStyle: "/style/modern/passwordRecovery.css"},
     { path: "/google/callback/", view: Home, style: "/style/home.css", modernStyle: "/style/modern/home.css"},
     { path: "/user/", view: UserDisplay, style: "/style/displayUser.css", modernStyle: "/style/modern/displayUser.css"},
+    { path: "/admin/", view: Admin, style: "/style/admin.css", modernStyle: "/style/modern/admin.css"},
 ]
 
 export default Routes;

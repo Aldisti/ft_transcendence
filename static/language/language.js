@@ -8,7 +8,8 @@ let language = {
 			changeLanguage: "Change Language",
 			changeStyle: "Change Style",
 			accountMenu: "Account",
-			notification: "Notification"
+			notification: "Notification",
+			adminPage: "Admin Page"
 		},
 		passwordRecovery: {
 			enterPassword: "Enter new password:",
