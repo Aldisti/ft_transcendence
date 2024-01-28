@@ -67,6 +67,6 @@ export default class extends Aview{
         `
     }
     setup(){
-        this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.avif")
+        this.defineWallpaper("/imgs/backLogin.png", "/imgs/secondModernBack.jpeg")
     }
 }

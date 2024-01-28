@@ -36,6 +36,8 @@ export default class Aview{
             document.querySelector("#app").style.backgroundImage = `url(${old})`;
         document.querySelector("#app").style.backgroundSize = "cover"
         document.querySelector("#app").style.backgroundRepeat = "repeat"
+        document.querySelector("#app").style.backgroundPosition = "center"
+
     }
     setup(){
 

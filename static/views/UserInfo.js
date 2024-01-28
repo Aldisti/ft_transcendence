@@ -481,7 +481,7 @@ export default class extends Aview {
     }
 
     setup() { 
-        this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpg")
+        this.defineWallpaper("/imgs/backLogin.png", "/imgs/secondModernBack.jpeg")
 
         //defining the start menu item that need to be highlighted
         if (localStorage.getItem("selectedForm") == null)
