@@ -1,17 +1,9 @@
-upstream game-asgi-backend {
-	server ${GAME_HOST}:${GAME_PORT};
+upstream transcendence-backend {
+	server ${TRANSCENDENCE_HOST}:${TRANSCENDENCE_PORT};
 }
 
-upstream chat-asgi-backend {
-	server ${CHAT_HOST}:${CHAT_PORT};
-}
-
-upstream wsgi-backend {
-	server ${WSGI_HOST}:${WSGI_PORT};
-}
-
-upstream daphne-backend {
-	server pong:8000;
+upstream pong-backend {
+	server ${PONG_HOST}:${PONG_PORT};
 }
 
 server {
@@ -25,9 +17,90 @@ server {
 	return 444;
 }
 
+
+server {
+	#listen ${PONG_PORT} default_server;
+	listen ${PONG_PORT} default_server ssl;
+
+	ssl_protocols TLSv1.2 TLSv1.3;
+	ssl_certificate /etc/nginx/certs/transcendence.crt;
+	ssl_certificate_key /etc/nginx/certs/transcendence.key;
+
+	return 444;
+}
+
+
+server {
+	#listen ${FRONT_PORT} default_server;
+	listen ${FRONT_PORT} default_server ssl;
+
+	ssl_protocols TLSv1.2 TLSv1.3;
+	ssl_certificate /etc/nginx/certs/transcendence.crt;
+	ssl_certificate_key /etc/nginx/certs/transcendence.key;
+
+	return 444;
+}
+
+
+server {
+	server_name ${FRONT_HOST} "localhost";
+	listen ${FRONT_PORT} ssl;
+
+	ssl_protocols TLSv1.2 TLSv1.3;
+	ssl_certificate /etc/nginx/certs/transcendence.crt;
+	ssl_certificate_key /etc/nginx/certs/transcendence.key;
+
+	root /var/www/frontend;
+
+	index index.html;
+
+	location / {
+		root /var/www/frontend/static;
+
+		#limit_except GET {
+		#	deny all;
+		#}
+		try_files $uri /../index.html;
+		autoindex off;
+	}
+}
+
 server {
 
-	server_name ${NGINX_HOST};
+	server_name ${NGINX_HOST} "localhost";
+	#listen ${PONG_PORT};
+	listen ${PONG_PORT} ssl;
+
+	ssl_protocols TLSv1.2 TLSv1.3;
+	ssl_certificate /etc/nginx/certs/transcendence.crt;
+	ssl_certificate_key /etc/nginx/certs/transcendence.key;
+
+	root /var/www/pong;
+
+	location / {
+		try_files $uri @proxy_to_pong;
+	}
+
+	location @proxy_to_pong {
+		proxy_pass http://pong-backend;
+		
+		proxy_http_version 1.1;
+		proxy_set_header Upgrade $http_upgrade;
+		proxy_set_header Connection "upgrade";	
+
+		proxy_redirect off;
+		proxy_set_header Host $host:${PONG_PORT};
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header X-Forwarded-Host $server_name;
+		proxy_set_header X-Forwarded-Proto https;
+	}
+}
+
+
+server {
+
+	server_name ${NGINX_HOST} "localhost";
 	#listen ${NGINX_PORT};
 	listen ${NGINX_PORT} ssl;
 
@@ -35,35 +108,24 @@ server {
 	ssl_certificate /etc/nginx/certs/transcendence.crt;
 	ssl_certificate_key /etc/nginx/certs/transcendence.key;
 
-	root /;
-
-	#location /ws/game/ {
-	#	root /static;
-	#	try_files /game.html =404;
-	#	# proxy to game server
-	#}
-
-	location /ws/chat/ {
-		root /static;
-		try_files /chat.html =404;
-		# proxy to chat server
-	}
+	root /var/www/transcendence;
 
 	location / {
-		try_files $uri @proxy_to_daphne;
+		try_files $uri @proxy_to_transcendence;
 	}
 
-	location @proxy_to_daphne {
-		proxy_pass http://daphne-backend;
+	location @proxy_to_transcendence {
+		proxy_pass http://transcendence-backend;
 		
 		proxy_http_version 1.1;
 		proxy_set_header Upgrade $http_upgrade;
 		proxy_set_header Connection "upgrade";	
 
 		proxy_redirect off;
-		proxy_set_header Host $host;
+		proxy_set_header Host $host:${NGINX_PORT};
 		proxy_set_header X-Real-IP $remote_addr;
 		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 		proxy_set_header X-Forwarded-Host $server_name;
+		proxy_set_header X-Forwarded-Proto https;
 	}
 }

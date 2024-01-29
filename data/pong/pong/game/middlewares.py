@@ -18,7 +18,7 @@ def get_user(query_params: dict):
     if "username" not in query_params:
         raise ValueError("Username not found in url")
     try:
-        logger.warning(f"username: {query_params['username']}\nticket: {query_params['ticket']}")
+        #logger.warning(f"username: {query_params['username']}\nticket: {query_params['ticket']}")
         user = PongUser.objects.get(pk=query_params['username'], ticket=query_params["ticket"])
     except PongUser.DoesNotExist:
         raise ValueError("User not found")

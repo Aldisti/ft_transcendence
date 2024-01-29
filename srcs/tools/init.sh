@@ -2,21 +2,37 @@
 
 COMPOSE_TMP="./srcs/docker-compose.yml.tmp"
 COMPOSE="./srcs/docker-compose.yml"
+DJANGO_VOL="./data/django"
 PONG_VOL="./data/pong"
+PG_VOL="./data/postgres"
 PONGDB_VOL="./data/pongdb"
 ENV_FILE="./srcs/.env"
 POSTGRES_ENV="./srcs/cron/.env"
-STATIC="./static"
+PONG_STATIC="./static/pong_static"
+TRANSCENDENCE_STATIC="./static/transcendence_static"
+TRANSCENDENCE_MEDIA="./media/transcendence_media"
+CERTS="./certs"
 
-ENV_VARS=("PGDATA" "PONGAPP_NAME" "PONGDB_NAME" \
+ENV_VARS=("PROJECT_NAME" "DB_NAME" \
+	"DB_USER" "DB_PASSWORD" \
+	"DB_HOST" "DB_PORT" "PGDATA" \
+	"EMAIL_HOST" "EMAIL_HOST_USER" "EMAIL_HOST_PASSWORD" \
+	"PONGAPP_NAME" "PONGDB_NAME" \
 	"PONGDB_USER" "PONGDB_PASSWORD" \
 	"PONGDB_HOST" "PONGDB_PORT" "SERVER_FRONTEND_IP")
 
 
 create_env() {
 	# default values for some env vars
+	PROJECT_NAME="transcendence"
+	DB_NAME="$PROJECT_NAME"
+	DB_HOST="postgres"
+	DB_PORT="5432"
 	PGDATA="/var/lib/postgresql/data/pgdata"
+	EMAIL_HOST="smtp.gmail.com"
+	EMAIL_HOST_USER="transcendence.trinity@gmail.com"
 	echo -e "\033[31;1;5mWARNING: remove sensible data from init.sh\033[0m"
+	EMAIL_HOST_PASSWORD="awmvotojcdvmdwge"
 	PONGAPP_NAME="pong"
 	PONGDB_NAME="pong"
 	PONGDB_HOST="pongdb"
@@ -73,8 +89,16 @@ cron_env() {
 	"$ENV_FILE" > "$POSTGRES_ENV"
 }
 
+if ! [ -d $DJANGO_VOL ]; then
+	mkdir -p $DJANGO_VOL
+fi
+
 if ! [ -d $PONG_VOL ]; then
 	mkdir -p $PONG_VOL
+fi
+
+if ! [ -d $PG_VOL ]; then
+	mkdir -p $PG_VOL
 fi
 
 if ! [ -d $PONGDB_VOL ]; then
@@ -85,9 +109,22 @@ if [ ! -f "$ENV_FILE" ]; then
 	touch "$ENV_FILE"
 fi
 
-if [ ! -d "$STATIC" ]; then
-	mkdir "$STATIC"
+if [ ! -d "$CERTS" ]; then
+	mkdir "$CERTS"
+fi
+
+if [ ! -d "$PONG_STATIC" ]; then
+	mkdir -p "$PONG_STATIC"
+fi
+
+if [ ! -d "$TRANSCENDENCE_STATIC" ]; then
+	mkdir -p "$TRANSCENDENCE_STATIC"
+fi
+
+if [ ! -d "$TRANSCENDENCE_MEDIA" ]; then
+	mkdir -p "$TRANSCENDENCE_MEDIA"
 fi
 
 create_env
-#cron_env
+cron_env
+

@@ -25,9 +25,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-!el0mmld-)w%&)_j7&a@pagaxqn!$c614p_#$00+ow9vk+5na!'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-# TODO: set ALLOWED_HOSTS as env variable
 ALLOWED_HOSTS = ["*"]
 
 
@@ -53,10 +52,10 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.staticfiles',
     'rest_framework',
-    'users',
-    'matchmaking',
     'channels',
     'game',
+    'users',
+    'matchmaking',
     'corsheaders',
 ]
 
@@ -164,3 +163,8 @@ CORS_ALLOW_CREDENTIALS = True
 # CORS_ALLOWED_ORIGINS = ["http://172.23.0.3", "http://localhost:4200"]
 CORS_ALLOWED_ORIGINS = []
 APPEND_SLASH = False
+
+# https
+
+#USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
