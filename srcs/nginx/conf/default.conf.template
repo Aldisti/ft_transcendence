@@ -15,10 +15,21 @@ upstream daphne-backend {
 }
 
 server {
+	#listen ${NGINX_PORT} default_server;
+	listen ${NGINX_PORT} default_server ssl;
+
+	ssl_protocols TLSv1.2 TLSv1.3;
+	ssl_certificate /etc/nginx/certs/transcendence.crt;
+	ssl_certificate_key /etc/nginx/certs/transcendence.key;
+
+	return 444;
+}
+
+server {
 
 	server_name ${NGINX_HOST};
-	#listen ${DAPHNE_PORT};
-	listen ${DAPHNE_PORT} ssl;
+	#listen ${NGINX_PORT};
+	listen ${NGINX_PORT} ssl;
 
 	ssl_protocols TLSv1.2 TLSv1.3;
 	ssl_certificate /etc/nginx/certs/transcendence.crt;
@@ -26,11 +37,11 @@ server {
 
 	root /;
 
-	location /ws/game/ {
-		root /static;
-		try_files /game.html =404;
-		# proxy to game server
-	}
+	#location /ws/game/ {
+	#	root /static;
+	#	try_files /game.html =404;
+	#	# proxy to game server
+	#}
 
 	location /ws/chat/ {
 		root /static;

@@ -19,7 +19,7 @@ clean:
 	@if [ -f $(COMPOSE) ]; then \
 	docker compose -f $(COMPOSE) down; \
 	fi
-	@docker rmi -f trinity/pong trinity/pongdb 2> /dev/null
+	@docker rmi -f trinity/nginx trinity/pong trinity/pongdb 2> /dev/null
 
 fclean: clean
 	@docker volume rm -f ssl_certs static static_files template nginx_template pong pongdb 2> /dev/null

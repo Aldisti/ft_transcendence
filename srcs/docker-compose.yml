@@ -9,13 +9,21 @@ services:
     restart: always
     ports:
       - "8000:8000"
+    environment:
+      - NGINX_PORT=8000
+      - NGINX_HOST="transcendence"
+      - DAPHNE_PORT=8000
+      - DAPHNE_HOST=pong
+      - WSGI_PORT=8080
+      - WSGI_HOST=localhost
+      - GAME_PORT=8080
+      - GAME_HOST=localhost
+      - CHAT_PORT=8080
+      - CHAT_HOST=localhost
     volumes:
       - static:/static
       - nginx_template:/etc/nginx/templates
       - ssl_certs:/etc/nginx/certs
-    environment:
-      - DAPHNE_PORT="8000"
-      - DAPHNE_HOST="pong"
     networks:
       - pong-net
     depends_on:

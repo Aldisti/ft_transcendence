@@ -17,7 +17,7 @@ python manage.py migrate
 # export python setting settings
 # https://docs.djangoproject.com/en/5.0/topics/settings/#designating-the-settings
 
-export DJANGO_SETTINGS_MODULE=pong.settings
+export DJANGO_SETTINGS_MODULE=${PROJECT_NAME}.settings
 
 python manage.py collectstatic
 
