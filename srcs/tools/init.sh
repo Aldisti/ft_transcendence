@@ -19,7 +19,8 @@ ENV_VARS=("PROJECT_NAME" "DB_NAME" \
 	"EMAIL_HOST" "EMAIL_HOST_USER" "EMAIL_HOST_PASSWORD" \
 	"PONGAPP_NAME" "PONGDB_NAME" \
 	"PONGDB_USER" "PONGDB_PASSWORD" \
-	"PONGDB_HOST" "PONGDB_PORT" "SERVER_FRONTEND_IP")
+	"PONGDB_HOST" "PONGDB_PORT" "SERVER_FRONTEND_IP" \ 
+	"FRONTEND_PORT" "PONG_PORT" "NGINX_PORT")
 
 
 create_env() {
@@ -32,12 +33,18 @@ create_env() {
 	EMAIL_HOST="smtp.gmail.com"
 	EMAIL_HOST_USER="transcendence.trinity@gmail.com"
 	echo -e "\033[31;1;5mWARNING: remove sensible data from init.sh\033[0m"
+	echo -e "\033[31;1;5mWARNING: check the existence of certs and frontend\033[0m"
+	echo -e "\033[31;1;5mWARNING: implement env var for ports in docker compose\033[0m"
 	EMAIL_HOST_PASSWORD="awmvotojcdvmdwge"
 	PONGAPP_NAME="pong"
 	PONGDB_NAME="pong"
 	PONGDB_HOST="pongdb"
 	PONGDB_PORT=5432
 	SERVER_FRONTEND_IP="localhost"
+	FRONTEND_PORT=9000
+	PONG_PORT=7000
+	FRONTEND_PORT=4242
+	NGINX_PORT=9000
 
 	k=""
 	for var in ${ENV_VARS[@]}; do

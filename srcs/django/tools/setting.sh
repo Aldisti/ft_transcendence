@@ -21,3 +21,4 @@ export DJANGO_SETTINGS_MODULE=${PROJECT_NAME}.settings
 python manage.py collectstatic
 
 daphne -b 0.0.0.0 -p 8000 ${PROJECT_NAME}.asgi:application
+#python manage.py runserver 0.0.0.0:8000

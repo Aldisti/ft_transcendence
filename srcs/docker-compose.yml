@@ -12,11 +12,11 @@ services:
       - "7000:7000"
       - "9000:9000"
     environment:
-      - FRONT_PORT=4242
-      - FRONT_HOST="transcendence"
-      - NGINX_PORT=9000
+      - FRONT_PORT=${FRONTEND_PORT}
+      - FRONT_HOST="${SERVER_FRONTEND_IP}"
+      - NGINX_PORT=${NGINX_PORT}
       - NGINX_HOST="transcendence"
-      - PONG_PORT=7000
+      - PONG_PORT=${PONG_PORT}
       - PONG_HOST=pong
       - TRANSCENDENCE_PORT=8000
       - TRANSCENDENCE_HOST=django
