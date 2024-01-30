@@ -24,7 +24,7 @@ export default class extends Aview{
         <div class="base">
             <div class="left">
                 <div id="opponentDisplay">
-                    <h4>gpanico</h4>
+                    <h4 class="user1"></h4>
                     <h2>28</h2>
                 </div>
             </div>
@@ -39,7 +39,11 @@ export default class extends Aview{
                         <h2>48</h2>
                     </div>
                 </div>
-                <canvas id="myCanv"></canvas>
+                <div class="gameContainerPadding">
+                    <div class="gameContainer">
+                        <canvas id="myCanv"></canvas>
+                    </div>
+                </div>
                 <div class="mobileControl">
                     <div class="mobile up">⬆</div>
                     <div class="mobile down">⬇</div>
@@ -47,7 +51,7 @@ export default class extends Aview{
             </div>
             <div class="right">
                 <div id="currentUserDisplay">
-                    <h4>mpaterno</h4>
+                    <h4 class="user2"></h4>
                     <h2>48</h2>
                 </div>
             </div>
@@ -122,13 +126,16 @@ export default class extends Aview{
             document.querySelector("#waitCanv").style.display= "flex";
             document.querySelector("#startQueque").innerHTML = `<span>Searching opponent...</span><div class="spinner-border text-warning" style="border-radius: 50% !important"></div>` 
             API.startQueque(1).then(res=>{
-                localStorage.setItem("gameStarted", "true");
                 let socket = new WebSocket(`${URL.socket.QUEUE_SOCKET}?ticket=${res.ticket}&username=${localStorage.getItem("username")}`);
                 socket.addEventListener("message", (message)=>{
-                    console.log(message.data)
+                    let msg = JSON.parse(message.data);
+                    localStorage.setItem("gameStarted", "true");
+                    document.querySelector("#app").innerHTML = this.getGameHtml();
+                    console.log(msg)
+                    document.querySelector(".user1").innerHTML = msg.user1
+                    document.querySelector(".user2").innerHTML = msg.user2
+                    startGame(this.ballTexture, this.groundTexture, this.pillTexture, msg);
                 })
-                document.querySelector("#app").innerHTML = this.getGameHtml();
-                startGame(this.ballTexture, this.groundTexture, this.pillTexture);
             })
         })
     }

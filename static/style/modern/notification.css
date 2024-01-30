@@ -1,0 +1,16 @@
+*:not(#navbar, nav, .navbar){
+    border-radius: 8px, !important;
+}
+
+*{
+    font-family: 'Arial', sans-serif;
+    font-weight: bold;
+}
+
+.account{
+    border-radius: 10px !important;
+}
+
+.profilePictureUrl{
+    border-radius: 10px !important;
+}

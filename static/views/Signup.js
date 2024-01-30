@@ -4,7 +4,7 @@ import * as check from "/viewScripts/register/checks.js"
 import sha256 from "/scripts/crypto.js"
 import allLanguage from "/language/language.js"
 
-let tempLan = allLanguage[localStorage.getItem("language")]
+let tempLan = allLanguage[localStorage.getItem("language") == null ? "en" : localStorage.getItem("language")]
 
 //username, password, email, first_name, last_name, birthdate, picture
 

@@ -164,7 +164,7 @@ export default class extends Aview {
                     </div>
                     <div class="inputLineFile">
                         <label id="labelInpFile" for="inpFile"><img class="fileIcon" src="/imgs/fileIcon.png"><span class="selectFileText">${this.language.update.selectPhoto}</span></label>
-                        <input onchange="window.test()" class="inputData" id="inpFile" type="file" id="${this.language.update.profilePicture[1]}">
+                        <input onchange="window.test()" class="inputData" id="inpFile" accept=".jpg, .jpeg, .png, .gif" type="file" id="${this.language.update.profilePicture[1]}">
                     </div>
                 </div>
                     <button class="submit importantSubmit">${this.language.update.submit}</button>

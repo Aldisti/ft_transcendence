@@ -8,6 +8,7 @@ import UserInfo from "/views/UserInfo.js"
 import PasswordRecovery from "/views/PasswordRecovery.js"
 import UserDisplay from "/views/DisplayUser.js"
 import Admin from "/views/Admin.js"
+import Notification from "/views/Notification.js"
 
 const   Routes = [
     { path: "/", view: Home, style: "/style/home.css", modernStyle: "/style/modern/home.css"},
@@ -21,6 +22,7 @@ const   Routes = [
     { path: "/google/callback/", view: Home, style: "/style/home.css", modernStyle: "/style/modern/home.css"},
     { path: "/user/", view: UserDisplay, style: "/style/displayUser.css", modernStyle: "/style/modern/displayUser.css"},
     { path: "/admin/", view: Admin, style: "/style/admin.css", modernStyle: "/style/modern/admin.css"},
+    { path: "/notification/", view: Notification, style: "/style/notification.css", modernStyle: "/style/modern/notification.css"},
 ]
 
 export default Routes;

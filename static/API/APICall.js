@@ -764,6 +764,22 @@ export async function getUsers(recursionProtection){
     alert("error ha occured..")
     return ({})
 }
+
+export async function getDummyUsers(recursionProtection, pageSize, pageNumber){
+    const res = await fetch(`http://localhost:3000/objects?page=${pageNumber}&size=${pageSize}`, {
+        method: "GET",
+    });
+    if (res.ok) {
+        let parsed = await res.json();
+        return (parsed);
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(getUsers, 0);
+    alert("error ha occured..")
+    return ({})
+}
+
+
 export async function getTicket(recursionProtection){
     const res = await fetch(URL.socket.GET_TICKET, {
         method: "GET",

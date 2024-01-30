@@ -30,7 +30,7 @@ document.querySelector("#navbar").innerHTML = `
             <a class="nav-link active" data-link href="/games/" >${language.navbar.games}</a>
           </li>
           <li class="nav-item">
-            <button class="nav-link active" >${language.navbar.notification}</a>
+            <a href="/notification/" data-link class="nav-link active" >${language.navbar.notification}</a>
           </li>
         </ul>
         <div style="display: flex;">

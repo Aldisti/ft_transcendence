@@ -101,6 +101,15 @@ function notificationRouter(notification){
     //     handleFriendNotification();
 }
 
+function updateNotification(newNotifications){
+    let parsedSavedNotification = JSON.parse(localStorage.getItem("notification"));
+
+    newNotifications.forEach(element => {
+        parsedSavedNotification.push(element);
+    });
+    localStorage.setItem("notification", JSON.stringify(parsedSavedNotification));
+}
+
 //check if the user is logged in
 if (localStorage.getItem("token") != null)
 {
@@ -114,6 +123,12 @@ if (localStorage.getItem("token") != null)
         //define a listener that wait for INCOMING NOTIFICATION
         socket.addEventListener("message", (message)=>{
             let parsed = JSON.parse(message.data);
+
+            if (localStorage.getItem("notification") == null)
+                localStorage.setItem("notification", message.data)
+            else
+                updateNotification(parsed);
+
         
             //since the retrieved obj contain an array of notification this will loop trought it and decide what to do based on type
             for (let i = 0; i < parsed.length; i++)

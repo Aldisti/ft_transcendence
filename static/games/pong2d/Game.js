@@ -74,7 +74,7 @@ function handleKeyDown(game, e){
         handleUnload(game);
         return ;
     }
-    if (e.key == "w" && upFlag){
+    if ((e.key == "w" || e.key == "ArrowUp") && upFlag){
         upFlag = false;
         game[game.currentUser].upInterval = setInterval(() => {
             if (upMsg){
@@ -84,7 +84,7 @@ function handleKeyDown(game, e){
             game[game.currentUser].calculatePosition(false)
         }, game.frameInterval / 10);
     }
-    if (e.key == "s" && downFlag){
+    if ((e.key == "s" || e.key == "ArrowDown") && downFlag){
         downFlag = false;
         game[game.currentUser].downInterval = setInterval(() => {
             if (downMsg){
@@ -106,14 +106,14 @@ function handleKeyUp(game, e){
     }
     if (e.key == "p")
         sync = true
-    if (e.key == "w"){
+    if ((e.key == "w" || e.key == "ArrowUp")){
         upFlag = true
         game.socket.send(JSON.stringify({type: `${game.currentUser == "paddleLeft" ? `left` : `right`}`}))
         upMsg = true;
         downMsg = true;
         clearInterval(game[game.currentUser].upInterval)
     }
-    if (e.key == "s"){
+    if ((e.key == "s" || e.key == "ArrowDown")){
         downFlag = true
         game.socket.send(JSON.stringify({type: `${game.currentUser == "paddleLeft" ? `left` : `right`}`}))
         downMsg = true;
@@ -175,7 +175,7 @@ export default class {
             this.socket = new WebSocket(`${URL.socket.GAME_SOCKET}?ticket=${res.ticket}&username=${localStorage.getItem("username")}`);
             this.socket.addEventListener("message", handleSocketMesssage.bind(null, this))
         })
-        this.getRefreshRate(2).then((estimatedFps)=>{
+        this.getRefreshRate(5).then((estimatedFps)=>{
             console.log(estimatedFps)
             this.ball.fps = estimatedFps
         })
