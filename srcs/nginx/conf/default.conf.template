@@ -1,5 +1,9 @@
-upstream transcendence-backend {
-	server ${TRANSCENDENCE_HOST}:${TRANSCENDENCE_PORT};
+upstream asgi-transcendence-backend {
+	server ${ASGI_TRANSCENDENCE_HOST}:${ASGI_TRANSCENDENCE_PORT};
+}
+
+upstream wsgi-transcendence-backend {
+	server ${WSGI_TRANSCENDENCE_HOST}:${WSGI_TRANSCENDENCE_PORT};
 }
 
 upstream pong-backend {
@@ -63,6 +67,10 @@ server {
 		try_files $uri /../index.html;
 		autoindex off;
 	}
+
+	location = /favicon.ico {
+		alias /var/www/frontend/static/imgs/favicon.jpeg;
+	}
 }
 
 server {
@@ -111,15 +119,30 @@ server {
 	root /var/www/transcendence;
 
 	location / {
-		try_files $uri @proxy_to_transcendence;
+		try_files $uri @proxy_to_wsgi_transcendence;
 	}
 
-	location @proxy_to_transcendence {
-		proxy_pass http://transcendence-backend;
+	location /ws {
+		try_files $uri @proxy_to_asgi_transcendence;
+	}
+
+	location @proxy_to_asgi_transcendence {
+		proxy_pass http://asgi-transcendence-backend;
 		
 		proxy_http_version 1.1;
 		proxy_set_header Upgrade $http_upgrade;
 		proxy_set_header Connection "upgrade";	
+
+		proxy_redirect off;
+		proxy_set_header Host $host:${NGINX_PORT};
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header X-Forwarded-Host $server_name;
+		proxy_set_header X-Forwarded-Proto https;
+	}
+
+	location @proxy_to_wsgi_transcendence {
+		proxy_pass http://wsgi-transcendence-backend;
 
 		proxy_redirect off;
 		proxy_set_header Host $host:${NGINX_PORT};

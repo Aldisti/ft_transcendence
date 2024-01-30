@@ -19,7 +19,8 @@ clean:
 	@if [ -f $(COMPOSE) ]; then \
 	docker compose -f $(COMPOSE) down; \
 	fi
-	@docker rmi -f trinity/nginx trinity/django trinity/postgres trinity/pong trinity/pongdb trinity/cron 2> /dev/null
+	@docker rmi -f trinity/nginx trinity/django trinity/gunicorn \
+		trinity/postgres trinity/pong trinity/pongdb trinity/cron 2> /dev/null
 
 fclean: clean
 	@docker volume rm -f nginx_template django postgres pong pongdb pong_static \

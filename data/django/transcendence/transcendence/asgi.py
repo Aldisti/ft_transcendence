@@ -38,7 +38,7 @@ websocket_urlpatterns.extend(pong_urlpatterns)
 logger.warning(f"websocket_urlpatterns: {websocket_urlpatterns}")
 
 application = ProtocolTypeRouter({
-        "http": django_asgi_app,
+        #"http": django_asgi_app,
         "websocket": AllowedHostsOriginValidator(
             CustomAuthMiddlewareStack(URLRouter(websocket_urlpatterns))
         )

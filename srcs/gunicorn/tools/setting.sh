@@ -18,7 +18,7 @@ python manage.py migrate
 export DJANGO_SETTINGS_MODULE=${PROJECT_NAME}.settings
 
 # TODO: use an env var in order to save static folder path
-#python manage.py collectstatic
+python manage.py collectstatic
 
-daphne -b 0.0.0.0 -p 8000 ${PROJECT_NAME}.asgi:application
+gunicorn -w 4 -b 0.0.0.0 -p 8000 ${PROJECT_NAME}.wsgi:application
 #python manage.py runserver 0.0.0.0:8000

@@ -18,8 +18,10 @@ services:
       - NGINX_HOST="transcendence"
       - PONG_PORT=${PONG_PORT}
       - PONG_HOST=pong
-      - TRANSCENDENCE_PORT=8000
-      - TRANSCENDENCE_HOST=django
+      - WSGI_TRANSCENDENCE_PORT=8000
+      - WSGI_TRANSCENDENCE_HOST=gunicorn
+      - ASGI_TRANSCENDENCE_PORT=8000
+      - ASGI_TRANSCENDENCE_HOST=django
     volumes:
       - transcendence_static:/var/www/transcendence/static
       - transcendence_media:/var/www/transcendence/media
@@ -39,6 +41,35 @@ services:
     build:
       context: ./django
     image: trinity/django
+    restart: always
+    expose:
+      - "8000"
+    volumes:
+      - django:/etc/develop
+    environment:
+      - PROJECT_NAME=${PROJECT_NAME}
+      - DB_USER=${DB_USER}
+      - DB_NAME=${DB_NAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - EMAIL_HOST=${EMAIL_HOST}
+      - EMAIL_HOST_USER=${EMAIL_HOST_USER}
+      - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
+      - SERVER_FRONTEND_IP=${SERVER_FRONTEND_IP}
+    networks:
+      - nginx-net
+      - postgres-net
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+
+  gunicorn:
+    container_name: gunicorn
+    build:
+      context: ./gunicorn
+    image: trinity/gunicorn
     restart: always
     expose:
       - "8000"
