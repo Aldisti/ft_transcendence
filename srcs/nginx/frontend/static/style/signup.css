@@ -1,0 +1,303 @@
+.signupForm {
+    background-image: url("/imgs/register.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    color: black;
+    width: 40svw;
+    height: fit-content;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+    padding: 20px;
+    box-shadow: 15px 15px black;
+    border: 2px solid black;
+}
+
+h2,
+h3 {
+    margin: 0;
+}
+
+.fileSelector {
+    border: none !important;
+}
+
+.signupForm h1 {
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    color: white;
+}
+
+.base {
+    width: 100vw;
+    height: 92svh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#title {
+    width: 90%;
+    text-align: start;
+}
+
+.retroBtn {
+    width: 30%;
+    height: 100%;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    border: 2px solid black;
+    box-shadow: 7px 7px black;
+    font-size: 18px;
+    font-weight: bolder;
+    text-decoration: none;
+}
+
+.btnColor-yellow {
+    background-color: var(--bs-warning);
+}
+
+.btnColor-green {
+    background-color: var(--bs-success);
+    color: white;
+    font-size: 20px;
+}
+
+.retroShade {
+    transition: 0.2s;
+}
+
+.retroShade:hover {
+    box-shadow: none;
+}
+
+.f-line {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+    gap: 10px;
+    height: 4svh;
+}
+
+.line {
+    width: 90%;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: flex-start;
+    box-shadow: 7px 7px black;
+    background-color: white;
+    border: 2px solid black;
+    padding: 5px;
+    transition: 0.3s;
+    margin: 10px;
+}
+
+.passwordSwitch,
+.confirmPasswordSwitch {
+    width: 6%;
+    height: 80%;
+    border: 2px solid black;
+    padding: 5px;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.passwordSwitch:hover {
+    cursor: pointer;
+}
+
+.confirmPasswordSwitch:hover {
+    cursor: pointer;
+}
+
+.passInput {
+    width: 100%;
+    height: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.passInput input {
+    width: 80% !important;
+    height: 80% !important;
+}
+
+.passwordSwitch img,
+.confirmPasswordSwitch img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.line h4 {
+    width: 30%;
+    text-align: center;
+    margin: 0;
+}
+
+.errors {
+    width: 90%;
+    background-color: var(--bs-danger);
+    box-shadow: 7px 7px black;
+    border: 2px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    padding: 20px;
+    display: none;
+}
+
+.errors ul {
+    margin: 0;
+}
+
+.line input {
+    width: 100%;
+    height: 3svh;
+    border: none;
+    font-size: 20px;
+    border: 2px solid black;
+    outline: none;
+}
+
+.pass {
+    color: black;
+    text-shadow: none;
+}
+
+.linebtn {
+    width: 90%;
+    height: 7vh;
+    display: flex;
+    border: 2px solid black;
+    box-shadow: 7px 7px black;
+    align-items: center;
+    justify-content: space-between;
+    background-color: white;
+    padding: 12px;
+}
+
+.red {
+    background-color: red;
+}
+
+.green {
+    background-color: green;
+}
+
+#inpFile {
+    position: absolute;
+    left: -300svw;
+}
+
+#labelInpFile {
+    width: 70%;
+    height: 80%;
+    display: flex;
+    align-items: center;
+}
+
+#labelInpFile:hover {
+    cursor: pointer;
+}
+
+.fileIcon {
+    width: 10%;
+    height: 80%;
+    object-fit: contain;
+}
+
+.selectFileText {
+    display: flex;
+    align-items: flex-end;
+    height: 100%;
+    font-size: larger;
+}
+
+
+/* Tooltip container */
+
+.myTooltip {
+    height: 3svh;
+    width: 3svh;
+    margin: 3px;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #000;
+    position: relative;
+    color: white;
+}
+
+
+/* Tooltip text */
+
+.myTooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    /* Position the tooltip text */
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    /* Fade in tooltip */
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+
+/* Tooltip arrow */
+
+.myTooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+
+/* Show the tooltip text when you mouse over the tooltip container */
+
+.myTooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+@media only screen and (max-width: 900px) {
+    .signupForm {
+        width: 90svw;
+    }
+    .line {
+        width: 98%;
+    }
+    .linebtn {
+        width: 95%;
+    }
+    .retroBtn {
+        font-size: 10px;
+    }
+    input {
+        font-size: 20px;
+    }
+}

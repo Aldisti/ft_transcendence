@@ -1,0 +1,123 @@
+
+import * as NOTIFICATION from "/viewScripts/notification/notification.js"
+import * as URL from "/API/URL.js"
+import * as create from "/viewScripts/chat/createChatItem.js"
+import * as API from "/API/APICall.js";
+
+//handle user choice in case of friend request notificationElement rapresent the the newly created notification element
+function choiceCallback(config, notificationElement){
+
+    //setting up a listener for ACCEPT button
+    notificationElement.querySelector(".notificationAccept").addEventListener("click", ()=>{
+        let currentSearchedUser = document.querySelector(".userAndImage") != undefined ? document.querySelector(".userAndImage h2").innerHTML : null;
+
+        //api call is perfomed passing a token as handshake for server
+        API.acceptRequest(1, config.token)
+        
+        //update friend button inner text if the user is looking at it
+        if (config.body.split(" ")[0] == currentSearchedUser)
+            document.querySelector(".askFriend h3").innerHTML = "Remove Friend";
+
+        //make the notification disappear
+        document.body.removeChild(notificationElement);
+    })
+
+    //setting up a listener for DENY button
+    notificationElement.querySelector(".notificationDeny").addEventListener("click", ()=>{
+        //api call is perfomed passing a token as handshake for server
+        API.denyRequest(1, config.token)
+
+        //make the notification disappear
+        document.body.removeChild(notificationElement);
+    })
+}
+
+//handle notification of type INFO
+function infoNotification(notification){
+    let currentSearchedUser = document.querySelector(".userAndImage") != undefined ? document.querySelector(".userAndImage h2").innerHTML : null;
+
+    //create the notification with NOTIFICATION functions
+    NOTIFICATION.simple({title: "Info", body: notification.body})
+
+    //handle the case of someone removed the user form friend
+    if (notification.body.substring(notification.body.indexOf(" ")) == " isn't no more your friend")
+    {
+        //change friend button inner text if the current user display is the same of the one who removed the current user from friend
+        if (currentSearchedUser == notification.body.split(" ")[0])
+            document.querySelector(".askFriend h3").innerHTML = "Add Friend";
+
+        //update friend list on chat element
+        document.querySelector(".chatSideList").innerHTML = ""; 
+        create.createUser(create.global);
+        API.getFriends(1).then(users=>{
+            for (let i = 0; i < users.length; i++)
+                create.createUser(users[i]);
+        })
+    }
+
+    //handle the case of someone removed the user form friend
+    else if (notification.body.substring(notification.body.indexOf(" ")) == " accepted your friends request")
+    {
+
+        //change friend button inner text if the current user display is the same of the one who added the current user to his friend
+        if (currentSearchedUser == notification.body.split(" ")[0])
+            document.querySelector(".askFriend h3").innerHTML = "Remove Friend";
+
+        //update friend list on chat element  
+        document.querySelector(".chatSideList").innerHTML = ""; 
+        create.createUser(create.global);
+        API.getFriends(1).then(users=>{
+            for (let i = 0; i < users.length; i++)
+                create.createUser(users[i]);
+        })
+    }
+}
+
+//send a choice notification that can be acceoted or denied
+function friendNotification(obj){
+    let sender = obj.body.split("=")[2];
+    let config = {
+        title: "Friend Request",
+        deny: "Deny friend request",
+        accept: "accept friend request",
+        body: `${sender} sent a friendship request`,
+        token: obj.body.split(",")[0].split("=")[1]
+    }
+
+    //the action to do in case of accept or deny is defined in choiceCallback
+    NOTIFICATION.choice(config, choiceCallback)
+}
+
+function notificationRouter(notification){
+    if (notification.type == "info")
+        infoNotification(notification);
+    // else if (notification.type == "ban")
+    //     banNotification();
+    // else if (notification.type == "alert")
+    //     handleFriendNotification(notification);
+    else if (notification.type == "friend_req")
+        friendNotification(notification);
+    // else if (notification.type == "match_req")
+    //     handleFriendNotification();
+}
+
+//check if the user is logged in
+if (localStorage.getItem("token") != null)
+{
+
+    //get tiket from server to establish a connection with notification socket
+    API.getTicket(1).then(res=>{
+
+        //establish connection with socket
+        const socket = new WebSocket(`${URL.socket.NOTIFICATION_SOCKET}?ticket=${res.ticket}`);
+        
+        //define a listener that wait for INCOMING NOTIFICATION
+        socket.addEventListener("message", (message)=>{
+            let parsed = JSON.parse(message.data);
+        
+            //since the retrieved obj contain an array of notification this will loop trought it and decide what to do based on type
+            for (let i = 0; i < parsed.length; i++)
+                notificationRouter(parsed[i]);
+        })
+    })
+}

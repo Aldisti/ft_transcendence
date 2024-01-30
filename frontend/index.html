@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-wkldsdvnwkl8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 ">
+    <link class="baseStyle" rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="/style/bootstrap.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+      .loaderOverlay{
+    width: 100svw;
+    height: 100svh;
+    background-color: var(--bs-dark);
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 20000000000000000000000000;
+    transition: 0.2s !important;
+
+}
+    </style>
+    <script type="importmap">
+      {
+        "imports": {
+        "three": "/three/three.module.js",
+        "three/addons/": "/three/"
+        }
+      }
+      </script>
+    <title>Transcendence</title>
+</head>
+<body>
+  <div class="loaderOverlay"></div>
+
+    <div id="navbar">
+
+    </div>
+    <div class="chat chatContainer">
+      <div class="chat chatSideList">
+
+      </div>
+      <div class="chat chatFull">
+        <div class="chatTitle chat">
+
+        </div>
+        <div class="chat chatBox">
+        </div>
+        <div class="chat chatInput">
+          <textarea class="chat" name="message" id="chatInputElement" cols="30" rows="10"></textarea>
+          <button class="chat submitChatInput importantSubmit">></button>
+        </div>
+      </div>
+    </div>
+    <div id="app">
+    </div>
+    <script type="module" src="/router/router.js"></script>
+    <script type="module" src="/views/NavBar.js"></script>
+    <script src="/globalFunction/globalFunction.js"></script>
+    <script src="/scripts/bootstrap.bundle.min.js"></script>
+    <script type="module" src="/viewScripts/chat/chat.js"></script>
+    <script type="module" src="/viewScripts/chat/chatSocket.js"></script>
+    <script type="module" src="/viewScripts/notification/notificatioSocket.js"></script>
+    <script src="/viewScripts/touchHandler.js"></script>
+    <script src="/qrCode.js"></script>
+    <script>
+      document.addEventListener("keypress", e=>{
+        if (e.key == "Enter")
+        {
+          let navbarSearch = document.querySelector("#navbarSearch");
+          let toPress = document.querySelector(".importantSubmit");
+
+          if (navbarSearch != undefined && document.activeElement.classList.contains("navBarSearchInput"))
+            navbarSearch.click();
+          else if (toPress != undefined)
+            toPress.click();
+        }
+      })
+    </script>
+</body>
+</html>
