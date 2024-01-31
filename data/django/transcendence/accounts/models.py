@@ -11,12 +11,11 @@ from accounts.managers import (UserManager,
                                UserWebsocketsManager,
                                ChatChannelManager,
                                NtfChannelManager,
-							   UserGameManager)
+                               UserGameManager)
 
 import logging
 
 from django.core.files import File
-
 
 logger = logging.getLogger(__name__)
 
@@ -155,7 +154,6 @@ class UserWebsockets(models.Model):
     class Meta:
         db_table = "user_websockets"
 
-
     user = models.OneToOneField(
         to=User,
         on_delete=models.CASCADE,
@@ -172,7 +170,7 @@ class UserWebsockets(models.Model):
 
 class ChatChannel(models.Model):
     class Meta:
-        db_table="chat_channel"
+        db_table = "chat_channel"
 
     channel_name = models.CharField(
         primary_key=True,
@@ -195,7 +193,7 @@ class ChatChannel(models.Model):
 
 class NtfChannel(models.Model):
     class Meta:
-        db_table="ntf_channel"
+        db_table = "ntf_channel"
 
     channel_name = models.CharField(
         primary_key=True,
@@ -238,4 +236,3 @@ class UserGame(models.Model):
 
     def __str__(self) -> str:
         return f"username: {self.user.username}, display_name: {self.display_name}"
-
