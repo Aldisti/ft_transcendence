@@ -1,7 +1,7 @@
 #!/bin/bash
 
-PROJECT="./data/pong/pong/"
-APPS=('users' 'game' 'matchmaking')
+PROJECT="./data/chat/chat/"
+APPS=('users')
 DEL_PATH="migrations/0"
 
 for app in ${APPS[@]}; do

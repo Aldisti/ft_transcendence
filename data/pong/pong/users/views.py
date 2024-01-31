@@ -13,6 +13,11 @@ class CreateUser(generics.CreateAPIView):
     serializer_class = PongUserSerializer
 
 
+class DeleteUser(generics.DestroyAPIView):
+    queryset = PongUser.objects.all()
+    serializer_class = PongUserSerializer
+
+
 def generate_ticket(username_1, username_2):
     if username_1 == "" or username_2 == "" or username_1 == username_2:
         return ""

@@ -269,3 +269,19 @@ FILE_CATEGORY = "image"
 
 MAX_MESSAGES = 500
 MAX_MESSAGE_LENGTH = 512
+
+# microservices urls
+
+CHAT_HOST = environ['CHAT_HOST']
+CHAT_PORT = environ['CHAT_PORT']
+
+PONG_HOST = environ['PONG_HOST']
+PONG_PORT = environ['PONG_PORT']
+
+MS_URLS = {
+    "CHAT_REGISTER": f"http://{CHAT_HOST}:{CHAT_PORT}/user/register/",
+    "CHAT_TICKET": f"http://{CHAT_HOST}:{CHAT_PORT}/user/ticket/",
+    "CHAT_DELETE": f"http://{CHAT_HOST}:{CHAT_PORT}/user/<pk>/delete/",
+    "PONG_REGISTER": f"http://{PONG_HOST}:{PONG_PORT}/user/register/",
+    "PONG_DELETE": f"http://{PONG_HOST}:{PONG_PORT}/user/<pk>/delete/",
+}

@@ -4,8 +4,10 @@ COMPOSE_TMP="./srcs/docker-compose.yml.tmp"
 COMPOSE="./srcs/docker-compose.yml"
 DJANGO_VOL="./data/django"
 PONG_VOL="./data/pong"
+CHAT_VOL="./data/chat"
 PG_VOL="./data/postgres"
 PONGDB_VOL="./data/pongdb"
+CHATDB_VOL="./data/chatdb"
 ENV_FILE="./srcs/.env"
 POSTGRES_ENV="./srcs/cron/.env"
 
@@ -15,7 +17,10 @@ ENV_VARS=("PROJECT_NAME" "DB_NAME" \
 	"EMAIL_HOST" "EMAIL_HOST_USER" "EMAIL_HOST_PASSWORD" \
 	"PONGAPP_NAME" "PONGDB_NAME" \
 	"PONGDB_USER" "PONGDB_PASSWORD" \
-	"PONGDB_HOST" "PONGDB_PORT" "SERVER_FRONTEND_IP")
+	"PONGDB_HOST" "PONGDB_PORT" \
+	"CHATAPP_NAME" "CHATDB_NAME" \
+	"CHATDB_USER" "CHATDB_PASSWORD" \
+	"CHATDB_HOST" "CHATDB_PORT" "SERVER_FRONTEND_IP")
 
 
 create_env() {
@@ -33,6 +38,10 @@ create_env() {
 	PONGDB_NAME="pong"
 	PONGDB_HOST="pongdb"
 	PONGDB_PORT=5432
+	CHATAPP_NAME="chat"
+	CHATDB_NAME="chat"
+	CHATDB_HOST="chatdb"
+	CHATDB_PORT=5432
 	SERVER_FRONTEND_IP="localhost"
 
 	k=""
@@ -93,12 +102,20 @@ if ! [ -d $PONG_VOL ]; then
 	mkdir -p $PONG_VOL
 fi
 
+if ! [ -d $CHAT_VOL ]; then
+	mkdir -p $CHAT_VOL
+fi
+
 if ! [ -d $PG_VOL ]; then
 	mkdir -p $PG_VOL
 fi
 
 if ! [ -d $PONGDB_VOL ]; then
 	mkdir -p $PONGDB_VOL
+fi
+
+if ! [ -d $CHATDB_VOL ]; then
+	mkdir -p $CHATDB_VOL
 fi
 
 if [ ! -f "$ENV_FILE" ]; then

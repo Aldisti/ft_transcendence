@@ -14,16 +14,18 @@ all: $(NAME)
 migrations:
 	@sudo ./srcs/tools/clean_migrations.sh
 	@sudo ./srcs/tools/clean_migrations_pong.sh
+	@sudo ./srcs/tools/clean_migrations_chat.sh
 
 clean:
 	@if [ -f $(COMPOSE) ]; then \
 	docker compose -f $(COMPOSE) down; \
 	fi
-	@docker rmi -f trinity/django trinity/postgres trinity/pong trinity/pongdb trinity/cron 2> /dev/null
+	@docker rmi -f trinity/django trinity/postgres trinity/pong trinity/pongdb \
+		trinity/chat trinity/chatdb trinity/cron 2> /dev/null
 
 fclean: clean
-	@docker volume rm -f django postgres pong pongdb 2> /dev/null
-	@sudo rm -rf ./data/postgres ./data/pongdb 2> /dev/null
+	@docker volume rm -f django postgres pong pongdb chat chatdb 2> /dev/null
+	@sudo rm -rf ./data/postgres ./data/pongdb ./data/chatdb 2> /dev/null
 
 re: fclean all
 

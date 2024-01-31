@@ -2,18 +2,26 @@ from django.core.exceptions import ValidationError
 from django.shortcuts import render
 from django.core.mail import send_mail
 from django.conf import settings
+
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.generics import RetrieveDestroyAPIView, ListAPIView
 from rest_framework.exceptions import APIException
 from rest_framework import filters
+
 from accounts.paginations import MyPageNumberPagination
 from accounts.serializers import CompleteUserSerializer, UploadImageSerializer, UserInfoSerializer
 from accounts.models import User, UserInfo, UserGame
-from friends.models import FriendsList
 from accounts.validators import image_validator
+
+from friends.models import FriendsList
+
 from email_manager.email_sender import send_verification_email
+
 from authentication.permissions import IsActualUser, IsAdmin, IsModerator, IsUser
+
+from requests import post as post_request
+from requests import delete as post_delete
 
 import logging
 
@@ -38,7 +46,24 @@ def upload_profile_picture(request):
 def registration(request):
     user_serializer = CompleteUserSerializer(data=request.data)
     user_serializer.is_valid(raise_exception=True)
+    username = user_serializer.validated_data.get("username")
+    data = {'username': username}
+
+    # TODO: implement delete when something goes wrong
+
+    # create user instance on chat database
+    api_response = post_request(settings.MS_URLS['CHAT_REGISTER'], json=data)
+    if api_response.status_code >= 300:
+        return Response(data={'message': 'Something strange happened, contact devs'}, status=503)
+
+    # create user instance on pong database
+    api_response = post_request(settings.MS_URLS['PONG_REGISTER'], json=data)
+    if api_response.status_code >= 300:
+        return Response(data={'message': 'Something strange happened, contact devs'}, status=503)
+
+    # create user instance on main database
     user = user_serializer.create(user_serializer.validated_data)
+    # TODO: reduce time of registration
     send_verification_email(user=user)
     serializer_response = CompleteUserSerializer(user)
     return Response(serializer_response.data, status=201)
@@ -105,11 +130,25 @@ def update_user_info(request):
 
 
 class RetrieveDestroyUser(RetrieveDestroyAPIView):
-    permission_classes = [IsActualUser|IsAdmin]
+    #permission_classes = [IsActualUser|IsAdmin]
     permission_classes = []
     queryset = User.objects.all()
     serializer_class = CompleteUserSerializer
     lookup_field = "username"
+
+    def destroy(request, *args, **kwargs):
+        logger.warning("MY DESTROY")
+        logger.warning(f"KWARGS: {kwargs}")
+        username = kwargs.get("username", "")
+        if username != "":
+            data = {'username': username}
+            # delete from chat db
+            chat_url = settings.MS_URLS['CHAT_DELETE'].replace("<pk>", username)
+            api_response = post_delete(chat_url, json=data)
+            # delete from pong db
+            pong_url = settings.MS_URLS['PONG_DELETE'].replace("<pk>", username)
+            api_response = post_delete(pong_url, json=data)
+        return super().destroy(request, *args, **kwargs)
 
 
 class ListUser(ListAPIView):

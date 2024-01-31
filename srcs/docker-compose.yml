@@ -22,9 +22,12 @@ services:
       - EMAIL_HOST_USER=${EMAIL_HOST_USER}
       - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
       - SERVER_FRONTEND_IP=${SERVER_FRONTEND_IP}
+      - CHAT_HOST=chat
+      - CHAT_PORT=8000
+      - PONG_HOST=pong
+      - PONG_PORT=8000
     networks:
       - django-net
-      - pong-net
       - postgres-net
     depends_on:
       postgres:
@@ -63,8 +66,6 @@ services:
     restart: always
     ports:
       - "7000-7020:8000-8020"
-    expose:
-      - "9000"
     volumes:
       - pong:/etc/develop
     environment:
@@ -74,24 +75,12 @@ services:
       - DB_PASSWORD=${PONGDB_PASSWORD}
       - DB_HOST=${PONGDB_HOST}
       - DB_PORT=${PONGDB_PORT}
+      - SERVER_FRONTEND_IP=${SERVER_FRONTEND_IP}
     networks:
-      - pong-net
+      - django-net
       - pongdb-net
     depends_on:
       pongdb:
-        condition: service_healthy
-
-
-  cron:
-    container_name: cron
-    build:
-      context: ./cron
-    image: trinity/cron
-    restart: always
-    networks:
-      - postgres-net
-    depends_on:
-      postgres:
         condition: service_healthy
 
 
@@ -119,6 +108,69 @@ services:
       - pongdb-net
 
 
+  chat:
+    container_name: chat
+    build:
+      context: ./chat
+    image: trinity/chat
+    restart: always
+    ports:
+      - "9000-9020:8000-8020"
+    volumes:
+      - chat:/etc/develop
+    environment:
+      - PROJECT_NAME=${CHATAPP_NAME}
+      - DB_USER=${CHATDB_USER}
+      - DB_NAME=${CHATDB_NAME}
+      - DB_PASSWORD=${CHATDB_PASSWORD}
+      - DB_HOST=${CHATDB_HOST}
+      - DB_PORT=${CHATDB_PORT}
+      - SERVER_FRONTEND_IP=${SERVER_FRONTEND_IP}
+    networks:
+      - django-net
+      - chatdb-net
+    depends_on:
+      chatdb:
+        condition: service_healthy
+
+
+  chatdb:
+    container_name: chatdb
+    build:
+      context: ./chatdb
+    image: trinity/chatdb
+    restart: always
+    expose:
+      - "$CHATDB_PORT"
+    volumes:
+      - chatdb:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-p$CHATDB_PORT", "-h127.0.0.1", "-d$CHATDB_NAME", "-U$CHATDB_USER"]
+      retries: 10
+      interval: 5s
+      start_interval: 3s
+    environment:
+      - POSTGRES_PASSWORD=${CHATDB_PASSWORD}
+      - POSTGRES_USER=${CHATDB_USER}
+      - POSTGRES_DB=${CHATDB_NAME}
+      - PGDATA=${PGDATA}
+    networks:
+      - chatdb-net
+
+
+  cron:
+    container_name: cron
+    build:
+      context: ./cron
+    image: trinity/cron
+    restart: always
+    networks:
+      - postgres-net
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+
 volumes:
   django:
     name: "django"
@@ -134,6 +186,13 @@ volumes:
       type: "none"
       o: "bind"
       device: "$PWD/data/pong"
+  chat:
+    name: "chat"
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "$PWD/data/chat"
   postgres:
     name: "postgres"
     driver: local
@@ -148,16 +207,23 @@ volumes:
       type: "none"
       o: "bind"
       device: "$PWD/data/pongdb"
+  chatdb:
+    name: "chatdb"
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "$PWD/data/chatdb"
 
 networks:
   django-net:
     name: "django-net"
-
-  pong-net:
-    name: "pong-net"
 
   postgres-net:
     name: "postgres-net"
 
   pongdb-net:
     name: "pongdb-net"
+
+  chatdb-net:
+    name: "chatdb-net"
