@@ -144,14 +144,14 @@ class RefreshView(APIView):
 def get_queue_ticket(request) -> Response:
     username = request.user.username
     data = {'username': username}
-    logger.warning("#" * 50)
+    #logger.warning("#" * 50)
     api_response = post_request(MATCHMAKING_TOKEN, json=data)
-    logger.warning("#" * 50)
+    #logger.warning("#" * 50)
     if api_response.status_code != 200:
-        logger.warning(f"status code: {api_response.status_code}")
-        logger.warning(f"json: {api_response.json()}")
+        #logger.warning(f"status code: {api_response.status_code}")
+        #logger.warning(f"json: {api_response.json()}")
         return Response(data={'message': f'api: {api_response.status_code}'}, status=503)
-    logger.warning(f"\n\n\n\n\nDJANGO API RESPONSE: {api_response.json()}")
+    #logger.warning(f"\n\n\n\n\nDJANGO API RESPONSE: {api_response.json()}")
     return Response(data=api_response.json(), status=200)
 
 
