@@ -33,11 +33,22 @@ export function handleAcceptRequest(token, notification){
 export function makeChoiceCard(notificationContent){
     let notification = `
     <div class="choiceCardContainer">
+        <div class="paddingBox">
+
         <h4>${window.escapeHtml(notificationContent.title)}</h4>
         <div class="choiceCardBody" body="${notificationContent.fullBody}">
             <span>
                 ${window.escapeHtml(notificationContent.body)}
             </span>
+        </div>
+        <div class="timeStamp">
+            <span>
+                ${notificationContent.time.split(":")[0]}
+            </span>
+            <span>
+                ${notificationContent.time.split(":")[1].split(".")[0]}:${notificationContent.time.split(":")[1].split(".")[1]}
+            </span>
+        </div>
         </div>
         <div class="choiceCardBtns">
             <button token="${notificationContent.token}" class="choiceCardBtn choiceCardDeny">
@@ -55,15 +66,25 @@ export function makeChoiceCard(notificationContent){
 export function makeSimpleCard(obj){
     let notification = `
         <div class="simpleCardContainer">
-            <div class="simpleCardTitle">
-                <h4>${obj.title}</h4>
-                <div class="simpleCardCloseBtn">
-                    X
+            <div class="paddingBox">
+                <div class="simpleCardTitle">
+                    <h4>${obj.title}</h4>
+                    <div class="simpleCardCloseBtn">
+                        X
+                    </div>
+                </div>
+                <div class="simpleCardBody">
+                    <span>
+                        ${obj.body}
+                    </span>
                 </div>
             </div>
-            <div class="simpleCardBody">
+            <div class="timeStamp">
                 <span>
-                    ${obj.body}
+                    ${obj.time.split(":")[0]}
+                </span>
+                <span>
+                    ${obj.time.split(":")[1].split(".")[0]}:${obj.time.split(":")[1].split(".")[1]}
                 </span>
             </div>
         </div>
@@ -74,7 +95,7 @@ export function makeSimpleCard(obj){
 export function infoNotification(obj){
     let notificationList = document.querySelector(".infoContainer");
     
-    notificationList.innerHTML += makeSimpleCard({title: "Info", body: obj.body});
+    notificationList.innerHTML += makeSimpleCard({title: "Info", body: obj.body, time: obj.sent_time});
 }
 
 export function friendNotification(obj){
@@ -86,6 +107,7 @@ export function friendNotification(obj){
         accept: "accept friend request",
         body: `${sender} sent a friendship request`,
         token: obj.body.split(",")[0].split("=")[1],
+        time: obj.sent_time,
         fullBody: obj.body
     }
     notificationList.innerHTML += makeChoiceCard(config);
@@ -122,6 +144,7 @@ export function setuplistenerToRemoveNotification(){
 }
 
 export function notificationRouter(notification){
+    console.log(notification)
     if (notification.type == "info")
         infoNotification(notification);
     // else if (notification.type == "ban")

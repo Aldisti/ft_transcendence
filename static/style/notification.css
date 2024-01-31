@@ -1,0 +1,148 @@
+.base{
+    width: 100svw;
+    height: 92svh;
+    display: flex;
+    justify-content: space-around;
+    gap: 30px;
+    padding: 20px;
+}
+
+h1{
+    font-size: larger;
+}
+
+.firendRequestSection, .infoSection{
+    background-image: url("/imgs/notificationBack.jpeg");
+    background-position: center;
+    background-repeat: repeat;
+    width: 35%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    padding: 20px;
+    gap: 20px;
+    border: 3px solid black;
+box-shadow: 15px 15px black;
+
+}
+
+.title{
+    width: 100%;
+    height: 10%;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    background-color: var(--bs-success);
+box-shadow: 10px 10px black;
+border: 3px solid black;
+
+}
+
+.friendRequestContainer, .infoContainer{
+    width: 100%;
+    height: 90%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 10px;
+    overflow: scroll;
+    gap: 20px;
+}
+
+.choiceCardContainer, .simpleCardContainer{
+    width: 100%;
+    height: 30%;
+    background-color: white;
+box-shadow: 10px 10px black;
+    padding: 20px;
+    border: 3px solid black;
+}
+
+.simpleCardContainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 40px;
+}
+
+.simpleCardTitle h4{
+    margin: 0;
+}
+
+.simpleCardTitle{
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+}
+
+.simpleCardCloseBtn{
+    width: 10%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bs-danger);
+    color: white;
+box-shadow: 3px 3px black;
+}
+
+.simpleCardBody{
+    width: 100%;
+    height: 50%;
+}
+
+.paddingBox{
+    flex-grow: 1;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+}
+
+.choiceCardContainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.choiceCardBtns{
+    width: 100%;
+    height: 30%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.choiceCardBody{
+    flex-grow: 1;
+}
+
+.choiceCardDeny{
+    background-color: var(--bs-danger);
+    border: none;
+box-shadow: 3px 3px black;
+border: 2px solid black;
+font-size: small;
+    color: white;
+    height: 100%;
+    width: 40%;
+}
+
+.choiceCardAccept{
+    background-color: var(--bs-primary);
+    border: none;
+box-shadow: 3px 3px black;
+border: 2px solid black;
+font-size: small;
+
+    color: white;
+    height: 100%;
+    width: 40%;
+}
