@@ -13,41 +13,38 @@ if [ $bash_version -lt 4 ]; then
 fi
 
 DEL_PATH="/migrations/0"
-PROJECTS=('transcendence' 'pong')
 
 declare -A PROJECTS_PATH=(
 	['transcendence']='./data/django/transcendence' 
 	['pong']='./data/pong/pong' 
+	['auth']='./data/auth/authentication'
 )
 
 declare -A APPS_PATH=(
 	['transcendence']="/accounts /authentication /chat /email_manager /friends /notifications /oauth2 /two_factor_auth /pong"
 	['pong']="/users /matchmaking /game"
+	['auth']="/auth_base"
 )
 
 remove_migrations()
 {
-	local project=$1
+	local project="$1"
 	shift
 	while [ $# -gt 0 ]; do
 		local app=$1
-		local migration_path="$project$app$DEL_PATH"
-		if ! echo "$migration_path"* | grep -q '*'; then
-			echo -e "$GREEN$migration_path"*
-			echo -en "$RESET"
-			rm -f "$migration_path"*
+		local migration_path="${project}${app}${DEL_PATH}"
+		if ! echo "${migration_path}"* | grep -q '*'; then
+			echo -e "${GREEN}${migration_path}"*"${RESET}"
+			#rm -f "${migration_path}"*
 		else
-			echo -e "$RED$migration_path*$RESET"
+			echo -e "${RED}${migration_path}*${RESET}"
 		fi
 		shift
 	done
 }
 
-for project in ${PROJECTS[@]}; do
-	echo -e "$PURPLE$project"
-	for app in ${APPS_PATH[$project]}; do
-		remove_migrations ${PROJECTS_PATH[$project]} $app
-	done
-	echo
+for project in ${!PROJECTS_PATH[@]}; do
+	echo -e "${PURPLE}${project}${RESET}"
+	remove_migrations "${PROJECTS_PATH[$project]}" ${APPS_PATH[$project]}
 done
 

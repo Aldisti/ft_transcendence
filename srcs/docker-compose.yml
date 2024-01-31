@@ -14,7 +14,7 @@ services:
     healthcheck:
       test: test -f /etc/healthy
       retries: 10
-      interval: 5s
+      interval: 2s
       start_interval: 3s
     environment:
       - PROJECT_NAME=${PROJECT_NAME}
@@ -55,7 +55,7 @@ services:
     healthcheck:
       test: ["CMD", "pg_isready", "-p$DB_PORT", "-h127.0.0.1", "-d$DB_NAME", "-U$DB_USER"]
       retries: 10
-      interval: 5s
+      interval: 2s
       start_interval: 3s
     environment:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
@@ -126,7 +126,7 @@ services:
     healthcheck:
       test: ["CMD", "pg_isready", "-p$PONGDB_PORT", "-h127.0.0.1", "-d$PONGDB_NAME", "-U$PONGDB_USER"]
       retries: 10
-      interval: 5s
+      interval: 2s
       start_interval: 3s
     environment:
       - POSTGRES_PASSWORD=${PONGDB_PASSWORD}
@@ -177,7 +177,7 @@ services:
     healthcheck:
       test: ["CMD", "pg_isready", "-p$AUTH_DB_PORT", "-h127.0.0.1", "-d$AUTH_DB_NAME", "-U$AUTH_DB_USER"]
       retries: 10
-      interval: 5s
+      interval: 2s
       start_interval: 3s
     environment:
       - POSTGRES_PASSWORD=${AUTH_DB_PASSWORD}
