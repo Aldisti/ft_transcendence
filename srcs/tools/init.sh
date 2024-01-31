@@ -8,13 +8,17 @@ PG_VOL="./data/postgres"
 PONGDB_VOL="./data/pongdb"
 ENV_FILE="./srcs/.env"
 POSTGRES_ENV="./srcs/cron/.env"
+AUTH_VOL="./data/auth"
+AUTHDB_VOL="./data/authdb"
 
 ENV_VARS=( \
 "PROJECT_NAME" "DB_NAME" "DB_USER" "DB_PASSWORD" \
 "DB_HOST" "DB_PORT" "PGDATA" \
 "EMAIL_HOST" "EMAIL_HOST_USER" "EMAIL_HOST_PASSWORD" \
 "PONGAPP_NAME" "PONGDB_NAME" "PONGDB_USER" "PONGDB_PASSWORD" \
-"PONGDB_HOST" "PONGDB_PORT" "SERVER_FRONTEND_IP"
+"PONGDB_HOST" "PONGDB_PORT" "SERVER_FRONTEND_IP" \
+"AUTH_NAME" "AUTH_DB_NAME" "AUTH_DB_USER" "AUTH_DB_PASSWORD" \
+"AUTH_DB_HOST" "AUTH_DB_PORT" \
 "INTRA_ID" "INTRA_SECRET" "GOOGLE_ID" "GOOGLE_SECRET" \
 "RSA_PRIVATE_KEY_PATH" "RSA_PUBLIC_KEY_PATH"
 )
@@ -36,6 +40,10 @@ create_env() {
 	SERVER_FRONTEND_IP="localhost"
 	RSA_PRIVATE_KEY_PATH="/etc/.rsa/rsa.pem"
 	RSA_PUBLIC_KEY_PATH="/etc/.rsa/rsa.crt"
+	AUTH_NAME="authentication"
+	AUTH_DB_NAME="$AUTH_NAME"
+	AUTH_DB_HOST="authdb"
+	AUTH_DB_PORT="5432"
 	# default sensible data
 	echo -e "\033[31;1;5mWARNING: remove default sensible data\033[0m"
 	EMAIL_HOST_PASSWORD="awmvotojcdvmdwge"
@@ -110,6 +118,14 @@ fi
 
 if ! [ -d $PONGDB_VOL ]; then
 	mkdir -p $PONGDB_VOL
+fi
+
+if ! [ -d $AUTH_VOL ]; then
+	mkdir -p $AUTH_VOL
+fi
+
+if ! [ -d $AUTHDB_VOL ]; then
+	mkdir -p $AUTHDB_VOL
 fi
 
 if [ ! -f "$ENV_FILE" ]; then

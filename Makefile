@@ -18,11 +18,11 @@ clean:
 	@if [ -f $(COMPOSE) ]; then \
 	docker compose -f $(COMPOSE) down; \
 	fi
-	@docker rmi -f trinity/django trinity/postgres trinity/pong trinity/pongdb trinity/cron 2> /dev/null
+	@docker rmi -f trinity/django trinity/postgres trinity/pong trinity/pongdb trinity/cron trinity/auth trinity/authdb 2> /dev/null
 
 fclean: clean
 	@docker volume rm -f django postgres pong pongdb 2> /dev/null
-	@sudo rm -rf ./data/postgres ./data/pongdb 2> /dev/null
+	@sudo rm -rf ./data/postgres ./data/pongdb ./data/authdb 2> /dev/null
 
 re: fclean all
 

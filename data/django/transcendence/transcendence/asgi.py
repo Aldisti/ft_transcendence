@@ -39,9 +39,9 @@ logger.warning(f"websocket_urlpatterns: {websocket_urlpatterns}")
 
 application = ProtocolTypeRouter({
         "http": django_asgi_app,
-        #"websocket": AllowedHostsOriginValidator(
-        #    CustomAuthMiddlewareStack(URLRouter(websocket_urlpatterns))
-        #)
+        # "websocket": AllowedHostsOriginValidator(
+        #     CustomAuthMiddlewareStack(URLRouter(websocket_urlpatterns))
+        # )
         "websocket": URLRouter(websocket_urlpatterns),
     }
 )
