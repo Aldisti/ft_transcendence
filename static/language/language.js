@@ -9,7 +9,8 @@ let language = {
 			changeStyle: "Change Style",
 			accountMenu: "Account",
 			notification: "Notification",
-			adminPage: "Admin Page"
+			adminPage: "Admin Page",
+			moderatorPage: "Moderator Page"
 		},
 		passwordRecovery: {
 			enterPassword: "Enter new password:",

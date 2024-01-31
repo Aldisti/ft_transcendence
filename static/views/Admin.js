@@ -3,10 +3,6 @@ import Router from "/router/mainRouterFunc.js"
 import * as API from "/API/APICall.js"
 import * as HANDLERS from "/viewScripts/admin/scrollHandlers.js"
 
-let data = {
-    username: "gpanico",
-    picture: ""
-}
 
 export default class extends Aview{
     constructor(){
@@ -87,8 +83,11 @@ export default class extends Aview{
     }   
 
     getHtml(){
+        let role = JSON.parse(window.decode64(localStorage.getItem("jwt"))).role;
+
         return `
             <div class="base">
+                ${role == "U" ? `
                 <div class="manageUsers">
                     <div class="sectionTitle">
                         <h1>Manage Users</h1>
@@ -110,7 +109,8 @@ export default class extends Aview{
                     <div containerNumber=1 class="usersContainer">
                 
                     </div>
-                </div>
+                </div>           
+                ` : ``}
                 <div class="manageUsers">
                     <div class="sectionTitle">
                         <h1>Manage Banned Users</h1>
@@ -128,8 +128,9 @@ export default class extends Aview{
 
     setup(){
         this.defineWallpaper("/imgs/backLogin.png", "/imgs/secondModernBack.jpeg")
-        let isAdmin = JSON.parse(window.decode64(localStorage.getItem("jwt"))).role == "U";
-        if (!isAdmin)
+        let role = JSON.parse(window.decode64(localStorage.getItem("jwt"))).role;
+
+        if (role != "U" || role != "U")
         {
             history.pushState(null, null, "/home/");
             Router();

@@ -82,7 +82,7 @@ document.querySelector("#navbar").innerHTML = `
                 <p class="switchLable">Modern</p>
               </li>
             ${localStorage.getItem("username") == undefined ? `` : `<li><a class="nav-link active" data-link href="/account/" >${language.navbar.accountMenu}</a></li>`}
-            <li><a class="nav-link active" data-link href="/admin/" >${language.navbar.adminPage}</a></li>
+            ${JSON.parse(window.decode64(localStorage.getItem("jwt"))).role == "U" ? `<li><a class="nav-link active" data-link href="/admin/" >${language.navbar.adminPage}</a></li>` : ``}
           </ul>
         </div>
       </div>
