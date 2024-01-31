@@ -31,14 +31,15 @@ export default class extends Aview{
     }
 
     setup(){
-        let parsedNotification = JSON.parse(localStorage.getItem("notification"))
         this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpg");
-        
-        //since the retrieved obj contain an array of notification this will loop trought it and decide what to do based on type
-        for (let i = 0; i < parsedNotification.length; i++)
-            notificationView.notificationRouter(parsedNotification[i]);
-
-        notificationView.setuplistenerToRemoveNotification();
+        if (localStorage.getItem("notification") != null){
+            let parsedNotification = JSON.parse(localStorage.getItem("notification"))
+            
+            //since the retrieved obj contain an array of notification this will loop trought it and decide what to do based on type
+            for (let i = 0; i < parsedNotification.length; i++)
+                notificationView.notificationRouter(parsedNotification[i]);
+    
+            notificationView.setuplistenerToRemoveNotification();
+        }
     }
-
 }

@@ -31,6 +31,8 @@ document.querySelector("#navbar").innerHTML = `
           </li>
           <li class="nav-item">
             <a href="/notification/" data-link class="nav-link active" >${language.navbar.notification}</a>
+            <div class="glowing-div">
+            </div>
           </li>
         </ul>
         <div style="display: flex;">
@@ -99,7 +101,9 @@ document.querySelector("#languageSwitch").addEventListener("change", (e)=>{
 if (localStorage.getItem("darkMode") == "true"){
   darkHandler();
 }
+
 document.querySelector(".darkSwitch").addEventListener("click", darkHandler)
+
 if (localStorage.getItem("style") == "modern")
   document.querySelector(".highlightPc").classList.add("highlightModernPc");
 document.querySelector(".styleSwitch").addEventListener("click", styleSwitchHandler)
@@ -110,3 +114,14 @@ API.getUserInfo(localStorage.getItem("username")).then(res=>{
   if (res != undefined && res.user_info.picture != null)
     document.querySelector(".profilePictureUrl").src = res.user_info.picture;
 })
+
+//check for notification and show indicator if needed
+
+setInterval(() => {
+  let notificationString = localStorage.getItem("notification");
+  
+  if(notificationString == null || notificationString == "[]")
+    document.querySelector(".glowing-div").style.display = "none";
+  else
+    document.querySelector(".glowing-div").style.display = "flex";
+}, 2000);

@@ -565,6 +565,30 @@ body {
     width: 7svw;
 }
 
+li{
+    display: flex;
+    align-items: center;
+}
+
+.glowing-div {
+    width: 7px;
+    height: 7px;
+    background-color: var(--bs-danger); /* Change the background color as needed */
+    border-radius: 50%; /* Makes the div round */
+    box-shadow: 0 0 20px 5px var(--bs-danger); /* Adjust the color and size of the glow */
+    transition: 0.5s;
+    animation: glow 1s ease-in-out infinite alternate; /* Adjust the animation duration and timing */
+}
+
+@keyframes glow {
+    0% {
+        box-shadow: 0 0 10px 0 var(--bs-danger); /* Adjust the initial glow size and color */
+    }
+    100% {
+        box-shadow: 0 0 11px 2px var(--bs-danger); /* Adjust the final glow size and color */
+    }
+}
+
 @media screen and (max-width: 900px) {
     @keyframes userListBounce {
         0% {

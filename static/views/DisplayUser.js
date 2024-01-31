@@ -9,8 +9,8 @@ export default class extends Aview {
         this.friendStatus = false;
     }
 
-    handleFriendRequest(usernameToSearch){
-        API.friendStatus(1, usernameToSearch).then(res=>{
+    handleFriendRequest(dupThis){
+        API.friendStatus(1, dupThis.username).then(res=>{
             let username = document.querySelector(".friendRequest").getAttribute("name")
             if (res.is_friend && confirm(`Do you really want to remove ${username} from your friends?`))
             {
@@ -20,7 +20,7 @@ export default class extends Aview {
             else if (!res.is_friend && confirm(`Do you really want to add ${username} to your friends?`))
             {
                 API.sendFriendRequest(1, username);
-                document.querySelector(".friendRequest").children[0].innerHTML = this.language.displayUser.pending
+                document.querySelector(".friendRequest").children[0].innerHTML = dupThis.language.displayUser.userInfo.pending
             }
         })
     }
@@ -68,7 +68,7 @@ export default class extends Aview {
                 }
                 else
                     this.friendStatus = false;
-                document.querySelector(".friendRequest").addEventListener("click", this.handleFriendRequest.bind(null, this.username));
+                document.querySelector(".friendRequest").addEventListener("click", this.handleFriendRequest.bind(null, this));
             })
         })
     }

@@ -11,7 +11,8 @@ function cleanLocalStorage() {
     localStorage.removeItem("isActive");
     localStorage.removeItem("selectedForm");
     localStorage.removeItem("chat");
-    localStorage.removeItem("jwt")
+    localStorage.removeItem("jwt");
+    localStorage.removeItem("notification");
 
 }
 

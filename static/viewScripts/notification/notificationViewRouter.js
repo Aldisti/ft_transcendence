@@ -121,8 +121,6 @@ export function setuplistenerToRemoveNotification(){
     })
 }
 
-
-
 export function notificationRouter(notification){
     if (notification.type == "info")
         infoNotification(notification);
