@@ -1,4 +1,6 @@
 import Aview from "/views/abstractView.js"
+import * as API from "/API/APICall.js";
+import * as notificationView from "/viewScripts/notification/notificationViewRouter.js";
 
 export default class extends Aview{
     constructor(){
@@ -8,15 +10,35 @@ export default class extends Aview{
     getHtml(){
         return  `
             <div class="base">
-                <div class="notificationContainer">
+                <div class="firendRequestSection">
+                    <div class="title">
+                        <h1>Friend Request</h1>
+                    </div>
+                    <div class="friendRequestContainer">
 
+                    </div>
+                </div>
+                <div class="infoSection">
+                    <div class="title">
+                        <h1>Info Notification</h1>
+                    </div>
+                    <div class="infoContainer">
+
+                    </div>
                 </div>
             </div>
         `
     }
 
     setup(){
+        let parsedNotification = JSON.parse(localStorage.getItem("notification"))
+        this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpg");
+        
+        //since the retrieved obj contain an array of notification this will loop trought it and decide what to do based on type
+        for (let i = 0; i < parsedNotification.length; i++)
+            notificationView.notificationRouter(parsedNotification[i]);
 
+        notificationView.setuplistenerToRemoveNotification();
     }
 
 }

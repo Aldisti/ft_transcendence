@@ -3,6 +3,24 @@ import * as NOTIFICATION from "/viewScripts/notification/notification.js"
 import * as URL from "/API/URL.js"
 import * as create from "/viewScripts/chat/createChatItem.js"
 import * as API from "/API/APICall.js";
+import * as notificationView from "/viewScripts/notification/notificationViewRouter.js";
+
+function removeNotification(body){
+    let parsedNotification = JSON.parse(localStorage.getItem("notification"));
+
+    parsedNotification.forEach((element, i) => {
+        if (element.body == body)
+            parsedNotification.splice(i, 1);
+    });
+    localStorage.setItem("notification", JSON.stringify(parsedNotification));
+    if (document.querySelector(".friendRequestContainer") != null){
+        document.querySelector(".friendRequestContainer").innerHTML = ""
+        document.querySelector(".infoContainer").innerHTML = ""
+    
+        for (let i = 0; i < parsedNotification.length; i++)
+            notificationView.notificationRouter(parsedNotification[i]);
+    }
+}
 
 //handle user choice in case of friend request notificationElement rapresent the the newly created notification element
 function choiceCallback(config, notificationElement){
@@ -13,6 +31,7 @@ function choiceCallback(config, notificationElement){
 
         //api call is perfomed passing a token as handshake for server
         API.acceptRequest(1, config.token)
+        removeNotification(config.fullBody)
         
         //update friend button inner text if the user is looking at it
         if (config.body.split(" ")[0] == currentSearchedUser)
@@ -26,6 +45,7 @@ function choiceCallback(config, notificationElement){
     notificationElement.querySelector(".notificationDeny").addEventListener("click", ()=>{
         //api call is perfomed passing a token as handshake for server
         API.denyRequest(1, config.token)
+        removeNotification(config.fullBody)
 
         //make the notification disappear
         document.body.removeChild(notificationElement);
@@ -81,7 +101,8 @@ function friendNotification(obj){
         deny: "Deny friend request",
         accept: "accept friend request",
         body: `${sender} sent a friendship request`,
-        token: obj.body.split(",")[0].split("=")[1]
+        token: obj.body.split(",")[0].split("=")[1],
+        fullBody: obj.body
     }
 
     //the action to do in case of accept or deny is defined in choiceCallback
@@ -103,7 +124,6 @@ function notificationRouter(notification){
 
 function updateNotification(newNotifications){
     let parsedSavedNotification = JSON.parse(localStorage.getItem("notification"));
-
     newNotifications.forEach(element => {
         parsedSavedNotification.push(element);
     });

@@ -187,6 +187,9 @@ export function choice(notificationContent, callback){
     setTimeout(() => {
         notificationElement.style.transform = "translateX(0%)"
     }, 500);
+    setTimeout(() => {
+        document.body.removeChild(notificationElement);
+    }, 5000);
     if (callback == undefined)
         defaultChoiceCallback(notificationContent, notificationElement)
     else
