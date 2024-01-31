@@ -16,6 +16,7 @@ ENV_VARS=( \
 "PONGAPP_NAME" "PONGDB_NAME" "PONGDB_USER" "PONGDB_PASSWORD" \
 "PONGDB_HOST" "PONGDB_PORT" "SERVER_FRONTEND_IP"
 "INTRA_ID" "INTRA_SECRET" "GOOGLE_ID" "GOOGLE_SECRET" \
+"RSA_PRIVATE_KEY_PATH" "RSA_PUBLIC_KEY_PATH"
 )
 
 
@@ -33,6 +34,8 @@ create_env() {
 	PONGDB_HOST="pongdb"
 	PONGDB_PORT=5432
 	SERVER_FRONTEND_IP="localhost"
+	RSA_PRIVATE_KEY_PATH="/etc/.rsa/rsa.pem"
+	RSA_PUBLIC_KEY_PATH="/etc/.rsa/rsa.crt"
 	# default sensible data
 	echo -e "\033[31;1;5mWARNING: remove default sensible data\033[0m"
 	EMAIL_HOST_PASSWORD="awmvotojcdvmdwge"

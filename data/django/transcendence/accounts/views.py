@@ -36,6 +36,7 @@ def upload_profile_picture(request):
 @api_view(['POST'])
 @permission_classes([])
 def registration(request):
+    # TODO: register user on the game app
     user_serializer = CompleteUserSerializer(data=request.data)
     user_serializer.is_valid(raise_exception=True)
     user = user_serializer.create(user_serializer.validated_data)

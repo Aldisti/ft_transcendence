@@ -26,6 +26,8 @@ services:
       - INTRA_SECRET=${INTRA_SECRET}
       - GOOGLE_ID=${GOOGLE_ID}
       - GOOGLE_SECRET=${GOOGLE_SECRET}
+      - RSA_PRIVATE_KEY_PATH=${RSA_PRIVATE_KEY_PATH}
+      - RSA_PUBLIC_KEY_PATH=${RSA_PUBLIC_KEY_PATH}
     networks:
       - django-net
       - pong-net
@@ -92,6 +94,10 @@ services:
       context: ./cron
     image: trinity/cron
     restart: always
+    environment:
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_USER=${DB_USER}
+      - DB_NAME=${DB_NAME}
     networks:
       - postgres-net
     depends_on:

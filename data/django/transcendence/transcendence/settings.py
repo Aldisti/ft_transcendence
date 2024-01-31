@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-from os import environ
+from os import environ, path
 
 from datetime import timedelta
 from pytz import timezone
@@ -115,15 +115,18 @@ REST_FRAMEWORK = {
 # Django SimpleJWT
 # https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html
 
+RSA_PRIVATE_KEY_PATH = environ['RSA_PRIVATE_KEY_PATH']
+RSA_PUBLIC_KEY_PATH = environ['RSA_PUBLIC_KEY_PATH']
+
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 
-    "ALGORITHM": "HS256",
-    "SIGNING_KEY": SECRET_KEY,
-    "VERIFYING_KEY": "",
-    "AUDIENCE": "localhost",
-    "ISSUER": "localhost",
+    "ALGORITHM": "RS256",
+    "SIGNING_KEY": open(RSA_PRIVATE_KEY_PATH, 'r').read() if path.isfile(RSA_PRIVATE_KEY_PATH) else None,
+    "VERIFYING_KEY": open(RSA_PUBLIC_KEY_PATH, 'r').read() if path.isfile(RSA_PUBLIC_KEY_PATH) else None,
+    "AUDIENCE": "transcendence",
+    "ISSUER": "transcendence.auth",
 
     "AUTH_HEADER_TYPES": ("Bearer",),
     "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",

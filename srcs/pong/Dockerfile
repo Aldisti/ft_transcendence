@@ -4,10 +4,13 @@ RUN apt update && apt upgrade -y
 RUN apt install vim -y
 RUN apt install gettext -y
 
-RUN pip install django
-RUN pip install djangorestframework
+RUN pip install django \
+	djangorestframework \
+	djangorestframework-simplejwt
+
 # postgres connection
-RUN pip install psycopg
+RUN pip install psycopg \
+	requests
 # for testing reasons
 RUN pip install django-cors-headers
 # for asgi server and channels
