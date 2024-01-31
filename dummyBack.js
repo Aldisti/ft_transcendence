@@ -7,7 +7,7 @@ const app = express();
 const port = 3000; // You can change this port as needed
 app.use(cors());
 
-let counter = 3
+let counter = 6
 
 // Define your list of objects
 const listOfObjects ={results: [

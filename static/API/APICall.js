@@ -819,3 +819,55 @@ export async function startQueque(recursionProtection){
     }
     return ({})
 }
+
+export async function adminGetUsers(recursionProtection, page, size){
+    const res = await fetch(`${URL.general.GET_USERS}?page=${page}&size=${size}`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        credentials: "include",
+    });
+    if (res.ok) {
+        let parsed = await res.json();
+        return (parsed);
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(getUsers, 0);
+    alert("error ha occured..")
+    return ({})
+}
+export async function adminGetBannedUsers(recursionProtection, page, size){
+    const res = await fetch(`${URL.general.GET_USERS}?page=${page}&size=${size}`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        credentials: "include",
+    });
+    if (res.ok) {
+        let parsed = await res.json();
+        return (parsed);
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(getUsers, 0);
+    alert("error ha occured..")
+    return ({})
+}
+export async function adminGetModerator(recursionProtection, page, size){
+    const res = await fetch(`${URL.general.GET_USERS}?page=${page}&size=${size}`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        credentials: "include",
+    });
+    if (res.ok) {
+        let parsed = await res.json();
+        return (parsed);
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(getUsers, 0);
+    alert("error ha occured..")
+    return ({})
+}

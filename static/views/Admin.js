@@ -152,18 +152,17 @@ export default class extends Aview{
         document.querySelectorAll(".manageUsers")[2].querySelector(".adminSearchUser").addEventListener("click", HANDLERS.handleUserSearch.bind(null, this, manageBannedUser));
         document.querySelectorAll(".manageUsers")[2].querySelector(".restore").addEventListener("click", HANDLERS.handleRestore.bind(null, this, manageBannedUser));
 
-
-        API.getDummyUsers(1).then(res=>{
+        API.adminGetUsers(1, 1, 10).then(res=>{
             res.results.forEach(element => {
                 document.querySelectorAll(".usersContainer")[0].innerHTML += this.createUser({username: element.username, picture: element.user_info.picture});
             });
         })
-        API.getDummyUsers(1).then(res=>{
+        API.adminGetModerator(1, 1, 10).then(res=>{
             res.results.forEach(element => {
                 manageModerator.innerHTML += this.createModerator({username: element.username, picture: element.user_info.picture});
             });
         })
-        API.getDummyUsers(1).then(res=>{
+        API.adminGetBannedUsers(1, 1, 10).then(res=>{
             res.results.forEach(element => {
                 manageBannedUser.innerHTML += this.createBannedUser({username: element.username, picture: element.user_info.picture});
             });
