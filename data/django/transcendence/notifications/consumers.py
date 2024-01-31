@@ -22,7 +22,10 @@ class NotificationConsumer(WebsocketConsumer):
         notifications = Notification.objects.filter(user_id=user.username).order_by("sent_time")
         if notifications:
             json_data = [ntf.to_json() for ntf in notifications]
-            self.send(text_data=json.dumps(json_data))
+            #self.send(text_data=json.dumps(json_data))
+            async_to_sync(self.channel_layer.send)(
+                self.channel_name,
+                {"type": "notification.message", "text": json.dumps(json_data)})
             notifications.delete()
 
 
@@ -36,4 +39,5 @@ class NotificationConsumer(WebsocketConsumer):
         logger.warning(f"[{close_code}]: {user.username} disconnected from ntf sock")
 
     def notification_message(self, event):
+        logger.warning(f"NOTIFICATION sent to {self.scope['user'].username}") 
         self.send(text_data=event["text"])

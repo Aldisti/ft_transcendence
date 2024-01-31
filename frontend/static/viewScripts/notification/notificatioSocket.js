@@ -108,12 +108,19 @@ if (localStorage.getItem("token") != null)
     //get tiket from server to establish a connection with notification socket
     API.getTicket(1).then(res=>{
 
+        console.log("Try connection")
         //establish connection with socket
         const socket = new WebSocket(`${URL.socket.NOTIFICATION_SOCKET}?ticket=${res.ticket}`);
-        
+        console.log("succesful connection")
+
+        socket.onmessage = function (e) {
+            console.log("notification arrived")
+        }
+
         //define a listener that wait for INCOMING NOTIFICATION
         socket.addEventListener("message", (message)=>{
             let parsed = JSON.parse(message.data);
+            console.log("parsed: " + parsed)
         
             //since the retrieved obj contain an array of notification this will loop trought it and decide what to do based on type
             for (let i = 0; i < parsed.length; i++)

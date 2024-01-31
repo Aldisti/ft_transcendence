@@ -1,6 +1,7 @@
 from django.db import models
 from notifications.utils import NotificationTypes as NtfTypes
 from notifications.utils import G_N_GROUP
+from accounts.models import NtfChannel
 from asgiref.sync import async_to_sync
 from channels import layers
 import json
@@ -23,16 +24,21 @@ class NotificationManager(models.Manager):
 
     def send_notification(self, notification):
         user_websocket = notification.user
-        ntf_channels = user_websocket.ntf_channels.all()
+        #ntf_channels = NtfChannel.objects.filter(user_websockets=user_websocket)
+        ntf_channels = NtfChannel.objects.all()
+        logger.warning(f"notification will be sent at {ntf_channels}")
         channel_layer = layers.get_channel_layer()
         for ntf_channel in ntf_channels:
             json_data = [notification.to_json()]
-            #logger.warning(f"data to send: {json_data}")
-            #logger.warning(f"notification will be sent at {ntf_channel}")
+            channel_name = ntf_channel.channel_name
+            logger.warning(f"NEW")
+            logger.warning(f"data to send: {json_data}")
+            logger.warning(f"notification will be sent at {ntf_channel}")
+            logger.warning(f"notification will be sent at {channel_name}")
             async_to_sync(channel_layer.send)(
-                ntf_channel.channel_name,
+                channel_name,
                 {"type": "notification.message", "text": json.dumps(json_data)})
-            #logger.warning(f"notification sent")
+            logger.warning(f"POST notification sent")
         if ntf_channels:
             notification.delete()
 
