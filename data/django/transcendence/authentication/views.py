@@ -31,8 +31,12 @@ logger = logging.getLogger(__name__)
 @permission_classes([IsUser])
 def generate_ticket(request) -> Response:
     user = request.user
-    websocket_ticket = WebsocketTicket.objects.create(user.user_tokens)
-    return Response({"ticket": websocket_ticket.ticket}, status=200)
+    #websocket_ticket = WebsocketTicket.objects.create(user.user_tokens)
+    data = {"username": user.username}
+    api_response = post_request(settings.MS_URLS['CHAT_TICKET'], json=data)
+    if api_response.status_code >= 300:
+        return Response(api_response.json(), status=503)
+    return Response(api_response.json(), status=200)
 
 
 class LoginView(APIView):

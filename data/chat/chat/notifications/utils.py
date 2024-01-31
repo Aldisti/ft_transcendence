@@ -1,7 +1,3 @@
-# Global group notification
-G_N_GROUP = "global_notification"
-
-
 # Notification types
 class NotificationTypes:
     FRIEND_REQ = "friend_req"

@@ -1,8 +1,12 @@
 from django.db import models
-from notifications.utils import NotificationTypes as NtfTypes
-from notifications.utils import G_N_GROUP
+from django.conf import settings
+
 from asgiref.sync import async_to_sync
+
 from channels import layers
+
+from notifications.utils import NotificationTypes as NtfTypes
+
 import json
 
 import logging
@@ -22,13 +26,14 @@ class NotificationManager(models.Manager):
         return notification
 
     def send_notification(self, notification):
+        #logger.warning(f"SENDING NOTIFICATION")
         user_websocket = notification.user
         ntf_channels = user_websocket.ntf_channels.all()
         channel_layer = layers.get_channel_layer()
         for ntf_channel in ntf_channels:
             json_data = [notification.to_json()]
             #logger.warning(f"data to send: {json_data}")
-            #logger.warning(f"notification will be sent at {ntf_channel}")
+            #logger.warning(f"notification will be sent at {ntf_channel.channel_name}")
             async_to_sync(channel_layer.send)(
                 ntf_channel.channel_name,
                 {"type": "notification.message", "text": json.dumps(json_data)})
@@ -41,30 +46,31 @@ class NotificationManager(models.Manager):
         channel_layer = layers.get_cannel_layer()
         json_data = [notification.to_json()]
         async_to_sync(channel_layer.group_send)({
-            G_N_GROUP,
+            settings.G_N_GROUP,
             {"type": "notification.message", "text": json.dumps(json_data)}
         })
 
     def send_friend_req(self, sender, receiver, token):
         ntf_body =f"token={token},sender={sender.username}"
         ntf_type = NtfTypes.FRIEND_REQ
-        notification = self.create(receiver.user_websockets, body=ntf_body, ntf_type=ntf_type)
+        notification = self.create(receiver, body=ntf_body, ntf_type=ntf_type)
         self.send_notification(notification)
 
     def send_info_ntf(self, receiver, body):
+        #logger.warning("SENDING INFO NOTIFICATION")
         ntf_body = body
         ntf_type = NtfTypes.INFO
-        notification = self.create(receiver.user_websockets, body=ntf_body, ntf_type=ntf_type)
+        notification = self.create(receiver, body=ntf_body, ntf_type=ntf_type)
         self.send_notification(notification)
 
     def send_alert_ntf(self, receiver, body):
         ntf_body = body
         ntf_type = NtfTypes.ALERT
-        notification = self.create(receiver.user_websockets, body=ntf_body, ntf_type=ntf_type)
+        notification = self.create(receiver, body=ntf_body, ntf_type=ntf_type)
         self.send_notification(notification)
 
     def send_ban_ntf(self, receiver, body):
         ntf_body = body
         ntf_type = NtfTypes.BAN
-        notification = self.create(receiver.user_websockets, body=ntf_body, ntf_type=ntf_type)
+        notification = self.create(receiver, body=ntf_body, ntf_type=ntf_type)
         self.send_notification(notification)

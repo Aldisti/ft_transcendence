@@ -6,6 +6,7 @@ from rest_framework import generics
 
 from users.models import UserWebsockets, WebsocketTicket
 from users.serializers import UserWebsocketsSerializer
+from notifications.models import Notification
 
 
 class CreateUser(generics.CreateAPIView):
@@ -29,4 +30,4 @@ def generate_ticket(request) -> Response:
         logger.warning(f"{username} not found")
         return Response(data={'message': 'user not found'}, status=404)
     websocket_ticket = WebsocketTicket.objects.create(user_websockets)
-    return Response(data={'ticket': websocket_ticket.ticket}, status=200)
+    return Response(data={'ticket': websocket_ticket.ticket}, status=201)

@@ -58,7 +58,7 @@ INSTALLED_APPS = [
     'channels',
     'users',
     #'messages',
-    #'notifications',
+    'notifications',
     #'friends',
     # cors
     'corsheaders',
@@ -171,3 +171,9 @@ APPEND_SLASH = False
 
 MAX_MESSAGES = 500
 MAX_MESSAGE_LENGTH = 512
+
+# global notification channel
+
+G_N_GROUP = "global_notification"
+
+

@@ -21,7 +21,7 @@ class UserWebsockets(models.Model):
     objects = UserWebsocketsManager()
 
     def __str__(self):
-        return f"username: {self.username}, chat_channel: {self.chat_channel}, ntf_channel: {self.ntf_channel}"
+        return f"username: {self.username}"
 
 
 class WebsocketTicket(models.Model):
