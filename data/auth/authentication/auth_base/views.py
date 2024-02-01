@@ -37,7 +37,23 @@ def register_user(request) -> Response:
             return Response(data={"message": "username or email already in use"}, status=400)
         return Response(data={"message": str(e)}, status=400)
     return Response(data=user_serializer.validated_data, status=status.HTTP_201_CREATED)
-# TODO: make a delete endpoint
+
+
+@api_view(['DELETE'])
+@permission_classes([])
+@throttle_classes([])
+def delete_user(request) -> Response:
+    username = request.query_params.get('username', '')
+    if username == '':
+        return Response(data={'message': 'username is required'}, status=400)
+    # TODO: check if this is the actual user or the admin
+    # do it using a permission class e.g. IsActualUser|IsAdmin
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return Response(data={'message': 'user not found'}, status=404)
+    user.delete()
+    return Response(status=200)
 
 
 # class LoginView(APIView):
