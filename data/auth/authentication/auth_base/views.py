@@ -1,28 +1,45 @@
-# from django.core.exceptions import ValidationError
-# from django.conf import settings
-#
-# from rest_framework.decorators import APIView, api_view, permission_classes, throttle_classes
-# from rest_framework.response import Response
-#
-# from rest_framework_simplejwt.exceptions import TokenError
-# from rest_framework_simplejwt.tokens import RefreshToken
-#
+from django.core.exceptions import ValidationError
+from django.conf import settings
+from rest_framework import status
+
+from rest_framework.decorators import APIView, api_view, permission_classes, throttle_classes
+from rest_framework.response import Response
+
+from rest_framework_simplejwt.exceptions import TokenError
+from rest_framework_simplejwt.tokens import RefreshToken
+
 # from .models import JwtToken, UserTokens, WebsocketTicket
 # from .throttles import LowLoadThrottle, MediumLoadThrottle
 # from .serializers import TokenPairSerializer
 # from .settings import MATCHMAKING_TOKEN
 # from .permissions import IsUser
-#
-# from .models import User
-# from .serializers import UserSerializer
-#
-# from requests import post as post_request
-# from datetime import datetime
-# import logging
-#
-# logger = logging.getLogger(__name__)
-#
-#
+
+from .models import User
+from .serializers import UserSerializer
+
+from requests import post as post_request
+from datetime import datetime
+import logging
+
+logger = logging.getLogger(__name__)
+
+
+@api_view(['POST'])
+@permission_classes([])
+@throttle_classes([])
+def register_user(request) -> Response:
+    user_serializer = UserSerializer(data=request.data)
+    user_serializer.is_valid(raise_exception=True)
+    try:
+        User.objects.create_user(**user_serializer.validated_data)
+    except ValidationError as e:
+        if "already exists" in str(e):
+            return Response(data={"message": "username or email already in use"}, status=400)
+        return Response(data={"message": str(e)}, status=400)
+    return Response(data=user_serializer.validated_data, status=status.HTTP_201_CREATED)
+# TODO: make a delete endpoint
+
+
 # class LoginView(APIView):
 #     throttle_classes = [MediumLoadThrottle]
 #     permission_classes = []
@@ -147,13 +164,13 @@
 # @throttle_classes([LowLoadThrottle])
 # def retrieve_pubkey(request) -> Response:
 #     return Response(data={'public_key': settings.SIMPLE_JWT['VERIFYING_KEY']}, status=200)
-#
-#
-# # @api_view(['GET', 'POST'])
-# # @permission_classes([])
-# # def test(request) -> Response:
-# #     from os import environ
-# #     return Response(data=environ)
-#
-#
-#
+
+
+# @api_view(['GET', 'POST'])
+# @permission_classes([])
+# def test(request) -> Response:
+#     from os import environ
+#     return Response(data=environ)
+
+
+

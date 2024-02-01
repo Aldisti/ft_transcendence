@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
+    'auth_base',
     # tmp for testing reasons
     'corsheaders',
 ]
@@ -111,7 +112,7 @@ SIMPLE_JWT = {
     "SIGNING_KEY": open(RSA_PRIVATE_KEY_PATH, 'r').read() if path.isfile(RSA_PRIVATE_KEY_PATH) else None,
     "VERIFYING_KEY": open(RSA_PUBLIC_KEY_PATH, 'r').read() if path.isfile(RSA_PUBLIC_KEY_PATH) else None,
     "AUDIENCE": "transcendence",
-    "ISSUER": "transcendence.auth",
+    "ISSUER": "transcendence.auth_base",
 
     "AUTH_HEADER_TYPES": ("Bearer",),
     "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
@@ -148,18 +149,6 @@ DATABASES = {
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
 ]
 
 
@@ -175,7 +164,7 @@ USE_I18N = True
 
 USE_TZ = True
 
-# AUTH_USER_MODEL = "auth.User"
+AUTH_USER_MODEL = "auth_base.User"
 
 # CorsHeaders
 
