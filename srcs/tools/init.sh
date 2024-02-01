@@ -18,7 +18,7 @@ declare -A VOLUMES=(
 	["django_db"]="./data/postgres"
 	["pong"]="./data/pong"
 	["pong_db"]="./data/pongdb"
-	["auth"]="./data/auth"
+	["auth"]="./data/authentication"
 	["auth_db"]="./data/authdb"
 )
 
@@ -36,7 +36,7 @@ declare -A ENV_VARS=(
 	["PONGDB_PASSWORD"]=""
 	["PONGDB_HOST"]="pongdb"
 	["PONGDB_PORT"]="5432"
-	["AUTH_NAME"]="authentication"
+	["AUTH_APP_NAME"]="authentication"
 	["AUTH_DB_NAME"]="authentication"
 	["AUTH_DB_USER"]="$USERNAME"
 	["AUTH_DB_PASSWORD"]=""

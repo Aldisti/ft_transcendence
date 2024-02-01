@@ -10,12 +10,10 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 # from .models import JwtToken, UserTokens, WebsocketTicket
 # from .throttles import LowLoadThrottle, MediumLoadThrottle
-# from .serializers import TokenPairSerializer
-# from .settings import MATCHMAKING_TOKEN
-# from .permissions import IsUser
+from authentication.permissions import IsActualUser, IsAdmin
 
 from .models import User
-from .serializers import UserSerializer
+from .serializers import UserSerializer, TokenPairSerializer
 
 from requests import post as post_request
 from datetime import datetime
@@ -40,14 +38,12 @@ def register_user(request) -> Response:
 
 
 @api_view(['DELETE'])
-@permission_classes([])
+@permission_classes([IsActualUser | IsAdmin])
 @throttle_classes([])
 def delete_user(request) -> Response:
     username = request.query_params.get('username', '')
     if username == '':
         return Response(data={'message': 'username is required'}, status=400)
-    # TODO: check if this is the actual user or the admin
-    # do it using a permission class e.g. IsActualUser|IsAdmin
     try:
         user = User.objects.get(username=username)
     except User.DoesNotExist:
@@ -57,7 +53,7 @@ def delete_user(request) -> Response:
 
 
 # class LoginView(APIView):
-#     throttle_classes = [MediumLoadThrottle]
+#     # throttle_classes = [MediumLoadThrottle]
 #     permission_classes = []
 #
 #     def post(self, request) -> Response:
@@ -77,7 +73,8 @@ def delete_user(request) -> Response:
 #         #     return Response(data={'message': 'user not verified yet'}, status=400)
 #         if not user.active:
 #             return Response(data={'message': "user isn't active"}, status=400)
-#         UserTokens.objects.clear_password_token(user.user_tokens)
+#         # TODO: check for password reset token
+#         # UserTokens.objects.clear_password_token(user.user_tokens)
 #         if user.user_tfa.is_active():
 #             # TODO: generate tfa token making a GET request
 #             return Response(data={

@@ -142,13 +142,13 @@ services:
     build:
       context: ./auth
     image: trinity/auth
-    restart: always
+    restart: unless-stopped
     ports:
       - "6969:8000"
     volumes:
       - auth:/etc/develop
     environment:
-      - PROJECT_NAME=${AUTH_NAME}
+      - PROJECT_NAME=${AUTH_APP_NAME}
       - DB_USER=${AUTH_DB_USER}
       - DB_NAME=${AUTH_DB_NAME}
       - DB_PASSWORD=${AUTH_DB_PASSWORD}
@@ -209,7 +209,7 @@ volumes:
     driver_opts:
       type: "none"
       o: "bind"
-      device: "$PWD/data/auth"
+      device: "$PWD/data/$AUTH_APP_NAME"
   postgres:
     name: "postgres"
     driver: local

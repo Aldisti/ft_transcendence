@@ -21,7 +21,7 @@ clean:
 	@docker rmi -f trinity/django trinity/postgres trinity/pong trinity/pongdb trinity/cron trinity/auth trinity/authdb 2> /dev/null
 
 fclean: clean
-	@docker volume rm -f django postgres pong pongdb 2> /dev/null
+	@docker volume rm -f django postgres pong pongdb auth authdb 2> /dev/null
 	@sudo rm -rf ./data/postgres ./data/pongdb ./data/authdb 2> /dev/null
 
 re: fclean all

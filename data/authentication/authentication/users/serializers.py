@@ -3,7 +3,11 @@ from django.core.validators import RegexValidator, EmailValidator
 
 from rest_framework import serializers
 
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
 from .models import User
+
+from secrets import token_urlsafe
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -21,3 +25,13 @@ class UserSerializer(serializers.ModelSerializer):
             "verified": {"required": False, "read_only": True},
             "tfa": {"required": False, "read_only": True},
         }
+
+
+class TokenPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        token['role'] = user.role
+        token['csrf'] = token_urlsafe(24)
+        return token
+

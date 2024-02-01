@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
-    'auth_base',
+    'users',
     # tmp for testing reasons
     'corsheaders',
 ]
@@ -88,6 +88,7 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
     ],
     "DEFAULT_THROTTLE_CLASSES": [
     ],
@@ -112,7 +113,7 @@ SIMPLE_JWT = {
     "SIGNING_KEY": open(RSA_PRIVATE_KEY_PATH, 'r').read() if path.isfile(RSA_PRIVATE_KEY_PATH) else None,
     "VERIFYING_KEY": open(RSA_PUBLIC_KEY_PATH, 'r').read() if path.isfile(RSA_PUBLIC_KEY_PATH) else None,
     "AUDIENCE": "transcendence",
-    "ISSUER": "transcendence.auth_base",
+    "ISSUER": "transcendence.users",
 
     "AUTH_HEADER_TYPES": ("Bearer",),
     "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
@@ -148,8 +149,7 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
-AUTH_PASSWORD_VALIDATORS = [
-]
+AUTH_PASSWORD_VALIDATORS = []
 
 
 # Internationalization
@@ -164,7 +164,7 @@ USE_I18N = True
 
 USE_TZ = True
 
-AUTH_USER_MODEL = "auth_base.User"
+AUTH_USER_MODEL = "users.User"
 
 # CorsHeaders
 
