@@ -18,7 +18,7 @@ RUN pip install -U channels["daphne"]
 RUN mkdir /etc/develop
 
 COPY ./tools/setting.sh /etc/setting.sh
-COPY ./conf/rsa /etc/rsa
+COPY ./conf/rsa /etc/.rsa
 
 WORKDIR /etc/develop
 
