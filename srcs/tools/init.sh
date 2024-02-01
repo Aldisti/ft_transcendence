@@ -99,7 +99,7 @@ create_volume_dirs() {
 	for key in ${!VOLUMES[@]}; do
 		if [ ! -d "${VOLUMES[$key]}" ]; then
 			mkdir -p ${VOLUMES[$key]}
-			echo -e "${CYAN}${key} volume created${RESET}"
+			echo -e "${CYAN}${key}${RESET} volume created"
 			created=$((created + 1))
 		fi
 	done
