@@ -20,9 +20,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 def get_public_key() -> str:
-    api_response = get("http://django:8000/auth/retrieve/public-key/")
+    try:
+        api_response = get("http://django:8000/auth/retrieve/public-key/")
+    except ConnectionError:
+        exit(69)
     if api_response.status_code == 200:
-        return api_response.json().get("public_key")
+        return api_response.json().get("public_key", '')
     else:
         exit(69)
 
