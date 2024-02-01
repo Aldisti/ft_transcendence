@@ -35,7 +35,7 @@ remove_migrations()
 		local migration_path="${project}${app}${DEL_PATH}"
 		if ! echo "${migration_path}"* | grep -q '*'; then
 			echo -e "${GREEN}${migration_path}"*"${RESET}"
-			#rm -f "${migration_path}"*
+			rm -f "${migration_path}"*
 		else
 			echo -e "${RED}${migration_path}*${RESET}"
 		fi
