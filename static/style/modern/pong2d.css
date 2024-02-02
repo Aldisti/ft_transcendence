@@ -21,20 +21,21 @@
     width: 100svw;
     margin: 0;
     display: flex;
-    justify-content: center;
+    justify-content: space-evenly;
     align-items: center;
 }
 
 .left, .right{
     width: 15%;
+    height: 80%;
     padding: 20px;
-    height: 92svh;
     backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.2);
 }
 
 .center{
-    width: 70%;
-    height: 92svh;
+    width: 60%;
+    height: 80%;
     display: flex;
     padding: 0 20px 0 20px;
     flex-direction: column;
@@ -81,7 +82,7 @@
 }
 
 .btnWindow{
-    width: 45%;
+    width: 75%;
     height: 30%;
     padding: 20px;
     color: white;
@@ -129,11 +130,9 @@
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
 
 }
-#myCanv, #waitCanv
+#waitCanv
 {
-    /* border: 3px solid white;
-    border-left: 3px dotted white;
-    border-right: 3px dotted white; */
+    border: 4px solid black;
 }
 
 .themeContainer{

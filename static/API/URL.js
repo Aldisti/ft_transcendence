@@ -66,3 +66,11 @@ export const userAction = {
 
     TEST: `${protocol}://${ip}:${port}/users`
 }
+
+export const manageUsers ={
+    //come delete
+    DELETE_USER: `${protocol}://${ip}:${port}/user/<username>/`,
+    //path
+    BAN_USER: `${protocol}://${ip}:${port}/user/ban/`,
+    BAN_USER: `${protocol}://${ip}:${port}/user/ban/?username=<username>&role=<("u"/"m")>`
+}

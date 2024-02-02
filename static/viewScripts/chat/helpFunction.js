@@ -28,7 +28,6 @@ export function localStoragePush(obj){
     let toAdd = JSON.parse(chatString);
     let username = obj.sender == localStorage.getItem("username") ? document.querySelector(".chatBox").getAttribute('name') : obj.sender;
 
-
     if (obj.type == "global")
         username = "global";
 

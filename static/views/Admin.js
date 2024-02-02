@@ -87,7 +87,6 @@ export default class extends Aview{
 
         return `
             <div class="base">
-                ${role == "U" ? `
                 <div class="manageUsers">
                     <div class="sectionTitle">
                         <h1>Manage Users</h1>
@@ -110,7 +109,6 @@ export default class extends Aview{
                 
                     </div>
                 </div>           
-                ` : ``}
                 <div class="manageUsers">
                     <div class="sectionTitle">
                         <h1>Manage Banned Users</h1>
@@ -135,6 +133,9 @@ export default class extends Aview{
             history.pushState(null, null, "/home/");
             Router();
         }
+        else if (role == "M"){
+            document.querySelectorAll(".manageUsers")[1].style.display = "none"
+        }
 
         let manageUser = document.querySelectorAll(".usersContainer")[0];
         manageUser.addEventListener("scroll", HANDLERS.handleUsersScroll.bind(null, this, manageUser));
@@ -145,7 +146,6 @@ export default class extends Aview{
         manageModerator.addEventListener("scroll", HANDLERS.handleUsersScroll.bind(null, this, manageModerator));
         document.querySelectorAll(".manageUsers")[1].querySelector(".adminSearchUser").addEventListener("click", HANDLERS.handleUserSearch.bind(null, this, manageModerator));
         document.querySelectorAll(".manageUsers")[1].querySelector(".restore").addEventListener("click", HANDLERS.handleRestore.bind(null, this, manageModerator));
-        
         
         let manageBannedUser = document.querySelectorAll(".usersContainer")[2];
         manageBannedUser.addEventListener("scroll", HANDLERS.handleUsersScroll.bind(null, this, manageBannedUser));

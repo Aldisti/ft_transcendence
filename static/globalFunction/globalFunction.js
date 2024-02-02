@@ -23,6 +23,7 @@ window.setToken = function (token){
 
 window.decode64 = function (base64String) {
     const decodedData = atob(base64String);
+    
     return decodeURIComponent(escape(decodedData));
 }
 

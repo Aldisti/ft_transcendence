@@ -114,15 +114,15 @@ export default class extends Aview{
 
 	setup(){
         this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpg")
-        document.querySelector("#waitCanv").style.width = "50%"
-        document.querySelector("#waitCanv").style.height = "30%"
+        document.querySelector("#waitCanv").style.width = "80%"
+        document.querySelector("#waitCanv").style.height = "50%"
         localStorage.setItem("gameStarted", "false");
         handleSlider(".sliderPill", ".nextPill", pills, "pillTexture", this);
         handleSlider(".sliderGround", ".nextGround", grounds, "groundTexture", this);
         handleSlider(".sliderBall", ".nextBall", balls, "ballTexture", this);
         pongLoader();
         document.querySelector("#startQueque").addEventListener("click", async ()=>{
-            document.querySelector(".btnWindow").style.height = "40%";
+            document.querySelector(".btnWindow").style.height = "70%";
             document.querySelector("#waitCanv").style.display= "flex";
             document.querySelector("#startQueque").innerHTML = `<span>Searching opponent...</span><div class="spinner-border text-warning" style="border-radius: 50% !important"></div>` 
             API.startQueque(1).then(res=>{

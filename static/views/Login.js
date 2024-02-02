@@ -119,5 +119,4 @@ export default class extends Aview {
         })
         this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpg")
     }
-
 }

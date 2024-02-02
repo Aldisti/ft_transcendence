@@ -2,7 +2,7 @@
     width: 100svw;
     height: 92svh;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-evenly;
     align-items: center;
     padding: 20px;
 }

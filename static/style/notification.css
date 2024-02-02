@@ -36,9 +36,8 @@ box-shadow: 15px 15px black;
     align-items: center;
     color: white;
     background-color: var(--bs-success);
-box-shadow: 10px 10px black;
-border: 3px solid black;
-
+    box-shadow: 10px 10px black;
+    border: 3px solid black;
 }
 
 .friendRequestContainer, .infoContainer{
