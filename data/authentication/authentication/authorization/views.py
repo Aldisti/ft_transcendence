@@ -126,3 +126,10 @@ def refresh(request) -> Response:
     if user.last_logout > user.last_login and user.last_logout > token_exp:
         return error_response
     return Response(data={'access_token': str(refresh_token.access_token)}, status=200)
+
+
+@api_view(['GET'])
+@permission_classes([])
+@throttle_classes([LowLoadThrottle])
+def retrieve_pubkey(request) -> Response:
+    return Response(data={'public_key': settings.SIMPLE_JWT['VERIFYING_KEY']}, status=200)

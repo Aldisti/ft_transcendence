@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'users',
     'authorization',
+    'oauth2',
+    'two_factor_auth',
     # tmp for testing reasons
     'corsheaders',
 ]
@@ -107,12 +109,12 @@ RSA_PRIVATE_KEY_PATH = environ['RSA_PRIVATE_KEY_PATH']
 RSA_PUBLIC_KEY_PATH = environ['RSA_PUBLIC_KEY_PATH']
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),  # TODO: change lifetime to at most 5 minutes
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 
     "ALGORITHM": "RS256",
-    "SIGNING_KEY": open(RSA_PRIVATE_KEY_PATH, 'r').read() if path.isfile(RSA_PRIVATE_KEY_PATH) else '',
-    "VERIFYING_KEY": open(RSA_PUBLIC_KEY_PATH, 'r').read() if path.isfile(RSA_PUBLIC_KEY_PATH) else '',
+    "SIGNING_KEY": open(RSA_PRIVATE_KEY_PATH, 'r').read(),  # if path.isfile(RSA_PRIVATE_KEY_PATH) else '',
+    "VERIFYING_KEY": open(RSA_PUBLIC_KEY_PATH, 'r').read(),  # if path.isfile(RSA_PUBLIC_KEY_PATH) else '',
     "AUDIENCE": "transcendence",
     "ISSUER": "transcendence.users",
 
@@ -132,6 +134,63 @@ SIMPLE_JWT = {
 }
 
 
+# OAuth2 information
+
+OAUTH2 = {
+    "SERVER": {
+        "PROTOCOL": "http",
+        "HOST": "localhost",
+        "PORT": 8000,
+    },
+    "CLIENT": {
+        "PROTOCOL": "http",
+        "HOST": "localhost",
+        "PORT": 4200,
+    },
+    "INTRA": {
+        "ID": environ['INTRA_ID'],
+        "SECRET": environ['INTRA_SECRET'],
+        "AUTH": "https://api.intra.42.fr/oauth/authorize",
+        "TOKEN": "https://api.intra.42.fr/oauth/token",
+        "INFO": "https://api.intra.42.fr/v2/me",
+    },
+    "GOOGLE": {
+        "ID": environ['GOOGLE_ID'],
+        "SECRET": environ['GOOGLE_SECRET'],
+        "AUTH": "https://accounts.google.com/o/oauth2/v2/auth",
+        "TOKEN": "https://oauth2.googleapis.com/token",
+    },
+    "response_type": "code",
+    "grant_type": "authorization_code",
+    "google_scope": "openid email",
+}
+
+OAUTH2["SERVER_URL"] = f"{OAUTH2['SERVER']['PROTOCOL']}://{OAUTH2['SERVER']['HOST']}:{OAUTH2['SERVER']['PORT']}"
+OAUTH2["CLIENT_URL"] = f"{OAUTH2['CLIENT']['PROTOCOL']}://{OAUTH2['CLIENT']['HOST']}:{OAUTH2['CLIENT']['PORT']}"
+
+OAUTH2.update({
+    "INTRA_LOGIN_REDIRECT_URI": f"{OAUTH2['SERVER_URL']}/oauth2/intra/callback/login/",
+    "INTRA_LINK_REDIRECT_URI": f"{OAUTH2['SERVER_URL']}/oauth2/intra/callback/link/",
+    "INTRA_REDIRECT_URI": f"{OAUTH2['SERVER_URL']}/oauth2/intra/callback/",
+    "GOOGLE_REDIRECT_URI": f"{OAUTH2['CLIENT_URL']}/google/callback",
+    "CLIENT_REDIRECT_LOGIN": f"{OAUTH2['CLIENT_URL']}/login/",
+    "CLIENT_REDIRECT_LINK": f"{OAUTH2['CLIENT_URL']}/account/",
+})
+
+OAUTH2["INTRA_REQUEST_BODY"] = {
+    'grant_type': OAUTH2['grant_type'],
+    'client_id': OAUTH2['INTRA']['ID'],
+    'client_secret': OAUTH2['INTRA']['SECRET'],
+    'redirect_uri': OAUTH2['INTRA_REDIRECT_URI'],
+}
+
+OAUTH2["GOOGLE_REQUEST_BODY"] = {
+    "client_id": OAUTH2['GOOGLE']['ID'],
+    "client_secret": OAUTH2['GOOGLE']['SECRET'],
+    "redirect_uri": OAUTH2['GOOGLE_REDIRECT_URI'],
+    "grant_type": OAUTH2['grant_type'],
+}
+
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
@@ -149,7 +208,7 @@ DATABASES = {
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
-
+# TODO: is this really ok?
 AUTH_PASSWORD_VALIDATORS = []
 
 

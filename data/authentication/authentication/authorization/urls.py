@@ -11,4 +11,5 @@ urlpatterns = [
         path('all/', views.logout, name='api-logout-all-devices'),
     ])),
     path('refresh/', views.refresh, name='api-refresh-token'),
+    path('retrieve/public-key/', views.retrieve_pubkey, name='api-retrieve-public-key'),
 ]

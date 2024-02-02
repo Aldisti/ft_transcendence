@@ -1,4 +1,5 @@
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.validators import RegexValidator, EmailValidator
 from django.conf import settings
 from django.db import models
@@ -197,6 +198,18 @@ class User(AbstractBaseUser):
 
     class Meta:
         db_table = "user_auth"
+
+    def has_intra(self) -> bool:
+        try:
+            return self.user_intra.email != ''
+        except ObjectDoesNotExist:
+            return False
+
+    def has_google(self) -> bool:
+        try:
+            return self.user_google.email != ''
+        except ObjectDoesNotExist:
+            return False
 
     def __str__(self) -> str:
         return f"{self.username} ({self.last_login} - {self.last_logout})"
