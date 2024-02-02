@@ -17,13 +17,13 @@ DEL_PATH="/migrations/0"
 declare -A PROJECTS_PATH=(
 	['transcendence']='./data/django/transcendence' 
 	['pong']='./data/pong/pong' 
-	['auth']='./data/auth/authentication'
+	['auth']='./data/authentication/authentication'
 )
 
 declare -A APPS_PATH=(
 	['transcendence']="/accounts /authentication /chat /email_manager /friends /notifications /oauth2 /two_factor_auth /pong"
 	['pong']="/users /matchmaking /game"
-	['auth']="/auth_base"
+	['auth']="/users /authorization /oauth2 /two_factor_auth"
 )
 
 remove_migrations()
