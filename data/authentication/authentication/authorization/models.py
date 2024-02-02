@@ -21,12 +21,8 @@ class TokenManager(models.Manager):
         token.save()
         return token
 
-    def delete_expired(self):
-        tokens = self.filter(exp__lt=datetime.now(tz=settings.TZ))
-        size = len(tokens)
-        for token in tokens:
-            token.delete()
-        return size
+    def delete_expired(self) -> None:
+        self.filter(exp__lt=datetime.now(tz=settings.TZ)).delete()
 
 
 class Token(models.Model):
@@ -37,10 +33,12 @@ class Token(models.Model):
     )
     iat = models.DateTimeField(
         db_column='iat',
+        db_comment='when the token was issued',
         default=now,
     )
     exp = models.DateTimeField(
         db_column='exp',
+        db_comment='expiration time of the token',
         default=now,
     )
 
