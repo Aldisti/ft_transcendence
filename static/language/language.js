@@ -28,7 +28,8 @@ let language = {
 			passwordRecovery: "Recover Your Password",
 			enterUsername: "Enter Username: ",
 			getEmail: "Send Email",
-			insertTfaCode: "Insert Code: "
+			insertTfaCode: "Insert Code: ",
+			bannedLogin: "Your account is currently BANNED!"
 		},
 		register: {
 			register: "Register [1/3]",
@@ -127,6 +128,9 @@ let language = {
 			},
 			gameStats: ["Game Won","Game Lost","Tournament Won","Tournament Lost"],
 			statisticTitle: "Statistics"
+		},
+		admin: {
+			removeUser: "Do you really want to delete "
 		}
 
 	},

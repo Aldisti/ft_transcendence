@@ -2,6 +2,9 @@ import Router from "/router/mainRouterFunc.js"
 import * as create from "/viewScripts/chat/createChatItem.js"
 import * as URL from "/API/URL.js"
 import * as help from "/viewScripts/chat/helpFunction.js"
+import allLanguage from "/language/language.js"
+
+let language = allLanguage[localStorage.getItem("language")]
 
 function cleanLocalStorage() {
     localStorage.removeItem("username");
@@ -13,7 +16,6 @@ function cleanLocalStorage() {
     localStorage.removeItem("chat");
     localStorage.removeItem("jwt");
     localStorage.removeItem("notification");
-
 }
 
 function getCookie(name) {
@@ -159,7 +161,12 @@ export async function login(data) {
         body: JSON.stringify(data),
     })
     if (!res.ok) {
+        let body = await res.json();
+
         document.querySelector(".loginError").style.display = "flex";
+        console.log("hey", language.login)
+        if (body.message == "user isn't active")
+            document.querySelector(".loginError p").innerHTML = language.login.bannedLogin;
     }
     if (res.ok) {
         localStorage.setItem("username", data.username);
@@ -833,12 +840,11 @@ export async function adminGetUsers(recursionProtection, page, size){
         return (parsed);
     }
     if (res.status == 401 && recursionProtection)
-        return await refreshAndRetry(getUsers, 0);
-    alert("error ha occured..")
+        return await refreshAndRetry(adminGetUsers, 0);
     return ({})
 }
 export async function adminGetBannedUsers(recursionProtection, page, size){
-    const res = await fetch(`${URL.general.GET_USERS}?page=${page}&size=${size}`, {
+    const res = await fetch(`${URL.general.GET_USERS}?search=False&page=${page}&size=${size}`, {
         method: "GET",
         headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -850,12 +856,11 @@ export async function adminGetBannedUsers(recursionProtection, page, size){
         return (parsed);
     }
     if (res.status == 401 && recursionProtection)
-        return await refreshAndRetry(getUsers, 0);
-    alert("error ha occured..")
+        return await refreshAndRetry(adminGetBannedUsers, 0);
     return ({})
 }
 export async function adminGetModerator(recursionProtection, page, size){
-    const res = await fetch(`${URL.general.GET_USERS}?page=${page}&size=${size}`, {
+    const res = await fetch(`${URL.general.GET_USERS}?search=M&page=${page}&size=${size}`, {
         method: "GET",
         headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -867,7 +872,68 @@ export async function adminGetModerator(recursionProtection, page, size){
         return (parsed);
     }
     if (res.status == 401 && recursionProtection)
-        return await refreshAndRetry(getUsers, 0);
+        return await refreshAndRetry(adminGetModerator, 0);
+    return ({})
+}
+export async function removeUser(recursionProtection, username){
+    const res = await fetch(`${URL.manageUsers.DELETE_USER}${username}/`, {
+        method: "DELETE",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        credentials: "include",
+    });
+    if (res.ok) {
+        alert(`user ${username} has been removed!`);
+        return ;
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(removeUser, 0, username);
     alert("error ha occured..")
     return ({})
 }
+export async function manageUserBan(recursionProtection, username, banState){
+    const res = await fetch(`${URL.manageUsers.MANAGE_BAN}`, {
+        method: "PATCH",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            username: username,
+            banned: banState
+        }),
+        credentials: "include",
+    });
+    if (res.ok) {
+        //alert(banState ? `${username} has been banned!` : `${username} is no longer banned!`);
+        return ;
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(manageUserBan, 0, username, banState);
+    alert("error ha occured..")
+    return ({})
+}
+export async function manageModerator(recursionProtection, username, moderatorState){
+    const res = await fetch(`${URL.manageUsers.MANAGE_MODERATOR}`, {
+        method: "PATCH",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            username: username,
+            role: moderatorState
+        }),
+        credentials: "include",
+    });
+    if (res.ok) {
+        //alert(moderatorState == "M" ? `${username} is now a moderator!` : `${username} is no more a moderator!`);
+        return ;
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(manageModerator, 0, username, moderatorState);
+    alert("error ha occured..")
+    return ({})
+}
+

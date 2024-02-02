@@ -377,13 +377,13 @@ export default class extends Aview {
     getHtml() {
         return `
             <div class="userInfoContainer bg-lg">
-                <div class="leftSide bg-dark">
-                    <h6 class="formLink info generalForm">${this.language.update.generalTitle}</h6>
-                    <h6 class="formLink password passwordForm">${this.language.update.passwordTitle}</h6>
-                    <h6 class="formLink email emailForm">${this.language.update.emailTitle}</h6>
-                    <h6 class="formLink twofa twofaForm">${this.language.update.security}</h6>
-                    <h6 class="formLink picture pictForm">${this.language.update.pictureTitle}</h6>
-                    <h6 class="formLink logout">${this.language.update.logout}</h6>
+                <div class="leftSide">
+                    <h4 class="formLink info generalForm">${this.language.update.generalTitle}</h4>
+                    <h4 class="formLink password passwordForm">${this.language.update.passwordTitle}</h4>
+                    <h4 class="formLink email emailForm">${this.language.update.emailTitle}</h4>
+                    <h4 class="formLink twofa twofaForm">${this.language.update.security}</h4>
+                    <h4 class="formLink picture pictForm">${this.language.update.pictureTitle}</h4>
+                    <h4 class="formLink logout">${this.language.update.logout}</h4>
                 </div>
                 <div class="handle">
                     >

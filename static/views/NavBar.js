@@ -86,7 +86,7 @@ document.querySelector("#navbar").innerHTML = `
                 <p class="switchLable">Modern</p>
               </li>
             ${localStorage.getItem("username") == undefined ? `` : `<li><a class="nav-link active" data-link href="/account/" >${language.navbar.accountMenu}</a></li>`}
-            ${showAdmin === "U" ? `<li><a class="nav-link active" data-link href="/admin/" >${language.navbar.adminPage}</a></li>` : ``}
+            ${showAdmin === "A" ? `<li><a class="nav-link active" data-link href="/admin/" >${language.navbar.adminPage}</a></li>` : ``}
           </ul>
         </div>
       </div>

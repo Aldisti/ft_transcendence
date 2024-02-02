@@ -1,5 +1,6 @@
 import Aview from "/views/abstractView.js";
 import Router from "/router/mainRouterFunc.js"
+import setupBtnClickHandler from "/viewScripts/admin/clickHandler.js"
 import * as API from "/API/APICall.js"
 import * as HANDLERS from "/viewScripts/admin/scrollHandlers.js"
 
@@ -10,6 +11,8 @@ export default class extends Aview{
     }
 
     createUser(userData){
+        if (userData.username == localStorage.getItem("username"))
+            return ''
         return `
         <div class="adminUserLine">
             <div class="upperLine">
@@ -21,13 +24,13 @@ export default class extends Aview{
                 </div>
             </div>
             <div class="bottomLine">
-                <button class="block">
-                    Block User
+                <button username=${userData.username} class="ban">
+                    Ban User
                 </button>
-                <button class="moderator">
+                <button username=${userData.username} class="makeModerator">
                     Make Moderator
                 </button>
-                <button class="delete">
+                <button username=${userData.username} class="delete">
                     Delete User
                 </button>
             </div>
@@ -46,13 +49,13 @@ export default class extends Aview{
                 </div>
             </div>
             <div class="bottomLine">
-                <button class="block">
-                    Block User
+                <button username=${userData.username} class="ban">
+                    Ban User
                 </button>
-                <button class="moderator">
+                <button username=${userData.username} class="removeModerator">
                     Remove Moderator
                 </button>
-                <button class="delete">
+                <button username=${userData.username} class="delete">
                     Delete User
                 </button>
             </div>
@@ -71,10 +74,10 @@ export default class extends Aview{
                 </div>
             </div>
             <div class="bottomLine">
-                <button class="block">
+                <button username=${userData.username} class="undoBan">
                     Undo Ban
                 </button>
-                <button class="delete">
+                <button username=${userData.username} class="delete">
                     Delete User
                 </button>
             </div>
@@ -128,7 +131,8 @@ export default class extends Aview{
         this.defineWallpaper("/imgs/backLogin.png", "/imgs/secondModernBack.jpeg")
         let role = JSON.parse(window.decode64(localStorage.getItem("jwt"))).role;
 
-        if (role != "U" || role != "U")
+        console.log(role)
+        if (role != "A" && role != "M")
         {
             history.pushState(null, null, "/home/");
             Router();
@@ -167,5 +171,6 @@ export default class extends Aview{
                 manageBannedUser.innerHTML += this.createBannedUser({username: element.username, picture: element.user_info.picture});
             });
         })
+        setupBtnClickHandler(this);
     }
 }

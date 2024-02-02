@@ -90,7 +90,8 @@ export function handleRestore(dupThis, obj, e){
         })
     }
     if (containerNumber == 2){
-        API.adminGetBannedUsers(1, pageSize, pageCounter[containerNumber]++).then(res=>{
+        API.adminGetBannedUsers(1, pageCounter[containerNumber]++, pageSize).then(res=>{
+            console.log(res)
             res.results.forEach(element => {
                 obj.innerHTML += dupThis.createBannedUser({username: element.username, picture: element.user_info.picture});
             })

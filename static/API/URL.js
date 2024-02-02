@@ -69,8 +69,8 @@ export const userAction = {
 
 export const manageUsers ={
     //come delete
-    DELETE_USER: `${protocol}://${ip}:${port}/user/<username>/`,
+    DELETE_USER: `${protocol}://${ip}:${port}/users/`,
     //path
-    BAN_USER: `${protocol}://${ip}:${port}/user/ban/`,
-    BAN_USER: `${protocol}://${ip}:${port}/user/ban/?username=<username>&role=<("u"/"m")>`
+    MANAGE_BAN: `${protocol}://${ip}:${port}/users/ban/`,
+    MANAGE_MODERATOR: `${protocol}://${ip}:${port}/users/role/`
 }
