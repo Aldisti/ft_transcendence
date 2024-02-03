@@ -2,7 +2,9 @@
     width: 100svw;
     height: 92svh;
     position: relative;
+    padding: 40px;
     display: flex;
+    gap: 20px;
     align-items: center;
 }
 
@@ -14,7 +16,7 @@
     align-items: center;
     width: 90%;
     height: 60svh;
-    border: 2px solid black;
+    border: 3px solid black;
     box-shadow: 15px 15px black;
 }
 
@@ -97,28 +99,28 @@
     border-right: 2px solid black;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    justify-content: space-evenly;
     gap: 40px;
     align-items: center;
-    padding: 20px;
-    background-color: white;
-    background-color: #6c584c;
-    border: 2px solid black;
+    padding: 40px;
+    background-color: var(--bs-danger);
+    border: 4px solid black;
 }
 
-.leftSide h6 {
+.leftSide h4 {
     padding: 10px;
-    width: 90%;
+    width: 100%;
+    height: 15%;
     height: fit-content;
-    border: 2px solid black;
-    box-shadow: 15px 15px black;
-    background-color: #f0ead2;
+    border: 4px solid black;
+    box-shadow: 8px 8px black;
+    background-color: white;
 }
 
 .title {
     padding: 10px;
     background-color: #f0ead2;
-    border: 2px solid black;
+    border: 3px solid black;
     box-shadow: 15px 15px black;
     width: 80%;
 }
@@ -162,12 +164,11 @@
 .formMenu {
     overflow: scroll;
     width: 70%;
-    height: 92svh;
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    padding: 20px;
     overflow: scroll;
 }
 
@@ -181,7 +182,7 @@
     flex-direction: column;
     justify-content: space-between;
     align-items: flex-start;
-    border: 2px solid black;
+    border: 3px solid black;
     box-shadow: 15px 15px black;
     margin: 15px;
 }
@@ -195,7 +196,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 2px solid black;
+    border: 3px solid black;
     box-shadow: 7px 7px black;
 }
 
@@ -204,7 +205,7 @@
 }
 
 .inputLine input {
-    border: 2px solid black;
+    border: 3px solid black;
     width: 100%;
     height: 3.5svh;
     margin: 2px 0 2px 0;
@@ -228,7 +229,7 @@
     width: 90%;
     background-color: #A22C29;
     box-shadow: 7px 7px black;
-    border: 2px solid black;
+    border: 3px solid black;
     display: flex;
     align-items: center;
     justify-content: start;
@@ -244,7 +245,7 @@
 .passwordSwitch {
     width: 4svh;
     height: 4svh;
-    border: 2px solid black;
+    border: 3px solid black;
     padding: 5px;
     background-color: white;
     display: flex;
@@ -260,7 +261,7 @@
 
 .submit {
     background-color: var(--bs-success);
-    border: 2px solid black;
+    border: 3px solid black;
     width: 90%;
     height: fit-content;
     color: white;
@@ -275,7 +276,7 @@
     height: 70%;
     padding: 10px;
     background-color: white;
-    border: 2px solid black;
+    border: 3px solid black;
 }
 
 .profilePict img {
@@ -406,7 +407,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 2px solid black;
+    border: 3px solid black;
     gap: 20px;
 }
 
@@ -433,7 +434,7 @@
     justify-content: center;
     align-items: center;
     color: white;
-    border: 2px solid black;
+    border: 3px solid black;
     box-shadow: 7px 7px black;
     font-weight: bolder;
     text-decoration: none;
@@ -465,7 +466,7 @@
     justify-content: space-between;
     align-items: center;
     background-color: white;
-    border: 2px solid black;
+    border: 3px solid black;
     padding: 10px;
     margin: 20px;
 }
@@ -474,7 +475,7 @@
     background-color: var(--bs-success);
     flex-grow: 1;
     height: 250px;
-    border: 2px solid black;
+    border: 3px solid black;
     display: flex;
     justify-content: center;
     align-items: center;

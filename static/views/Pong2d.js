@@ -113,7 +113,7 @@ export default class extends Aview{
     }
 
 	setup(){
-        this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpg")
+        this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpeg")
         document.querySelector("#waitCanv").style.width = "80%"
         document.querySelector("#waitCanv").style.height = "50%"
         localStorage.setItem("gameStarted", "false");

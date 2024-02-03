@@ -12,14 +12,13 @@ h1{
 }
 
 .firendRequestSection, .infoSection{
-    background-image: url("/imgs/notificationBack.jpeg");
     background-position: center;
     background-repeat: repeat;
     width: 35%;
     height: 100%;
     display: flex;
     flex-direction: column;
-    background-color: white;
+    background-color: var(--bs-warning);
     padding: 20px;
     gap: 20px;
     border: 3px solid black;

@@ -128,7 +128,7 @@ export default class extends Aview{
     }
 
     setup(){
-        this.defineWallpaper("/imgs/backLogin.png", "/imgs/secondModernBack.jpeg")
+        this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpeg")
         let role = JSON.parse(window.decode64(localStorage.getItem("jwt"))).role;
 
         console.log(role)

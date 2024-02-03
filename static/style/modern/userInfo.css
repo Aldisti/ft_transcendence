@@ -182,12 +182,11 @@ input {
 .formMenu {
     overflow: scroll;
     width: 70%;
-    height: 92svh;
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    padding: 40px;
     overflow: scroll;
 }
 

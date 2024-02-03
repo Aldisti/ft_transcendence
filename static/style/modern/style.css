@@ -102,6 +102,7 @@ body {
     min-height: 92svh;
     height: fit-content;
     border-radius: 0 !important;
+    position: relative;
 }
 
 .account {
@@ -664,7 +665,7 @@ a img{
 .custom-shape-divider-top-1706862847 .shape-fill {
     border-radius: 0 !important;
 
-    fill: purple;
+    fill: #8502B1;
 }
 
 .custom-shape-divider-bottom-1706863183 {
@@ -685,7 +686,32 @@ a img{
 }
 
 .custom-shape-divider-bottom-1706863183 .shape-fill {
-    fill: #BD10E0;
+    fill: #8502B1;
+
+}
+
+
+/* bottom divider */
+
+.custom-shape-divider-bottom-1706978918 {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+    transform: rotate(180deg);
+}
+
+.custom-shape-divider-bottom-1706978918 svg {
+    position: relative;
+    display: block;
+    width: calc(100% + 1.3px);
+    height: 49px;
+}
+
+.custom-shape-divider-bottom-1706978918 .shape-fill {
+    fill: #8502B1;
 }
 
 @keyframes glow {

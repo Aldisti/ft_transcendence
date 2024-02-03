@@ -18,7 +18,7 @@
     justify-content: space-between;
     align-items: center;
     gap: 40px;
-    background-image: url("/imgs/adminPageBack.jpeg");
+    background-color: var(--bs-warning);
     background-position: center;
     border: 4px solid black;
 
@@ -178,12 +178,29 @@ box-shadow: 5px 5px black;
 
 .delete{
     background-color: var(--bs-danger);
+    border: 3px solid black !important;
 }
 
 .moderator{
     background-color: var(--bs-primary);
+    border: 3px solid black !important;
 }
 
-.block{
+.ban{
     background-color: var(--bs-warning);
+    border: 3px solid black !important;
+}
+.makeModerator{
+    background-color: var(--bs-success);
+    border: 3px solid black !important;
+}
+
+.undoBan{
+    background-color: var(--bs-success);
+    border: 3px solid black !important;
+}
+
+.removeModerator{
+    background-color: var(--bs-warning);
+    border: 3px solid black !important;
 }

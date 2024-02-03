@@ -17,7 +17,7 @@
 
 .base {
     width: 100svw;
-    height: 92svh;
+    height: 95svh;
     display: flex;
     flex-direction: column;
     justify-content: space-around;

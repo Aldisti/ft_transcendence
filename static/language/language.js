@@ -16,6 +16,9 @@ let language = {
 			enterPassword: "Enter new password:",
 
 		},
+		game: {
+			category: "Category: "
+		},
 		login: {
 			login: "Login",
 			name:	"Username: ",

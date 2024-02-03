@@ -31,7 +31,7 @@ export default class extends Aview{
     }
 
     setup(){
-        this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpg");
+        this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpeg");
         if (localStorage.getItem("notification") != null){
             let parsedNotification = JSON.parse(localStorage.getItem("notification"))
             
