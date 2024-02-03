@@ -71,6 +71,7 @@ def intra_callback(request, req_type: str) -> Response:
     request_body['redirect_uri'] += req_type + '/'
     request_body['code'] = request.GET.get('code')
     request_body['state'] = request.GET.get('state')
+    logger.warning(f"\nintra body: {request_body}\n")
     if request_body['state'] != request.COOKIES.get('intra_state'):
         return Response('csrf suspected', status=status.HTTP_403_FORBIDDEN)
     api_response = requests.post(settings.OAUTH2['INTRA']['TOKEN'], json=request_body)
@@ -190,7 +191,7 @@ def get_google_url(request) -> Response:
         f"response_type={quote(settings.OAUTH2['response_type'])}&"
         f"scope={quote(settings.OAUTH2['google_scope'])}&"
         f"redirect_uri={quote(settings.OAUTH2['GOOGLE_REDIRECT_URI'])}&"
-        f"state={quote(state)}"
+        f"state={state}"
     )
     response = Response(data={'url': url}, status=200)
     response.set_cookie(
@@ -226,7 +227,7 @@ class GoogleLink(APIView):
             }, status=status.HTTP_503_SERVICE_UNAVAILABLE)
         payload = decode(api_response.json()['id_token'], options={"verify_signature": False})
         try:
-            user_intra = IntraUser.objects.create(user=user, email=payload['email'])
+            user_intra = GoogleUser.objects.create(user=user, email=payload['email'])
         except Exception as e:
             logger.warning(f"\nexception: {str(e)}\n")
             response = Response(data={'message': 'server error'}, status=500)
@@ -264,8 +265,8 @@ def google_login(request) -> Response:
         return response
     payload = decode(api_response.json()['id_token'], options={"verify_signature": False})
     try:
-        user_intra = IntraUser.objects.get(email=payload['email'])
-    except IntraUser.DoesNotExist:
+        user_intra = GoogleUser.objects.get(email=payload['email'])
+    except GoogleUser.DoesNotExist:
         response = Response(data={'user not found'}, status=404)
         response.set_cookie(key='google_state', value='deleted', max_age=0)
         return response

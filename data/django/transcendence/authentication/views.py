@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 
 @api_view(['GET'])
-@permission_classes([IsUser])
+@permission_classes([])
 def generate_ticket(request) -> Response:
     user = request.user
     websocket_ticket = WebsocketTicket.objects.create(user.user_tokens)

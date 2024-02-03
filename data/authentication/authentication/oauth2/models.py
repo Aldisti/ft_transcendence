@@ -3,9 +3,15 @@ from django.core.validators import EmailValidator
 
 from users.models import User
 
+from logging import getLogger
+
+
+logger = getLogger(__name__)
+
 
 class OAuthUserManager(models.Manager):
     def create(self, user: User, email: str):
+        logger.warning(f"\nlinking {user.username} with {email}\n")
         oauth_user = self.model(user=user, email=email)
         oauth_user.full_clean()
         oauth_user.save()

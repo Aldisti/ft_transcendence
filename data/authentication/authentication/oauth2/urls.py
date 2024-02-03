@@ -20,4 +20,5 @@ urlpatterns = [
         ])),
         path('unlink/', views.GoogleLink.as_view(), name='unlink_google'),
     ])),
+    path('linked/', views.is_user_linked),
 ]

@@ -25,6 +25,7 @@ logger = logging.getLogger(__name__)
 @permission_classes([])
 @throttle_classes([])
 def register_user(request) -> Response:
+    logger.warning(f"\njson received{request.data}\n")
     user_serializer = UserSerializer(data=request.data)
     user_serializer.is_valid(raise_exception=True)
     try:
@@ -64,13 +65,6 @@ def delete_user(request) -> Response:
 #         return Response(data={'message': f'api: {api_response.status_code}'}, status=503)
 #     logger.warning(f"\n\n\n\n\nDJANGO API RESPONSE: {api_response.json()}")
 #     return Response(data=api_response.json(), status=200)
-#
-#
-# @api_view(['GET'])
-# @permission_classes([])
-# @throttle_classes([LowLoadThrottle])
-# def retrieve_pubkey(request) -> Response:
-#     return Response(data={'public_key': settings.SIMPLE_JWT['VERIFYING_KEY']}, status=200)
 
 
 # @api_view(['GET', 'POST'])

@@ -140,7 +140,7 @@ OAUTH2 = {
     "SERVER": {
         "PROTOCOL": "http",
         "HOST": "localhost",
-        "PORT": 8000,
+        "PORT": 6969,
     },
     "CLIENT": {
         "PROTOCOL": "http",

@@ -15,6 +15,7 @@ from accounts.validators import image_validator
 from email_manager.email_sender import send_verification_email
 from authentication.permissions import IsActualUser, IsAdmin, IsModerator, IsUser
 
+import requests
 import logging
 
 logger = logging.getLogger(__name__)
@@ -40,7 +41,10 @@ def registration(request):
     user_serializer = CompleteUserSerializer(data=request.data)
     user_serializer.is_valid(raise_exception=True)
     user = user_serializer.create(user_serializer.validated_data)
-    send_verification_email(user=user)
+    api_response = requests.post('http://auth:8000/users/register/', json=user_serializer.validated_data)
+    if api_response.status_code != 201:
+        return Response({"message": f"{api_response.json()}"})
+    # send_verification_email(user=user)
     serializer_response = CompleteUserSerializer(user)
     return Response(serializer_response.data, status=201)
 
