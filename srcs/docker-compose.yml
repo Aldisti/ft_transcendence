@@ -26,9 +26,19 @@ services:
       - CHAT_PORT=8000
       - PONG_HOST=pong
       - PONG_PORT=8000
+
+      # rabbitMq vars
+      - RABBIT_PORT=5672
+      - RABBIT_HOST=rabbit_mq
+      - EXCHANGE=${EXCHANGE}
+      - NTF_ROUTING_KEY=${NTF_ROUTING_KEY}
+      - VHOST_NTF=${VHOST_NTF}
+      - RABBIT_HEARTBEAT=${RABBIT_HEARTBEAT}
+      - RABBIT_BC_TIMEOUT=${RABBIT_BC_TIMEOUT}
     networks:
       - django-net
       - postgres-net
+      - rabbit-net
     depends_on:
       postgres:
         condition: service_healthy
@@ -171,6 +181,46 @@ services:
         condition: service_healthy
 
 
+  ntf_listener:
+    container_name: ntf_listener
+    build:
+      context: ./ntf_listener
+    image: trinity/ntf_listener
+    restart: always
+    environment:
+      - RABBIT_PORT=5672
+      - RABBIT_HOST=rabbit_mq
+      - EXCHANGE=${EXCHANGE}
+      - NTF_ROUTING_KEY=${NTF_ROUTING_KEY}
+      - THREAD=${THREAD}
+      - QUEUE_NAME=${NTF_QUEUE}
+      - VHOST=${VHOST_NTF}
+    networks:
+      - rabbit-net
+      - django-net
+    depends_on:
+      rabbit_mq:
+        condition: service_healthy
+
+
+  rabbit_mq:
+    container_name: rabbit_mq
+    build:
+      context: ./rabbit_mq
+    image: trinity/rabbit_mq
+    restart: always
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    networks:
+      - rabbit-net
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      retries: 10
+      interval: 5s
+      start_interval: 10s
+      
+
 volumes:
   django:
     name: "django"
@@ -227,3 +277,6 @@ networks:
 
   chatdb-net:
     name: "chatdb-net"
+
+  rabbit-net:
+    name: "rabbit-net"

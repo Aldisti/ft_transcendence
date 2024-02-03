@@ -19,4 +19,5 @@ from django.urls import path, include
 
 urlpatterns = [
     path('user/', include("users.urls")),
+    path('notification/', include("notifications.urls")),
 ]

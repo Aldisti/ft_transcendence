@@ -21,7 +21,8 @@ clean:
 	docker compose -f $(COMPOSE) down; \
 	fi
 	@docker rmi -f trinity/django trinity/postgres trinity/pong trinity/pongdb \
-		trinity/chat trinity/chatdb trinity/cron 2> /dev/null
+		trinity/chat trinity/chatdb trinity/cron \
+		trinity/ntf_listener trinity/rabbit_mq 2> /dev/null
 
 fclean: clean
 	@docker volume rm -f django postgres pong pongdb chat chatdb 2> /dev/null

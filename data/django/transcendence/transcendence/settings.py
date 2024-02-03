@@ -285,3 +285,19 @@ MS_URLS = {
     "PONG_REGISTER": f"http://{PONG_HOST}:{PONG_PORT}/user/register/",
     "PONG_DELETE": f"http://{PONG_HOST}:{PONG_PORT}/user/<pk>/delete/",
 }
+
+# rabbit config
+
+RABBIT = {
+    "host": environ['RABBIT_HOST'],
+    "port": int(environ['RABBIT_PORT']),
+    "heartbeat": int(environ['RABBIT_HEARTBEAT']),
+    "bc_timeout": int(environ['RABBIT_BC_TIMEOUT']),
+    "exchange": environ['EXCHANGE'],
+    "R_KEYS": {
+        "ntf": environ['NTF_ROUTING_KEY'],
+    },
+    "VHOSTS": {
+        "ntf": environ['VHOST_NTF']
+    },
+}

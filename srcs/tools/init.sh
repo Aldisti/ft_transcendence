@@ -20,7 +20,8 @@ ENV_VARS=("PROJECT_NAME" "DB_NAME" \
 	"PONGDB_HOST" "PONGDB_PORT" \
 	"CHATAPP_NAME" "CHATDB_NAME" \
 	"CHATDB_USER" "CHATDB_PASSWORD" \
-	"CHATDB_HOST" "CHATDB_PORT" "SERVER_FRONTEND_IP")
+	"CHATDB_HOST" "CHATDB_PORT" "SERVER_FRONTEND_IP" \
+	"EXCHANGE" "NTF_ROUTING_KEY" "THREAD" "NTF_QUEUE")
 
 
 create_env() {
@@ -43,6 +44,13 @@ create_env() {
 	CHATDB_HOST="chatdb"
 	CHATDB_PORT=5432
 	SERVER_FRONTEND_IP="localhost"
+    EXCHANGE="my_exchange"
+    NTF_ROUTING_KEY="notification"
+    THREAD=5
+    NTF_QUEUE="ntf_queue"
+    VHOST_NTF="notification"
+    RABBIT_HEARTBEAT=20
+    RABBIT_BC_TIMEOUT=10
 
 	k=""
 	for var in ${ENV_VARS[@]}; do

@@ -25,7 +25,25 @@ from requests import delete as post_delete
 
 import logging
 
+import pika
+import os
+
 logger = logging.getLogger(__name__)
+
+@api_view(['GET'])
+@permission_classes([])
+def test(request):
+    params = pika.ConnectionParameters(host=os.environ['RABBIT_HOST'], port=int(os.environ['RABBIT_PORT']))
+    connection = pika.BlockingConnection(params)
+    channel = connection.channel()
+
+    routing_key = os.environ['NTF_ROUTING_KEY']
+    message = "NOTIFICATION"
+    channel.basic_publish(exchange=os.environ['EXCHANGE'], routing_key=routing_key, body=message)
+    #logger.warning("sent")
+    #channel.close()
+    
+    return Response(status=200)
 
 
 @api_view(['POST'])

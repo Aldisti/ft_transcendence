@@ -42,7 +42,7 @@ class NotificationManager(models.Manager):
             notification.delete()
 
     # TODO: this function should be tested
-    def send_group_notification(self, notification, group):
+    def send_group_notification(self, notification):
         channel_layer = layers.get_cannel_layer()
         json_data = [notification.to_json()]
         async_to_sync(channel_layer.group_send)({

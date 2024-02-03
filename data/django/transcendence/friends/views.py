@@ -1,16 +1,25 @@
 from django.shortcuts import render
+
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
+
 from authentication.permissions import IsUser
+
 from accounts.models import User
-from friends.models import FriendsList
+
 from notifications.models import Notification
+
+from friends.models import FriendsList
+from friends.serializers import FriendsSerializer
 from friends.utils import (create_chat_entities,
                            delete_chat_entities, 
                            get_users_from_friends)
-from friends.serializers import FriendsSerializer
+
+from transcendence.producers import NotificationProducer
 
 import logging
+
+import json
 
 logger = logging.getLogger(__name__)
 
@@ -32,11 +41,24 @@ def make_friends_request(request):
     except User.DoesNotExist:
         return Response({"message": "User not found"}, status=404)
     # retrieve friends from database
-    friends = FriendsList.objects.get_friends(user, requested)
-    if friends is None:
-        friends = FriendsList.objects.create(user, requested, sender=user.username)
+
+    #friends = FriendsList.objects.get_friends(user, requested)
+    #if friends is None:
+
+    if True:
+        #friends = FriendsList.objects.create(user, requested, sender=user.username)
+        body = {
+            "sender": user.username,
+            "requested": requested.username,
+            #"token": friends.token,
+            "token": "0123456789"
+        }
         # send a notification to user
-        Notification.objects.send_friend_req(user, requested, friends.token)
+        NotificationProducer().publish(
+            method="friends_request_ntf",
+            body=json.dumps(body)
+        )
+        #Notification.objects.send_friend_req(user, requested, friends.token)
         return Response({"message": "The request has been sent"}, status=200)
     elif friends.token == "":
         return Response({"message": "You're already a friend of this user"}, status=400)
