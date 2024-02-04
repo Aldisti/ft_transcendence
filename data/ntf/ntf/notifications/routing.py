@@ -1,4 +1,5 @@
 from django.urls import path
+
 from notifications import consumers
 
 notifications_urlpatterns = [

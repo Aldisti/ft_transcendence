@@ -1,7 +1,7 @@
 from django.db import models
 from django.core import validators
 
-from users.managers import UserWebsocketsManager, ChatChannelManager, WebsocketTicketManager
+from users.managers import UserWebsocketsManager, NtfChannelManager, WebsocketTicketManager
 
 
 # Create your models here.
@@ -53,9 +53,9 @@ class WebsocketTicket(models.Model):
         return f"{self.user_websockets_id} has ticket: {self.ticket}"
 
 
-class ChatChannel(models.Model):
+class NtfChannel(models.Model):
     class Meta:
-        db_table="chat_channel"
+        db_table="ntf_channel"
 
     channel_name = models.CharField(
         primary_key=True,
@@ -67,10 +67,10 @@ class ChatChannel(models.Model):
         UserWebsockets,
         on_delete=models.CASCADE,
         db_column="user_websockets",
-        related_name="chat_channels",
+        related_name="ntf_channels",
     )
 
-    objects = ChatChannelManager()
+    objects = NtfChannelManager()
 
     def __str__(self):
-        return f"user: {self.user_websockets_id}, chat_channel: {self.channel_name}"
+        return f"user: {self.user_websockets_id}, ntf_channel: {self.channel_name}"

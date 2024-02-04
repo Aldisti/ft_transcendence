@@ -32,16 +32,16 @@ class MyThread(threading.Thread):
 
     def callback(self, ch, method, properties, body):
         logger.warning(f"{self.name} received: [{properties.content_type}]: {body.decode()}")
-        url = "http://chat:8000/notification/"
+        url = "http://ntf:8000/notification/"
         match properties.content_type:
             case "group_ntf":
                 url += "group/"
                 post_request(url, json=json.loads(body.decode()))
             case "friends_request_ntf":
-                logger.warning("ENTERED IN FRIEND REQ")
+                #logger.warning("ENTERED IN FRIEND REQ")
                 url += "friends_req/"
                 api_response = post_request(url, json=json.loads(body.decode()))
-                logger.warning(f"RESPONSE: {api_response.json()}\nSTATUS: {api_response.status_code}")
+                #logger.warning(f"RESPONSE: {api_response.json()}\nSTATUS: {api_response.status_code}")
             case "info_ntf":
                 url += "info/"
                 post_request(url, json=json.loads(body.decode()))

@@ -33,7 +33,7 @@ def generate_ticket(request) -> Response:
     user = request.user
     #websocket_ticket = WebsocketTicket.objects.create(user.user_tokens)
     data = {"username": user.username}
-    api_response = post_request(settings.MS_URLS['CHAT_TICKET'], json=data)
+    api_response = post_request(settings.MS_URLS['NTF_TICKET'], json=data)
     if api_response.status_code >= 300:
         return Response(api_response.json(), status=503)
     return Response(api_response.json(), status=200)

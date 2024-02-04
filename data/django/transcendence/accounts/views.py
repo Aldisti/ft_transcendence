@@ -21,7 +21,7 @@ from email_manager.email_sender import send_verification_email
 from authentication.permissions import IsActualUser, IsAdmin, IsModerator, IsUser
 
 from requests import post as post_request
-from requests import delete as post_delete
+from requests import delete as delete_request
 
 import logging
 
@@ -69,17 +69,32 @@ def registration(request):
 
     # TODO: implement delete when something goes wrong
 
+    # create user instance on ntf database
+    api_response = post_request(settings.MS_URLS['NTF_REGISTER'], json=data)
+    if api_response.status_code >= 300:
+        return Response(data={'message': 'Something strange happened, contact devs'}, status=503)
+
     # create user instance on chat database
     api_response = post_request(settings.MS_URLS['CHAT_REGISTER'], json=data)
     if api_response.status_code >= 300:
+        # delete from ntf db
+        ntf_url = settings.MS_URLS['NTF_DELETE'].replace("<pk>", username)
+        api_response = delete_request(ntf_url, json=data)
         return Response(data={'message': 'Something strange happened, contact devs'}, status=503)
 
     # create user instance on pong database
     api_response = post_request(settings.MS_URLS['PONG_REGISTER'], json=data)
     if api_response.status_code >= 300:
+        # delete from ntf db
+        ntf_url = settings.MS_URLS['NTF_DELETE'].replace("<pk>", username)
+        api_response = delete_request(ntf_url, json=data)
+        # delete from chat db
+        chat_url = settings.MS_URLS['CHAT_DELETE'].replace("<pk>", username)
+        api_response = delete_request(chat_url, json=data)
         return Response(data={'message': 'Something strange happened, contact devs'}, status=503)
 
     # create user instance on main database
+    # TODO: validation error protection
     user = user_serializer.create(user_serializer.validated_data)
     # TODO: reduce time of registration
     send_verification_email(user=user)
@@ -160,12 +175,15 @@ class RetrieveDestroyUser(RetrieveDestroyAPIView):
         username = kwargs.get("username", "")
         if username != "":
             data = {'username': username}
+            # delete from ntf db
+            ntf_url = settings.MS_URLS['NTF_DELETE'].replace("<pk>", username)
+            api_response = delete_request(ntf_url, json=data)
             # delete from chat db
             chat_url = settings.MS_URLS['CHAT_DELETE'].replace("<pk>", username)
-            api_response = post_delete(chat_url, json=data)
+            api_response = delete_request(chat_url, json=data)
             # delete from pong db
             pong_url = settings.MS_URLS['PONG_DELETE'].replace("<pk>", username)
-            api_response = post_delete(pong_url, json=data)
+            api_response = delete_request(pong_url, json=data)
         return super().destroy(request, *args, **kwargs)
 
 

@@ -22,11 +22,12 @@ clean:
 	fi
 	@docker rmi -f trinity/django trinity/postgres trinity/pong trinity/pongdb \
 		trinity/chat trinity/chatdb trinity/cron \
-		trinity/ntf_listener trinity/rabbit_mq 2> /dev/null
+		trinity/ntf_listener trinity/rabbit_mq \
+		trinity/ntf trinity/ntfdb 2> /dev/null
 
 fclean: clean
-	@docker volume rm -f django postgres pong pongdb chat chatdb 2> /dev/null
-	@sudo rm -rf ./data/postgres ./data/pongdb ./data/chatdb 2> /dev/null
+	@docker volume rm -f django postgres pong pongdb chat chatdb ntf ntfdb 2> /dev/null
+	@sudo rm -rf ./data/postgres ./data/pongdb ./data/chatdb ./data/ntfdb 2> /dev/null
 
 re: fclean all
 

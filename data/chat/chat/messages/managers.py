@@ -1,13 +1,21 @@
 from django.db import models
 from django.conf import settings
-import logging
+
 from channels import layers
+
 from asgiref.sync import async_to_sync
-from messages.utils import MessageTypes, G_GROUP
+
+from messages.utils import MessageTypes
 from messages.serializers import MessageSerializer
+
 from friends.models import FriendsList
-from accounts.models import User, ChatChannel
+
+from users.models import UserWebsocket, ChatChannel
+
+import logging
+
 import json
+
 
 logger = logging.getLogger(__name__)
 
@@ -72,7 +80,7 @@ class MessageManager(models.Manager):
     def send_global_message(self, message):
         data = MessageSerializer().get_data(message)
         data.setdefault("type", MessageTypes.GLOBAL)
-        self.send_message_group(json.dumps(data), G_GROUP)
+        self.send_message_group(json.dumps(data), settings.G_GROUP)
 
     # TODO: test
     def send_error_message(self, message):
@@ -115,10 +123,10 @@ class MessageManager(models.Manager):
             self.send_private_message(message["message"], receiver)
 
 
-    def get_friend_from_username(self, username: str, user: User):
+    def get_friend_from_username(self, username: str, user: UserWebsockets):
         try:
-            friend = User.objects.get(pk=username)
-        except User.DoesNotExist:
+            friend = UserWebsockets.objects.get(pk=username)
+        except UserWebsockets.DoesNotExist:
             return None
         if FriendsList.objects.are_friends(friend, user):
             return friend

@@ -1,5 +1,7 @@
 from django.db import models
+
 from users.models import UserWebsockets
+
 from notifications.managers import NotificationManager
 from notifications.utils import NotificationTypes as NtfTypes
 

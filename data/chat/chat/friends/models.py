@@ -1,10 +1,12 @@
 from django.db import models
-from accounts.models import User
-from friends.managers import FriendsListManager
 from django.core import validators
 
-# Create your models here.
+from users.models import UserWebsockets
 
+from friends.managers import FriendsListManager
+
+
+# Create your models here.
 
 class FriendsList(models.Model):
     class Meta:
@@ -18,14 +20,14 @@ class FriendsList(models.Model):
 
 
     user_1 = models.ForeignKey(
-        User,
+        UserWebsockets,
         on_delete=models.CASCADE,
         related_name="+",
         db_column="user_1",
     )
 
     user_2 = models.ForeignKey(
-        User,
+        UserWebsockets,
         on_delete=models.CASCADE,
         related_name="+",
         db_column="user_2",

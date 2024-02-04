@@ -278,10 +278,16 @@ CHAT_PORT = environ['CHAT_PORT']
 PONG_HOST = environ['PONG_HOST']
 PONG_PORT = environ['PONG_PORT']
 
+NTF_HOST = environ['NTF_HOST']
+NTF_PORT = environ['NTF_PORT']
+
 MS_URLS = {
     "CHAT_REGISTER": f"http://{CHAT_HOST}:{CHAT_PORT}/user/register/",
     "CHAT_TICKET": f"http://{CHAT_HOST}:{CHAT_PORT}/user/ticket/",
     "CHAT_DELETE": f"http://{CHAT_HOST}:{CHAT_PORT}/user/<pk>/delete/",
+    "NTF_REGISTER": f"http://{NTF_HOST}:{NTF_PORT}/user/register/",
+    "NTF_TICKET": f"http://{NTF_HOST}:{NTF_PORT}/user/ticket/",
+    "NTF_DELETE": f"http://{NTF_HOST}:{NTF_PORT}/user/<pk>/delete/",
     "PONG_REGISTER": f"http://{PONG_HOST}:{PONG_PORT}/user/register/",
     "PONG_DELETE": f"http://{PONG_HOST}:{PONG_PORT}/user/<pk>/delete/",
 }

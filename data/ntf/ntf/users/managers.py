@@ -22,9 +22,9 @@ class WebsocketTicketManager(models.Manager):
         return ticket
 
 
-class ChatChannelManager(models.Manager):
+class NtfChannelManager(models.Manager):
     def create(self, user_websockets, channel_name):
-        chat_channel = self.model(user_websockets=user_websockets, channel_name=channel_name)
-        chat_channel.full_clean()
-        chat_channel.save()
-        return chat_channel
+        ntf_channel = self.model(user_websockets=user_websockets, channel_name=channel_name)
+        ntf_channel.full_clean()
+        ntf_channel.save()
+        return ntf_channel

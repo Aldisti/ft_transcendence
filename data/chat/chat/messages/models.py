@@ -1,9 +1,11 @@
 from django.db import models
-from django.core import validators
 from django.conf import settings
+
 from messages.managers import ChatManager, ChatMemberManager, MessageManager
 from messages.utils import MessageTypes
-from accounts.models import User, UserWebsockets
+
+from users.models import UserWebsockets
+
 from datetime import datetime
 
 import logging

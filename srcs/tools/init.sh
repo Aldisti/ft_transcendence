@@ -5,9 +5,11 @@ COMPOSE="./srcs/docker-compose.yml"
 DJANGO_VOL="./data/django"
 PONG_VOL="./data/pong"
 CHAT_VOL="./data/chat"
+NTF_VOL="./data/ntf"
 PG_VOL="./data/postgres"
 PONGDB_VOL="./data/pongdb"
 CHATDB_VOL="./data/chatdb"
+NTFDB_VOL="./data/ntfdb"
 ENV_FILE="./srcs/.env"
 POSTGRES_ENV="./srcs/cron/.env"
 
@@ -20,7 +22,10 @@ ENV_VARS=("PROJECT_NAME" "DB_NAME" \
 	"PONGDB_HOST" "PONGDB_PORT" \
 	"CHATAPP_NAME" "CHATDB_NAME" \
 	"CHATDB_USER" "CHATDB_PASSWORD" \
-	"CHATDB_HOST" "CHATDB_PORT" "SERVER_FRONTEND_IP" \
+	"CHATDB_HOST" "CHATDB_PORT" \
+	"NTFAPP_NAME" "NTFDB_NAME" \
+	"NTFDB_USER" "NTFDB_PASSWORD" \
+	"NTFDB_HOST" "NTFDB_PORT" "SERVER_FRONTEND_IP" \
 	"EXCHANGE" "NTF_ROUTING_KEY" "THREAD" "NTF_QUEUE")
 
 
@@ -43,6 +48,10 @@ create_env() {
 	CHATDB_NAME="chat"
 	CHATDB_HOST="chatdb"
 	CHATDB_PORT=5432
+	NTFAPP_NAME="ntf"
+	NTFDB_NAME="ntf"
+	NTFDB_HOST="ntfdb"
+	NTFDB_PORT=5432
 	SERVER_FRONTEND_IP="localhost"
     EXCHANGE="my_exchange"
     NTF_ROUTING_KEY="notification"
@@ -114,6 +123,10 @@ if ! [ -d $CHAT_VOL ]; then
 	mkdir -p $CHAT_VOL
 fi
 
+if ! [ -d $NTF_VOL ]; then
+	mkdir -p $NTF_VOL
+fi
+
 if ! [ -d $PG_VOL ]; then
 	mkdir -p $PG_VOL
 fi
@@ -126,10 +139,13 @@ if ! [ -d $CHATDB_VOL ]; then
 	mkdir -p $CHATDB_VOL
 fi
 
+if ! [ -d $NTFDB_VOL ]; then
+	mkdir -p $NTFDB_VOL
+fi
+
 if [ ! -f "$ENV_FILE" ]; then
 	touch "$ENV_FILE"
 fi
 
 create_env
 cron_env
-

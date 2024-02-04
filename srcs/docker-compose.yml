@@ -24,6 +24,8 @@ services:
       - SERVER_FRONTEND_IP=${SERVER_FRONTEND_IP}
       - CHAT_HOST=chat
       - CHAT_PORT=8000
+      - NTF_HOST=ntf
+      - NTF_PORT=8000
       - PONG_HOST=pong
       - PONG_PORT=8000
 
@@ -125,7 +127,7 @@ services:
     image: trinity/chat
     restart: always
     ports:
-      - "9000-9020:8000-8020"
+      - "9001:8000"
     volumes:
       - chat:/etc/develop
     environment:
@@ -136,6 +138,15 @@ services:
       - DB_HOST=${CHATDB_HOST}
       - DB_PORT=${CHATDB_PORT}
       - SERVER_FRONTEND_IP=${SERVER_FRONTEND_IP}
+
+      # rabbitMq vars
+      - RABBIT_PORT=5672
+      - RABBIT_HOST=rabbit_mq
+      - EXCHANGE=${EXCHANGE}
+      - NTF_ROUTING_KEY=${NTF_ROUTING_KEY}
+      - VHOST_NTF=${VHOST_NTF}
+      - RABBIT_HEARTBEAT=${RABBIT_HEARTBEAT}
+      - RABBIT_BC_TIMEOUT=${RABBIT_BC_TIMEOUT}
     networks:
       - django-net
       - chatdb-net
@@ -166,6 +177,56 @@ services:
       - PGDATA=${PGDATA}
     networks:
       - chatdb-net
+
+
+  ntf:
+    container_name: ntf
+    build:
+      context: ./ntf
+    image: trinity/ntf
+    restart: always
+    ports:
+      - "9000:8000"
+    volumes:
+      - ntf:/etc/develop
+    environment:
+      - PROJECT_NAME=${NTFAPP_NAME}
+      - DB_USER=${NTFDB_USER}
+      - DB_NAME=${NTFDB_NAME}
+      - DB_PASSWORD=${NTFDB_PASSWORD}
+      - DB_HOST=${NTFDB_HOST}
+      - DB_PORT=${NTFDB_PORT}
+      - SERVER_FRONTEND_IP=${SERVER_FRONTEND_IP}
+    networks:
+      - django-net
+      - ntfdb-net
+    depends_on:
+      ntfdb:
+        condition: service_healthy
+
+
+  ntfdb:
+    container_name: ntfdb
+    build:
+      context: ./ntfdb
+    image: trinity/ntfdb
+    restart: always
+    expose:
+      - "$NTFDB_PORT"
+    volumes:
+      - ntfdb:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-p$NTFDB_PORT", "-h127.0.0.1", "-d$NTFDB_NAME", "-U$NTFDB_USER"]
+      retries: 10
+      interval: 5s
+      start_interval: 3s
+    environment:
+      - POSTGRES_PASSWORD=${NTFDB_PASSWORD}
+      - POSTGRES_USER=${NTFDB_USER}
+      - POSTGRES_DB=${NTFDB_NAME}
+      - PGDATA=${PGDATA}
+    networks:
+      - ntfdb-net
 
 
   cron:
@@ -243,6 +304,13 @@ volumes:
       type: "none"
       o: "bind"
       device: "$PWD/data/chat"
+  ntf:
+    name: "ntf"
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "$PWD/data/ntf"
   postgres:
     name: "postgres"
     driver: local
@@ -264,6 +332,13 @@ volumes:
       type: "none"
       o: "bind"
       device: "$PWD/data/chatdb"
+  ntfdb:
+    name: "ntfdb"
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "$PWD/data/ntfdb"
 
 networks:
   django-net:
@@ -277,6 +352,9 @@ networks:
 
   chatdb-net:
     name: "chatdb-net"
+
+  ntfdb-net:
+    name: "ntfdb-net"
 
   rabbit-net:
     name: "rabbit-net"

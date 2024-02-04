@@ -65,7 +65,7 @@ def make_friends_request(request):
     elif friends.sender == user.username:
         return Response({"message": "You're already sent a request to this user"}, status=400)
     # if the friends request is sent to someone that previously
-    # sent a friends reqyest to this user, it will be accepted
+    # sent a friends request to this user, it will be accepted
     # without checking the token
     friends = FriendsList.objects.clear_token(friends)
     # create the chat entries for chat system

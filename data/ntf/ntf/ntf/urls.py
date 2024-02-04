@@ -1,5 +1,5 @@
 """
-URL configuration for chat project.
+URL configuration for ntf project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.0/topics/http/urls/
@@ -19,4 +19,5 @@ from django.urls import path, include
 
 urlpatterns = [
     path('user/', include("users.urls")),
+    path('notification/', include("notifications.urls")),
 ]

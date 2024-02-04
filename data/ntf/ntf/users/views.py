@@ -6,6 +6,7 @@ from rest_framework import generics
 
 from users.models import UserWebsockets, WebsocketTicket
 from users.serializers import UserWebsocketsSerializer
+from notifications.models import Notification
 
 
 class CreateUser(generics.CreateAPIView):
