@@ -19,6 +19,8 @@ RUN pip install pyotp
 RUN pip install pyjwt && pip install pyjwt[crypto]
 # for asgi server and channels
 RUN pip install -U channels["daphne"]
+# for communication with rabbitMq
+RUN pip install pika
 
 
 RUN mkdir /etc/develop

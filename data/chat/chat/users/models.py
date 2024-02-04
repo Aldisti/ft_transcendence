@@ -20,6 +20,11 @@ class UserWebsockets(models.Model):
 
     objects = UserWebsocketsManager()
 
+    def get_status(self):
+        if self.chat_channels.all():
+            return True
+        return False
+
     def __str__(self):
         return f"username: {self.username}"
 

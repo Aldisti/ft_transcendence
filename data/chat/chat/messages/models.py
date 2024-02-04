@@ -86,7 +86,7 @@ class Message(models.Model):
     objects = MessageManager()
 
     def get_sender(self):
-        return self.from_user.user_id
+        return self.from_user.username
 
     def get_time(self):
         if self.sent_time is None:
@@ -97,10 +97,10 @@ class Message(models.Model):
         json = {
             "type": MessageTypes.PRIVATE,
             "body": self.body,
-            "sender": self.from_user.user_id,
+            "sender": self.from_user.username,
             "sent_time": self.sent_time.strftime("%Y/%m/%d:%H.%M.%S"),
         }
         return json
 
     def __str__(self):
-        return f"from_user: {self.from_user.user_id}, body: {self.body}, sent_time: {self.sent_time}"
+        return f"from_user: {self.from_user.username}, body: {self.body}, sent_time: {self.sent_time}"

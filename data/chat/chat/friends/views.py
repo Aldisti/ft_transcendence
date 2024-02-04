@@ -8,9 +8,11 @@ from friends.utils import (create_chat_entities,
                            delete_chat_entities, 
                            get_users_from_friends)
 
-from chat.producers import NorificationProducer
+from chat.producers import NotificationProducer
 
 import logging
+
+import json
 
 
 logger = logging.getLogger(__name__)
@@ -22,6 +24,9 @@ logger = logging.getLogger(__name__)
 
 @api_view(['POST'])
 def make_friends_request(request):
+    """
+    body: {"username": <username>, "r_username": <requested>}
+    """
     username = request.data.get("username", "")
     r_username = request.data.get("r_username", "")
     # check that requested username
@@ -44,7 +49,10 @@ def make_friends_request(request):
     elif friends.token == "":
         return Response({"message": "You're already a friend of this user"}, status=400)
     elif friends.sender == user.username:
-        return Response({"message": "You're already sent a request to this user"}, status=400)
+        friends = FriendsList.objects.get_friends(user, requested)
+        friends.delete()
+        return Response({"message": "Friends request deleted"}, status=200)
+        #return Response({"message": "You're already sent a request to this user"}, status=400)
     # if the friends request is sent to someone that previously
     # sent a friends request to this user, it will be accepted
     # without checking the token
@@ -57,8 +65,11 @@ def make_friends_request(request):
     return Response({"message": f"You and {requested.username} are now friends!"}, status=200)
 
 
-@api_view(['PUT'])
+@api_view(['POST'])
 def delete_friends(request):
+    """
+    body: {"username": <username>, "r_username": <requested>}
+    """
     username = request.data.get("username", "")
     r_username = request.data.get("r_username", "")
     # check that requested username
@@ -90,6 +101,9 @@ def delete_friends(request):
 
 @api_view(['POST'])
 def accept_friends_request(request):
+    """
+    body: {"username": <username>, "token": <token>}
+    """
     username = request.data.get("username", "")
     try:
         user = UserWebsockets.objects.get(pk=username)
@@ -113,6 +127,9 @@ def accept_friends_request(request):
 
 @api_view(['POST'])
 def reject_friends_request(request):
+    """
+    body: {"username": <username>, "token": <token>}
+    """
     username = request.data.get("username", "")
     try:
         user = UserWebsockets.objects.get(pk=username)
@@ -135,6 +152,9 @@ def reject_friends_request(request):
 
 @api_view(['GET'])
 def are_friends(request):
+    """
+    query_params: /?username=<username>&other_username=<username>
+    """
     username = request.query_params.get("username", "")
     other_username = request.query_params.get("other_username", "")
     if other_username == username:
@@ -151,6 +171,9 @@ def are_friends(request):
 
 @api_view(['GET'])
 def get_all_friends(request):
+    """
+    query_params: /?username=<username>
+    """
     username = request.query_params.get("username", "")
     try:
         user = UserWebsockets.objects.get(pk=username)
@@ -158,4 +181,5 @@ def get_all_friends(request):
         return Response({"message": "User not found"}, status=404)
     friends_list = FriendsList.objects.get_all_friends(user)
     users = get_users_from_friends(friends=friends_list, common_friend=user)
-    return Response({"friends": users}, status=200)
+    usernames = [user.username for user in users]
+    return Response({"friends": usernames}, status=200)

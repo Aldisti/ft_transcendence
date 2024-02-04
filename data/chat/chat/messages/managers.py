@@ -10,7 +10,7 @@ from messages.serializers import MessageSerializer
 
 from friends.models import FriendsList
 
-from users.models import UserWebsocket, ChatChannel
+from users.models import UserWebsockets, ChatChannel
 
 import logging
 
@@ -89,15 +89,15 @@ class MessageManager(models.Manager):
         self.send_message(json.dumps(data), message.from_user)
 
     def send_private_message(self, message, receiver: str):
-        from chat.models import Chat
+        from messages.models import Chat
 
-        rec_user = self.get_friend_from_username(receiver, message.from_user.user)
+        rec_user = self.get_friend_from_username(receiver, message.from_user)
         if rec_user is None:
             message.body = "Invalid receiver"
             self.send_error_message(message)
             return
         # take chat
-        chat = Chat.objects.get_chat(message.from_user.user_id, receiver)
+        chat = Chat.objects.get_chat(message.from_user.username, receiver)
         if chat is None:
             message.body = "Invalid chat, server error"
             self.send_error_message(message)
@@ -107,7 +107,7 @@ class MessageManager(models.Manager):
         if rec_user.get_status():
             data = MessageSerializer().get_data(message)
             data.setdefault("type", MessageTypes.PRIVATE)
-            self.send_message(json.dumps(data), rec_user.user_websockets)
+            self.send_message(json.dumps(data), rec_user)
     
     # TODO: test
     def message_controller(self, message_builder, receiver: str):

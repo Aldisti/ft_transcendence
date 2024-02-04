@@ -22,7 +22,7 @@ class ChatConsumer(WebsocketConsumer):
         user = self.scope["user"]
         logger.warning(f"{user.username} connected")
         # save chat_channel in database
-        ChatChannel.objects.create(user.user_websockets, self.channel_name)
+        ChatChannel.objects.create(user, self.channel_name)
         # add websocket to global group (this can be a dedicated websocket)
         async_to_sync(self.channel_layer.group_add)(settings.G_GROUP, self.channel_name)
         self.accept()
@@ -43,7 +43,7 @@ class ChatConsumer(WebsocketConsumer):
         user = self.scope["user"]
         logger.warning(f"Something arrived from {user.username}")
         data = json.loads(text_data)
-        message_builder = (MessageBuilder().builder(user.user_websockets)
+        message_builder = (MessageBuilder().builder(user)
                            .set_msg_type(data.get("type", ""))
                            .set_msg_body(data.get("body", "")))
         Message.objects.message_controller(message_builder, data.get("receiver"))

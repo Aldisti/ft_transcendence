@@ -282,12 +282,21 @@ NTF_HOST = environ['NTF_HOST']
 NTF_PORT = environ['NTF_PORT']
 
 MS_URLS = {
+    # chat urls
     "CHAT_REGISTER": f"http://{CHAT_HOST}:{CHAT_PORT}/user/register/",
     "CHAT_TICKET": f"http://{CHAT_HOST}:{CHAT_PORT}/user/ticket/",
     "CHAT_DELETE": f"http://{CHAT_HOST}:{CHAT_PORT}/user/<pk>/delete/",
+    "FRIENDS_SEND_REQ": f"http://{CHAT_HOST}:{CHAT_PORT}/friends/request/send/",
+    "FRIENDS_ACCEPT_REQ": f"http://{CHAT_HOST}:{CHAT_PORT}/friends/request/accept/",
+    "FRIENDS_REJECT_REQ": f"http://{CHAT_HOST}:{CHAT_PORT}/friends/request/reject/",
+    "FRIENDS_DELETE_REQ": f"http://{CHAT_HOST}:{CHAT_PORT}/friends/request/delete/",
+    "FRIENDS_ALL": f"http://{CHAT_HOST}:{CHAT_PORT}/friends/all/",
+    "FRIENDS_CHECK": f"http://{CHAT_HOST}:{CHAT_PORT}/friends/",
+    # notification urls
     "NTF_REGISTER": f"http://{NTF_HOST}:{NTF_PORT}/user/register/",
     "NTF_TICKET": f"http://{NTF_HOST}:{NTF_PORT}/user/ticket/",
     "NTF_DELETE": f"http://{NTF_HOST}:{NTF_PORT}/user/<pk>/delete/",
+    # pong urls
     "PONG_REGISTER": f"http://{PONG_HOST}:{PONG_PORT}/user/register/",
     "PONG_DELETE": f"http://{PONG_HOST}:{PONG_PORT}/user/<pk>/delete/",
 }

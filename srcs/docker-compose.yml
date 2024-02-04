@@ -150,6 +150,7 @@ services:
     networks:
       - django-net
       - chatdb-net
+      - rabbit-net
     depends_on:
       chatdb:
         condition: service_healthy
