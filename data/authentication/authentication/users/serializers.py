@@ -21,3 +21,6 @@ class UserSerializer(serializers.ModelSerializer):
             "verified": {"required": False, "read_only": True},
             "tfa": {"required": False, "read_only": True},
         }
+
+    def create(self, validated_data):
+        return User.objects.create_user(**validated_data)

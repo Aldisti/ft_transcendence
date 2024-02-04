@@ -20,11 +20,15 @@ class Roles:
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, username: str, email: str, password: str, **kwargs):
+    def create_user(self, **kwargs):
         kwargs.setdefault('role', Roles.USER)
 
-        if password is None or password == '':
-            raise ValueError('password cannot be empty')
+        username = kwargs.pop('username', '')
+        email = kwargs.pop('email', '')
+        password = kwargs.pop('password', '')
+
+        if username == '' or email == '' or password == '':
+            raise ValueError('missing username or email or password')
         if kwargs['role'] != Roles.ADMIN:
             kwargs.pop('active', '')
             kwargs.pop('verified', '')
@@ -47,49 +51,45 @@ class UserManager(BaseUserManager):
             raise ValueError('verified must be true')
         if kwargs['role'] != Roles.ADMIN:
             raise ValueError('role must be admin')
-        return self.create_user(username, email, password, **kwargs)
+        return self.create_user(
+            username=username,
+            email=email,
+            password=password,
+            **kwargs,
+        )
 
 
     def update_username(self, user, **kwargs):
-        try:
-            username = kwargs['username']
-            password = kwargs['password']
-        except KeyError:
+        username = kwargs.get('username', '')
+        password = kwargs.get('password', '')
+        if (username == '' or password == ''
+                or not user.check_password(password)
+                or username == user.username):
             raise ValueError('invalid username or password')
-        if not user.check_password(password):
-            raise ValueError('invalid password')
-        if username == user.username:
-            raise ValueError('invalid username')
         user.username = username
         user.full_clean()
         user.save()
         return user
 
     def update_email(self, user, **kwargs):
-        try:
-            email = kwargs['email']
-            password = kwargs['password']
-        except KeyError:
+        email = kwargs.get('email', '')
+        password = kwargs.get('password', '')
+        if (email == '' or password == ''
+                or not user.check_password(password)
+                or email == user.email):
             raise ValueError('invalid email or password')
-        if not user.check_password(password):
-            raise ValueError('invalid password')
-        if email == user.email:
-            raise ValueError('invalid email')
         user.email = email
         user.full_clean()
         user.save()
         return user
 
     def update_password(self, user, **kwargs):
-        try:
-            old_password = kwargs['password']
-            new_password = kwargs['new_password']
-        except KeyError:
-            raise ValueError('invalid password or new_password')
-        if old_password == "" or not user.check_password(old_password):
-            raise ValueError("invalid old password")
-        if new_password == "" or old_password == new_password:
-            raise ValueError("invalid new password")
+        old_password = kwargs.get('password', '')
+        new_password = kwargs.get('new_password', '')
+        if (old_password == '' or new_password == ''
+                or not user.check_password(old_password)
+                or old_password == new_password):
+            raise ValueError("invalid old password or new password")
         user.set_password(new_password)
         user.full_clean()
         user.save()
@@ -97,9 +97,7 @@ class UserManager(BaseUserManager):
 
     def reset_password(self, user, **kwargs):
         new_password = kwargs.get('password', '')
-        if new_password == "":
-            raise ValueError("invalid new password")
-        if user.check_password(new_password):
+        if new_password == "" or user.check_password(new_password):
             raise ValueError("invalid new password")
         user.set_password(new_password)
         user.full_clean()
@@ -131,8 +129,12 @@ class UserManager(BaseUserManager):
         return user
 
     def update_active(self, user, status: bool = None):
+        # TODO: is this ok? check the view params and you'll see
+        status = not status
         if user.role == Roles.ADMIN:
             raise ValueError("cannot change admin active status")
+        if user.active is status:
+            return user
         user.active = status
         user.full_clean()
         user.save()

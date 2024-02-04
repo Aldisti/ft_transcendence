@@ -1,8 +1,12 @@
 
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.test import TestCase
+from django.urls import reverse
+
+from rest_framework.test import APITestCase
 
 from .models import User, Roles
+from .serializers import UserSerializer
 
 
 class ModelUserTests(TestCase):
@@ -25,7 +29,11 @@ class ModelUserTests(TestCase):
         cls.new_password = "new_password"
         cls.invalid_role = "UA"
         cls.role = "M"
-        cls.user = User.objects.create_user(username, email, password)
+        cls.user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password
+        )
         cls.superuser = User.objects.create_superuser(super_username, super_email, password)
 
     def test_valid_user_creation(self):
@@ -197,3 +205,245 @@ class ModelUserTests(TestCase):
         # checking creation with invalid username
         with self.assertRaises(ValidationError):
             User.objects.create_superuser(self.invalid_username, self.super_email, self.password)
+
+
+class UsersViewsTest(APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        usernames = [f"tester{i}" for i in range(1, 5)]
+        emails = [f"{username}@localhost" for username in usernames]
+        password = 'password'
+        new_password = 'new_password'
+        cls.usernames = usernames
+        cls.emails = emails
+        cls.password = password
+        cls.new_password = new_password
+        cls.superuser = User.objects.create_superuser(
+            username=usernames[0],
+            email=emails[0],
+            password=password
+        )
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username=self.usernames[2],
+            email=self.emails[2],
+            password=self.password,
+        )
+
+    def test_valid_register_user(self):
+        data = {
+            'username': self.usernames[1],
+            'email': self.emails[1],
+            'password': self.password,
+        }
+        response = self.client.post(reverse('register'), data)
+        self.assertEqual(response.status_code, 201)
+        data.pop('password', '')
+        self.assertNumQueries(
+            num=1,
+            func=User.objects.get,
+            **data,
+        )
+
+    def test_invalid_register_user(self):
+        invalid_data = [{
+            'username': self.usernames[1],
+            'password': self.password,
+        }, {
+            'email': self.emails[1],
+            'password': self.password,
+        }, {
+            'username': self.usernames[1],
+            'email': self.emails[1],
+        }, {
+            'username': self.usernames[0],
+            'email': self.emails[1],
+            'password': self.password,
+        }, {
+            'username': self.usernames[1],
+            'email': self.emails[0],
+            'password': self.password,
+        }]
+        for data in invalid_data:
+            response = self.client.post(reverse('register'), data)
+            self.assertEqual(response.status_code, 400)
+            with self.assertRaises(User.DoesNotExist):
+                User.objects.get(username=self.usernames[1])
+            with self.assertRaises(User.DoesNotExist):
+                User.objects.get(email=self.emails[1])
+
+    def test_delete_user(self):
+        user = self.user
+        self.assertNumQueries(
+            num=1,
+            func=User.objects.get,
+            username=user.username,
+            email=user.email,
+        )
+        self.client.force_authenticate(self.superuser)
+        response = self.client.delete(
+            reverse('delete_user'),
+            data={'username': user.username},
+        )
+        self.assertEqual(response.status_code, 200)
+        with self.assertRaises(User.DoesNotExist):
+            User.objects.get(username=user.username, email=user.email)
+
+    def test_valid_change_role(self):
+        user = self.user
+        self.client.force_authenticate(self.superuser)
+        # test role change from User to Mod
+        response = self.client.patch(
+            reverse('change_role'),
+            {'username': user.username, 'role': Roles.MOD},
+        )
+        self.assertEqual(response.status_code, 200)
+        user = User.objects.get(username=user.username)
+        self.assertEqual(user.role, Roles.MOD)
+        # test role change from Mod to User
+        response = self.client.patch(
+            reverse('change_role'),
+            {'username': user.username, 'role': Roles.USER},
+        )
+        self.assertEqual(response.status_code, 200)
+        user = User.objects.get(username=user.username)
+        self.assertEqual(user.role, Roles.USER)
+
+    def test_invalid_change_role(self):
+        user = self.user
+        self.client.force_authenticate(self.superuser)
+        # test role change from Admin to Mod
+        response = self.client.patch(
+            reverse('change_role'),
+            {'username': self.superuser.username, 'role': Roles.MOD}
+        )
+        self.assertEqual(response.status_code, 400)
+        superuser = User.objects.get(username=self.superuser.username)
+        self.assertEqual(superuser.role, Roles.ADMIN)
+        # test role change from User to Admin
+        response = self.client.patch(
+            reverse('change_role'),
+            {'username': user.username, 'role': Roles.ADMIN},
+        )
+        self.assertEqual(response.status_code, 400)
+        user = User.objects.get(username=user.username)
+        self.assertEqual(user.role, Roles.USER)
+
+    def test_valid_update_password(self):
+        user = self.user
+        self.client.force_authenticate(user)
+        response = self.client.patch(
+            reverse('update_password'),
+            {'password': self.password, 'new_password': self.new_password}
+        )
+        self.assertEqual(response.status_code, 200)
+        user = User.objects.get(username=user.username)
+        self.assertTrue(user.check_password(self.new_password))
+
+    def test_invalid_update_password(self):
+        user = self.user
+        cases = [
+            {'password': self.new_password, 'new_password': self.new_password},
+            {'password': self.password, 'new_password': self.password},
+            {'new_password': self.new_password},
+            {'password': self.password},
+        ]
+        self.client.force_authenticate(user)
+        for case in cases:
+            response = self.client.patch(reverse('update_password'), case)
+            self.assertEqual(response.status_code, 400)
+            user = User.objects.get(username=user.username)
+            self.assertTrue(user.check_password(self.password))
+
+    def test_valid_update_username(self):
+        user = self.user
+        self.client.force_authenticate(user)
+        response = self.client.patch(
+            reverse('update_username'),
+            {'username': self.usernames[3], 'password': self.password}
+        )
+        self.assertEqual(response.status_code, 200)
+        user = User.objects.get(email=user.email)
+        self.assertEqual(user.username, self.usernames[3])
+        with self.assertRaises(User.DoesNotExist):
+            User.objects.get(username=self.usernames[2])
+
+    def test_invalid_update_username(self):
+        user = self.user
+        cases = [
+            {'username': user.username, 'password': self.password},
+            {'username': self.usernames[3], 'password': self.new_password},
+            {'username': self.usernames[3], 'password': self.new_password},
+        ]
+        self.client.force_authenticate(user)
+        for case in cases:
+            response = self.client.patch(reverse('update_username'), case)
+            self.assertEqual(response.status_code, 400)
+            user = User.objects.get(username=user.username)
+
+    def test_valid_update_email(self):
+        user = self.user
+        self.client.force_authenticate(user)
+        response = self.client.patch(
+            reverse('update_email'),
+            {'email': self.emails[3], 'password': self.password},
+        )
+        self.assertEqual(response.status_code, 200)
+        user = User.objects.get(email=user.email)
+        with self.assertRaises(User.DoesNotExist):
+            User.objects.get(email=self.emails[2])
+
+    def test_invalid_update_email(self):
+        user = self.user
+        cases = [
+            {'email': user.email, 'password': self.password},
+            {'email': self.emails[3], 'password': self.new_password},
+            {'email': self.emails[3]},
+        ]
+        self.client.force_authenticate(user)
+        for case in cases:
+            response = self.client.patch(reverse('update_email'), case)
+            self.assertEqual(response.status_code, 400)
+            user = User.objects.get(email=self.emails[2])
+
+    def test_valid_change_active(self):
+        user = self.user
+        self.client.force_authenticate(self.superuser)
+        response = self.client.patch(
+            reverse('change_active'),
+            {'username': user.username, 'banned': True},
+        )
+        self.assertEqual(response.status_code, 200)
+        user = User.objects.get(username=user.username)
+        self.assertFalse(user.active)
+
+    def test_invalid_change_active(self):
+        user = self.user
+        # test update active to admin
+        self.client.force_authenticate(self.superuser)
+        response = self.client.patch(
+            reverse('change_active'),
+            {'username': self.superuser.username, 'banned': True},
+        )
+        self.assertEqual(response.status_code, 400)
+        superuser = User.objects.get(username=self.superuser.username)
+        self.assertTrue(superuser.active)
+        # test update active without being a moderator
+        self.client.force_authenticate(user)
+        response = self.client.patch(
+            reverse('change_active'),
+            {'username': user.username, 'banned': True},
+        )
+        self.assertEqual(response.status_code, 403)
+        user = User.objects.get(username=user.username)
+        self.assertTrue(user.active)
+
+    def test_get_user(self):
+        user = self.user
+        self.client.force_authenticate(user)
+        response = self.client.get(reverse('get_user', kwargs={'username': user.username}))
+        self.assertEqual(response.status_code, 200)
+        user_serializer = UserSerializer(user)
+        self.assertEqual(user_serializer.data, response.data)
+
