@@ -14,21 +14,22 @@ export default class extends Aview {
         this.field = {};
     }
 
-    showRecoveryPage(){
+    showRecoveryPage(dupthis, e){
+        console.log(dupthis.language)
         document.querySelector("#app").innerHTML = `
         <div class="passwordPage">
             <div class="passwordContainer">
                 <div class="line">
-                    <h1 style="margin: 0;">${this.language.login.passwordRecovery}</h1>
+                    <h1 style="margin: 0;">${dupthis.language.login.passwordRecovery}</h1>
                 </div>
                 <div class="line">
-                    <h3>${this.language.login.enetrUsername}</h3>
+                    <h3>${dupthis.language.login.enterUsername}</h3>
                     <div class="passInp">
                         <input type="text" class="data retroShade" name="username">
                     </div>
                 </div>
                 <div class=" btnLeft">
-                    <button id="recoveryBtn" class="retroBtn retroShade btnColor-green importantSubmit">${this.language.login.getEmail}</button>
+                    <button id="recoveryBtn" class="retroBtn retroShade btnColor-green importantSubmit">${dupthis.language.login.getEmail}</button>
                 </div>
             </div>
         </div>
@@ -99,7 +100,7 @@ export default class extends Aview {
         oauth2.intraLoginHandle();
         oauth2.googleLoginHandle();
 
-        document.querySelector(".recovery").addEventListener("click", this.showRecoveryPage)
+        document.querySelector(".recovery").addEventListener("click", this.showRecoveryPage.bind(null, this))
 
         //defining what to do in case of login button is pressed
         document.querySelector("#loginBtn").addEventListener("click", (e) => {
@@ -117,6 +118,6 @@ export default class extends Aview {
                     handleLogin.Tfa(this, res)
             })
         })
-        this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpg")
+        this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpeg")
     }
 }

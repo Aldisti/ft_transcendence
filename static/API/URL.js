@@ -2,6 +2,8 @@ let ip = "localhost";
 let port = "8000";
 let protocol = "http";
 let pongPort = "7000";
+let authPort = port
+// let authPort = "6969"
 
 export const availabilityCheck = {
     USERNAME: `${protocol}://${ip}:${port}/users/check/`,
@@ -11,9 +13,9 @@ export const availabilityCheck = {
 export const general = {
     USER_INFO: `${protocol}://${ip}:${port}/users/`,
     GET_USERS: `${protocol}://${ip}:${port}/users/`,
-    INTRA_URL: `${protocol}://${ip}:${port}/oauth2/intra/url/`,
-    CONVERT_INTRA_TOKEN: `${protocol}://${ip}:${port}/oauth2/intra/login/`,
-    LINK_INTRA_TOKEN_ACCOUNT: `${protocol}://${ip}:${port}/oauth2/intra/link/`,
+    INTRA_URL: `${protocol}://${ip}:${authPort}/oauth2/intra/url/`,
+    CONVERT_INTRA_TOKEN: `${protocol}://${ip}:${authPort}/oauth2/intra/login/`,
+    LINK_INTRA_TOKEN_ACCOUNT: `${protocol}://${ip}:${authPort}/oauth2/intra/link/`,
 }
 
 export const auth = {
@@ -24,19 +26,19 @@ export const auth = {
     VALIDATE_CODE_RECOVERY: `${protocol}://${ip}:${port}/2fa/validate/recover/`,
     CHECK_TFA_STATUS: `${protocol}://${ip}:${port}/2fa/manage/`,
     REMOVE_TFA: `${protocol}://${ip}:${port}/2fa/manage/`,
-    SEND_RECOVERY_CODElocalhost: `${protocol}://${ip}:${port}/tokens/recovery/`,
+    SEND_RECOVERY_CODE: `${protocol}://${ip}:${port}/tokens/recovery/`,
     UPDATE_PASSWORD: `${protocol}://${ip}:${port}/tokens/password/`,
-    INTRA_STATUS: `${protocol}://${ip}:${port}/oauth2/linked/`,
+    INTRA_STATUS: `${protocol}://${ip}:${authPort}/oauth2/linked/`,
 
-    GET_GOOGLE_URL: `${protocol}://${ip}:${port}/oauth2/google/v2/url/`,
-    UNLINK_GOOGLE_ACCOUNT: `${protocol}://${ip}:${port}/oauth2/google/unlink/`,
-    LINK_GOOGLE_ACCOUNT: `${protocol}://${ip}:${port}/oauth2/google/v2/link/`,
-    LOGIN_WITH_GOOGLE: `${protocol}://${ip}:${port}/oauth2/google/v2/login/`,
+    GET_GOOGLE_URL: `${protocol}://${ip}:${authPort}/oauth2/google/v2/url/`,
+    UNLINK_GOOGLE_ACCOUNT: `${protocol}://${ip}:${authPort}/oauth2/google/unlink/`,
+    LINK_GOOGLE_ACCOUNT: `${protocol}://${ip}:${authPort}/oauth2/google/v2/link/`,
+    LOGIN_WITH_GOOGLE: `${protocol}://${ip}:${authPort}/oauth2/google/v2/login/`,
 }
 
 export const friendship = {
     SEND_REQUEST: `${protocol}://${ip}:${port}/friends/request/send/`,
-    REMOVE_FRIEND: `${protocol}://${ip}:${port}/friends/request/delete/`,
+    REMOVE_FRIEND: `${protocol}://${ip}:${port}/frienauthPortds/request/delete/`,
     ACCEPT_REQUEST: `${protocol}://${ip}:${port}/friends/request/accept/`,
     DENY_REQUEST: `${protocol}://${ip}:${port}/friends/request/reject/`,
     FRIEND_STATUS: `${protocol}://${ip}:${port}/friends/`,
@@ -54,10 +56,10 @@ export const socket = {
 }
 
 export const userAction = {
-    REFRESH_TOKEN: `${protocol}://${ip}:${port}/auth/refresh/`,
-    LOGIN: `${protocol}://${ip}:${port}/auth/login/`,
-    LOGOUT: `${protocol}://${ip}:${port}/auth/logout/`,
-    LOGOUT_ALL: `${protocol}://${ip}:${port}/auth/logout/all/`,
+    REFRESH_TOKEN: `${protocol}://${ip}:${authPort}/auth/refresh/`,
+    LOGIN: `${protocol}://${ip}:${authPort}/auth/login/`,
+    LOGOUT: `${protocol}://${ip}:${authPort}/auth/logout/`,
+    LOGOUT_ALL: `${protocol}://${ip}:${authPort}/auth/logout/all/`,
     REGISTER: `${protocol}://${ip}:${port}/register/`,
     UPDATE_INFO: `${protocol}://${ip}:${port}/users/info/update/`,
     UPDATE_PHOTO: `${protocol}://${ip}:${port}/users/image/upload/`,

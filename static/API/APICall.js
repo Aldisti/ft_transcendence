@@ -31,7 +31,6 @@ async function refreshAndRetry(retryFunc, ...args) {
         cleanLocalStorage();
         history.pushState(null, null, "/login/");
         Router();
-        window.location.reload();
         return;
     }
     return await retryFunc(...args);
@@ -71,7 +70,6 @@ export async function convertIntraToken() {
         localStorage.setItem("username", token.username);
         history.pushState(null, null, "/home");
         Router();
-        window.location.reload();
         return (true);
     }
     return (false);
@@ -87,12 +85,6 @@ export async function convertIntraTokenAccount(recursionProtection) {
         credentials: "include",
     });
     if (res.ok) {
-        let token = await res.json();
-        localStorage.setItem("token", token.access_token)
-        localStorage.setItem("username", token.username);
-        history.pushState(null, null, "/home");
-        Router();
-        window.location.reload();
         return (true);
     }
     if (res.status == 401 && recursionProtection)
@@ -164,7 +156,6 @@ export async function login(data) {
         let body = await res.json();
 
         document.querySelector(".loginError").style.display = "flex";
-        console.log("hey", language.login)
         if (body.message == "user isn't active")
             document.querySelector(".loginError p").innerHTML = language.login.bannedLogin;
     }
@@ -180,7 +171,7 @@ export async function login(data) {
 
 export async function refreshToken() {
     const res = await fetch(URL.userAction.REFRESH_TOKEN, {
-        method: "GET",
+        method: "POST",
         credentials: 'include',
     })
     let resCpy = res;
@@ -200,9 +191,7 @@ export async function register(data) {
         body: JSON.stringify(data),
     })
     if (res.status == 201) {
-        //console.log("hey")
-        localStorage.setItem("username", data.username)
-        history.pushState(null, null, "/login");
+        history.pushState(null, null, "/login/");
         Router();
         return ({});
     } else {
@@ -222,7 +211,7 @@ export async function updateInfo(data, recursionProtection) {
         body: JSON.stringify(data),
     })
     if (res.ok) {
-        window.location.reload();
+        Router();
         return ({});
     }
     if (res.status == 401 && recursionProtection)
@@ -251,8 +240,10 @@ export async function updatePassword(recursionProtection, data, dupThis) {
     if (res.status == 400) {
         alert("Old password is not correct...")
     }
-    if (res.ok)
-        window.location.reload()
+    if (res.ok){
+        history.pushState(null, null, "/account/");
+        Router();
+    }
     return (res);
 }
 
@@ -282,7 +273,6 @@ export async function logout(recursionProtection) {
         cleanLocalStorage()
         history.pushState(null, null, "/home");
         Router();
-        window.location.reload();
         return;
     }
     alert("Something went wrong retry...");
@@ -303,7 +293,6 @@ export async function logoutAll(recursionProtection) {
         cleanLocalStorage()
         history.pushState(null, null, "/home");
         Router();
-        window.location.reload();
         return;
     }
     alert("Something went wrong retry...");
@@ -340,7 +329,7 @@ export async function uploadImage(recursionProtection, file) {
     if (res.status == 401 && recursionProtection)
         return await refreshAndRetry(uploadImage, 0, file);
     if (res.ok) {
-        window.location.reload();
+        Router();
     }
 }
 
@@ -520,9 +509,8 @@ export async function removeTfa(recursionProtection, code)
     if (res.ok)
     {
         localStorage.removeItem("is_active");
-        history.pushState(null, null, "/home");
+        history.pushState(null, null, "/account/");
         Router();
-        window.location.reload()
     }
     if (res.status == 401 && recursionProtection)
         return await refreshAndRetry(removeTfa, 0, code);
@@ -541,9 +529,13 @@ export async function sendRecoveryEmail(username)
         })
     })
     //console.log(res)
-    let temp = await res.json();
+    try{
+        let temp = await res.json();
+        return (temp);
+    }catch(e){
+        return ({})
+    }
     //console.log(temp);
-    return (temp);
 }
 
 export async function recoveryPassword(data, token)
@@ -559,10 +551,8 @@ export async function recoveryPassword(data, token)
     if (res.ok)
     {
         history.pushState(null, null, "/login");
-        Router();
-        window.location.reload();    
+        Router();   
     }
-    //console.log(res)
 }
 
 export async function getIntraStatus(recursionProtection){
@@ -632,7 +622,6 @@ export async function googleLogin(recursionProtection, code, state) {
 
         localStorage.setItem("token", jsonBody.access_token)
         localStorage.setItem("username", jsonBody.username)
-        // window.location.reload();
     }
     console.log(res);
 }
@@ -751,7 +740,6 @@ export async function getFriends(recursionProtection){
     }
     if (res.status == 401 && recursionProtection)
         return await refreshAndRetry(getFriends, 0);
-    alert("error ha occured..")
     return ({})
 }
 
@@ -769,7 +757,6 @@ export async function getUsers(recursionProtection){
     }
     if (res.status == 401 && recursionProtection)
         return await refreshAndRetry(getUsers, 0);
-    alert("error ha occured..")
     return ({})
 }
 

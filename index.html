@@ -109,8 +109,15 @@
         </svg>
       </div>
     </footer>
+    <script>
+            if (localStorage.getItem("language") == null)
+        localStorage.setItem("language", "en");
+      if (localStorage.getItem("style") == null)
+        localStorage.setItem("style", "modern");
+      if (localStorage.getItem("darkMode") == null)
+        localStorage.setItem("darkMode", "false");
+    </script>
     <script type="module" src="/router/router.js"></script>
-    <script type="module" src="/views/NavBar.js"></script>
     <script src="/globalFunction/globalFunction.js"></script>
     <script src="/scripts/bootstrap.bundle.min.js"></script>
     <script type="module" src="/viewScripts/chat/chat.js"></script>

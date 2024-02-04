@@ -15,14 +15,14 @@ export default class extends Aview{
         this.games          = {
             pong3d:{
                 name: "Pong 3D",
-                url: "/games/pongThreeD",
+                url: "/games/pongThreeD/",
                 imgUrl: "/imgs/pong3d-thumbnail.jpg",
                 category: "Arcade",
                 multiplayer: true
             },
             pong:{
                 name: "Pong 2D",
-                url: "/games/pongTwoD",
+                url: "/games/pongTwoD/",
                 imgUrl: "/imgs/pong-thumbnail.png",
                 category: "Arcade",
                 multiplayer: false
@@ -36,7 +36,7 @@ export default class extends Aview{
 
         for (let key of Object.keys(games))
         {
-            html += `<a class="link" href="${games[key].url}" data-link>
+            html += `<a href="${games[key].url}" class="link" data-link>
                         <div class="gameTitle">
                             <h2>${games[key].name}</h2>
                             <div class="gameModeWrap">

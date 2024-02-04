@@ -9,9 +9,8 @@ import handleClick from "/viewScripts/userInfo/handleClick.js"
 import * as prepare from "/viewScripts/userInfo/prepareForms.js"
 
 window.goHome = ()=>{
-    history.pushState(null, null, "/home");
+    history.pushState(null, null, "/home/");
     Router();
-    window.location.reload(); 
 }
 
 export default class extends Aview {
@@ -482,6 +481,35 @@ export default class extends Aview {
 
     setup() { 
         this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpeg")
+
+        const urlParams = new URLSearchParams(window.location.search);
+
+        if (localStorage.getItem("loginWithGoogle") == "true")
+        {
+            API.googleLogin(1, urlParams.get("code"), urlParams.get("state")).then(res=>{
+                localStorage.removeItem("loginWithGoogle");
+                window.goHome();
+            })
+            return ;
+        }
+        if (urlParams.get("code") != null)
+        {
+            API.linkGoogleAccount(1, urlParams.get("code"), urlParams.get("state")).then(res=>{
+                document.querySelector(".google").style.backgroundColor = "var(--bs-success)"
+                localStorage.setItem("googleLinked", "true")
+                history.pushState(null, null, "/account/");
+                Router();
+            })
+        }
+
+        if (localStorage.getItem("userWantLink") != null)
+        {
+            API.convertIntraTokenAccount(1).then(res=>{
+                localStorage.removeItem("userWantLink");
+                document.querySelector(".intra").style.backgroundColor = "var(--bs-success)";
+                localStorage.setItem("intraLinked", "true")
+            })
+        }
 
         //defining the start menu item that need to be highlighted
         if (localStorage.getItem("selectedForm") == null)

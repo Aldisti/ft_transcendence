@@ -130,11 +130,11 @@ export function checkChangePasswordForm(form, errors){
     let confirmNewPass = form[lan.update.confirmNewPassword[1]].value;
 
     //check for syntax error on all three possible passoword inserted and show requirements if needed
-    if (!passwordValidator(oldPass, document.querySelectorAll("input")[0], errors))
+    if (!passwordValidator(oldPass, document.querySelectorAll(".formMenu input")[0], errors))
         document.querySelector(".errors").style.display = "flex";
-    if (!passwordValidator(newPass, document.querySelectorAll("input")[1], errors))
+    if (!passwordValidator(newPass, document.querySelectorAll(".formMenu input")[1], errors))
         document.querySelector(".errors").style.display = "flex";
-    if (!passwordValidator(confirmNewPass, document.querySelectorAll("input")[2], errors))
+    if (!passwordValidator(confirmNewPass, document.querySelectorAll(".formMenu input")[2], errors))
         document.querySelector(".errors").style.display = "flex";
 
     //will color the input box if the new password does not match with the confirm

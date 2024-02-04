@@ -1,3 +1,5 @@
+import Router from "/router/mainRouterFunc.js"
+
 export default function styleSwitchHandler(e){
     e.stopPropagation();
     document.querySelector(".highlightPc").classList.toggle("highlightModernPc")
@@ -7,6 +9,6 @@ export default function styleSwitchHandler(e){
 		localStorage.setItem("style", "old")
 	document.querySelector(".loaderOverlay").style.left = "0";
     setTimeout(() => {
-        window.location.reload();
+        Router()
     }, 300);
 }

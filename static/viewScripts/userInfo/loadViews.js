@@ -1,4 +1,5 @@
 import * as API from "/API/APICall.js";
+import Router from "/router/mainRouterFunc.js"
 
 function isNumber(value) {
     return typeof value === 'number';
@@ -140,7 +141,7 @@ export function triggerIntraLink(dupThis) {
     } else if (localStorage.getItem("intraLinked") != null && confirm(dupThis.language.update.intraUnlinkConfirm)) {
         //console.log("unlink")
         API.unlinkIntra(1).then(() => {
-            window.location.reload();
+            document.querySelector(".intra").style.backgroundColor = "var(--bs-warning)"
         });
     }
 }
@@ -151,7 +152,9 @@ export function triggerGoogleLink(dupThis) {
     else if (localStorage.getItem("googleLinked") != null && confirm(dupThis.language.update.googleUnlinkConfirm)) {
         //console.log("unlink")
         API.unlinkGoogle(1).then(() => {
-            window.location.reload();
+            console.log(window)
+            history.pushState(null, null, "/account/");
+            Router();
         });
     }
 }

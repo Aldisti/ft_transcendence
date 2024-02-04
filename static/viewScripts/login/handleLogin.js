@@ -14,7 +14,6 @@ function validateLoginCode()
                 localStorage.setItem("token", token.access_token)
                 history.pushState(null, null, "/home");
                 Router();
-                window.location.reload();
             }
         })
     }
@@ -24,7 +23,6 @@ export function normal(res){
     localStorage.setItem("token", res.access_token)
     history.pushState(null, null, "/home");
     Router();
-    window.location.reload();
 }
 
 export function Tfa(dupThis, res){

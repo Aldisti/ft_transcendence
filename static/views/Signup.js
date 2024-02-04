@@ -236,7 +236,7 @@ export default class extends Aview{
 				check.showErrors(document.querySelectorAll(".data"), this.errors)
 			}
 		})
-        this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpg");
+        this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpeg");
 	}
 	close()
     {

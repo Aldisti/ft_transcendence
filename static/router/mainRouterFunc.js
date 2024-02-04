@@ -1,6 +1,7 @@
 import Routes from "/router/initRoutes.js"
 import * as styleH from "/router/styleSheetsHandling.js"
 import Spinner from "/views/Spinner.js"
+import createNavbar from "/views/NavBar.js"
 
 let fRoute = 0;
 let cloneDocument = document.cloneNode(true);
@@ -38,9 +39,10 @@ const Router =()=>{
 			matechedLocation = new Routes[0].view;
 			fRoute = Routes[0];
 		}
-		matechedLocation.getLanguage();
 		styleH.enableStyleSheet(fRoute);
 		setTimeout(() => {
+			createNavbar();
+			matechedLocation.getLanguage();
 			document.querySelector("#app").innerHTML = matechedLocation.getHtml();
 			document.querySelector("#app").innerHTML += getBottomDivider();
 			

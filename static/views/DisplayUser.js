@@ -132,7 +132,7 @@ export default class extends Aview {
         `
     }
     setup(){
-        this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpg")
+        this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpeg")
         this.getUserCard();
         let data = {
                 type: "vertical",
