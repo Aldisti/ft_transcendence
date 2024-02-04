@@ -14,8 +14,6 @@ from accounts.serializers import CompleteUserSerializer, UploadImageSerializer, 
 from accounts.models import User, UserInfo, UserGame
 from accounts.validators import image_validator
 
-from friends.models import FriendsList
-
 from email_manager.email_sender import send_verification_email
 
 from authentication.permissions import IsActualUser, IsAdmin, IsModerator, IsUser

@@ -2,7 +2,7 @@ from django.core.validators import RegexValidator, EmailValidator
 
 from rest_framework import serializers
 
-from accounts.models import User, UserInfo, UserWebsockets
+from accounts.models import User, UserInfo
 from two_factor_auth.models import UserTFA
 from authentication.models import UserTokens
 from accounts.validators import image_validator
@@ -80,7 +80,6 @@ class CompleteUserSerializer(serializers.ModelSerializer):
         user.user_info = UserInfo.objects.create(user, **user_info)
         user.user_tfa = UserTFA.objects.create(user=user)
         user.user_tokens = UserTokens.objects.create(user=user)
-        user.user_websockets = UserWebsockets.objects.create(user=user)
         return user
 
     def update_email(self, validated_data):

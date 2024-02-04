@@ -66,8 +66,6 @@ INSTALLED_APPS = [
     'oauth2',
     'two_factor_auth',
     'channels',
-    'chat',
-    'notifications',
     'friends',
     'multiplayer_test',
     'pong',

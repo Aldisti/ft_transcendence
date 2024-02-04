@@ -15,6 +15,7 @@ migrations:
 	@sudo ./srcs/tools/clean_migrations.sh
 	@sudo ./srcs/tools/clean_migrations_pong.sh
 	@sudo ./srcs/tools/clean_migrations_chat.sh
+	@sudo ./srcs/tools/clean_migrations_ntf.sh
 
 clean:
 	@if [ -f $(COMPOSE) ]; then \

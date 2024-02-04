@@ -1,7 +1,7 @@
 #!/bin/bash
 
-PROJECT="./data/chat/chat/"
-APPS=('users messages friends')
+PROJECT="./data/ntf/ntf/"
+APPS=('users notifications')
 DEL_PATH="migrations/0"
 
 for app in ${APPS[@]}; do
