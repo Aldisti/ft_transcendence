@@ -99,7 +99,8 @@ REST_FRAMEWORK = {
         "high_load": "10/minute",
         "medium_load": "30/minute",
         "low_load": "60/minute",
-    }
+    },
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
 }
 
 # Django SimpleJWT
@@ -174,7 +175,7 @@ OAUTH2.update({
     "INTRA_REDIRECT_URI": f"{OAUTH2['SERVER_URL']}/oauth2/intra/callback/",
     "GOOGLE_REDIRECT_URI": f"{OAUTH2['CLIENT_URL']}/google/callback",
     "CLIENT_REDIRECT_LOGIN": f"{OAUTH2['CLIENT_URL']}/login/",
-    "CLIENT_REDIRECT_LINK": f"{OAUTH2['CLIENT_URL']}/account/",
+    "CLIENT_REDIRECT_LINK": f"{OAUTH2['CLIENT_URL']}/home/",
 })
 
 OAUTH2["INTRA_REQUEST_BODY"] = {
