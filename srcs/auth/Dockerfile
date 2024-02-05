@@ -9,6 +9,8 @@ RUN pip install django \
 
 # postgres connection
 RUN pip install psycopg
+# two factor auth
+RUN pip install pyotp
 # for testing reasons
 RUN pip install httpie
 RUN pip install django-cors-headers
