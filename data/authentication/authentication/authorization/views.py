@@ -47,7 +47,7 @@ def login(request) -> Response:
         return Response(data={'message': "user isn't active"}, status=400)
     # TODO: check for password reset token
     # UserTokens.objects.clear_password_token(user.user_tokens)
-    if user.tfa:
+    if user.has_tfa():
         # TODO: generate tfa token making a GET request
         return Response(data={
             'token': '',
