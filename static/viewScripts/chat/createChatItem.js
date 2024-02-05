@@ -33,7 +33,6 @@ export function createTitle(){
                     <div tabindex="-1" class="imgTitle chat">
                         <img class="chat" src="${res.user_info.picture != null ? res.user_info.picture : "/imgs/defaultImg.jpg"}">
                     </div>
-
                     <a tabindex="-1" class="chat" href="/user/?username=${document.querySelector(".chatBox").getAttribute("name")}" data-link>
                         <h2 tabindex="-1" class=" chat">
                             ${document.querySelector(".chatBox").getAttribute("name")}
@@ -74,14 +73,17 @@ export function createTitle(){
 
 //function that given a message it build the html code for the message ready to be appended
 export function createMessage(message){
+    let isGlobalChat = document.querySelector(".chatBox").getAttribute("name") == "global";
     let messageEl = `
         <div tabindex="-1" class="messageLine chat actualChat">
             <div tabindex="-1" class="${message.sender == localStorage.getItem("username") ? `reply rightColor` : `userMessage leftColor`} chat actualChat">
-                <a tabindex="-1" class="chat" href="/user/?username=${message.sender == localStorage.getItem("username") ? localStorage.getItem("username") : message.sender }" data-link>
-                    <div tabindex="-1" class=" chat chatUsername actualChat">
-                        ${message.sender == localStorage.getItem("username") ? `Tu` : message.sender }
-                    </div>
-                </a>
+                ${isGlobalChat ? `
+                    <a tabindex="-1" class="chat" href="/user/?username=${message.sender == localStorage.getItem("username") ? localStorage.getItem("username") : message.sender }" data-link>
+                        <div tabindex="-1" class=" chat chatUsername actualChat">
+                            ${message.sender == localStorage.getItem("username") ? `Tu` : message.sender }
+                        </div>
+                    </a>
+                ` : ``}
                 <span tabindex="-1" class="chat textContainer actualChat">
                     ${window.escapeHtml(message.body)}
                 </span>

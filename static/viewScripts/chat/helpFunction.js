@@ -5,8 +5,10 @@ export function chatInitializer(userArray){
     let chatHistory;
 
     //check if chat is already setted in localstorage
-    if (localStorage.getItem("chat") == null)
-        localStorage.setItem("chat", "{}");
+    if (localStorage.getItem("chat") == null){
+        localStorage.setItem("chat", "{global: []}");
+
+    }
 
     //parse the chat item in localstorage to be updated
     chatHistory = JSON.parse(localStorage.getItem("chat"));

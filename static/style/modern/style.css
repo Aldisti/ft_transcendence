@@ -296,12 +296,13 @@ body {
     width: 55%;
     height: 100%;
     display: flex;
+    position: relative;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
     gap: 20px;
-    padding: 20px;
-    background-color: white;
+    padding: 15px;
+    background: linear-gradient(to left, #C77DFF, #E0AAFF);
     z-index: 10000000;
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
 }
@@ -328,14 +329,13 @@ body {
 
 .chatBox {
     width: 100%;
-    height: 80%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     padding: 15px;
+    padding-top: 60px;
     overflow: scroll;
-    background-color: white;
-    /* background-color: var(--bs-warning); */
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+    /* box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important; */
 }
 
 .chatInput {
@@ -345,7 +345,7 @@ body {
     display: flex;
     justify-content: space-between;
     padding: 20px;
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+    /* box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important; */
 }
 
 .chatTitleLine {
@@ -357,12 +357,16 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: relative;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
 }
 
 .chatTitle {
     width: 100%;
     height: 8svh;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
 .chat a{
@@ -400,12 +404,12 @@ body {
 }
 
 .rightColor {
-    background-color: var(--bs-teal);
+    background-color: #7b2cbf;
     color: white;
 }
 
 .leftColor {
-    background-color: var(--bs-cyan);
+    background-color: #240046;
     color: white;
 }
 
@@ -434,14 +438,17 @@ body {
     width: fit-content;
     height: fit-content;
     padding: 1px 5px 1px 5px;
-    color: black;
-    background-color: white;
+    color: #e0aaff;
 }
 
 .textContainer {
+    width: 100%;
+    margin: 5px 0 5px 0;
     padding: 4px;
+    /* background-color: white; */
+    color: white;
     height: fit-content;
-    width: fit-content;
+    overflow-wrap: break-word;
 }
 
 .reply {
