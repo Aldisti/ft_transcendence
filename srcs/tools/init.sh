@@ -20,6 +20,10 @@ declare -A VOLUMES=(
 	["pong_db"]="./data/pongdb"
 	["auth"]="./data/authentication"
 	["auth_db"]="./data/authdb"
+	["chat"]="./data/chat"
+	["chat_db"]="./data/chatdb"
+	["ntf"]="./data/ntf"
+	["ntf_db"]="./data/ntfdb"
 )
 
 declare -A ENV_VARS=(
@@ -52,6 +56,26 @@ declare -A ENV_VARS=(
 	["GOOGLE_SECRET"]="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"
 	["RSA_PRIVATE_KEY_PATH"]="/etc/.rsa/rsa.pem"
 	["RSA_PUBLIC_KEY_PATH"]="/etc/.rsa/rsa.crt"
+	["CHATAPP_NAME"]="chat"
+	["CHATDB_NAME"]="chat"
+	["CHATDB_USER"]="$USERNAME"
+	["CHATDB_PASSWORD"]=""
+	["CHATDB_HOST"]="chatdb"
+	["CHATDB_PORT"]="5432"
+	["NTFAPP_NAME"]="ntf"
+	["NTFDB_NAME"]="ntf"
+	["NTFDB_USER"]="$USERNAME"
+	["NTFDB_PASSWORD"]=""
+	["NTFDB_HOST"]="ntfdb"
+	["NTFDB_PORT"]="5432"
+	["SERVER_FRONTEND_IP"]="localhost"
+	["EXCHANGE"]="my_exchange"
+	["NTF_ROUTING_KEY"]="notification"
+	["VHOST_NTF"]="notification"
+	["NTF_QUEUE"]="ntf_queue"
+	["THREAD"]="5"
+	["RABBIT_HEARTBEAT"]="20"
+	["RABBIT_BC_TIMEOUT"]="10"
 )
 
 create_env() {

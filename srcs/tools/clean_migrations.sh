@@ -18,12 +18,16 @@ declare -A PROJECTS_PATH=(
 	['transcendence']='./data/django/transcendence' 
 	['pong']='./data/pong/pong' 
 	['auth']='./data/authentication/authentication'
+	['chat']='./data/chat/chat'
+	['ntf']='./data/ntf/ntf'
 )
 
 declare -A APPS_PATH=(
 	['transcendence']="/accounts /authentication /chat /email_manager /friends /notifications /oauth2 /two_factor_auth /pong"
 	['pong']="/users /matchmaking /game"
 	['auth']="/users /authorization /oauth2 /two_factor_auth"
+	['chat']="/users /friends /messages"
+	['ntf']="/users /notifications"
 )
 
 remove_migrations()

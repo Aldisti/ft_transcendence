@@ -128,6 +128,7 @@ class UserTokens(models.Model):
     def __str__(self):
         return f"user: {self.user.username}, email_token: {self.email_token}"
 
+
 class WebsocketTicket(models.Model):
     user_tokens = models.ForeignKey(
         UserTokens,
@@ -153,4 +154,4 @@ class WebsocketTicket(models.Model):
         db_table = "websocket_ticket"
 
     def __str__(self):
-        return f"{self.user_tokens_id} has tikcket: {self.ticket}"
+        return f"{self.user_tokens_id} has ticket: {self.ticket}"

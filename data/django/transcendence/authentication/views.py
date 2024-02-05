@@ -10,6 +10,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from two_factor_auth.models import UserTFA
 
+# TODO: move url in main setting
 from .models import JwtToken, UserTokens, WebsocketTicket
 from .throttles import LowLoadThrottle, MediumLoadThrottle
 from .serializers import TokenPairSerializer
@@ -27,11 +28,27 @@ logger = logging.getLogger(__name__)
 
 
 @api_view(['GET'])
-@permission_classes([])
-def generate_ticket(request) -> Response:
+@permission_classes([IsUser])
+def generate_ntf_ticket(request) -> Response:
     user = request.user
-    websocket_ticket = WebsocketTicket.objects.create(user.user_tokens)
-    return Response({"ticket": websocket_ticket.ticket}, status=200)
+    #websocket_ticket = WebsocketTicket.objects.create(user.user_tokens)
+    data = {"username": user.username}
+    api_response = post_request(settings.MS_URLS['NTF_TICKET'], json=data)
+    if api_response.status_code >= 300:
+        return Response(api_response.json(), status=503)
+    return Response(api_response.json(), status=200)
+
+
+@api_view(['GET'])
+@permission_classes([IsUser])
+def generate_chat_ticket(request) -> Response:
+    user = request.user
+    #websocket_ticket = WebsocketTicket.objects.create(user.user_tokens)
+    data = {"username": user.username}
+    api_response = post_request(settings.MS_URLS['CHAT_TICKET'], json=data)
+    if api_response.status_code >= 300:
+        return Response(api_response.json(), status=503)
+    return Response(api_response.json(), status=200)
 
 
 class LoginView(APIView):
@@ -143,14 +160,14 @@ class RefreshView(APIView):
 def get_queue_ticket(request) -> Response:
     username = request.user.username
     data = {'username': username}
-    logger.warning("#" * 50)
+    #logger.warning("#" * 50)
     api_response = post_request(MATCHMAKING_TOKEN, json=data)
-    logger.warning("#" * 50)
+    #logger.warning("#" * 50)
     if api_response.status_code != 200:
-        logger.warning(f"status code: {api_response.status_code}")
-        logger.warning(f"json: {api_response.json()}")
+        #logger.warning(f"status code: {api_response.status_code}")
+        #logger.warning(f"json: {api_response.json()}")
         return Response(data={'message': f'api: {api_response.status_code}'}, status=503)
-    logger.warning(f"\n\n\n\n\nDJANGO API RESPONSE: {api_response.json()}")
+    #logger.warning(f"\n\n\n\n\nDJANGO API RESPONSE: {api_response.json()}")
     return Response(data=api_response.json(), status=200)
 
 

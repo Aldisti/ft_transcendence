@@ -11,7 +11,8 @@ urlpatterns = [
         path('all/', views.logout, name='logout_all'),
     ])),
     path('ticket/', include([
-        path('', views.generate_ticket, name='api-generate-ticket'),
+        path('ntf/', views.generate_ntf_ticket, name='api-generate-ntf-ticket'),
+        path('chat/', views.generate_chat_ticket, name='api-generate-chat-ticket'),
         path('matchmaking/', views.get_queue_ticket, name='api-generate-matchmaking-ticket'),
     ])),
     path('retrieve/', include([

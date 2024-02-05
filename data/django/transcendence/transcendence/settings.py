@@ -66,8 +66,6 @@ INSTALLED_APPS = [
     'oauth2',
     'two_factor_auth',
     'channels',
-    'chat',
-    'notifications',
     'friends',
     'multiplayer_test',
     'pong',
@@ -272,3 +270,55 @@ FILE_CATEGORY = "image"
 
 MAX_MESSAGES = 500
 MAX_MESSAGE_LENGTH = 512
+
+# microservices urls
+
+CHAT_HOST = environ['CHAT_HOST']
+CHAT_PORT = environ['CHAT_PORT']
+
+PONG_HOST = environ['PONG_HOST']
+PONG_PORT = environ['PONG_PORT']
+
+NTF_HOST = environ['NTF_HOST']
+NTF_PORT = environ['NTF_PORT']
+
+AUTH_HOST = environ['AUTH_HOST']
+AUTH_PORT = environ['AUTH_PORT']
+
+MS_URLS = {
+    # chat urls
+    "CHAT_REGISTER": f"http://{CHAT_HOST}:{CHAT_PORT}/user/register/",
+    "CHAT_TICKET": f"http://{CHAT_HOST}:{CHAT_PORT}/user/ticket/",
+    "CHAT_DELETE": f"http://{CHAT_HOST}:{CHAT_PORT}/user/<pk>/delete/",
+    "FRIENDS_SEND_REQ": f"http://{CHAT_HOST}:{CHAT_PORT}/friends/request/send/",
+    "FRIENDS_ACCEPT_REQ": f"http://{CHAT_HOST}:{CHAT_PORT}/friends/request/accept/",
+    "FRIENDS_REJECT_REQ": f"http://{CHAT_HOST}:{CHAT_PORT}/friends/request/reject/",
+    "FRIENDS_DELETE_REQ": f"http://{CHAT_HOST}:{CHAT_PORT}/friends/request/delete/",
+    "FRIENDS_ALL": f"http://{CHAT_HOST}:{CHAT_PORT}/friends/all/",
+    "FRIENDS_CHECK": f"http://{CHAT_HOST}:{CHAT_PORT}/friends/",
+    # notification urls
+    "NTF_REGISTER": f"http://{NTF_HOST}:{NTF_PORT}/user/register/",
+    "NTF_TICKET": f"http://{NTF_HOST}:{NTF_PORT}/user/ticket/",
+    "NTF_DELETE": f"http://{NTF_HOST}:{NTF_PORT}/user/<pk>/delete/",
+    # pong urls
+    "PONG_REGISTER": f"http://{PONG_HOST}:{PONG_PORT}/user/register/",
+    "PONG_DELETE": f"http://{PONG_HOST}:{PONG_PORT}/user/<pk>/delete/",
+	# auth urls
+	"AUTH_REGISTER": f"http://{AUTH_HOST}:{AUTH_PORT}/users/register/",
+}
+
+# rabbit config
+
+RABBIT = {
+    "host": environ['RABBIT_HOST'],
+    "port": int(environ['RABBIT_PORT']),
+    "heartbeat": int(environ['RABBIT_HEARTBEAT']),
+    "bc_timeout": int(environ['RABBIT_BC_TIMEOUT']),
+    "exchange": environ['EXCHANGE'],
+    "R_KEYS": {
+        "ntf": environ['NTF_ROUTING_KEY'],
+    },
+    "VHOSTS": {
+        "ntf": environ['VHOST_NTF']
+    },
+}

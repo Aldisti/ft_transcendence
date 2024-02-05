@@ -2,23 +2,46 @@ from django.core.exceptions import ValidationError
 from django.shortcuts import render
 from django.core.mail import send_mail
 from django.conf import settings
+
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.generics import RetrieveDestroyAPIView, ListAPIView
 from rest_framework.exceptions import APIException
 from rest_framework import filters
+
 from accounts.paginations import MyPageNumberPagination
 from accounts.serializers import CompleteUserSerializer, UploadImageSerializer, UserInfoSerializer
 from accounts.models import User, UserInfo, UserGame
-from friends.models import FriendsList
 from accounts.validators import image_validator
+
 from email_manager.email_sender import send_verification_email
+
 from authentication.permissions import IsActualUser, IsAdmin, IsModerator, IsUser
 
-import requests
+from requests import post as post_request
+from requests import delete as delete_request
+
 import logging
 
+import pika
+import os
+
 logger = logging.getLogger(__name__)
+
+@api_view(['GET'])
+@permission_classes([])
+def test(request):
+    params = pika.ConnectionParameters(host=os.environ['RABBIT_HOST'], port=int(os.environ['RABBIT_PORT']))
+    connection = pika.BlockingConnection(params)
+    channel = connection.channel()
+
+    routing_key = os.environ['NTF_ROUTING_KEY']
+    message = "NOTIFICATION"
+    channel.basic_publish(exchange=os.environ['EXCHANGE'], routing_key=routing_key, body=message)
+    #logger.warning("sent")
+    #channel.close()
+    
+    return Response(status=200)
 
 
 @api_view(['POST'])
@@ -40,11 +63,56 @@ def registration(request):
     # TODO: register user on the game app
     user_serializer = CompleteUserSerializer(data=request.data)
     user_serializer.is_valid(raise_exception=True)
+    username = user_serializer.validated_data.get("username")
+    email = user_serializer.validated_data.get("email")
+    password = user_serializer.validated_data.get("password")
+    data = {'username': username}
+
+    # TODO: implement delete when something goes wrong
+
+    # create user instance on ntf database
+    api_response = post_request(settings.MS_URLS['NTF_REGISTER'], json=data)
+    if api_response.status_code >= 300:
+        return Response(data={'message': 'Something strange happened, contact devs'}, status=503)
+
+    # create user instance on chat database
+    api_response = post_request(settings.MS_URLS['CHAT_REGISTER'], json=data)
+    if api_response.status_code >= 300:
+        # delete from ntf db
+        ntf_url = settings.MS_URLS['NTF_DELETE'].replace("<pk>", username)
+        api_response = delete_request(ntf_url, json=data)
+        return Response(data={'message': 'Something strange happened, contact devs'}, status=503)
+
+    # create user instance on pong database
+    api_response = post_request(settings.MS_URLS['PONG_REGISTER'], json=data)
+    if api_response.status_code >= 300:
+        # delete from ntf db
+        ntf_url = settings.MS_URLS['NTF_DELETE'].replace("<pk>", username)
+        api_response = delete_request(ntf_url, json=data)
+        # delete from chat db
+        chat_url = settings.MS_URLS['CHAT_DELETE'].replace("<pk>", username)
+        api_response = delete_request(chat_url, json=data)
+        return Response(data={'message': 'Something strange happened, contact devs'}, status=503)
+
+
+    api_response = post_request(settings.MS_URLS['AUTH_REGISTER'], json={'username': username, 'email': email, 'password': password})
+    if api_response.status_code >= 300:
+        # delete from ntf db
+        ntf_url = settings.MS_URLS['NTF_DELETE'].replace("<pk>", username)
+        api_response = delete_request(ntf_url, json=data)
+        # delete from chat db
+        chat_url = settings.MS_URLS['CHAT_DELETE'].replace("<pk>", username)
+        api_response = delete_request(chat_url, json=data)
+        # delete from pong db
+        pong_url = settings.MS_URLS['PONG_DELETE'].replace("<pk>", username)
+        api_response = delete_request(pong_url, json=data)
+        return Response(data={'message': 'Something strange happened, contact devs'}, status=503)
+
+    # create user instance on main database
+    # TODO: validation error protection
     user = user_serializer.create(user_serializer.validated_data)
-    api_response = requests.post('http://auth:8000/users/register/', json=user_serializer.validated_data)
-    if api_response.status_code != 201:
-        return Response({"message": f"{api_response.json()}"})
-    # send_verification_email(user=user)
+    # TODO: reduce time of registration
+    send_verification_email(user=user)
     serializer_response = CompleteUserSerializer(user)
     return Response(serializer_response.data, status=201)
 
@@ -110,11 +178,28 @@ def update_user_info(request):
 
 
 class RetrieveDestroyUser(RetrieveDestroyAPIView):
-    permission_classes = [IsActualUser|IsAdmin]
+    #permission_classes = [IsActualUser|IsAdmin]
     permission_classes = []
     queryset = User.objects.all()
     serializer_class = CompleteUserSerializer
     lookup_field = "username"
+
+    def destroy(request, *args, **kwargs):
+        logger.warning("MY DESTROY")
+        logger.warning(f"KWARGS: {kwargs}")
+        username = kwargs.get("username", "")
+        if username != "":
+            data = {'username': username}
+            # delete from ntf db
+            ntf_url = settings.MS_URLS['NTF_DELETE'].replace("<pk>", username)
+            api_response = delete_request(ntf_url, json=data)
+            # delete from chat db
+            chat_url = settings.MS_URLS['CHAT_DELETE'].replace("<pk>", username)
+            api_response = delete_request(chat_url, json=data)
+            # delete from pong db
+            pong_url = settings.MS_URLS['PONG_DELETE'].replace("<pk>", username)
+            api_response = delete_request(pong_url, json=data)
+        return super().destroy(request, *args, **kwargs)
 
 
 class ListUser(ListAPIView):
