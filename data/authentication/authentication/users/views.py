@@ -34,6 +34,8 @@ def register_user(request) -> Response:
         return Response(data={"message": str(e)}, status=400)
     except ValueError as e:
         return Response(data={"message": str(e)}, status=400)
+    except TypeError as e:
+        return Response(data={"message": str(e)}, status=400)
     return Response(data=user_serializer.validated_data, status=status.HTTP_201_CREATED)
 
 

@@ -20,12 +20,8 @@ class Roles:
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, **kwargs):
+    def create_user(self, username: str, email: str, password: str, **kwargs):
         kwargs.setdefault('role', Roles.USER)
-
-        username = kwargs.pop('username', '')
-        email = kwargs.pop('email', '')
-        password = kwargs.pop('password', '')
 
         if username == '' or email == '' or password == '':
             raise ValueError('missing username or email or password')

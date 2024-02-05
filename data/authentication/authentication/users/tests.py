@@ -113,10 +113,11 @@ class ModelUserTests(TestCase):
     def test_user_active_update(self):
         # ban User
         user = User.objects.update_active(self.user, status=True)
-        self.assertTrue(user.active)
+        self.assertFalse(user.active)
         # sban User
         user = User.objects.update_active(self.user, status=False)
-        self.assertFalse(user.active)
+        self.assertTrue(user.active)
+
 
     def test_user_verified_update(self):
         # User verification
@@ -141,10 +142,10 @@ class ModelUserTests(TestCase):
             User.objects.create_user(email=self.email, username=self.username)
         # checking creation with invalid self.email
         with self.assertRaises(ValidationError):
-            User.objects.create_user(self.username, self.invalid_email, self.password)
+            User.objects.create_user(username=self.username, email=self.invalid_email, password=self.password)
         # checking creation with blank username
-        with self.assertRaises(ValidationError):
-            User.objects.create_user("", self.email, self.password)
+        with self.assertRaises(ValueError):
+            User.objects.create_user(username="", email=self.email, password=self.password)
         # checking creation with invalid username
         with self.assertRaises(ValidationError):
             User.objects.create_user(self.invalid_username, self.email, self.password)
@@ -200,7 +201,7 @@ class ModelUserTests(TestCase):
         with self.assertRaises(ValueError):
             User.objects.create_superuser(self.super_username, self.super_email, self.password, role=Roles.MOD)
         # checking creation with blank username
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(ValueError):
             User.objects.create_superuser("", self.super_email, self.password)
         # checking creation with invalid username
         with self.assertRaises(ValidationError):
