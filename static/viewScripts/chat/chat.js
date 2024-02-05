@@ -4,8 +4,8 @@ import * as API from "/API/APICall.js";
 
 
 //first check if the user is logged if so ask the server for the user frinds to build the chat element
-if (localStorage.getItem("username") != null)
-{
+export default function startChatListeners(){
+
     //create the GLOBAL chat for all registered users
     create.createUser(create.global);
 

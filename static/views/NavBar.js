@@ -4,6 +4,8 @@ import handleSearchUser from "/viewScripts/navbar/userSearch.js"
 import styleSwitchHandler from "/viewScripts/navbar/styleSwitch.js"
 import * as API from "/API/APICall.js"
 import Router from "/router/mainRouterFunc.js"
+import * as notificationSocket from "/viewScripts/notification/notificatioSocket.js";
+import * as chatSocket from "/viewScripts/chat/chatSocket.js";
 
 
 export default function createNavBar(){
@@ -99,6 +101,8 @@ export default function createNavBar(){
   `
 
   if (localStorage.getItem("username") != undefined){
+    chatSocket.start()
+    notificationSocket.start();
     document.querySelector(".logoutBtn").addEventListener("click", ()=>{
       if (!confirm(language.update.confirmLogout))
         return;

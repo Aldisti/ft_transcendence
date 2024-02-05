@@ -3,6 +3,11 @@ import * as create from "/viewScripts/chat/createChatItem.js"
 import * as URL from "/API/URL.js"
 import * as help from "/viewScripts/chat/helpFunction.js"
 import allLanguage from "/language/language.js"
+import * as  notificationSocket from "/viewScripts/notification/notificatioSocket.js";
+import * as  chatSocket from "/viewScripts/chat/chatSocket.js";
+import * as listener from "/viewScripts/chat/handleMovement.js"
+
+
 
 let language = allLanguage[localStorage.getItem("language")]
 
@@ -16,6 +21,19 @@ function cleanLocalStorage() {
     localStorage.removeItem("chat");
     localStorage.removeItem("jwt");
     localStorage.removeItem("notification");
+    notificationSocket.close();
+    chatSocket.close();
+
+    //defining Listener for general MOUSE HOVER event
+    document.removeEventListener("mousemove", listener.hoverHandle)
+    
+    //defining Listener for user menu MOUSE CLICK event
+    document.querySelector(".chatSideList").removeEventListener("click", listener.clickHandle)
+
+    //defining Listener for input submit MOUSE CLICK event
+    document.querySelector(".submitChatInput").removeEventListener("click", listener.sendSocketMessage)
+
+    document.querySelector(".chatSideList").innerHTML = ""
 }
 
 function getCookie(name) {

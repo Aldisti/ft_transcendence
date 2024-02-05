@@ -130,15 +130,17 @@ function updateNotification(newNotifications){
     localStorage.setItem("notification", JSON.stringify(parsedSavedNotification));
 }
 
-//check if the user is logged in
-if (localStorage.getItem("token") != null)
-{
+let socket = null;
 
+//check if the user is logged in
+export function start(){
+    if (socket !== null && socket.readyState !== WebSocket.CLOSED)
+        return ;
     //get tiket from server to establish a connection with notification socket
     API.getTicket(1, URL.socket.NOTIFICATION_SOCKET_TICKET).then(res=>{
 
         //establish connection with socket
-        const socket = new WebSocket(`${URL.socket.NOTIFICATION_SOCKET}?ticket=${res.ticket}&username=${localStorage.getItem("username")}`);
+        socket = new WebSocket(`${URL.socket.NOTIFICATION_SOCKET}?ticket=${res.ticket}&username=${localStorage.getItem("username")}`);
         
         //define a listener that wait for INCOMING NOTIFICATION
         socket.addEventListener("message", (message)=>{
@@ -155,4 +157,11 @@ if (localStorage.getItem("token") != null)
                 notificationRouter(parsed[i]);
         })
     })
+}
+
+export function close(){
+    if (socket != null){
+        socket.close();
+        console.log("ntf closed")
+    }
 }

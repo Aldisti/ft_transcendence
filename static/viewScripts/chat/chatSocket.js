@@ -2,8 +2,9 @@ import * as general from "/viewScripts/chat/helpFunction.js"
 import * as NOTIFICATION from "/viewScripts/notification/notification.js"
 import * as URL from "/API/URL.js"
 import * as API from "/API/APICall.js";
+import startChatListeners from "/viewScripts/chat/chat.js";
 
-let socket;
+let socket = null;
 
 //function called when chat send button pressed it take the input 
 //format as needed and the send the message trough socket
@@ -28,9 +29,9 @@ function sendSocketMessage(e){
 
 
 //first check if the user is logged then make the connection to the chat socket and set up a listener
-if (localStorage.getItem("token") != null)
-{
-
+export function start(){
+    if (socket !== null && socket.readyState !== WebSocket.CLOSED)
+        return ;
     //retrieve from the server a ticket used to perform secure connection to the socket
     API.getTicket(1, URL.socket.CHAT_SOCKET_TICKET).then(res=>{
 
@@ -63,8 +64,17 @@ if (localStorage.getItem("token") != null)
                 }, 1000);
             }
         });
+
+        startChatListeners();
         
         //define listener for CAHT SEND button
         document.querySelector(".submitChatInput").addEventListener("click", sendSocketMessage)
     })
+}
+
+export function close(){
+    if (socket != null){
+        socket.close();
+        console.log("chat closed")
+    }
 }
