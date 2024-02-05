@@ -11,9 +11,9 @@
 
 • Gameplay and user experience
 [-] ◦ 10: Remote players
-[-] ◦ 10: Multiplayers (more than 2 in the same game).
-[-] ◦ 10: Add Another Game with User History and Matchmaking.
-[ ] ◦  5: Game Customization Options.
+[ ] ◦ 10: Multiplayers (more than 2 in the same game).
+[ ] ◦ 10: Add Another Game with User History and Matchmaking.
+[x] ◦  5: Game Customization Options.
 [x] ◦ 10: Live chat.
 
 • AI-Algo
@@ -34,7 +34,7 @@
 [-] ◦ 10: Use of advanced 3D techniques.
 
 • Accessibility
-[ ] ◦  5: Support on all devices.
+[x] ◦  5: Support on all devices.
 [x] ◦  5: Expanding Browser Compatibility.
 [x] ◦  5: Multiple language supports.
 [ ] ◦  5: Add accessibility for Visually Impaired Users.
