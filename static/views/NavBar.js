@@ -89,6 +89,7 @@ export default function createNavBar(){
                   <p class="switchLable">Modern</p>
                 </li>
               ${localStorage.getItem("username") == undefined ? `` : `<li><a class="nav-link active" data-link href="/account/" >${language.navbar.accountMenu}</a></li>`}
+              ${localStorage.getItem("username") == undefined ? `` : `<li><div class="nav-link active logoutBtn" data-link href="/account/" >${language.navbar.logout}</div></li>`}
               ${showAdmin === "A" ? `<li><a class="nav-link active" data-link href="/admin/" >${language.navbar.adminPage}</a></li>` : ``}
             </ul>
           </div>
@@ -96,6 +97,14 @@ export default function createNavBar(){
       </div>
       </nav>
   `
+
+  if (localStorage.getItem("username") != undefined){
+    document.querySelector(".logoutBtn").addEventListener("click", ()=>{
+      if (!confirm(language.update.confirmLogout))
+        return;
+      API.logout(1)
+    })
+  }
 
   if (localStorage.getItem("language") != null)
     document.querySelector("#languageSwitch").value = localStorage.getItem("language")

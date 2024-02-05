@@ -2,8 +2,9 @@ let ip = "localhost";
 let port = "8000";
 let protocol = "http";
 let pongPort = "7000";
-let authPort = port
-// let authPort = "6969"
+let chatSocketPort = "9001"
+let notificationSocketPort = "9000"
+let authPort = "8000"
 
 export const availabilityCheck = {
     USERNAME: `${protocol}://${ip}:${port}/users/check/`,
@@ -38,7 +39,7 @@ export const auth = {
 
 export const friendship = {
     SEND_REQUEST: `${protocol}://${ip}:${port}/friends/request/send/`,
-    REMOVE_FRIEND: `${protocol}://${ip}:${port}/frienauthPortds/request/delete/`,
+    REMOVE_FRIEND: `${protocol}://${ip}:${port}/friends/request/delete/`,
     ACCEPT_REQUEST: `${protocol}://${ip}:${port}/friends/request/accept/`,
     DENY_REQUEST: `${protocol}://${ip}:${port}/friends/request/reject/`,
     FRIEND_STATUS: `${protocol}://${ip}:${port}/friends/`,
@@ -46,13 +47,14 @@ export const friendship = {
 }
 
 export const socket = {
-    CHAT_SOCKET: `${protocol == "https" ? "wss" : "ws"}://${ip}:${port}/ws/chat/socket/`,
-    NOTIFICATION_SOCKET: `${protocol == "https" ? "wss" : "ws"}://${ip}:${port}/ws/notification/socket/`,
-    GET_TICKET: `${protocol}://${ip}:${port}/auth/ticket/`,
-
-    GET_QUEQUE_TICKET: `${protocol}://${ip}:${port}/auth/ticket/matchmaking/`,
+    CHAT_SOCKET: `${protocol == "https" ? "wss" : "ws"}://${ip}:${chatSocketPort}/ws/chat/socket/`,
+    NOTIFICATION_SOCKET: `${protocol == "https" ? "wss" : "ws"}://${ip}:${notificationSocketPort}/ws/notification/socket/`,
     GAME_SOCKET: `${protocol == "https" ? "wss" : "ws"}://${ip}:${pongPort}/ws/game/socket/`,
-    QUEUE_SOCKET: `${protocol == "https" ? "wss" : "ws"}://${ip}:${pongPort}/ws/matchmaking/queue/`
+    QUEUE_SOCKET: `${protocol == "https" ? "wss" : "ws"}://${ip}:${pongPort}/ws/matchmaking/queue/`,
+    
+    NOTIFICATION_SOCKET_TICKET: `${protocol}://${ip}:${port}/auth/ticket/ntf/`,
+    CHAT_SOCKET_TICKET: `${protocol}://${ip}:${port}/auth/ticket/chat/`,
+    GET_QUEQUE_TICKET: `${protocol}://${ip}:${port}/auth/ticket/matchmaking/`,
 }
 
 export const userAction = {

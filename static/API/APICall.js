@@ -775,8 +775,8 @@ export async function getDummyUsers(recursionProtection, pageSize, pageNumber){
 }
 
 
-export async function getTicket(recursionProtection){
-    const res = await fetch(URL.socket.GET_TICKET, {
+export async function getTicket(recursionProtection, url){
+    const res = await fetch(url, {
         method: "GET",
         headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -790,7 +790,7 @@ export async function getTicket(recursionProtection){
     if (res.status == 401 && recursionProtection)
     {
         console.log(res.status, recursionProtection)        
-        return await refreshAndRetry(getTicket, 0);
+        return await refreshAndRetry(getTicket, 0, url);
     }
     return ({})
 }

@@ -135,10 +135,10 @@ if (localStorage.getItem("token") != null)
 {
 
     //get tiket from server to establish a connection with notification socket
-    API.getTicket(1).then(res=>{
+    API.getTicket(1, URL.socket.NOTIFICATION_SOCKET_TICKET).then(res=>{
 
         //establish connection with socket
-        const socket = new WebSocket(`${URL.socket.NOTIFICATION_SOCKET}?ticket=${res.ticket}`);
+        const socket = new WebSocket(`${URL.socket.NOTIFICATION_SOCKET}?ticket=${res.ticket}&username=${localStorage.getItem("username")}`);
         
         //define a listener that wait for INCOMING NOTIFICATION
         socket.addEventListener("message", (message)=>{

@@ -10,7 +10,8 @@ let language = {
 			accountMenu: "Account",
 			notification: "Notification",
 			adminPage: "Admin Page",
-			moderatorPage: "Moderator Page"
+			moderatorPage: "Moderator Page",
+			logout: "Logout"
 		},
 		passwordRecovery: {
 			enterPassword: "Enter new password:",

@@ -33,7 +33,7 @@ export function enableStyleSheet(fRoute)
 				style.disabled = true;
 			}
 		}
-		if (fRoute != 0 && style.href.indexOf(toFindModern) != -1){
+		if (fRoute != 0 && style.href.indexOf(toFindModern) != -1 ){
 			if (localStorage.getItem("style") == "modern"){
 				style.disabled = false;
 			}

@@ -203,6 +203,10 @@ html, body
     }
 }
 
+.logoutBtn:hover{
+    cursor: pointer;
+}
+
 .chatContainer
 {
     width: 50svw;

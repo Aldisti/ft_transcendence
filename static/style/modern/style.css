@@ -653,6 +653,10 @@ a img{
     line-height: 0;
 }
 
+.logoutBtn:hover{
+    cursor: pointer;
+}
+
 .custom-shape-divider-top-1706862847 svg {
     border-radius: 0 !important;
 

@@ -32,10 +32,10 @@ if (localStorage.getItem("token") != null)
 {
 
     //retrieve from the server a ticket used to perform secure connection to the socket
-    API.getTicket(1).then(res=>{
+    API.getTicket(1, URL.socket.CHAT_SOCKET_TICKET).then(res=>{
 
         //actual connection to the socket 
-        socket = new WebSocket(`${URL.socket.CHAT_SOCKET}?ticket=${res.ticket}`);
+        socket = new WebSocket(`${URL.socket.CHAT_SOCKET}?ticket=${res.ticket}&username=${localStorage.getItem("username")}`);
 
         //listener for INCOMING MESSAGE
         socket.addEventListener('message', (event) => {
