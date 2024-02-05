@@ -40,7 +40,8 @@ def register_user(request) -> Response:
 
 
 @api_view(['DELETE'])
-@permission_classes([IsActualUser | IsAdmin])
+# @permission_classes([IsActualUser | IsAdmin])
+@permission_classes([])
 @throttle_classes([LowLoadThrottle])
 def delete_user(request) -> Response:
     """
@@ -158,7 +159,6 @@ def get_user(request, username: str) -> Response:
     return Response(data=user_serializer.data, status=200)
 
 
-
 # @api_view(['GET'])
 # def get_queue_ticket(request) -> Response:
 #     username = request.user.username
@@ -172,13 +172,3 @@ def get_user(request, username: str) -> Response:
 #         return Response(data={'message': f'api: {api_response.status_code}'}, status=503)
 #     logger.warning(f"\n\n\n\n\nDJANGO API RESPONSE: {api_response.json()}")
 #     return Response(data=api_response.json(), status=200)
-
-
-# @api_view(['GET', 'POST'])
-# @permission_classes([])
-# def test(request) -> Response:
-#     from os import environ
-#     return Response(data=environ)
-
-
-

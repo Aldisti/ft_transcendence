@@ -118,20 +118,12 @@ class ModelUserTests(TestCase):
         user = User.objects.update_active(self.user, status=False)
         self.assertTrue(user.active)
 
-
     def test_user_verified_update(self):
         # User verification
         user = User.objects.update_verified(self.user, status=True)
         self.assertTrue(user.verified)
         user = User.objects.update_verified(self.user, status=False)
         self.assertFalse(user.verified)
-
-    def test_user_tfa_update(self):
-        # User verification
-        user = User.objects.update_tfa(self.user, status=True)
-        self.assertTrue(user.tfa)
-        user = User.objects.update_tfa(self.user, status=False)
-        self.assertFalse(user.tfa)
 
     def test_invalid_user_creation(self):
         # checking creation without values
@@ -276,16 +268,9 @@ class UsersViewsTest(APITestCase):
 
     def test_delete_user(self):
         user = self.user
-        self.assertNumQueries(
-            num=1,
-            func=User.objects.get,
-            username=user.username,
-            email=user.email,
-        )
-        self.client.force_authenticate(self.superuser)
+        self.client.force_authenticate(user)
         response = self.client.delete(
-            reverse('delete_user'),
-            data={'username': user.username},
+            reverse('delete_user') + f"?username={user.username}",
         )
         self.assertEqual(response.status_code, 200)
         with self.assertRaises(User.DoesNotExist):

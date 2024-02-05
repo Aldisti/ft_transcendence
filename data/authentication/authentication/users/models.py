@@ -28,7 +28,6 @@ class UserManager(BaseUserManager):
         if kwargs['role'] != Roles.ADMIN:
             kwargs.pop('active', '')
             kwargs.pop('verified', '')
-            kwargs.pop('tfa', '')
             kwargs.pop('role', '')
         user = self.model(username=username, email=email, **kwargs)
         user.set_password(password)
@@ -144,12 +143,6 @@ class UserManager(BaseUserManager):
         user.save()
         return user
 
-    def update_tfa(self, user, status: bool = None):
-        user.tfa = status
-        user.full_clean()
-        user.save()
-        return user
-
 
 class User(AbstractBaseUser):
     username = models.CharField(
@@ -184,11 +177,6 @@ class User(AbstractBaseUser):
         db_column="verified",
         default=False,
     )
-    tfa = models.BooleanField(
-        db_column="tfa",
-        db_comment="two factor authentication status",
-        default=False,
-    )
 
     USERNAME_FIELD = "username"
 
@@ -208,6 +196,9 @@ class User(AbstractBaseUser):
             return self.user_google.email != ''
         except ObjectDoesNotExist:
             return False
+
+    def has_tfa(self) -> bool:
+        return self.user_tfa.active
 
     def __str__(self) -> str:
         return f"{self.username} ({self.last_login} - {self.last_logout})"

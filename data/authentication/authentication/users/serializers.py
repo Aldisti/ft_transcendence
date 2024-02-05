@@ -12,14 +12,13 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["username", "email", "password", "new_password", "active", "verified", "tfa"]
+        fields = ["username", "email", "password", "new_password", "active", "verified"]
         extra_kwargs = {
             "username": {"validators": [RegexValidator("^[A-Za-z0-9!?*$~_-]{5,32}$")]},
             "email": {"required": False, "validators": [EmailValidator()]},
             "password": {"write_only": True, "required": False},
             "active": {"required": False, "read_only": True},
             "verified": {"required": False, "read_only": True},
-            "tfa": {"required": False, "read_only": True},
         }
 
     def create(self, validated_data):

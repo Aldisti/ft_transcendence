@@ -192,6 +192,13 @@ OAUTH2["GOOGLE_REQUEST_BODY"] = {
     "grant_type": OAUTH2['grant_type'],
 }
 
+# Two-Factor Authentication
+
+TFA = {
+    'EMAIL_INTERVAL': 100,
+    'VALID_WINDOW': 1,
+}
+
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
