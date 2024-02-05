@@ -11,6 +11,11 @@ services:
       - "8000-8020:8000-8020"
     volumes:
       - django:/etc/develop
+    healthcheck:
+      test: test -f /etc/healthy
+      retries: 10
+      interval: 2s
+      start_interval: 3s
     environment:
       - PROJECT_NAME=${PROJECT_NAME}
       - DB_USER=${DB_USER}
@@ -22,13 +27,15 @@ services:
       - EMAIL_HOST_USER=${EMAIL_HOST_USER}
       - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
       - SERVER_FRONTEND_IP=${SERVER_FRONTEND_IP}
+      # chat vars
       - CHAT_HOST=chat
       - CHAT_PORT=8000
       - NTF_HOST=ntf
       - NTF_PORT=8000
       - PONG_HOST=pong
       - PONG_PORT=8000
-
+      - AUTH_HOST=auth
+      - AUTH_PORT=8000
       # rabbitMq vars
       - RABBIT_PORT=5672
       - RABBIT_HOST=rabbit_mq
@@ -37,6 +44,13 @@ services:
       - VHOST_NTF=${VHOST_NTF}
       - RABBIT_HEARTBEAT=${RABBIT_HEARTBEAT}
       - RABBIT_BC_TIMEOUT=${RABBIT_BC_TIMEOUT}
+      # auth vars
+      - INTRA_ID=${INTRA_ID}
+      - INTRA_SECRET=${INTRA_SECRET}
+      - GOOGLE_ID=${GOOGLE_ID}
+      - GOOGLE_SECRET=${GOOGLE_SECRET}
+      - RSA_PRIVATE_KEY_PATH=${RSA_PRIVATE_KEY_PATH}
+      - RSA_PUBLIC_KEY_PATH=${RSA_PUBLIC_KEY_PATH}
     networks:
       - django-net
       - postgres-net
@@ -48,9 +62,7 @@ services:
 
   postgres:
     container_name: postgres
-    build:
-      context: ./postgres
-    image: trinity/postgres
+    image: postgres:16-bookworm
     restart: always
     expose:
       - "$DB_PORT"
@@ -59,7 +71,7 @@ services:
     healthcheck:
       test: ["CMD", "pg_isready", "-p$DB_PORT", "-h127.0.0.1", "-d$DB_NAME", "-U$DB_USER"]
       retries: 10
-      interval: 5s
+      interval: 2s
       start_interval: 3s
     environment:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
@@ -94,13 +106,14 @@ services:
     depends_on:
       pongdb:
         condition: service_healthy
+        restart: true
+      django:
+        condition: service_healthy
 
 
   pongdb:
     container_name: pongdb
-    build:
-      context: ./pongdb
-    image: trinity/pongdb
+    image: postgres:16-bookworm
     restart: always
     expose:
       - "$PONGDB_PORT"
@@ -109,7 +122,7 @@ services:
     healthcheck:
       test: ["CMD", "pg_isready", "-p$PONGDB_PORT", "-h127.0.0.1", "-d$PONGDB_NAME", "-U$PONGDB_USER"]
       retries: 10
-      interval: 5s
+      interval: 2s
       start_interval: 3s
     environment:
       - POSTGRES_PASSWORD=${PONGDB_PASSWORD}
@@ -158,9 +171,7 @@ services:
 
   chatdb:
     container_name: chatdb
-    build:
-      context: ./chatdb
-    image: trinity/chatdb
+    image: postgres:16-bookworm
     restart: always
     expose:
       - "$CHATDB_PORT"
@@ -208,9 +219,7 @@ services:
 
   ntfdb:
     container_name: ntfdb
-    build:
-      context: ./ntfdb
-    image: trinity/ntfdb
+    image: postgres:16-bookworm
     restart: always
     expose:
       - "$NTFDB_PORT"
@@ -283,6 +292,59 @@ services:
       start_interval: 10s
       
 
+  auth:
+    container_name: auth
+    build:
+      context: ./auth
+    image: trinity/auth
+    restart: unless-stopped
+    ports:
+      - "6969:8000"
+    volumes:
+      - auth:/etc/develop
+    environment:
+      - PROJECT_NAME=${AUTH_APP_NAME}
+      - DB_USER=${AUTH_DB_USER}
+      - DB_NAME=${AUTH_DB_NAME}
+      - DB_PASSWORD=${AUTH_DB_PASSWORD}
+      - DB_HOST=${AUTH_DB_HOST}
+      - DB_PORT=${AUTH_DB_PORT}
+      - INTRA_ID=${INTRA_ID}
+      - INTRA_SECRET=${INTRA_SECRET}
+      - GOOGLE_ID=${GOOGLE_ID}
+      - GOOGLE_SECRET=${GOOGLE_SECRET}
+      - RSA_PRIVATE_KEY_PATH=${RSA_PRIVATE_KEY_PATH}
+      - RSA_PUBLIC_KEY_PATH=${RSA_PUBLIC_KEY_PATH}
+    networks:
+      - django-net
+      - authdb-net
+    depends_on:
+      authdb:
+        condition: service_healthy
+        restart: true
+      django:
+        condition: service_healthy
+
+  authdb:
+    container_name: authdb
+    image: postgres:16-bookworm
+    restart: always
+    volumes:
+      - authdb:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-p$AUTH_DB_PORT", "-h127.0.0.1", "-d$AUTH_DB_NAME", "-U$AUTH_DB_USER"]
+      retries: 10
+      interval: 2s
+      start_interval: 3s
+    environment:
+      - POSTGRES_PASSWORD=${AUTH_DB_PASSWORD}
+      - POSTGRES_USER=${AUTH_DB_USER}
+      - POSTGRES_DB=${AUTH_DB_NAME}
+      - PGDATA=${PGDATA}
+    networks:
+      - authdb-net
+
+
 volumes:
   django:
     name: "django"
@@ -291,6 +353,7 @@ volumes:
       type: "none"
       o: "bind"
       device: "$PWD/data/django"
+
   pong:
     name: "pong"
     driver: local
@@ -298,6 +361,7 @@ volumes:
       type: "none"
       o: "bind"
       device: "$PWD/data/pong"
+
   chat:
     name: "chat"
     driver: local
@@ -305,6 +369,15 @@ volumes:
       type: "none"
       o: "bind"
       device: "$PWD/data/chat"
+
+  auth:
+    name: "auth"
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "$PWD/data/$AUTH_APP_NAME"
+
   ntf:
     name: "ntf"
     driver: local
@@ -312,6 +385,7 @@ volumes:
       type: "none"
       o: "bind"
       device: "$PWD/data/ntf"
+
   postgres:
     name: "postgres"
     driver: local
@@ -319,6 +393,7 @@ volumes:
       type: "none"
       o: "bind"
       device: "$PWD/data/postgres"
+
   pongdb:
     name: "pongdb"
     driver: local
@@ -326,6 +401,7 @@ volumes:
       type: "none"
       o: "bind"
       device: "$PWD/data/pongdb"
+
   chatdb:
     name: "chatdb"
     driver: local
@@ -333,6 +409,15 @@ volumes:
       type: "none"
       o: "bind"
       device: "$PWD/data/chatdb"
+
+  authdb:
+    name: "authdb"
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "$PWD/data/authdb"
+
   ntfdb:
     name: "ntfdb"
     driver: local
@@ -359,3 +444,6 @@ networks:
 
   rabbit-net:
     name: "rabbit-net"
+
+  authdb-net:
+    name: "authdb-net"

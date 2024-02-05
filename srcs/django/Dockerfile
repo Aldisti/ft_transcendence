@@ -4,10 +4,10 @@ RUN apt update && apt upgrade -y
 RUN apt install vim -y
 RUN apt install gettext -y
 
-RUN pip install django
-RUN pip install djangorestframework
-# for jwt
-RUN pip install djangorestframework-simplejwt
+RUN pip install django \
+	djangorestframework \
+	djangorestframework-simplejwt
+
 # postgres connection
 RUN pip install psycopg
 # for testing reasons
@@ -26,7 +26,7 @@ RUN pip install pika
 RUN mkdir /etc/develop
 
 COPY ./tools/setting.sh /etc/setting.sh
-COPY ./conf/settings.py /tmp/settings.py
+COPY ./conf/rsa /etc/.rsa
 
 ENTRYPOINT ["/bin/bash", "/etc/setting.sh"]
 

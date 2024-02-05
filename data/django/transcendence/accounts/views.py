@@ -60,9 +60,12 @@ def upload_profile_picture(request):
 @api_view(['POST'])
 @permission_classes([])
 def registration(request):
+    # TODO: register user on the game app
     user_serializer = CompleteUserSerializer(data=request.data)
     user_serializer.is_valid(raise_exception=True)
     username = user_serializer.validated_data.get("username")
+    email = user_serializer.validated_data.get("email")
+    password = user_serializer.validated_data.get("password")
     data = {'username': username}
 
     # TODO: implement delete when something goes wrong
@@ -89,6 +92,20 @@ def registration(request):
         # delete from chat db
         chat_url = settings.MS_URLS['CHAT_DELETE'].replace("<pk>", username)
         api_response = delete_request(chat_url, json=data)
+        return Response(data={'message': 'Something strange happened, contact devs'}, status=503)
+
+
+    api_response = post_request(settings.MS_URLS['AUTH_REGISTER'], json={'username': username, 'email': email, 'password': password})
+    if api_response.status_code >= 300:
+        # delete from ntf db
+        ntf_url = settings.MS_URLS['NTF_DELETE'].replace("<pk>", username)
+        api_response = delete_request(ntf_url, json=data)
+        # delete from chat db
+        chat_url = settings.MS_URLS['CHAT_DELETE'].replace("<pk>", username)
+        api_response = delete_request(chat_url, json=data)
+        # delete from pong db
+        pong_url = settings.MS_URLS['PONG_DELETE'].replace("<pk>", username)
+        api_response = delete_request(pong_url, json=data)
         return Response(data={'message': 'Something strange happened, contact devs'}, status=503)
 
     # create user instance on main database

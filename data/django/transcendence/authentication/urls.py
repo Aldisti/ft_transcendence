@@ -15,5 +15,8 @@ urlpatterns = [
         path('chat/', views.generate_chat_ticket, name='api-generate-chat-ticket'),
         path('matchmaking/', views.get_queue_ticket, name='api-generate-matchmaking-ticket'),
     ])),
+    path('retrieve/', include([
+        path('public-key/', views.retrieve_pubkey, name='api-retrieve-public-key')
+    ])),
     # path('test/', views.test),
 ]

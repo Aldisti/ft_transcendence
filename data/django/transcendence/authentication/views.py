@@ -1,22 +1,21 @@
 from django.core.exceptions import ValidationError
 from django.conf import settings
 
-from rest_framework import status
 from rest_framework.decorators import APIView, api_view, permission_classes, throttle_classes
 from rest_framework.response import Response
 
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from authentication.throttles import LowLoadThrottle, MediumLoadThrottle
 
 from two_factor_auth.models import UserTFA
 
-from authentication.serializers import TokenPairSerializer
-from authentication.models import JwtToken, UserTokens, WebsocketTicket
-from authentication.permissions import IsUser
 # TODO: move url in main setting
-from authentication.settings import MATCHMAKING_TOKEN
+from .models import JwtToken, UserTokens, WebsocketTicket
+from .throttles import LowLoadThrottle, MediumLoadThrottle
+from .serializers import TokenPairSerializer
+from .settings import MATCHMAKING_TOKEN
+from .permissions import IsUser
 
 from accounts.models import User
 from accounts.serializers import UserSerializer
@@ -170,6 +169,13 @@ def get_queue_ticket(request) -> Response:
         return Response(data={'message': f'api: {api_response.status_code}'}, status=503)
     #logger.warning(f"\n\n\n\n\nDJANGO API RESPONSE: {api_response.json()}")
     return Response(data=api_response.json(), status=200)
+
+
+@api_view(['GET'])
+@permission_classes([])
+@throttle_classes([LowLoadThrottle])
+def retrieve_pubkey(request) -> Response:
+    return Response(data={'public_key': settings.SIMPLE_JWT['VERIFYING_KEY']}, status=200)
 
 
 # @api_view(['GET', 'POST'])

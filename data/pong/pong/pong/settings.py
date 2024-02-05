@@ -13,9 +13,21 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 from os import environ
 from pytz import timezone
+from requests import get
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+def get_public_key() -> str:
+    try:
+        api_response = get("http://django:8000/auth/retrieve/public-key/")
+    except ConnectionError:
+        exit(69)
+    if api_response.status_code == 200:
+        return api_response.json().get("public_key", '')
+    else:
+        exit(69)
 
 
 # Quick-start development settings - unsuitable for production
@@ -52,6 +64,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_simplejwt',
     'channels',
     'game',
     'users',
@@ -75,6 +88,25 @@ MIDDLEWARE = [
 # Django REST Framework
 
 REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTStatelessUserAuthentication",
+        # "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+}
+
+# Django SimpleJWT
+# https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html
+
+
+SIMPLE_JWT = {
+    "ALGORITHM": "RS256",
+    "VERIFYING_KEY": get_public_key(),
+    "AUDIENCE": "transcendence",
+    "ISSUER": "transcendence.auth",
+
+    "USER_ID_FIELD": "username",
+    "USER_ID_CLAIM": "username",
+    "USER_AUTHENTICATION_RULE": "rest_framework_simplejwt.authentication.default_user_authentication_rule",
 }
 
 ROOT_URLCONF = 'pong.urls'

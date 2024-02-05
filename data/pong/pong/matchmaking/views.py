@@ -28,3 +28,16 @@ def generate_matchmaking_token(request) -> Response:
         return Response(data={'message': 'user not found'}, status=404)
     pong_user = PongUser.objects.generate_ticket(pong_user)
     return Response(data={'ticket': pong_user.ticket}, status=200)
+
+
+@api_view(['GET', 'POST'])
+def test(request) -> Response:
+    data = {
+        'headers': request.headers,
+        'body': request.data,
+        'cookies': request.COOKIES,
+        'user': str(request.user) or "None",
+        'username': request.user.username,
+        'role': request.user.role,
+    }
+    return Response(data=data)

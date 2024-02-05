@@ -19,17 +19,16 @@ class QueueConsumer(WebsocketConsumer):
 
     def connect(self):
         user = self.scope["user"]
-        logger.warning(f"{user.username} connected")
-        if user.username in self.users_queue:
+        if user.username in QueueConsumer.users_queue:
             logger.warning(f"{user.username} already connected")
             self.close()
             return
         self.accept()
-        if len(self.users_queue) == 0:
-            self.users_queue.append(user.username)
+        if len(QueueConsumer.users_queue) == 0:
+            QueueConsumer.users_queue.append(user.username)
             async_to_sync(self.channel_layer.group_add)(f"{user.username}_group", self.channel_name)
             return
-        other_user = self.users_queue.pop(0)
+        other_user = QueueConsumer.users_queue.pop(0)
         group_name = f"{other_user}_group"
         async_to_sync(self.channel_layer.group_add)(
             group_name, self.channel_name

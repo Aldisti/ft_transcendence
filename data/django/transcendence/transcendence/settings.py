@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-from os import environ
+from os import environ, path
 
 from datetime import timedelta
 from pytz import timezone
@@ -113,15 +113,18 @@ REST_FRAMEWORK = {
 # Django SimpleJWT
 # https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html
 
+RSA_PRIVATE_KEY_PATH = environ['RSA_PRIVATE_KEY_PATH']
+RSA_PUBLIC_KEY_PATH = environ['RSA_PUBLIC_KEY_PATH']
+
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 
-    "ALGORITHM": "HS256",
-    "SIGNING_KEY": SECRET_KEY,
-    "VERIFYING_KEY": "",
-    "AUDIENCE": "localhost",
-    "ISSUER": "localhost",
+    "ALGORITHM": "RS256",
+    "SIGNING_KEY": open(RSA_PRIVATE_KEY_PATH, 'r').read() if path.isfile(RSA_PRIVATE_KEY_PATH) else None,
+    "VERIFYING_KEY": open(RSA_PUBLIC_KEY_PATH, 'r').read() if path.isfile(RSA_PUBLIC_KEY_PATH) else None,
+    "AUDIENCE": "transcendence",
+    "ISSUER": "transcendence.auth",
 
     "AUTH_HEADER_TYPES": ("Bearer",),
     "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
@@ -232,8 +235,8 @@ AUTH_USER_MODEL = "accounts.User"
 
 # tmp for testing reasons
 SERVER_FRONTEND_IP = environ['SERVER_FRONTEND_IP'] or 'localhost'
-# CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOWED_ORIGINS = [f"http://{SERVER_FRONTEND_IP}:4242"]
+CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOWED_ORIGINS = [f"http://{SERVER_FRONTEND_IP}:4200"]
 CORS_ALLOW_CREDENTIALS = True
 APPEND_SLASH = False
 
@@ -279,6 +282,9 @@ PONG_PORT = environ['PONG_PORT']
 NTF_HOST = environ['NTF_HOST']
 NTF_PORT = environ['NTF_PORT']
 
+AUTH_HOST = environ['AUTH_HOST']
+AUTH_PORT = environ['AUTH_PORT']
+
 MS_URLS = {
     # chat urls
     "CHAT_REGISTER": f"http://{CHAT_HOST}:{CHAT_PORT}/user/register/",
@@ -297,6 +303,8 @@ MS_URLS = {
     # pong urls
     "PONG_REGISTER": f"http://{PONG_HOST}:{PONG_PORT}/user/register/",
     "PONG_DELETE": f"http://{PONG_HOST}:{PONG_PORT}/user/<pk>/delete/",
+	# auth urls
+	"AUTH_REGISTER": f"http://{AUTH_HOST}:{AUTH_PORT}/users/register/",
 }
 
 # rabbit config

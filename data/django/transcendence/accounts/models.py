@@ -15,7 +15,6 @@ import logging
 
 from requests import get as get_request
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -159,4 +158,3 @@ class UserGame(models.Model):
 
     def __str__(self) -> str:
         return f"username: {self.user.username}, display_name: {self.display_name}"
-
