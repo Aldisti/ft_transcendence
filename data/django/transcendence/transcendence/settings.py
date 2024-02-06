@@ -317,6 +317,7 @@ RABBIT = {
     "exchange": environ['EXCHANGE'],
     "R_KEYS": {
         "ntf": environ['NTF_ROUTING_KEY'],
+        "email": environ['EMAIL_ROUTING_KEY'],
     },
     "VHOSTS": {
         "ntf": environ['VHOST_NTF']

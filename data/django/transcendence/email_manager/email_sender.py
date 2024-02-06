@@ -4,12 +4,18 @@ from pyotp import TOTP
 
 from accounts.models import User
 from authentication.models import UserTokens
-from django.core.mail import send_mail
 from django.conf import settings
 from django.urls import reverse
 from django.template import loader
 
 from two_factor_auth.models import UserTFA
+
+from transcendence.producers import EmailProducer
+
+import json
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def send_verification_email(user: User):
@@ -39,14 +45,10 @@ def send_verification_email(user: User):
         "company": company,
     }
     email_message = template.render(context)
-    # send mail
-    send_mail(
-        subject="Registration",
-        message="",
-        html_message=email_message,
-        from_email=settings.EMAIL_HOST_USER,
-        recipient_list=[user.email]
-    )
+
+    # send email
+    body = {"subject": "Registration", "receiver_mail": user.email, "text": "", "html": email_message}
+    EmailProducer().publish(json.dumps(body))
 
 
 def send_password_email(user: User):
@@ -80,13 +82,8 @@ def send_password_email(user: User):
     email_message = template.render(context)
 
     # send mail
-    send_mail(
-        subject="Password recovery",
-        message="",
-        html_message=email_message,
-        from_email=settings.EMAIL_HOST_USER,
-        recipient_list=[user.email]
-    )
+    body = {"subject": "Password recovery", "receiver_mail": user.email, "text": "", "html": email_message}
+    EmailProducer().publish(json.dumps(body))
 
 
 def send_tfa_code_email(user_tfa: UserTFA) -> None:
@@ -108,10 +105,5 @@ def send_tfa_code_email(user_tfa: UserTFA) -> None:
     email_message = template.render(context)
 
     # send mail
-    send_mail(
-        subject="OTP code",
-        message="",
-        html_message=email_message,
-        from_email=settings.EMAIL_HOST_USER,
-        recipient_list=[user_tfa.user.email]
-    )
+    body = {"subject": "OTP code", "receiver_mail": user_tfa.user.email, "text": "", "html": email_message}
+    EmailProducer().publish(json.dumps(body))

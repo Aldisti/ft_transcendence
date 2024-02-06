@@ -27,6 +27,7 @@ services:
       - EMAIL_HOST_USER=${EMAIL_HOST_USER}
       - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
       - SERVER_FRONTEND_IP=${SERVER_FRONTEND_IP}
+
       # chat vars
       - CHAT_HOST=chat
       - CHAT_PORT=8000
@@ -36,14 +37,17 @@ services:
       - PONG_PORT=8000
       - AUTH_HOST=auth
       - AUTH_PORT=8000
+
       # rabbitMq vars
       - RABBIT_PORT=5672
       - RABBIT_HOST=rabbit_mq
       - EXCHANGE=${EXCHANGE}
       - NTF_ROUTING_KEY=${NTF_ROUTING_KEY}
+      - EMAIL_ROUTING_KEY=${EMAIL_ROUTING_KEY}
       - VHOST_NTF=${VHOST_NTF}
       - RABBIT_HEARTBEAT=${RABBIT_HEARTBEAT}
       - RABBIT_BC_TIMEOUT=${RABBIT_BC_TIMEOUT}
+
       # auth vars
       - INTRA_ID=${INTRA_ID}
       - INTRA_SECRET=${INTRA_SECRET}
@@ -274,6 +278,32 @@ services:
         condition: service_healthy
 
 
+  email_listener:
+    container_name: email_listener
+    build:
+      context: ./email_listener
+    image: trinity/email_listener
+    restart: always
+    environment:
+      - RABBIT_PORT=5672
+      - RABBIT_HOST=rabbit_mq
+      - EXCHANGE=${EXCHANGE}
+      - EMAIL_ROUTING_KEY=${EMAIL_ROUTING_KEY}
+      - THREAD=${THREAD}
+      - QUEUE_NAME=${EMAIL_QUEUE}
+      - VHOST=${VHOST_NTF}
+      - EMAIL_PORT=${EMAIL_PORT}
+      - EMAIL_HOST=${EMAIL_HOST}
+      - EMAIL_HOST_USER=${EMAIL_HOST_USER}
+      - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
+    networks:
+      - rabbit-net
+      - django-net
+    depends_on:
+      rabbit_mq:
+        condition: service_healthy
+
+
   rabbit_mq:
     container_name: rabbit_mq
     build:
@@ -288,8 +318,8 @@ services:
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
       retries: 10
-      interval: 5s
-      start_interval: 10s
+      interval: 10s
+      start_interval: 20s
       
 
   auth:
