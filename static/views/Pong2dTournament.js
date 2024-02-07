@@ -26,6 +26,17 @@ function resetBtnClass(currentEl){
     })
 }
 
+function movementHandler(newState, obj){
+    if (newState === "close"){
+        document.querySelector(".tournamentManager").style.width = "47svw"
+        obj.classList.remove("showCard")
+    }
+    else if (newState === "open"){
+        document.querySelector(".tournamentManager").style.width = "90%"
+        obj.classList.add("showCard");
+    }
+}
+
 export default class extends Aview{
     constructor(){
         super();
@@ -207,46 +218,41 @@ export default class extends Aview{
 
 	setup(){
         this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpeg")
-        // localStorage.setItem("gameStarted", "false");
-        // handleSlider(".sliderPill", ".nextPill", pills, "pillTexture", this);
-        // handleSlider(".sliderGround", ".nextGround", grounds, "groundTexture", this);
-        // handleSlider(".sliderBall", ".nextBall", balls, "ballTexture", this);
         tournaments.forEach(element => {
             document.querySelector(".tournamentsList").innerHTML += this.getTournamentCard(element);
         });
         document.querySelector(".tournamentsList").addEventListener("click", (e)=>{
+            let card = document.querySelector(".displayBodyAndSubbmit");
             if (e.target.classList.contains("subscribe")){
                 document.querySelector(".newTournament").classList.remove("showCard")
-                if (!e.target.classList.contains("bodyOpened")){
-                    document.querySelector(".tournamentManager").style.width = "90%"
-                    document.querySelector(".tournamentManager").style.justifyContent = "flex-start"
-                    document.querySelector(".displayBodyAndSubbmit").classList.add("showCard");
-                }
-                else{
-                    document.querySelector(".tournamentManager").style.width = "47svw"
-                    document.querySelector(".displayBodyAndSubbmit").classList.remove("showCard");
-                }
+                if (!e.target.classList.contains("bodyOpened"))
+                    movementHandler("open", card);
+                else
+                    movementHandler("close", card);
                 document.querySelector(".displayBodyAndSubbmit .bodyContainer").innerHTML = getCardBody(e.target).innerHTML;
                 resetBtnClass(e.target);
-
                 e.target.classList.toggle("bodyOpened");
             }
             if (e.target.classList.contains("unSubscribe")){
-                console.log("unsub")
+                resetBtnClass(e.target);
+                movementHandler("close", card);
+                setTimeout(() => {
+                    if (confirm("Do You really want to unsubscribe this event?")){
+                        console.log("event unsubscribed!");
+                    }
+                }, 300);
             }
         })
 
         document.querySelector(".createTournamentBtn").addEventListener("click", ()=>{
+            let card = document.querySelector(".newTournament");
             document.querySelector(".displayBodyAndSubbmit").classList.remove("showCard");
             resetBtnClass();
-            if (document.querySelector(".newTournament").classList.contains("showCard")){
-                document.querySelector(".tournamentManager").style.width = "47svw"
-                document.querySelector(".newTournament").classList.remove("showCard")
+            if (card.classList.contains("showCard")){
+                movementHandler("close", card);
             }
             else{
-                document.querySelector(".tournamentManager").style.width = "90%"
-                document.querySelector(".tournamentManager").style.justifyContent = "flex-start"
-                document.querySelector(".newTournament").classList.add("showCard");
+                movementHandler("open", card);
             }
         })
     }
