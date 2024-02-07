@@ -317,11 +317,12 @@ MS_URLS = {
         "UPDATE_ROLE": f"http://{AUTH_HOST}:{AUTH_PORT}/users/update/role/",
         # authorization app
         "LOGIN": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/login/",
-        "PASSWORD_RECOVERY": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/password/recovery/",
-        "PASSWORD_RESET": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/password/reset/",
         "REFRESH": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/refresh/",
         "LOGOUT": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/logout/",
         "LOGOUT_ALL": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/logout/all/",
+        "PASSWORD_RECOVERY": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/password/recovery/",
+        "PASSWORD_RESET": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/password/reset/",
+        "VERIFY_EMAIL": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/verify/email/",
     }
 }
 

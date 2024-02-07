@@ -7,6 +7,7 @@ from rest_framework import status
 from rest_framework.decorators import APIView, api_view, permission_classes, throttle_classes
 from rest_framework.response import Response
 
+from authorization.models import EmailVerificationToken
 from authorization.serializers import TokenPairSerializer
 from two_factor_auth.models import UserTFA
 from .models import User
@@ -41,7 +42,9 @@ def register_user(request) -> Response:
     except TypeError as e:
         return Response(data={"message": str(e)}, status=400)
     UserTFA.objects.create(user=user)
-    return Response(data=user_serializer.validated_data, status=status.HTTP_201_CREATED)
+    email_token = EmailVerificationToken.objects.create(user=user)
+    return Response(data=email_token.to_data(), status=201)
+    # return Response(data=user_serializer.validated_data, status=status.HTTP_201_CREATED)
 
 
 @api_view(['DELETE'])

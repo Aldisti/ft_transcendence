@@ -87,7 +87,27 @@ def send_password_email(user: User):
 
 
 def send_password_reset_email(username: str, email: str, token: str) -> None:
+    if username == '' or email == '' or token == '':
+        raise ValueError("missing username, email or token")
     url = "http://localhost:4200/password/reset/" + f"?token={token}"
+    head = (f"Dear {username},\n thank you for joining our community.\n"
+            f"In order to complete the registration process click the following link:")
+    template = loader.get_template("email.html")
+    context = {
+        "title": "Registration",
+        "body": head,
+        "link": url,
+        "company": "Trinity",
+    }
+    email_message = template.render(context)
+    body = {"subject": "Password recovery", "receiver_mail": email, "text": "", "html": email_message}
+    EmailProducer().publish(json.dumps(body))
+
+
+def send_verify_email(username: str, email: str, token: str) -> None:
+    if username == '' or email == '' or token == '':
+        raise ValueError("missing username, email or token")
+    url = "http://localhost:4200/login/" + f"?token={token}"
     head = (f"Dear {username},\n"
             f"apparently you've forgotten your password, ignore this message otherwise.\n"
             f"Click the following link to reset your password:")

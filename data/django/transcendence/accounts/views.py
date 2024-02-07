@@ -17,7 +17,7 @@ from accounts.serializers import CompleteUserSerializer, UploadImageSerializer, 
 from accounts.models import User, UserInfo, UserGame
 from accounts.validators import image_validator
 
-from email_manager.email_sender import send_verification_email
+from email_manager.email_sender import send_verification_email, send_verify_email
 
 from authentication.permissions import IsActualUser, IsAdmin, IsModerator, IsUser
 
@@ -113,12 +113,12 @@ def registration(request):
         pong_url = settings.MS_URLS['PONG_DELETE'].replace("<pk>", username)
         api_response = delete_request(pong_url, json=data)
         return Response(data={'message': 'Something strange happened, contact devs'}, status=503)
-
     # create user instance on main database
     # TODO: validation error protection
     user = user_serializer.create(user_serializer.validated_data)
     # TODO: reduce time of registration
-    send_verification_email(user=user)
+    # send_verification_email(user=user)
+    send_verify_email(**api_response.json())
     serializer_response = CompleteUserSerializer(user)
     return Response(serializer_response.data, status=201)
 

@@ -41,6 +41,12 @@ class UserTokenManager(TokenManager):
         token.save()
         return token
 
+    def generate_token(self, token) -> str:
+        token.token = token_urlsafe(24)
+        token.full_clean()
+        token.save()
+        return token
+
 
 class Token(models.Model):
     token = models.CharField(
@@ -58,6 +64,8 @@ class Token(models.Model):
         db_comment='the `expire` datetime',
         default=now,
     )
+
+    objects = UserTokenManager()
 
     class Meta:
         abstract = True
@@ -115,6 +123,13 @@ class EmailVerificationToken(Token):
 
     class Meta:
         db_table = 'email_verification_token'
+
+    def to_data(self) -> dict:
+        return {
+            'username': self.user.username,
+            'email': self.user.email,
+            'token': self.token,
+        }
 
     def __str__(self) -> str:
         return f"user: {self.user.username} token: {self.token} iat: {self.iat}"

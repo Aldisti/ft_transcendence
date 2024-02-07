@@ -135,6 +135,7 @@ class UserTFA(models.Model):
         db_column='type',
         choices=TFATypes.CHOICES,
         default=TFATypes.NONE,
+        blank=True,
     )
     active = models.BooleanField(
         db_column='active',

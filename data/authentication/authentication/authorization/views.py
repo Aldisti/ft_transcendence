@@ -10,7 +10,7 @@ from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from two_factor_auth.models import UserTFA
-from .models import JwtBlackList, PasswordResetToken
+from .models import JwtBlackList, PasswordResetToken, EmailVerificationToken
 from .serializers import TokenPairSerializer
 
 from authentication.throttles import HighLoadThrottle, MediumLoadThrottle, LowLoadThrottle
@@ -139,6 +139,8 @@ def password_recovery(request) -> Response:
     if user.has_tfa():
         user_tfa = UserTFA.objects.generate_url_token(user.user_tfa)
         return Response(data={'url_token': user_tfa.url_token}, status=200)
+    if user.has_password_token():
+        user.password_token.delete()
     token = PasswordResetToken.objects.create(user=user)
     return Response(data=token.to_data(), status=200)
 
@@ -160,7 +162,25 @@ def password_reset(request) -> Response:
     user.password_token.delete()
     password = request.data.get('password', '')
     try:
-        User.objects.password_reset(user, password)
+        User.objects.reset_password(user, password)
     except ValueError as e:
         return Response(data={'message': str(e)}, status=400)
+    return Response(status=200)
+
+
+@api_view(['POST'])
+@permission_classes([])
+def verify_email(request) -> Response:
+    """
+    body: {'token': <token>}
+    """
+    token = request.data.get('token', '')
+    if token == '':
+        return Response(data={'message': 'missing token'}, status=400)
+    try:
+        user = EmailVerificationToken.objects.get(token=token).user
+    except EmailVerificationToken.DoesNotExist:
+        return Response(data={'message': 'invalid token'}, status=400)
+    User.objects.update_verified(user, True)
+    user.email_token.delete()
     return Response(status=200)
