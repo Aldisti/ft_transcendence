@@ -198,7 +198,13 @@ class User(AbstractBaseUser):
             return False
 
     def has_tfa(self) -> bool:
-        return self.user_tfa.active
+        return hasattr(self, 'user_tfa') and self.user_tfa.active
+
+    def has_password_token(self) -> bool:
+        return hasattr(self, 'password_token') and self.password_token is not None
+
+    def has_email_token(self) -> bool:
+        return hasattr(self, 'email_token') and self.email_token is not None
 
     def __str__(self) -> str:
         return f"{self.username} ({self.last_login} - {self.last_logout})"

@@ -5,6 +5,7 @@ from rest_framework import status
 from rest_framework.decorators import APIView, api_view, permission_classes, throttle_classes
 from rest_framework.response import Response
 
+from two_factor_auth.models import UserTFA
 from .models import User
 from .serializers import UserSerializer
 
@@ -27,7 +28,7 @@ def register_user(request) -> Response:
     user_serializer = UserSerializer(data=request.data)
     user_serializer.is_valid(raise_exception=True)
     try:
-        User.objects.create_user(**user_serializer.validated_data)
+        user = User.objects.create_user(**user_serializer.validated_data)
     except ValidationError as e:
         if "already exists" in str(e):
             return Response(data={"message": "username or email already in use"}, status=400)
@@ -36,16 +37,16 @@ def register_user(request) -> Response:
         return Response(data={"message": str(e)}, status=400)
     except TypeError as e:
         return Response(data={"message": str(e)}, status=400)
+    UserTFA.objects.create(user=user)
     return Response(data=user_serializer.validated_data, status=status.HTTP_201_CREATED)
 
 
 @api_view(['DELETE'])
-# @permission_classes([IsActualUser | IsAdmin])
-@permission_classes([])
+@permission_classes([IsActualUser | IsAdmin])
 @throttle_classes([LowLoadThrottle])
 def delete_user(request) -> Response:
     """
-    Query params: {"username": <username>}
+    query params: {"username": <username>}
     """
     username = request.query_params.get('username', '')
     if username == '':
@@ -63,7 +64,7 @@ def delete_user(request) -> Response:
 @throttle_classes([LowLoadThrottle])
 def change_role(request) -> Response:
     """
-    Request: {"username": <username>, "role": <[U, M]>}
+    body: {"username": <username>, "role": <[U, M]>}
     """
     username = request.data.get('username', '')
     role = request.data.get('role', '')
@@ -84,7 +85,7 @@ def change_role(request) -> Response:
 @throttle_classes([MediumLoadThrottle])
 def update_password(request) -> Response:
     """
-    Request: {"password": <password>, "new_password": <new_password>}
+    body: {"password": <password>, "new_password": <new_password>}
     """
     try:
         User.objects.update_password(request.user, **request.data)
@@ -97,7 +98,7 @@ def update_password(request) -> Response:
 @throttle_classes([HighLoadThrottle])
 def update_username(request) -> Response:
     """
-    Request: {"username": <username>, "password": <password>}
+    body: {"username": <username>, "password": <password>}
     """
     try:
         User.objects.update_username(request.user, **request.data)
@@ -110,7 +111,7 @@ def update_username(request) -> Response:
 @throttle_classes([MediumLoadThrottle])
 def update_email(request) -> Response:
     """
-    Request: {"email": <email>, "password": <password>}
+    body: {"email": <email>, "password": <password>}
     """
     try:
         User.objects.update_email(request.user, **request.data)
@@ -132,7 +133,7 @@ def update_verified(request) -> Response:
 @throttle_classes([MediumLoadThrottle])
 def change_active(request) -> Response:
     """
-    Request: {"username": <username>, "banned": <[True, False]>}
+    body: {"username": <username>, "banned": <[True, False]>}
     """
     username = request.data.get('username', '')
     if username == '':

@@ -117,7 +117,7 @@ SIMPLE_JWT = {
     "SIGNING_KEY": open(RSA_PRIVATE_KEY_PATH, 'r').read(),  # if path.isfile(RSA_PRIVATE_KEY_PATH) else '',
     "VERIFYING_KEY": open(RSA_PUBLIC_KEY_PATH, 'r').read(),  # if path.isfile(RSA_PUBLIC_KEY_PATH) else '',
     "AUDIENCE": "transcendence",
-    "ISSUER": "transcendence.users",
+    "ISSUER": "transcendence.auth",
 
     "AUTH_HEADER_TYPES": ("Bearer",),
     "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",

@@ -103,7 +103,7 @@ def validate_recover(request) -> Response:
         user_tfa = UserTFA.objects.get(url_token=url_token)
     except UserTFA.DoesNotExist:
         return Response(data={'message': 'user not found'}, status=404)
-    # TODO: check if user is resetting the password, again, idk y
+    # TODO: check if user is resetting the password, again, idk why
     # if not user_tfa.user.user_tokens.is_resetting_password():
     #     return Response(status=403)
     if not user_tfa.verify_otp_code(code):
