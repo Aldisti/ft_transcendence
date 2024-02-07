@@ -550,7 +550,7 @@
             width: 65%;
         }
         input[type="time"]{
-            width: 35%;
+            width: fit-content;
         }
     }
 

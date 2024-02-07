@@ -1,94 +1,28 @@
 import Aview from "/views/abstractView.js";
 import language from "/language/language.js";
 import handleSlider from "/viewScripts/pong2d/sliders.js"
-
+import Router from "/router/mainRouterFunc.js"
+import * as listeners from "/viewScripts/pong2dTournament/listeners.js"
 import * as API from"/API/APICall.js"
 import * as URL from"/API/URL.js"
 
-let pills = [ "/imgs/pillsTexture/pill1.png", "/imgs/pillsTexture/pill.png"]
-let grounds = [ "/imgs/groundTexture/ground1.jpg", "/imgs/groundTexture/ground2.avif", "/imgs/groundTexture/ground3.jpg"]
-let balls = [ "/imgs/ballTexture/tennis.png", "/imgs/ballTexture/basket.png", "/imgs/ballTexture/soccer.png"]
-
-let tournaments = [{title: "First Tournament", description: "Eccoci pronti per il torneo di Pong, il gioco che ha dato il via alla storia dei videogiochi! Unisciti a noi per un'epica sfida all'ultimo pixel.", date: "07/07/2024.17:42", partecipants: "0", total: "100", registered: false}, {title: "First Tournament", description: "Affina i tuoi riflessi, pianifica le tue mosse e preparati a colpire con precisione millimetrica. Sfida i tuoi amici o dimostra la tua superiorità contro avversari nuovi di zecca.", date: "07/07/2024.17:42", partecipants: "90", total: "100", registered: false}, {title: "First Tournament", description: "lorem ipsudjvkja sv sf vs fv vsf b sf bsb sg nd gb", date: "07/07/2024.17:42", partecipants: "10", total: "100", registered: true}, {title: "First Tournament", description: "lorem ipsudjvkja sv sf vs fv vsf b sf bsb sg nd gb", date: "07/07/2024.17:42", partecipants: "60", total: "100", registered: false}];
-
-function getCardBody(el){
-
-    while(!el.classList.contains("tournamentCard")){
-        el = el.parentNode;
-    }
-    return el.querySelector(".hiddenBody");
-}
-
-function resetBtnClass(currentEl){
-    document.querySelectorAll(".subscribe").forEach(el=>{
-        if (currentEl === undefined || el !== currentEl)
-            el.classList.remove("bodyOpened")
-    })
-}
-
-function movementHandler(newState, obj){
-    if (newState === "close"){
-        document.querySelector(".tournamentManager").style.width = "47svw"
-        obj.classList.remove("showCard")
-    }
-    else if (newState === "open"){
-        document.querySelector(".tournamentManager").style.width = "90%"
-        obj.classList.add("showCard");
-    }
-}
 
 export default class extends Aview{
     constructor(){
         super();
-        this.pillTexture = pills[0];
-        this.groundTexture = grounds[0];
-        this.ballTexture = balls[0];
-    }
-
-    checkDate(obj){
-        let [year, month, day] = obj.tDate.split("-");
-        let [hours, minutes] = obj.tTime.split(":");
-        //one hour in milliseconds
-        let margin = 3600000;
-        let inputDate = new Date(year, month - 1, day, hours, minutes).getTime();
-        let currDate = new Date().getTime();
-
-        if (inputDate - currDate > margin)
-            return (true);
-        alert(this.language.tournament.invalidDateTime)
-        return (false);
-    }
-
-    fieldValidate(val, key){
-        let regLength = key == "tDescription" ? 300 : 20;
-        console.log(regLength)
-        let genericRegex = new RegExp(`^[A-Za-z0-9!?*@$~_ :/-]{5,${regLength}}$`);
-        let partecipantsRegex = /^[0-9]+$/;
-
-        console.log(key)
-        if (key == "tPartecipants"){
-            if (partecipantsRegex.test(val))
-                return (Number(val));
-            else{
-                alert(window.escapeHtml(val) + this.language.tournament.invalidPartecipants)
-                return (null);
-            }
-        }
-        if (genericRegex.test(val))
-            return (val);
-        alert(window.escapeHtml(val) + this.language.tournament.invalidInput)
-        return (null);
     }
 
     populateList(){
         document.querySelector(".tournamentsList").innerHTML = "";
-        tournaments.forEach(element => {
-            document.querySelector(".tournamentsList").innerHTML += this.getTournamentCard(element);
-        });
+        API.getTournamentsList(1).then(tournaments=>{
+            tournaments.forEach(element => {
+                document.querySelector(".tournamentsList").innerHTML += this.getTournamentCard(element);
+            });
+        })
     }    
 
     getTournamentCard(obj){
-        let percentage = obj.partecipants / obj.total;
+        let percentage = obj.participants / obj.total;
         let color = "white"
         if (percentage < 0.4)
             color = "var(--bs-success)";
@@ -104,7 +38,7 @@ export default class extends Aview{
                 
                     <div class="partecipants" style="background-color: ${color};">
                         <span class="actualPartecipants">
-                            ${obj.partecipants != undefined ? obj.partecipants : "0"}
+                            ${obj.participants != undefined ? obj.participants : "0"}
                         </span>
                         <span>
                             /
@@ -125,11 +59,8 @@ export default class extends Aview{
                             </span>
                         </div>
                         <div class="dateAndTime">
-                            <span class="date">
-                                ${obj.date.split(".")[0]}
-                            </span>
                             <span class="time">
-                                ${obj.date.split(".")[1]}
+                                ${obj.time}
                             </span>
                         </div>
                     </div>
@@ -161,7 +92,6 @@ export default class extends Aview{
                         <div class="inputLine">
                             <label for="tournamentDate">${this.language.tournament.newTournament.tDate}</label>
                             <div class="dateTimeInput">
-                                <input required id="tournamentDate" name="tDate" type="date">
                                 <input required id="tournamentHour" name="tTime" type="time">
                             </div>
                         </div>
@@ -221,56 +151,17 @@ export default class extends Aview{
 	setup(){
         this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpeg")
         this.populateList()
-        document.querySelector(".tournamentsList").addEventListener("click", (e)=>{
-            let card = document.querySelector(".displayBodyAndSubbmit");
-            if (e.target.classList.contains("subscribe")){
-                document.querySelector(".newTournament").classList.remove("showCard")
-                if (!e.target.classList.contains("bodyOpened"))
-                    movementHandler("open", card);
-                else
-                    movementHandler("close", card);
-                document.querySelector(".displayBodyAndSubbmit .bodyContainer").innerHTML = getCardBody(e.target).innerHTML;
-                resetBtnClass(e.target);
-                e.target.classList.toggle("bodyOpened");
-            }
-            if (e.target.classList.contains("unSubscribe")){
-                resetBtnClass(e.target);
-                movementHandler("close", card);
-                setTimeout(() => {
-                    if (confirm("Do You really want to unsubscribe this event?")){
-                        console.log("event unsubscribed!");
-                    }
-                }, 300);
-            }
-        })
 
-        document.querySelector(".showNewTournamentForm").addEventListener("click", ()=>{
-            let card = document.querySelector(".newTournament");
-            document.querySelector(".displayBodyAndSubbmit").classList.remove("showCard");
-            resetBtnClass();
-            if (card.classList.contains("showCard")){
-                movementHandler("close", card);
-            }
-            else{
-                movementHandler("open", card);
-            }
-        })
-        document.querySelector(".createTournamentBtn").addEventListener("click", (e)=>{
-            if (!document.querySelector(".newTournament form").checkValidity()){
-                return ;
-            }
-            e.preventDefault()
-            let form = new FormData(document.querySelector(".newTournament form"));
-            let obj = {};
+        //if the button pressed is subscribe show the displayName form otherwise make the apicall to unsubscribe the selceted event
+        document.querySelector(".tournamentsList").addEventListener("click", listeners.handleTournamentSubscription.bind(null, this))
 
-            form.forEach((value, key)=>{
-                obj[key] = this.fieldValidate(value, key);
-                if (obj[key] == null)
-                    return;
-            })
-            if (!this.checkDate(obj)){
-                return ;
-            }
-        });
+        //show the form when the + button is clicked
+        document.querySelector(".showNewTournamentForm").addEventListener("click", listeners.exposeNewTournamentForm)
+        
+        //submit the form to create new tournament
+        document.querySelector(".createTournamentBtn").addEventListener("click", listeners.handleTournamentCreation.bind(null, this));
+
+        //handle the subscription to the selected tournament
+        document.querySelector(".displayNameAndSubmit button").addEventListener("click", listeners.handleTournamentSubscribe.bind(null, this))
     }
 }

@@ -260,7 +260,7 @@
         height: 50%;
     }
 
-    .createTournamentBtn{
+    .showNewTournamentForm{
         background-color: var(--bs-warning);
         width: 30%;
         height: 100%;
@@ -543,7 +543,7 @@
             font-size: xx-small;
         }
         input[type="time"]{
-            width: 35%;
+            width: fit-content;
             font-size: xx-small;
 
         }

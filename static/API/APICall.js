@@ -845,7 +845,7 @@ export async function adminGetUsers(recursionProtection, page, size){
         return (parsed);
     }
     if (res.status == 401 && recursionProtection)
-        return await refreshAndRetry(adminGetUsers, 0);
+        return await refreshAndRetry(adminGetUsers, 0, page, size);
     return ({})
 }
 export async function adminGetBannedUsers(recursionProtection, page, size){
@@ -861,7 +861,7 @@ export async function adminGetBannedUsers(recursionProtection, page, size){
         return (parsed);
     }
     if (res.status == 401 && recursionProtection)
-        return await refreshAndRetry(adminGetBannedUsers, 0);
+        return await refreshAndRetry(adminGetBannedUsers, 0, page, size);
     return ({})
 }
 export async function adminGetModerator(recursionProtection, page, size){
@@ -877,7 +877,7 @@ export async function adminGetModerator(recursionProtection, page, size){
         return (parsed);
     }
     if (res.status == 401 && recursionProtection)
-        return await refreshAndRetry(adminGetModerator, 0);
+        return await refreshAndRetry(adminGetModerator, 0, page, size);
     return ({})
 }
 export async function removeUser(recursionProtection, username){
@@ -942,3 +942,81 @@ export async function manageModerator(recursionProtection, username, moderatorSt
     return ({})
 }
 
+//still dummy call need to be implemente with real backEnd
+
+export async function getTournamentsList(recursionProtection){
+    const res = await fetch(URL.tournaments.GET_TOURNAMENTS_LIST, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        // credentials: "include",
+    });
+    if (res.ok) {
+        let parsed = await res.json();
+        return (parsed);
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(getTournamentsList, 0);
+    return ({})
+}
+
+export async function tournamentSubmit(recursionProtection, displayName){
+    const res = await fetch(URL.tournaments.SUBMIT, {
+        method: "PATCH",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            displayName: displayName,
+        }),
+        // credentials: "include",
+
+    });
+    if (res.ok) {
+        return (true);
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(tournamentSubmit, 0, displayName);
+    return (false)
+}
+export async function unsubscribeTournament(recursionProtection){
+    const res = await fetch(URL.tournaments.UNSUBSCRIBE, {
+        method: "DELETE",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json"
+        },
+        // credentials: "include",
+
+    });
+    if (res.ok) {
+        return (true);
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(unsubscribeTournament, 0);
+    return (false)
+}
+
+export async function createTournament(recursionProtection, form){
+    const res = await fetch(URL.tournaments.CREATE, {
+        method: "PATCH",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(form),
+        // credentials: "include",
+
+    });
+    if (res.ok) {
+        return (true);
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(createTournament, 0, form);
+    return (false)
+}
+
+
+//end of Dummy call

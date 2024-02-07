@@ -71,6 +71,13 @@ export const userAction = {
     TEST: `${protocol}://${ip}:${port}/users`
 }
 
+export const tournaments = {
+    GET_TOURNAMENTS_LIST: `${protocol}://${ip}:3000/tournaments/`,
+    SUBMIT: `${protocol}://${ip}:3000/submit/`,
+    CREATE: `${protocol}://${ip}:3000/create/`,
+    UNSUBSCRIBE: `${protocol}://${ip}:3000/unsubscribe/`,
+}
+
 export const manageUsers ={
     //come delete
     DELETE_USER: `${protocol}://${ip}:${port}/users/`,
