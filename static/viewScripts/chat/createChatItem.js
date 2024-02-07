@@ -33,12 +33,14 @@ export function createTitle(){
                     <div tabindex="-1" class="imgTitle chat">
                         <img class="chat" src="${res.user_info.picture != null ? res.user_info.picture : "/imgs/defaultImg.jpg"}">
                     </div>
-                    <a tabindex="-1" class="chat" href="/user/?username=${document.querySelector(".chatBox").getAttribute("name")}" data-link>
-                        <h2 tabindex="-1" class=" chat">
-                            ${document.querySelector(".chatBox").getAttribute("name")}
-                        </h2>
-                    </a>
-                    <img tabindex="-1" class="menu chat" src="/imgs/menu.jpg">
+                    <div class="menu chat">
+                        <a tabindex="-1" class="chat" href="/user/?username=${document.querySelector(".chatBox").getAttribute("name")}" data-link>
+                            <h2 tabindex="-1" class=" chat">
+                                ${document.querySelector(".chatBox").getAttribute("name")}
+                            </h2>
+                        </a>
+                        &#x2630;
+                    </div>
                     <div tabindex="-1" class="chatUserMenu chat">
                         <div tabindex="-1" class="chat chatUserMenuLine">
                             <h3 tabindex="-1" class="chat">Block User</h3>

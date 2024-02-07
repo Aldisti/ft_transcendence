@@ -52,5 +52,5 @@ if (window.innerWidth < 900)
 
 document.addEventListener("scroll", ()=>{
     console.log(window.scrollY)
-    document.querySelector(".chatContainer").style.top = `${window.scrollY}px` ;
+    document.querySelector(".chatContainer").style.top = `${window.scrollY + 60}px` ;
 })

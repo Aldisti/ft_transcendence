@@ -22,7 +22,8 @@ export default class extends Aview{
             },
             pong:{
                 name: "Pong 2D",
-                url: "/games/pongTwoD/",
+                url: "/games/pong2d/",
+                tournamentUrl: "/games/pong2d/tournaments/",
                 imgUrl: "/imgs/pong-thumbnail.png",
                 category: "Arcade",
                 multiplayer: false
@@ -36,18 +37,26 @@ export default class extends Aview{
 
         for (let key of Object.keys(games))
         {
-            html += `<a href="${games[key].url}" class="link" data-link>
+            html += `<div href="${games[key].url}" class="link">
                         <div class="gameTitle">
                             <h2>${games[key].name}</h2>
                             <div class="gameModeWrap">
                                 ${getGameModeIconHtml(games[key])}
                             </div>
                         </div>
-                        <div class="imgWrap">
-                            <img src="${games[key].imgUrl}">
+                        <div class="gameInfo">
+                            <div class="imgWrap">
+                                <img src="${games[key].imgUrl}">
+                            </div>
+                            <div class="gameDescription">
+                                <h4><span>${this.language.game.category}</span>${games[key].category}</h4>
+                                <a class="normal" data-link href="${games[key].url}">${this.language.game.gameQueue}</a>
+                                ${games[key].tournamentUrl != undefined ? `
+                                    <a class="tournament"  data-link href="${games[key].tournamentUrl}">${this.language.game.gameTournament}</a>
+                                ` : ``}
+                            </div>    
                         </div>    
-                        <h4><span>${this.language.game.category}</span>${games[key].category}</h4>
-                    </a>`
+                    </div>`
         }
         return html;
     }

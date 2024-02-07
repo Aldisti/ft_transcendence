@@ -4,6 +4,7 @@ import Home from "/views/Home.js"
 import Games from "/views/Games.js"
 import Pong3d from "/views/Pong3d.js"
 import Pong2d from "/views/Pong2d.js"
+import Pong2dTournaments from "/views/Pong2dTournament.js"
 import UserInfo from "/views/UserInfo.js"
 import PasswordRecovery from "/views/PasswordRecovery.js"
 import UserDisplay from "/views/DisplayUser.js"
@@ -16,7 +17,8 @@ const   Routes = [
     { path: "/register/", view: Signup, style: "/style/signup.css", modernStyle: "/style/modern/signup.css"},
     { path: "/games/", view: Games, style: "/style/games.css", modernStyle: "/style/modern/games.css"},
     { path: "/games/pongThreeD/", view: Pong3d, style: "/style/pong3d.css", modernStyle: "/style/modern/pong3d.css"},
-    { path: "/games/pongTwoD/", view: Pong2d, style: "/style/pong2d.css", modernStyle: "/style/modern/pong2d.css"},
+    { path: "/games/pong2d/", view: Pong2d, style: "/style/pong2d.css", modernStyle: "/style/modern/pong2d.css"},
+    { path: "/games/pong2d/tournaments/", view: Pong2dTournaments, style: "/style/pong2dTournament.css", modernStyle: "/style/modern/pong2dTournament.css"},
     { path: "/account/", view: UserInfo, style: "/style/userInfo.css", modernStyle: "/style/modern/userInfo.css"}, 
     { path: "/password/recovery/", view: PasswordRecovery, style: "/style/passwordRecovery.css", modernStyle: "/style/modern/passwordRecovery.css"},
     { path: "/google/callback", view: UserInfo, style: "/style/userInfo.css", modernStyle: "/style/modern/userInfo.css"},

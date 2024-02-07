@@ -18,7 +18,9 @@ let language = {
 
 		},
 		game: {
-			category: "Category: "
+			category: "Category: ",
+			gameQueue: "Enter Our Queue",
+			gameTournament: "View Tournaments",
 		},
 		login: {
 			login: "Login",
