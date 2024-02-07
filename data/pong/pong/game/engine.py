@@ -49,16 +49,16 @@ class MyObject:
     def on_hit(self, hitted):
         pass
 
-    def hit_left_wall(self, wall_pos):
+    def hit_left_wall(self, wall_pos, **kwargs):
         pass
 
-    def hit_right_wall(self, wall_pos):
+    def hit_right_wall(self, wall_pos, **kwargs):
         pass
 
-    def hit_bottom_wall(self, wall_pos):
+    def hit_bottom_wall(self, wall_pos, **kwargs):
         pass
 
-    def hit_top_wall(self, wall_pos):
+    def hit_top_wall(self, wall_pos, **kwargs):
         pass
 
 
@@ -109,13 +109,13 @@ class Field:
         bottom_pos = obj.pos_y + obj.collider.box_height
 
         if left_pos < 0:
-            obj.hit_left_wall(0)
+            obj.hit_left_wall(0, width=self.width, height=self.height)
         elif right_pos > self.width:
-            obj.hit_right_wall(self.width)
+            obj.hit_right_wall(self.width, width=self.width, height=self.height)
         if top_pos < 0:
-            obj.hit_top_wall(0)
+            obj.hit_top_wall(0, width=self.width, height=self.height)
         elif bottom_pos > self.height:
-            obj.hit_bottom_wall(self.height)
+            obj.hit_bottom_wall(self.height, width=self.width, height=self.height)
 
     def resolve_collisions(self):
         for pair in combinations(self.objs, 2):
@@ -216,11 +216,11 @@ class Paddle(MyObject):
     def on_hit(self, hitted):
         pass
 
-    def hit_bottom_wall(self, wall_pos):
+    def hit_bottom_wall(self, wall_pos, **kwargs):
         self.pos_y = wall_pos - self.collider.box_height
         self.vel_y = 0
 
-    def hit_top_wall(self, wall_pos):
+    def hit_top_wall(self, wall_pos, **kwargs):
         self.pos_y = wall_pos + self.collider.box_height
         self.vel_y = 0
 
@@ -228,25 +228,39 @@ class Paddle(MyObject):
 class Ball(MyObject):
     def __init__(self, object_id, radius=1, pos_x=0, pos_y=0, vel_x=0, vel_y=0, acc_x=0, acc_y=0):
         circle_collider = CircleCollider(radius=radius)
+        self.scores = [0, 0]
+        self.last_score = "left"
         super().__init__(object_id=object_id, collider=circle_collider, pos_x=pos_x, pos_y=pos_y, vel_x=vel_x, vel_y=vel_y, acc_x=acc_x, acc_y=acc_y)
 
     def on_hit(self, hitted):
         if isinstance(hitted, Paddle):
             self.vel_x = - self.vel_x
 
-    def hit_left_wall(self, wall_pos):
-        self.pos_x = wall_pos + self.collider.box_width
-        self.vel_x = - self.vel_x
+    def hit_left_wall(self, wall_pos, **kwargs):
+        self.scores[1] += 1
+        self.last_score = "rigth"
+        width = kwargs["width"]
+        height = kwargs["height"]
+        self.pos_x = width / 2
+        self.pos_y = height / 2
+        self.vel_x = 0
+        self.vel_y = 0
 
-    def hit_right_wall(self, wall_pos):
-        self.pos_x = wall_pos - self.collider.box_width
-        self.vel_x = - self.vel_x
+    def hit_right_wall(self, wall_pos, **kwargs):
+        self.scores[0] += 1
+        self.last_score = "left"
+        width = kwargs["width"]
+        height = kwargs["height"]
+        self.pos_x = width / 2
+        self.pos_y = height / 2
+        self.vel_x = 0
+        self.vel_y = 0
 
-    def hit_bottom_wall(self, wall_pos):
+    def hit_bottom_wall(self, wall_pos, **kwargs):
         self.pos_y = wall_pos - self.collider.box_height
         self.vel_y = - self.vel_y
 
-    def hit_top_wall(self, wall_pos):
+    def hit_top_wall(self, wall_pos, **kwargs):
         self.pos_y = wall_pos + self.collider.box_height
         self.vel_y = - self.vel_y
 
