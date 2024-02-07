@@ -29,6 +29,7 @@ import logging
 import pika
 import os
 
+from transcendence.decorators import get_credentials
 
 logger = logging.getLogger(__name__)
 
@@ -124,6 +125,7 @@ def registration(request):
 
 @api_view(['PATCH'])
 @permission_classes([IsAdmin])
+@get_credentials
 def change_role(request):
     """
     Request: {"username": <username>, "role": <[U, M]>}
@@ -133,10 +135,9 @@ def change_role(request):
         return Response(status=400)
     user = user_serializer.update_role(user_serializer.validated_data)
     # auth server
-    headers = {'Authorization': request.headers.get('Authorization')}
     api_response = patch_request(
         settings.MS_URLS['AUTH']['UPDATE_ROLE'],
-        headers=headers,
+        headers=request.api_headers,
         json=request.data,
     )
     if api_response.status_code != 200:
@@ -145,10 +146,12 @@ def change_role(request):
     return Response({"username": user.username, "new_role": user.role}, status=200)
 
 
-# TODO: the update password endpoint makes two database researches 
+# TODO: the update password endpoint makes two database researches
+
 
 @api_view(['PATCH'])
 @permission_classes([IsUser])
+@get_credentials
 def update_password(request):
     """
     Request: {"password": <password>, "new_password"}
@@ -164,10 +167,9 @@ def update_password(request):
     except ValueError as e:
         return Response({"message": "invalid password"}, status=400)
     # auth server
-    headers = {'Authorization': request.headers.get('Authorization')}
     api_response = patch_request(
         settings.MS_URLS['AUTH']['UPDATE_PASSWORD'],
-        headers=headers,
+        headers=request.api_headers,
         json=request.data
     )
     if api_response.status_code != 200:
@@ -189,6 +191,7 @@ def update_password(request):
 
 @api_view(['PATCH'])
 @permission_classes([IsModerator])
+@get_credentials
 def change_active(request):
     """
     Request: {"username": <username>, "banned": <[True, False]>}
@@ -198,10 +201,9 @@ def change_active(request):
         return Response(status=400)
     user = user_serializer.update_active(user_serializer.validated_data)
     # auth server
-    headers = {'Authorization': request.headers.get('Authorization')}
     api_response = patch_request(
         settings.MS_URLS['AUTH']['UPDATE_ACTIVE'],
-        headers=headers,
+        headers=request.api_headers,
         json=request.data,
     )
     if api_response.status_code != 200:

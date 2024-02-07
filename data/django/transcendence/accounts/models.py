@@ -9,7 +9,7 @@ from accounts.utils import Roles
 from accounts.validators import validate_birthdate
 from accounts.managers import (UserManager,
                                UserInfoManager,
-							   UserGameManager)
+                               UserGameManager)
 
 import logging
 
