@@ -35,6 +35,7 @@ export const auth = {
     UNLINK_GOOGLE_ACCOUNT: `${protocol}://${ip}:${authPort}/oauth2/google/unlink/`,
     LINK_GOOGLE_ACCOUNT: `${protocol}://${ip}:${authPort}/oauth2/google/v2/link/`,
     LOGIN_WITH_GOOGLE: `${protocol}://${ip}:${authPort}/oauth2/google/v2/login/`,
+    VALIDATE_EMAIL: `${protocol}://${ip}:${authPort}/tokens/email/`,
 }
 
 export const friendship = {

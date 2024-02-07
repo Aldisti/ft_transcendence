@@ -131,7 +131,7 @@ function handleSocketMesssage(game, message){
     coordinates.ball.y = coordinates.ball.y  * game.canvas.height / ORIGINAL_HEIGHT;
 	if (coordinates != undefined){
         if ((coordinates.ball.vel_x != game.ball.deltaX || coordinates.ball.vel_y != game.ball.deltaY)
-            || (Math.abs(coordinates.ball.x - game.ball.x) > 3  || Math.abs(coordinates.ball.y - game.ball.y) > 3)){
+            || (Math.abs(coordinates.ball.x - game.ball.x) > 2  || Math.abs(coordinates.ball.y - game.ball.y) > 2)){
             game.ball.updatePosition(coordinates.ball.x, coordinates.ball.y, coordinates.ball.vel_x, coordinates.ball.vel_y);
             game.positionUpdated = true
         }

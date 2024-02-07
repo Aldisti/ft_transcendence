@@ -53,6 +53,8 @@ let language = {
 			},
 		},
 		login: {
+			emailValidated: "Email Successfully Validated",
+			emailValidatedError: "Email Validation Error (try Again)",
 			login: "Login",
 			name:	"Username: ",
 			password: "Password: ",

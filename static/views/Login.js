@@ -96,6 +96,18 @@ export default class extends Aview {
         `
     }
     setup() {
+        const urlParams = new URLSearchParams(window.location.search)
+
+        if (urlParams.get("token") != null){
+            API.validateEmail(urlParams.get("token")).then(res=>{
+                setTimeout(() => {
+                    if (res)
+                        alert(this.language.login.emailValidated);
+                    else
+                        alert(this.language.login.emailValidatedError);
+                }, 300);
+            })
+        }
         //do all the necessary stuff to manage the login with intra if user is already linked
         oauth2.intraLoginHandle();
         oauth2.googleLoginHandle();

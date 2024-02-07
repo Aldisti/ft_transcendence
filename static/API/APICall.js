@@ -1017,6 +1017,15 @@ export async function createTournament(recursionProtection, form){
         return await refreshAndRetry(createTournament, 0, form);
     return (false)
 }
+export async function validateEmail(token){
+    const res = await fetch(`${URL.auth.VALIDATE_EMAIL}?token=${token}`, {
+        method: "GET",
+    });
+    if (res.ok) {
+        return (true);
+    }
+    return (false)
+}
 
 
 //end of Dummy call
