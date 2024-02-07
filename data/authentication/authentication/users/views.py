@@ -1,3 +1,5 @@
+from time import sleep
+
 from django.core.exceptions import ValidationError
 from django.conf import settings
 from rest_framework import status
@@ -5,6 +7,7 @@ from rest_framework import status
 from rest_framework.decorators import APIView, api_view, permission_classes, throttle_classes
 from rest_framework.response import Response
 
+from authorization.serializers import TokenPairSerializer
 from two_factor_auth.models import UserTFA
 from .models import User
 from .serializers import UserSerializer
@@ -44,11 +47,10 @@ def register_user(request) -> Response:
 @api_view(['DELETE'])
 @permission_classes([IsActualUser | IsAdmin])
 @throttle_classes([LowLoadThrottle])
-def delete_user(request) -> Response:
+def delete_user(request, username: str) -> Response:
     """
-    query params: {"username": <username>}
+    url param: <username>
     """
-    username = request.query_params.get('username', '')
     if username == '':
         return Response(data={'message': 'username is required'}, status=400)
     try:
@@ -62,7 +64,7 @@ def delete_user(request) -> Response:
 @api_view(['PATCH'])
 @permission_classes([IsAdmin])
 @throttle_classes([LowLoadThrottle])
-def change_role(request) -> Response:
+def update_role(request) -> Response:
     """
     body: {"username": <username>, "role": <[U, M]>}
     """
@@ -88,10 +90,15 @@ def update_password(request) -> Response:
     body: {"password": <password>, "new_password": <new_password>}
     """
     try:
-        User.objects.update_password(request.user, **request.data)
+        user = User.objects.update_password(request.user, **request.data)
     except ValueError as e:
         return Response(data={'message': str(e)}, status=400)
-    return Response(status=200)
+    user = User.objects.update_last_logout(user)
+    refresh_token = TokenPairSerializer.get_token(user)
+    return Response(data={
+        'access_token': str(refresh_token.access_token),
+        'refresh_token': str(refresh_token),
+    }, status=200)
 
 
 @api_view(['PATCH'])
@@ -131,7 +138,7 @@ def update_verified(request) -> Response:
 @api_view(['PATCH'])
 @permission_classes([IsModerator])
 @throttle_classes([MediumLoadThrottle])
-def change_active(request) -> Response:
+def update_active(request) -> Response:
     """
     body: {"username": <username>, "banned": <[True, False]>}
     """

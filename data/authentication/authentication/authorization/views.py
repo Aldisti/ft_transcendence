@@ -18,7 +18,7 @@ from authentication.throttles import HighLoadThrottle, MediumLoadThrottle, LowLo
 from users.models import User
 from users.serializers import UserSerializer
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import requests
 import logging
 
@@ -109,8 +109,8 @@ def refresh(request) -> Response:
         return Response(data={'message': 'user not found'}, status=404)
     if not user.active:
         return Response(data={'message': "user is not active"}, status=403)
-    token_exp = datetime.fromtimestamp(refresh_token['exp'], tz=settings.TZ)
-    if user.last_logout > user.last_login and user.last_logout > token_exp:
+    token_iat = datetime.fromtimestamp(refresh_token['iat'], tz=settings.TZ) + timedelta(seconds=15)
+    if user.last_logout > user.last_login and user.last_logout > token_iat:
         return Response(data={'message': "invalid refresh token"}, status=403)
     return Response(data={'access_token': str(refresh_token.access_token)}, status=200)
 

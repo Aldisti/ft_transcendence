@@ -62,6 +62,9 @@ class Token(models.Model):
     class Meta:
         abstract = True
 
+    def to_data(self) -> dict:
+        return {'token': self.token}
+
     def __str__(self) -> str:
         return f"token: {self.token} iat: {self.iat} exp: {self.exp}"
 

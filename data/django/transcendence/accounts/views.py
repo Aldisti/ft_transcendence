@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.core.exceptions import ValidationError
 from django.shortcuts import render
 from django.core.mail import send_mail
@@ -8,6 +10,7 @@ from rest_framework.response import Response
 from rest_framework.generics import RetrieveDestroyAPIView, ListAPIView
 from rest_framework.exceptions import APIException
 from rest_framework import filters
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from accounts.paginations import MyPageNumberPagination
 from accounts.serializers import CompleteUserSerializer, UploadImageSerializer, UserInfoSerializer
@@ -20,13 +23,15 @@ from authentication.permissions import IsActualUser, IsAdmin, IsModerator, IsUse
 
 from requests import post as post_request
 from requests import delete as delete_request
+from requests import patch as patch_request
 
 import logging
-
 import pika
 import os
 
+
 logger = logging.getLogger(__name__)
+
 
 @api_view(['GET'])
 @permission_classes([])
@@ -38,9 +43,9 @@ def test(request):
     routing_key = os.environ['NTF_ROUTING_KEY']
     message = "NOTIFICATION"
     channel.basic_publish(exchange=os.environ['EXCHANGE'], routing_key=routing_key, body=message)
-    #logger.warning("sent")
-    #channel.close()
-    
+    # logger.warning("sent")
+    # channel.close()
+
     return Response(status=200)
 
 
@@ -94,8 +99,8 @@ def registration(request):
         api_response = delete_request(chat_url, json=data)
         return Response(data={'message': 'Something strange happened, contact devs'}, status=503)
 
-
-    api_response = post_request(settings.MS_URLS['AUTH_REGISTER'], json={'username': username, 'email': email, 'password': password})
+    api_response = post_request(settings.MS_URLS['AUTH_REGISTER'],
+                                json={'username': username, 'email': email, 'password': password})
     if api_response.status_code >= 300:
         # delete from ntf db
         ntf_url = settings.MS_URLS['NTF_DELETE'].replace("<pk>", username)
@@ -127,6 +132,16 @@ def change_role(request):
     if not user_serializer.is_valid():
         return Response(status=400)
     user = user_serializer.update_role(user_serializer.validated_data)
+    # auth server
+    headers = {'Authorization': request.headers.get('Authorization')}
+    api_response = patch_request(
+        settings.MS_URLS['AUTH']['UPDATE_ROLE'],
+        headers=headers,
+        json=request.data,
+    )
+    if api_response.status_code != 200:
+        return Response(data=api_response.json(), status=api_response.status_code)
+    ###
     return Response({"username": user.username, "new_role": user.role}, status=200)
 
 
@@ -148,7 +163,28 @@ def update_password(request):
         user = user_serializer.update_password(user_serializer.validated_data)
     except ValueError as e:
         return Response({"message": "invalid password"}, status=400)
-    return Response({"message": "password updated"}, status=200)
+    # auth server
+    headers = {'Authorization': request.headers.get('Authorization')}
+    api_response = patch_request(
+        settings.MS_URLS['AUTH']['UPDATE_PASSWORD'],
+        headers=headers,
+        json=request.data
+    )
+    if api_response.status_code != 200:
+        return Response(data=api_response.json(), status=api_response.status_code)
+    body = api_response.json()
+    refresh_token = RefreshToken(body.pop('refresh_token'))
+    exp = datetime.fromtimestamp(refresh_token['exp'], tz=settings.TZ) - datetime.now(tz=settings.TZ)
+    response = Response(data=body, status=200)
+    response.set_cookie(
+        key='refresh_token',
+        value=str(refresh_token),
+        max_age=exp.seconds,
+        secure=False,
+        httponly=True,
+        samesite=None,
+    )
+    return response
 
 
 @api_view(['PATCH'])
@@ -161,10 +197,21 @@ def change_active(request):
     if not user_serializer.is_valid():
         return Response(status=400)
     user = user_serializer.update_active(user_serializer.validated_data)
+    # auth server
+    headers = {'Authorization': request.headers.get('Authorization')}
+    api_response = patch_request(
+        settings.MS_URLS['AUTH']['UPDATE_ACTIVE'],
+        headers=headers,
+        json=request.data,
+    )
+    if api_response.status_code != 200:
+        return Response(data=api_response.json(), status=api_response.status_code)
+    ###
     return Response({"username": user.username, "banned": not user.active}, status=200)
 
+
 @api_view(['PUT'])
-#@permission_classes([IsUser])
+# @permission_classes([IsUser])
 def update_user_info(request):
     """
     Request: {"first_name": <first_name>, etc...}
@@ -178,13 +225,13 @@ def update_user_info(request):
 
 
 class RetrieveDestroyUser(RetrieveDestroyAPIView):
-    #permission_classes = [IsActualUser|IsAdmin]
+    # permission_classes = [IsActualUser|IsAdmin]
     permission_classes = []
     queryset = User.objects.all()
     serializer_class = CompleteUserSerializer
     lookup_field = "username"
 
-    def destroy(request, *args, **kwargs):
+    def destroy(self, request, *args, **kwargs):
         logger.warning("MY DESTROY")
         logger.warning(f"KWARGS: {kwargs}")
         username = kwargs.get("username", "")
@@ -199,6 +246,10 @@ class RetrieveDestroyUser(RetrieveDestroyAPIView):
             # delete from pong db
             pong_url = settings.MS_URLS['PONG_DELETE'].replace("<pk>", username)
             api_response = delete_request(pong_url, json=data)
+            # delete from auth db
+            headers = {'Authorization': request.headers.get('Authorization', '')}
+            auth_url = settings.MS_URLS['AUTH']['DELETE'].replace("<pk>", username)
+            api_response = delete_request(auth_url, headers=headers, json=request.data)
         return super().destroy(request, *args, **kwargs)
 
 

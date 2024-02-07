@@ -308,6 +308,13 @@ MS_URLS = {
     "AUTH": {
         # users app
         "REGISTER": f"http://{AUTH_HOST}:{AUTH_PORT}/users/register/",
+        "DELETE": f"http://{AUTH_HOST}:{AUTH_PORT}/users/delete/<pk>/",
+        "INFO": f"http://{AUTH_HOST}:{AUTH_PORT}/users/info/<pk>/",
+        "UPDATE_EMAIL": f"http://{AUTH_HOST}:{AUTH_PORT}/users/update/email/",
+        "UPDATE_PASSWORD": f"http://{AUTH_HOST}:{AUTH_PORT}/users/update/password/",
+        "UPDATE_VERIFIED": f"http://{AUTH_HOST}:{AUTH_PORT}/users/update/verified/",
+        "UPDATE_ACTIVE": f"http://{AUTH_HOST}:{AUTH_PORT}/users/update/active/",
+        "UPDATE_ROLE": f"http://{AUTH_HOST}:{AUTH_PORT}/users/update/role/",
         # authorization app
         "LOGIN": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/login/",
         "PASSWORD_RECOVERY": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/password/recovery/",
