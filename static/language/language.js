@@ -22,6 +22,29 @@ let language = {
 			gameQueue: "Enter Our Queue",
 			gameTournament: "View Tournaments",
 		},
+		tournament:
+		{
+			title: "Tournaments List",
+			searchBtn: "Search!",
+			displayName: "Display Name",
+			submitBtn: "Submit!",
+			invalidInput: " invalid Input",
+			invalidPartecipants: " Only numbers are accepted here!",
+			invalidDateTime: "We need at least one hour to setup your wondefull tournament!", 
+			newTournament: {
+				tTitle: "Create Tournament",
+				tName: "Tournament Name:",
+				tDescription: "Tournament Description:",
+				tDate: "Tournament Date:",
+				tPartecipants: "Max Partecipants:",
+				tCreate: "Create!"
+			},
+			tournamentCard: {
+				dateLabel: "Starting Date: ",
+				subScribe: "Join!",
+				unSubscribe: "Unsubscribe"
+			},
+		},
 		login: {
 			login: "Login",
 			name:	"Username: ",

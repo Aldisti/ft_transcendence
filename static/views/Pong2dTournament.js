@@ -45,6 +45,48 @@ export default class extends Aview{
         this.ballTexture = balls[0];
     }
 
+    checkDate(obj){
+        let [year, month, day] = obj.tDate.split("-");
+        let [hours, minutes] = obj.tTime.split(":");
+        //one hour in milliseconds
+        let margin = 3600000;
+        let inputDate = new Date(year, month - 1, day, hours, minutes).getTime();
+        let currDate = new Date().getTime();
+
+        if (inputDate - currDate > margin)
+            return (true);
+        alert(this.language.tournament.invalidDateTime)
+        return (false);
+    }
+
+    fieldValidate(val, key){
+        let regLength = key == "tDescription" ? 300 : 20;
+        console.log(regLength)
+        let genericRegex = new RegExp(`^[A-Za-z0-9!?*@$~_ :/-]{5,${regLength}}$`);
+        let partecipantsRegex = /^[0-9]+$/;
+
+        console.log(key)
+        if (key == "tPartecipants"){
+            if (partecipantsRegex.test(val))
+                return (Number(val));
+            else{
+                alert(window.escapeHtml(val) + this.language.tournament.invalidPartecipants)
+                return (null);
+            }
+        }
+        if (genericRegex.test(val))
+            return (val);
+        alert(window.escapeHtml(val) + this.language.tournament.invalidInput)
+        return (null);
+    }
+
+    populateList(){
+        document.querySelector(".tournamentsList").innerHTML = "";
+        tournaments.forEach(element => {
+            document.querySelector(".tournamentsList").innerHTML += this.getTournamentCard(element);
+        });
+    }    
+
     getTournamentCard(obj){
         let percentage = obj.partecipants / obj.total;
         let color = "white"
@@ -79,7 +121,7 @@ export default class extends Aview{
                     <div class="eventDate">
                         <div class="label">
                             <span class="dateLabel">
-                                Starting Date:
+                                ${this.language.tournament.tournamentCard.dateLabel}
                             </span>
                         </div>
                         <div class="dateAndTime">
@@ -92,7 +134,7 @@ export default class extends Aview{
                         </div>
                     </div>
                     <button class="subscribeBtn ${obj.registered ? `unSubscribe` : `subscribe`}" style="background-color: ${obj.registered ? `var(--bs-danger)` : `var(--bs-success)`}">
-                        ${obj.registered ? `Unsubscribe` : `Take Part`}
+                        ${obj.registered ? this.language.tournament.tournamentCard.unSubscribe : this.language.tournament.tournamentCard.subScribe}
                     </button>
                 </div>
             </div>
@@ -102,75 +144,35 @@ export default class extends Aview{
     newTournamentForm(){
         return `
         <div class="newTournament">
-            <h2>Create Tournament</h2>
+            <h2>${this.language.tournament.newTournament.tTitle}</h2>
             <form>
                 <div class="inputContainer">
                     <div class="leftSide">
                         <div class="inputLine">
-                            <label for="tournamentName">Tournament Name:</label>
-                            <input id="tournamentName" type="text">
+                            <label for="tournamentName">${this.language.tournament.newTournament.tName}</label>
+                            <input required id="tournamentName" name="tName" type="text">
                         </div>
                         <div class="inputLine">
-                            <label for="tournamentDescription">Tournament Description:</label>
-                            <textarea id="tournamentDescription" type="text"></textarea>
+                            <label for="tournamentDescription">${this.language.tournament.newTournament.tDescription}</label>
+                            <textarea required maxlength="500" name="tDescription" id="tournamentDescription" type="text"></textarea>
                         </div>
                     </div>
                     <div class="rightSide">
                         <div class="inputLine">
-                            <label for="tournamentDate">Tournament Date:</label>
+                            <label for="tournamentDate">${this.language.tournament.newTournament.tDate}</label>
                             <div class="dateTimeInput">
-                                <input id="tournamentDate" type="date">
-                                <input id="tournamentHour" type="time">
+                                <input required id="tournamentDate" name="tDate" type="date">
+                                <input required id="tournamentHour" name="tTime" type="time">
                             </div>
                         </div>
                         <div class="inputLine">
-                            <label for="maxPartecipants">Max Partecipants:</label>
-                            <input id="maxPartecipants" type="text">
+                            <label for="maxPartecipants">${this.language.tournament.newTournament.tPartecipants}</label>
+                            <input required id="maxPartecipants" name="tPartecipants" type="text">
                         </div>
                     </div>
                 </div>
-                <button>Create!</button>
+                <button class="createTournamentBtn">${this.language.tournament.newTournament.tCreate}</button>
             </form>
-        </div>
-        `
-    }
-
-    getGameHtml(){
-        return `
-        <div class="base">
-            <div class="left">
-                <div id="opponentDisplay">
-                    <h4 class="user1"></h4>
-                    <h2>28</h2>
-                </div>
-            </div>
-            <div class="center">
-                <div class="display">
-                    <div id="opponentDisplay">
-                        <h4>gpanico</h4>
-                        <h2>28</h2>
-                    </div>
-                    <div id="currentUserDisplay">
-                        <h4>mpaterno</h4>
-                        <h2>48</h2>
-                    </div>
-                </div>
-                <div class="gameContainerPadding">
-                    <div class="gameContainer">
-                        <canvas id="myCanv"></canvas>
-                    </div>
-                </div>
-                <div class="mobileControl">
-                    <div class="mobile up">⬆</div>
-                    <div class="mobile down">⬇</div>
-                </div>
-            </div>
-            <div class="right">
-                <div id="currentUserDisplay">
-                    <h4 class="user2"></h4>
-                    <h2>48</h2>
-                </div>
-            </div>
         </div>
         `
     }
@@ -182,9 +184,9 @@ export default class extends Aview{
 
             </div>
             <div class="displayNameAndSubmit">
-                <h3>Display Name</h3>
+                <h3>${this.language.tournament.displayName}</h3>
                 <input >
-                <button>Submit</button>
+                <button>${this.language.tournament.submitBtn}</button>
             </div>
         </div>
         `
@@ -198,14 +200,14 @@ export default class extends Aview{
                 <div class="allTournaments">
                     <div class="tournamentsTitle">
                         <div class="titleLeft">
-                            <h3>Tournaments List</h3>
+                            <h3>${this.language.tournament.title}</h3>
                             <input>
                         </div>
                         <div class="titleRight">
                             <div class="tournamentSearchBar">
-                                <button class="importantSubmit search">search</button><button class="restoreBtn">X</button>
+                                <button class="importantSubmit search">${this.language.tournament.searchBtn}</button><button class="restoreBtn">X</button>
                             </div>
-                            <button class="createTournamentBtn">+</button>
+                            <button class="showNewTournamentForm">+</button>
                         </div>
                     </div>
                     <div class="tournamentsList">
@@ -218,9 +220,7 @@ export default class extends Aview{
 
 	setup(){
         this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpeg")
-        tournaments.forEach(element => {
-            document.querySelector(".tournamentsList").innerHTML += this.getTournamentCard(element);
-        });
+        this.populateList()
         document.querySelector(".tournamentsList").addEventListener("click", (e)=>{
             let card = document.querySelector(".displayBodyAndSubbmit");
             if (e.target.classList.contains("subscribe")){
@@ -244,7 +244,7 @@ export default class extends Aview{
             }
         })
 
-        document.querySelector(".createTournamentBtn").addEventListener("click", ()=>{
+        document.querySelector(".showNewTournamentForm").addEventListener("click", ()=>{
             let card = document.querySelector(".newTournament");
             document.querySelector(".displayBodyAndSubbmit").classList.remove("showCard");
             resetBtnClass();
@@ -255,5 +255,22 @@ export default class extends Aview{
                 movementHandler("open", card);
             }
         })
+        document.querySelector(".createTournamentBtn").addEventListener("click", (e)=>{
+            if (!document.querySelector(".newTournament form").checkValidity()){
+                return ;
+            }
+            e.preventDefault()
+            let form = new FormData(document.querySelector(".newTournament form"));
+            let obj = {};
+
+            form.forEach((value, key)=>{
+                obj[key] = this.fieldValidate(value, key);
+                if (obj[key] == null)
+                    return;
+            })
+            if (!this.checkDate(obj)){
+                return ;
+            }
+        });
     }
 }

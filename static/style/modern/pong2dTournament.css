@@ -274,7 +274,7 @@
         height: 50%;
     }
 
-    .createTournamentBtn{
+    .showNewTournamentForm{
         background-color: var(--bs-warning);
         width: 30%;
         height: 100%;
@@ -560,6 +560,10 @@
         width: 100%;
         min-height: 45%;
         box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+    }
+
+    textarea{
+        height: 70%;
     }
 
     button{
