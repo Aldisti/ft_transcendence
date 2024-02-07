@@ -15,9 +15,7 @@ Pipfile*
 .**bkp
 data/django/transcendence/APIDocs.md
 data/postgres
-data/postgres/*
-data/pongdb
-data/pongdb/*
+data/*db/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
