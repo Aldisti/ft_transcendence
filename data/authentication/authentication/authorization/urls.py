@@ -12,4 +12,8 @@ urlpatterns = [
     ])),
     path('refresh/', views.refresh, name='api-refresh-token'),
     path('retrieve/public-key/', views.retrieve_pubkey, name='api-retrieve-public-key'),
+    path('password/', include([
+        path('recovery/', views.password_recovery, name='api-password'),
+        path('reset/', views.password_reset, name='api-password-reset'),
+    ])),
 ]

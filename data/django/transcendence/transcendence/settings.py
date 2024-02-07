@@ -303,8 +303,19 @@ MS_URLS = {
     # pong urls
     "PONG_REGISTER": f"http://{PONG_HOST}:{PONG_PORT}/user/register/",
     "PONG_DELETE": f"http://{PONG_HOST}:{PONG_PORT}/user/<pk>/delete/",
-	# auth urls
-	"AUTH_REGISTER": f"http://{AUTH_HOST}:{AUTH_PORT}/users/register/",
+    # auth urls
+    "AUTH_REGISTER": f"http://{AUTH_HOST}:{AUTH_PORT}/users/register/",
+    "AUTH": {
+        # users app
+        "REGISTER": f"http://{AUTH_HOST}:{AUTH_PORT}/users/register/",
+        # authorization app
+        "LOGIN": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/login/",
+        "PASSWORD_RECOVERY": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/password/recovery/",
+        "PASSWORD_RESET": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/password/reset/",
+        "REFRESH": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/refresh/",
+        "LOGOUT": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/logout/",
+        "LOGOUT_ALL": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/logout/all/",
+    }
 }
 
 # rabbit config

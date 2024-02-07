@@ -86,6 +86,23 @@ def send_password_email(user: User):
     EmailProducer().publish(json.dumps(body))
 
 
+def send_password_reset_email(username: str, email: str, token: str) -> None:
+    url = "http://localhost:4200/password/reset/" + f"?token={token}"
+    head = (f"Dear {username},\n"
+            f"apparently you've forgotten your password, ignore this message otherwise.\n"
+            f"Click the following link to reset your password:")
+    template = loader.get_template("email.html")
+    context = {
+        "title": "Password recovery",
+        "body": head,
+        "link": url,
+        "company": "Trinity",
+    }
+    email_message = template.render(context)
+    body = {"subject": "Password recovery", "receiver_mail": email, "text": "", "html": email_message}
+    EmailProducer().publish(json.dumps(body))
+
+
 def send_tfa_code_email(user_tfa: UserTFA) -> None:
     # generate message
     title = "OTP code"
