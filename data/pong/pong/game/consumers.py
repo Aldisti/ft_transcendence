@@ -8,7 +8,7 @@ import random
 
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
-from asgiref.sync import async_to_sync
+from asgiref.sync import async_to_sync, sync_to_async
 from game.engine import Ball, Paddle, Field, newton_dynamics
 from users.models import Participant, Game, Stats
 from users.utils import Results
@@ -30,16 +30,15 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 
     async def connect(self):
-        self.accept()
-
-    async def connect(self):
 
         self.other = False
         self.other_lock = asyncio.Lock()
 
         self.player = self.scope["user"]
         self.pos = "left"
-        self.ticket = self.scope["ticket"]
+        self.ticket = self.scope["token"]
+        logger.warning(f"LOG: user {self.player}")
+        logger.warning(f"LOG: ticket {self.ticket}")
         await self.accept()
 
         # add player to the group
@@ -47,16 +46,28 @@ class PongConsumer(AsyncWebsocketConsumer):
             self.ticket, self.channel_name
         )
 
+        logger.warning(f"LOG: user added to channel_name")
+
         # check if someone has connected with the same ticket
         async with self.start_lock:
-            other_player = self.tickets.setdefault(ticket, self.player)
+            other_player = self.tickets.setdefault(self.ticket, self.player)
+        logger.warning(f"LOG: other_player {other_player.username}")
+
 
         # TODO: can use 'is' to check
         if other_player.username != self.player.username:
+
+            logger.warning(f"LOG: second player")
+
+            async with self.other_lock:
+                self.other = True
+
             # remove ticket from tickets
             async with self.start_lock:
                 del self.tickets[self.ticket]
             self.pos = "right"
+
+            logger.warning(f"LOG: generate game instance")
 
             # generate the game
             ball = Ball(object_id="ball", radius=10, pos_x=400, pos_y=225, vel_x=0, vel_y=0)
@@ -74,25 +85,33 @@ class PongConsumer(AsyncWebsocketConsumer):
                 "saved": False,
             }
 
+            logger.warning(f"LOG: save game instance")
+
             # save game instance in the database
-            game_db = database_sync_to_async(self.create_game(self.player, other_player))
+            game_db = await self.create_game(self.player, other_player)
+
+            logger.warning(f"LOG: game created in database")
             
             # save game in games
             self.game_id = game_db.id
             self.games[self.game_id] = game_info
 
+            logger.warning(f"LOG: send info to players")
             # inform the players
             await self.channel_layer.group_send(
                 self.ticket,
-                {"type": "game.start", "objects": game_id}
+                {"type": "game.start", "objects": self.game_id}
             )
+            logger.warning(f"LOG: info sent")
 
             # start the game
             asyncio.create_task(self.game_loop())
 
+        logger.warning(f"LOG: first player")
+
         # check if the ticket is expired
-        if self.ticket in expired:
-            expired.remove(self.ticket)
+        if self.ticket in self.expired_tickets:
+            self.expired_tickets.remove(self.ticket)
             await self.send(
                 text_data=json.dumps({"message": "Apparently you've connected to late"})
             )
@@ -101,24 +120,28 @@ class PongConsumer(AsyncWebsocketConsumer):
 
         # wait the other player for 10 seconds
         start_time = time.time()
-        while start_time - time.time() < 10:
+        logger.warning(f"LOG: waiting for the other player")
+        while time.time() - start_time < 10:
             # check if the second player is connected
             async with self.other_lock:
                 if self.other:
+                    logger.warning(f"LOG: other player found")
                     break
             asyncio.sleep(0.1)
 
         if not self.other:
-            expired.append(self.ticket)
+            self.expired_tickets.append(self.ticket)
             # send back a message to the user
             await self.send(
                 text_data=json.dumps({"message": "The other player doesn't show up"})
             )
             # close the connection
             self.close(42)
+        logger.warning(f"LOG: the other player has connected")
 
 
     async def disconnect(self, close_code):
+        logger.warning(f"LOG: user {self.player} disconnected")
         update_lock = self.games[self.game_id]["update_lock"]
 
         await self.channel_layer.group_discard(
@@ -134,7 +157,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             if self.games[self.game_id]["end"]:
                 # save stats in database
                 result = Results.WIN if score == 11 else Results.LOSE
-                database_sync_to_async(self.create_stats(score, Results.LOSE))
+                await self.create_stats(score, Results.LOSE)
             elif close_code == 1001 and self.games[self.game_id]["connected"]:
                 self.games[self.game_id]["connected"] = False
                 # send a message to the other player and close his connection
@@ -143,20 +166,21 @@ class PongConsumer(AsyncWebsocketConsumer):
                     {"type": "other.disconnect", "objects": "disconnection"}
                 )
                 # save stats in database and mark this user as loser
-                database_sync_to_async(self.create_stats(score, Results.LOSE))
+                await self.create_stats(score, Results.LOSE)
             elif not self.games[self.game_id]["connected"]:
                 # save stats in database and mark this user as winner
-                database_sync_to_async(self.create_stats(score, Results.WIN))
+                await self.create_stats(score, Results.WIN)
 
-            # clean up consumer
-            if self.games[self.game_id]["saved"]:
-                del self.games[self.game_id]
-            else:
-                self.games[self.game_id]["saved"] = False
+        # clean up consumer
+        if self.games[self.game_id]["saved"]:
+            del self.games[self.game_id]
+        else:
+            self.games[self.game_id]["saved"] = True
 
 
 
     async def other_disconnect(self, event):
+        logger.warning(f"LOG: user {self.player} other disconnected")
         # send them info
         await self.send(
             text_data=json.dumps({"message": "The other player as been disconnected"})
@@ -167,6 +191,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 
     async def game_end(self, event):
         # send them info
+        logger.warning(f"LOG: user {self.player} game ended")
         await self.send(
             text_data=json.dumps({"message": "Game is finished"})
         )
@@ -175,6 +200,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 
     async def state_update(self, event):
+        logger.warning(f"LOG: user {self.player} update")
         await self.send(
             text_data=json.dumps(
                 {
@@ -186,6 +212,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 
     async def game_start(self, event):
         # inform players that they are connected
+        logger.warning(f"LOG: {self.player} setting other true")
         async with self.other_lock:
             self.other = True
         # save game key
@@ -196,6 +223,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         )
 
     async def receive(self, text_data):
+        logger.warning(f"LOG: user {self.player} received")
         text_data_json = json.loads(text_data)
         message_type = text_data_json.get("type", "")
         update_lock = self.games[self.game_id]["update_lock"]
@@ -225,10 +253,10 @@ class PongConsumer(AsyncWebsocketConsumer):
         while max(ball.scores) < 11 and self.games[self.game_id]["connected"]:
             async with update_lock:
                 self.game.update()
-                x = self.ball.pos_x - self.ball.collider.radius
-                y = self.ball.pos_y - self.ball.collider.radius
-                vel_x = self.ball.vel_x / 60
-                vel_y = self.ball.vel_y / 60
+                x = ball.pos_x - ball.collider.radius
+                y = ball.pos_y - ball.collider.radius
+                vel_x = ball.vel_x / 60
+                vel_y = ball.vel_y / 60
                 paddle_left_x = paddle_left.pos_x - paddle_left.collider.box_width
                 paddle_left_y = paddle_left.pos_y - paddle_left.collider.box_height
                 paddle_right_x = paddle_right.pos_x - paddle_right.collider.box_width
@@ -271,12 +299,14 @@ class PongConsumer(AsyncWebsocketConsumer):
             )
 
 
+    @database_sync_to_async
     def create_game(self, player, other_player):
         game_db = Game.objects.create()
         Participant.objects.create(player, game_db)
         Participant.objects.create(other_player, game_db)
         return game_db
 
+    @database_sync_to_async
     def create_stats(self, score, result):
         participant = Participant.objects.get(player=self.player, game_id=self.game_id)
         stats = Stats.objects.create(participant, score, result)
