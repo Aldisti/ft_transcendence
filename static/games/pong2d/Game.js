@@ -95,7 +95,9 @@ function handleKeyDown(game, e){
         }, game.frameInterval / 10);
     }
     if (e.key == " ")
-        document.querySelector("#myCanv").requestFullscreen();
+        game.socket.send(JSON.stringify({type: "start"}))
+    // if (e.key == " ")
+    //     document.querySelector("#myCanv").requestFullscreen();
 }
 
 let sync = false;
@@ -124,6 +126,7 @@ function handleKeyUp(game, e){
 
 
 function handleSocketMesssage(game, message){
+    console.log(message.data)
 	let coordinates = JSON.parse(message.data).objects;
     coordinates.ball.vel_x = coordinates.ball.vel_x  * game.canvas.width / ORIGINAL_WIDTH;
     coordinates.ball.vel_y = coordinates.ball.vel_y  * game.canvas.height / ORIGINAL_HEIGHT;

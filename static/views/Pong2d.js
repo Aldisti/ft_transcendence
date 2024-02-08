@@ -136,6 +136,7 @@ export default class extends Aview{
                 this.socket = new WebSocket(`${URL.socket.QUEUE_SOCKET}?ticket=${res.ticket}&username=${localStorage.getItem("username")}`);
                 this.socket.addEventListener("message", (message)=>{
                     let msg = JSON.parse(message.data);
+                    console.log(msg)
                     localStorage.setItem("gameStarted", "true");
                     document.querySelector("#app").innerHTML = this.getGameHtml();
                     document.querySelector(".user1").innerHTML = msg.user1
@@ -149,8 +150,8 @@ export default class extends Aview{
 
     destroy(){
         // this.socket.close();
-        if (this.game != 0)
-            this.game.close();
+        // if (this.game != 0)
+            // this.game.close();
     }
 	
 }
