@@ -1,6 +1,7 @@
 from itertools import combinations
 import time
 import logging
+import math
 
 logger = logging.getLogger(__name__)
 
@@ -234,7 +235,21 @@ class Ball(MyObject):
 
     def on_hit(self, hitted):
         if isinstance(hitted, Paddle):
-            self.vel_x = - self.vel_x
+
+            # calculate alpha
+            hit_zone = self.pos_y - hitted.pos_y
+            sign = 1 if hit_zone > 0 else -1
+            hit_zone = abs(hit_zone)
+            mapped = 5 * hit_zone / hitted.box_height
+            mapped = 4 if mapped == 5 else mapped
+            alpha = int(mapped) * 15
+            alpha_rad = alpha * math.pi / 180
+
+            # calculate new velocity
+            mod_vel = math.sqrt(self.vel_x ** 2 + self.vel_y ** 2)
+            self.vel_x = mod_vel * math.cos(alpha_rad) * (-1) * (self.vel_x / abs(self.vel_x)
+            self.vel_y = mod_vel * math.sin(alpha_rad) * sign
+            
 
     def hit_left_wall(self, wall_pos, **kwargs):
         self.scores[1] += 1
