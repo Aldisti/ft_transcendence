@@ -230,14 +230,14 @@ class PongConsumer(AsyncWebsocketConsumer):
 
         async with update_lock:
             paddle = self.games[self.game_id][self.pos]
+            ball = self.games[self.game_id]["ball"]
             if message_type == "up":
                 paddle.vel_y = - self.PLAYER_VELOCITY
             elif message_type == "down":
                 paddle.vel_y = self.PLAYER_VELOCITY
             elif message_type == "stop":
                 paddle.vel_y = 0
-            elif message_type == "start" and self.pos != ball.last_score:
-                ball = self.games[self.game_id]["ball"]
+            elif message_type == "start" and self.pos != ball.last_score and ball.vel_x == 0 and ball.vel_y == 0:
                 direction = 1 if self.pos == "left" else -1
                 ball.vel_x = direction * 360
                 ball.vel_y = 360
