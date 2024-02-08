@@ -173,7 +173,7 @@ export default class {
         }
 
         API.startQueque(1).then(res=>{
-            this.socket = new WebSocket(`${URL.socket.GAME_SOCKET}?ticket=${this.gameTicket}&username=${localStorage.getItem("username")}`);
+            this.socket = new WebSocket(`${URL.socket.GAME_SOCKET}?ticket=${res.ticket}&token=${this.gameTicket}&username=${localStorage.getItem("username")}`);
             this.socket.addEventListener("message", handleSocketMesssage.bind(null, this))
         })
         this.getRefreshRate(5).then((estimatedFps)=>{
