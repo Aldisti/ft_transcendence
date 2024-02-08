@@ -10,9 +10,11 @@ import PasswordRecovery from "/views/PasswordRecovery.js"
 import UserDisplay from "/views/DisplayUser.js"
 import Admin from "/views/Admin.js"
 import Notification from "/views/Notification.js"
+import NotFound from "/views/NotFound.js"
 
 const   Routes = [
-    { path: "/", view: Home, style: "/style/home.css", modernStyle: "/style/modern/home.css"},
+    { path: "/error/", view: NotFound, style: "/style/notFound.css", modernStyle: "/style/modern/notFound.css"},
+    { path: "/home/", view: Home, style: "/style/home.css", modernStyle: "/style/modern/home.css"},
     { path: "/login/", view: Login, style: "/style/login.css", modernStyle: "/style/modern/login.css"},
     { path: "/register/", view: Signup, style: "/style/signup.css", modernStyle: "/style/modern/signup.css"},
     { path: "/games/", view: Games, style: "/style/games.css", modernStyle: "/style/modern/games.css"},

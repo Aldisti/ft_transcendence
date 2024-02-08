@@ -160,7 +160,7 @@ export default class {
         this.image =  new Image()
         this.image.src = this.texture;
         this.positionUpdated = false;
-
+        this.socket;
         this.actualHref = window.location.href;
         this.upHandler = handleKeyUp.bind(null, this)
         this.downHandler = handleKeyDown.bind(null, this)

@@ -18,11 +18,19 @@ function getBottomDivider(){
 	`
 }
 
+
+
 const Router =()=>{
 	document.querySelector(".loaderOverlay").style.left = "0";
 	setTimeout(() => {
 		let matechedLocation = 0;
 	
+		if(fRoute != 0){
+			let temp = new fRoute.view;
+
+			temp.destroy()
+		}
+
 		styleH.disableStyleSheet(fRoute);
 		for (let route of Routes)
 		{

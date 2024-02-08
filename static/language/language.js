@@ -1,5 +1,9 @@
 let language = {
 	en: {
+		errorPage: {
+			firstLine: `404 Page Not Found`,
+			secondLine: `Oops! Looks like you've wandered off the beaten path.`
+		},
 		navbar: {
 			login: "Login",
 			register: "Register",

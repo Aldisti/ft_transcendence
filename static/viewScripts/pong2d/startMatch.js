@@ -5,7 +5,7 @@ export default function game(ballTexture, groundTexture, pillTexture, gameConfig
     let gameCanvas = document.querySelector(".gameContainer").clientWidth;
     console.log(gameCanvas)
 
-    startGame({ 
+    return startGame({ 
         previousTime: window.performance.now(),
         canvas: document.querySelector("#myCanv"),
         width: gameCanvas,

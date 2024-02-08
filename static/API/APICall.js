@@ -86,7 +86,7 @@ export async function convertIntraToken() {
         let token = await res.json();
         localStorage.setItem("token", token.access_token)
         localStorage.setItem("username", token.username);
-        history.pushState(null, null, "/home");
+        history.pushState(null, null, "/home/");
         Router();
         return (true);
     }
@@ -289,7 +289,7 @@ export async function logout(recursionProtection) {
         return await refreshAndRetry(logout, 0);
     if (res.ok) {
         cleanLocalStorage()
-        history.pushState(null, null, "/home");
+        history.pushState(null, null, "/home/");
         Router();
         return;
     }
@@ -309,7 +309,7 @@ export async function logoutAll(recursionProtection) {
         return await refreshAndRetry(logoutAll, 0);
     if (res.ok) {
         cleanLocalStorage()
-        history.pushState(null, null, "/home");
+        history.pushState(null, null, "/home/");
         Router();
         return;
     }

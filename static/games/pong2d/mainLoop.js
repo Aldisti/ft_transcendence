@@ -16,4 +16,5 @@ function animate(currentTime)
 export default function setupGame(config){
 	game = new Game(config)
 	animate()
+	return game;
 }

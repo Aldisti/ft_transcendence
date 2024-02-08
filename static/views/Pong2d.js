@@ -17,6 +17,8 @@ export default class extends Aview{
         this.pillTexture = pills[0];
         this.groundTexture = grounds[0];
         this.ballTexture = balls[0];
+        this.socket = 0;
+        this.game = 0;
     }
 
     getGameHtml(){
@@ -117,27 +119,38 @@ export default class extends Aview{
         document.querySelector("#waitCanv").style.width = "80%"
         document.querySelector("#waitCanv").style.height = "50%"
         localStorage.setItem("gameStarted", "false");
+
         handleSlider(".sliderPill", ".nextPill", pills, "pillTexture", this);
         handleSlider(".sliderGround", ".nextGround", grounds, "groundTexture", this);
         handleSlider(".sliderBall", ".nextBall", balls, "ballTexture", this);
+
         pongLoader();
+
         document.querySelector("#startQueque").addEventListener("click", async ()=>{
+            
             document.querySelector(".btnWindow").style.height = "70%";
             document.querySelector("#waitCanv").style.display= "flex";
             document.querySelector("#startQueque").innerHTML = `<span>Searching opponent...</span><div class="spinner-border text-warning" style="border-radius: 50% !important"></div>` 
+
             API.startQueque(1).then(res=>{
-                let socket = new WebSocket(`${URL.socket.QUEUE_SOCKET}?ticket=${res.ticket}&username=${localStorage.getItem("username")}`);
-                socket.addEventListener("message", (message)=>{
+                this.socket = new WebSocket(`${URL.socket.QUEUE_SOCKET}?ticket=${res.ticket}&username=${localStorage.getItem("username")}`);
+                this.socket.addEventListener("message", (message)=>{
                     let msg = JSON.parse(message.data);
                     localStorage.setItem("gameStarted", "true");
                     document.querySelector("#app").innerHTML = this.getGameHtml();
-                    console.log(msg)
                     document.querySelector(".user1").innerHTML = msg.user1
                     document.querySelector(".user2").innerHTML = msg.user2
                     startGame(this.ballTexture, this.groundTexture, this.pillTexture, msg);
                 })
             })
         })
+
+    }
+
+    destroy(){
+        // this.socket.close();
+        if (this.game != 0)
+            this.game.close();
     }
 	
 }
