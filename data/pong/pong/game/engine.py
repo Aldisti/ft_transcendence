@@ -247,7 +247,7 @@ class Ball(MyObject):
 
             # calculate new velocity
             mod_vel = math.sqrt(self.vel_x ** 2 + self.vel_y ** 2)
-            self.vel_x = mod_vel * math.cos(alpha_rad) * (-1) * (self.vel_x / abs(self.vel_x)
+            self.vel_x = mod_vel * math.cos(alpha_rad) * (-1) * (self.vel_x / abs(self.vel_x))
             self.vel_y = mod_vel * math.sin(alpha_rad) * sign
             
 
