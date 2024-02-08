@@ -60,16 +60,17 @@ function infoNotification(notification){
     NOTIFICATION.simple({title: "Info", body: notification.body})
 
     //handle the case of someone removed the user form friend
-    if (notification.body.substring(notification.body.indexOf(" ")) == " isn't no more your friend")
+    if (notification.body.substring(notification.body.indexOf(" ")) == " is no more your friend")
     {
         //change friend button inner text if the current user display is the same of the one who removed the current user from friend
         if (currentSearchedUser == notification.body.split(" ")[0])
             document.querySelector(".askFriend h3").innerHTML = "Add Friend";
 
         //update friend list on chat element
-        document.querySelector(".chatSideList").innerHTML = ""; 
-        create.createUser(create.global);
         API.getFriends(1).then(users=>{
+            document.querySelector(".chatSideList").innerHTML = ""; 
+            create.createUser(create.global);
+            console.log(users)
             for (let i = 0; i < users.length; i++)
                 create.createUser(users[i]);
         })
@@ -87,6 +88,7 @@ function infoNotification(notification){
         document.querySelector(".chatSideList").innerHTML = ""; 
         create.createUser(create.global);
         API.getFriends(1).then(users=>{
+            document.querySelector(".chatSideList").innerHTML = "";
             for (let i = 0; i < users.length; i++)
                 create.createUser(users[i]);
         })

@@ -11,7 +11,6 @@ export function chatInitializer(userArray){
     }
 
     //parse the chat item in localstorage to be updated
-    console.log(localStorage.getItem("chat"))
     chatHistory = JSON.parse(localStorage.getItem("chat"));
     for (let i = 0; i < userArray.length; i++)
     {
