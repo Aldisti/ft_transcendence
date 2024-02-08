@@ -6,7 +6,7 @@ export function chatInitializer(userArray){
 
     //check if chat is already setted in localstorage
     if (localStorage.getItem("chat") == null){
-        localStorage.setItem("chat", "{`global`: []}");
+        localStorage.setItem("chat", "{}");
 
     }
 

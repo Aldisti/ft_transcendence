@@ -13,6 +13,7 @@ export default function game(ballTexture, groundTexture, pillTexture, gameConfig
         frameInterval: 1000 / 60,
         ratio: 1.77,
         texture: groundTexture,
+        gameTicket: gameConfig.ticket,
         currentUser: gameConfig.user1 == localStorage.getItem("username") ? "paddleLeft" : "paddleRight",
         ballConfig: {
             texture: ballTexture, 
