@@ -78,7 +78,7 @@ function handleKeyDown(game, e){
         upFlag = false;
         game[game.currentUser].upInterval = setInterval(() => {
             if (upMsg){
-                game.socket.send(JSON.stringify({type: `up_${game.currentUser == "paddleLeft" ? `left` : `right`}`}))
+                game.socket.send(JSON.stringify({type: `up`}))
                 upMsg = false;
             }
             game[game.currentUser].calculatePosition(false)
@@ -88,13 +88,13 @@ function handleKeyDown(game, e){
         downFlag = false;
         game[game.currentUser].downInterval = setInterval(() => {
             if (downMsg){
-                game.socket.send(JSON.stringify({type: `down_${game.currentUser == "paddleLeft" ? `left` : `right`}`}))
+                game.socket.send(JSON.stringify({type: `down`}))
                 downMsg = false;
             }
             game[game.currentUser].calculatePosition(true)
         }, game.frameInterval / 10);
     }
-    if (e.key == " ")
+    if (e.key == "p")
         game.socket.send(JSON.stringify({type: "start"}))
     // if (e.key == " ")
     //     document.querySelector("#myCanv").requestFullscreen();
@@ -110,14 +110,14 @@ function handleKeyUp(game, e){
         sync = true
     if ((e.key == "w" || e.key == "ArrowUp")){
         upFlag = true
-        game.socket.send(JSON.stringify({type: `${game.currentUser == "paddleLeft" ? `left` : `right`}`}))
+        game.socket.send(JSON.stringify({type: `stop`}))
         upMsg = true;
         downMsg = true;
         clearInterval(game[game.currentUser].upInterval)
     }
     if ((e.key == "s" || e.key == "ArrowDown")){
         downFlag = true
-        game.socket.send(JSON.stringify({type: `${game.currentUser == "paddleLeft" ? `left` : `right`}`}))
+        game.socket.send(JSON.stringify({type: `stop`}))
         downMsg = true;
         upMsg = true;
         clearInterval(game[game.currentUser].downInterval)

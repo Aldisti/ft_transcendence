@@ -43,6 +43,7 @@ export default class extends Aview{
                 </div>
                 <div class="gameContainerPadding">
                     <div class="gameContainer">
+
                         <canvas id="myCanv"></canvas>
                     </div>
                 </div>
