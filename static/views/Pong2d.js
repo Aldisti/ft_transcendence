@@ -10,6 +10,8 @@ import * as URL from"/API/URL.js"
 let pills = [ "/imgs/pillsTexture/pill1.png", "/imgs/pillsTexture/pill.png"]
 let grounds = [ "/imgs/groundTexture/ground1.jpg", "/imgs/groundTexture/ground2.avif", "/imgs/groundTexture/ground3.jpg"]
 let balls = [ "/imgs/ballTexture/tennis.png", "/imgs/ballTexture/basket.png", "/imgs/ballTexture/soccer.png"]
+let gameObj = 0
+
 
 export default class extends Aview{
     constructor(){
@@ -27,25 +29,36 @@ export default class extends Aview{
             <div class="left">
                 <div id="opponentDisplay">
                     <h4 class="user1"></h4>
-                    <h2>28</h2>
+                    <h2>0</h2>
                 </div>
             </div>
             <div class="center">
                 <div class="display">
                     <div id="opponentDisplay">
-                        <h4>gpanico</h4>
-                        <h2>28</h2>
+                        <h4></h4>
+                        <h2>0</h2>
                     </div>
                     <div id="currentUserDisplay">
-                        <h4>mpaterno</h4>
-                        <h2>48</h2>
+                        <h4></h4>
+                        <h2>0</h2>
                     </div>
                 </div>
                 <div class="gameContainerPadding">
                     <div class="gameContainer">
-
+                        <div class="gameOverlay">
+                            <div class="gameLoader spinner-border" role="status">
+                            </div>
+                        </div>
+                        <div class="gameOverlayWin">
+                            <h2>You have Win</h2>
+                        </div>
+                        <div class="gameOverlayLoose">
+                            <h2>You have Lost</h2>
+                        </div>
                         <canvas id="myCanv"></canvas>
                     </div>
+                </div>
+                <div clsss="gameInfoBox">
                 </div>
                 <div class="mobileControl">
                     <div class="mobile up">⬆</div>
@@ -55,7 +68,7 @@ export default class extends Aview{
             <div class="right">
                 <div id="currentUserDisplay">
                     <h4 class="user2"></h4>
-                    <h2>48</h2>
+                    <h2>0</h2>
                 </div>
             </div>
         </div>
@@ -140,9 +153,7 @@ export default class extends Aview{
                     console.log(msg)
                     localStorage.setItem("gameStarted", "true");
                     document.querySelector("#app").innerHTML = this.getGameHtml();
-                    document.querySelector(".user1").innerHTML = msg.user1
-                    document.querySelector(".user2").innerHTML = msg.user2
-                    startGame(this.ballTexture, this.groundTexture, this.pillTexture, msg);
+                    gameObj = startGame(this.ballTexture, this.groundTexture, this.pillTexture, msg);
                 })
             })
         })
@@ -151,8 +162,8 @@ export default class extends Aview{
 
     destroy(){
         // this.socket.close();
-        // if (this.game != 0)
-            // this.game.close();
+        if (gameObj != 0)
+            gameObj.socket.close(3002);
     }
 	
 }

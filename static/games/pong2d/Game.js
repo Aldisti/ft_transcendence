@@ -3,6 +3,8 @@ import Paddle from "/games/pong2d/Paddle.js"
 import * as API from"/API/APICall.js"
 import * as URL from"/API/URL.js"
 import * as NOTIFICATION from"/viewScripts/notification/notification.js"
+import Router from "/router/mainRouterFunc.js"
+
 
 const ORIGINAL_WIDTH = 800;
 const ORIGINAL_HEIGHT = 451;
@@ -75,6 +77,7 @@ function handleKeyDown(game, e){
         return ;
     }
     if ((e.key == "w" || e.key == "ArrowUp") && upFlag){
+        e.preventDefault()
         upFlag = false;
         game[game.currentUser].upInterval = setInterval(() => {
             if (upMsg){
@@ -85,6 +88,7 @@ function handleKeyDown(game, e){
         }, game.frameInterval / 10);
     }
     if ((e.key == "s" || e.key == "ArrowDown") && downFlag){
+        e.preventDefault()
         downFlag = false;
         game[game.currentUser].downInterval = setInterval(() => {
             if (downMsg){
@@ -96,8 +100,8 @@ function handleKeyDown(game, e){
     }
     if (e.key == "p")
         game.socket.send(JSON.stringify({type: "start"}))
-    // if (e.key == " ")
-    //     document.querySelector("#myCanv").requestFullscreen();
+    if (e.key == " ")
+        document.querySelector("#myCanv").requestFullscreen();
 }
 
 let sync = false;
@@ -124,27 +128,80 @@ function handleKeyUp(game, e){
     }
 }
 
+function checkMessage(game, msg){
+    console.log(msg)
+    if (msg.message == "game starts")
+    {
+        document.querySelector(".gameOverlay").style.transform = "translateX(100%)";
+        game.currentUser = msg.player_pos == "right" ? "paddleRight" : "paddleLeft"
+        document.querySelector(".user1").innerHTML = msg.player_pos == "right" ? game.opponentName : localStorage.getItem("username");
+        document.querySelector(".user2").innerHTML = msg.player_pos == "right" ? localStorage.getItem("username") : game.opponentName;
+    }
+    else if (msg.message == "Game is finished"){
+        if (game.currentUser == "paddleLeft"){
+            if (game.leftScoreDisplay.innerHTML == game.winScore)
+                document.querySelector(".gameOverlayWin").style.transform = "translate(0)"
+            else
+                document.querySelector(".gameOverlayLoose").style.transform = "translate(0)"
+        }
+        if (game.currentUser == "paddleRight"){
+
+            if (game.rightScoreDisplay.innerHTML == game.winScore)
+                document.querySelector(".gameOverlayWin").style.transform = "translate(0)"
+            else
+                document.querySelector(".gameOverlayLoose").style.transform = "translate(0)"
+        }
+        console.log("game Ended")
+    }
+    else if (msg.message == "Apparently you connected to late"){
+        NOTIFICATION.simple({
+            title: "Game:",
+            body: "You have Connected Too late the game it's lost..."
+        })
+        Router();
+    }
+    else if (msg.message == "The other player been disconnected"){
+        document.querySelector(".gameOverlayWin").style.transform = "translate(0)"
+    }
+    else if (msg.message == "The other player doesn't show up"){
+        document.querySelector(".gameOverlayWin").style.transform = "translate(0)"
+    }
+}
 
 function handleSocketMesssage(game, message){
-    console.log(message.data)
-	let coordinates = JSON.parse(message.data).objects;
-    coordinates.ball.vel_x = coordinates.ball.vel_x  * game.canvas.width / ORIGINAL_WIDTH;
-    coordinates.ball.vel_y = coordinates.ball.vel_y  * game.canvas.height / ORIGINAL_HEIGHT;
-    coordinates.ball.x = coordinates.ball.x  * game.canvas.width / ORIGINAL_WIDTH;
-    coordinates.ball.y = coordinates.ball.y  * game.canvas.height / ORIGINAL_HEIGHT;
-	if (coordinates != undefined){
-        if ((coordinates.ball.vel_x != game.ball.deltaX || coordinates.ball.vel_y != game.ball.deltaY)
-            || (Math.abs(coordinates.ball.x - game.ball.x) > 2  || Math.abs(coordinates.ball.y - game.ball.y) > 2)){
-            game.ball.updatePosition(coordinates.ball.x, coordinates.ball.y, coordinates.ball.vel_x, coordinates.ball.vel_y);
-            game.positionUpdated = true
+	let msg = JSON.parse(message.data);
+
+    // console.log(msg)
+    if (msg.message != undefined)
+        checkMessage(game, msg);
+    if (msg.objects != undefined && game.leftScoreDisplay.innerHTML != msg.objects.score.left)
+        game.leftScoreDisplay.innerHTML = msg.objects.score.left
+    if (msg.objects != undefined && game.rightScoreDisplay.innerHTML != msg.objects.score.right)
+        game.rightScoreDisplay.innerHTML = msg.objects.score.right
+    if (msg.objects != undefined){
+        msg.objects.ball.acc_x = msg.objects.ball.acc_x  * game.canvas.width / ORIGINAL_WIDTH;
+        msg.objects.ball.acc_y = msg.objects.ball.acc_y  * game.canvas.height / ORIGINAL_HEIGHT;
+
+        msg.objects.ball.vel_x = (msg.objects.ball.vel_x  * game.canvas.width / ORIGINAL_WIDTH) + msg.objects.ball.acc_x;
+        msg.objects.ball.vel_y = (msg.objects.ball.vel_y  * game.canvas.height / ORIGINAL_HEIGHT) + msg.objects.ball.acc_y;
+
+        msg.objects.ball.x = msg.objects.ball.x  * game.canvas.width / ORIGINAL_WIDTH;
+        msg.objects.ball.y = msg.objects.ball.y  * game.canvas.height / ORIGINAL_HEIGHT;
+        if (msg.objects != undefined){
+            if ((msg.objects.ball.vel_x != game.ball.deltaX || msg.objects.ball.vel_y != game.ball.deltaY)
+                || (Math.abs(msg.objects.ball.x - game.ball.x) > 2  || Math.abs(msg.objects.ball.y - game.ball.y) > 2)){
+                game.ball.updatePosition(msg.objects.ball.x, msg.objects.ball.y, msg.objects.ball.vel_x, msg.objects.ball.vel_y);
+                game.positionUpdated = true
+            }
+            game.paddleLeft.updatePosition(msg.objects.paddle_left.x, msg.objects.paddle_left.y)
+            game.paddleRight.updatePosition(msg.objects.paddle_right.x, msg.objects.paddle_right.y)
         }
-		game.paddleLeft.updatePosition(coordinates.paddle_left.x, coordinates.paddle_left.y)
-		game.paddleRight.updatePosition(coordinates.paddle_right.x, coordinates.paddle_right.y)
     }
 }
 
 export default class {
     constructor(gameCfg){
+        this.winScore = "1";
         this.gameTicket = gameCfg.gameTicket;
         this.previusTime = gameCfg.previousTime;
         this.frameInterval = gameCfg.frameIntervall;
@@ -166,7 +223,11 @@ export default class {
         this.socket;
         this.actualHref = window.location.href;
         this.upHandler = handleKeyUp.bind(null, this)
-        this.downHandler = handleKeyDown.bind(null, this)
+        this.downHandler = handleKeyDown.bind(null, this);
+        this.leftScoreDisplay = document.querySelector(".left #opponentDisplay h2")
+        this.rightScoreDisplay = document.querySelector(".right #currentUserDisplay h2")
+
+        this.opponentName = gameCfg.playersNames.user1 == localStorage.getItem("username") ? gameCfg.playersNames.user2 : gameCfg.playersNames.user1;
 
         if (window.innerWidth > 900){
             document.addEventListener("keyup", this.upHandler)
@@ -177,7 +238,9 @@ export default class {
 
         API.startQueque(1).then(res=>{
             this.socket = new WebSocket(`${URL.socket.GAME_SOCKET}?ticket=${res.ticket}&token=${this.gameTicket}&username=${localStorage.getItem("username")}`);
-            this.socket.addEventListener("message", handleSocketMesssage.bind(null, this))
+            this.socket.onopen = ()=>{
+                this.socket.addEventListener("message", handleSocketMesssage.bind(null, this))
+            }
         })
         this.getRefreshRate(5).then((estimatedFps)=>{
             console.log(estimatedFps)
