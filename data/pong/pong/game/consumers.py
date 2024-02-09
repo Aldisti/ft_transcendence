@@ -30,6 +30,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 
     async def connect(self):
+        logger.warning(f"LOG: someone connected")
 
         self.other = False
         self.other_lock = asyncio.Lock()
@@ -83,6 +84,7 @@ class PongConsumer(AsyncWebsocketConsumer):
                 "connected": True,
                 "end": False,
                 "saved": False,
+                "setted": [0, 0],
             }
 
             logger.warning(f"LOG: save game instance")
@@ -96,7 +98,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             self.game_id = game_db.id
             self.games[self.game_id] = game_info
 
-            logger.warning(f"LOG: send info to players")
+            logger.warning(f"LOG: setting up players")
             # inform the players
             await self.channel_layer.group_send(
                 self.ticket,
@@ -127,7 +129,7 @@ class PongConsumer(AsyncWebsocketConsumer):
                 if self.other:
                     logger.warning(f"LOG: other player found")
                     break
-            asyncio.sleep(0.1)
+            await asyncio.sleep(0.1)
 
         if not self.other:
             self.expired_tickets.append(self.ticket)
@@ -141,7 +143,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 
     async def disconnect(self, close_code):
-        logger.warning(f"LOG: user {self.player} disconnected")
+        logger.warning(f"LOG: user {self.player} disconnected with code {close_code}")
         update_lock = self.games[self.game_id]["update_lock"]
 
         await self.channel_layer.group_discard(
@@ -210,6 +212,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             )
         )
 
+
     async def game_start(self, event):
         # inform players that they are connected
         logger.warning(f"LOG: {self.player} setting other true")
@@ -217,10 +220,20 @@ class PongConsumer(AsyncWebsocketConsumer):
             self.other = True
         # save game key
         self.game_id = event['objects']
+        if self.pos == "left":
+            self.games[self.game_id]["setted"][0] = 1
+        else:
+            self.games[self.game_id]["setted"][1] = 1
+        logger.warning(f"LOG: {self.player} ends setting up")
+
+
+    async def send_info(self, event):
         # send them info
+        logger.warning(f"LOG: {self.player} sending info")
         await self.send(
             text_data=json.dumps({"message": "game starts", "player_pos": self.pos})
         )
+
 
     async def receive(self, text_data):
         logger.warning(f"LOG: user {self.player} received")
@@ -240,7 +253,6 @@ class PongConsumer(AsyncWebsocketConsumer):
             elif message_type == "start" and self.pos != ball.last_score and ball.vel_x == 0 and ball.vel_y == 0:
                 direction = 1 if self.pos == "left" else -1
                 ball.vel_x = direction * 360
-                ball.vel_y = 360
 
 
     async def game_loop(self):
@@ -249,43 +261,24 @@ class PongConsumer(AsyncWebsocketConsumer):
         paddle_right = self.games[self.game_id]["right"]
         update_lock = self.games[self.game_id]["update_lock"]
 
+        while 0 in self.games[self.game_id]["setted"]:
+            await asyncio.sleep(0.1)
+
+        # sending info to players
+        await self.channel_layer.group_send(
+            self.ticket,
+            {"type": "send.info", "objects": self.game_id}
+        )
+
         # game loop
         while max(ball.scores) < 11 and self.games[self.game_id]["connected"]:
             async with update_lock:
                 self.game.update()
-                x = ball.pos_x - ball.collider.radius
-                y = ball.pos_y - ball.collider.radius
-                vel_x = ball.vel_x / 60
-                vel_y = ball.vel_y / 60
-                paddle_left_x = paddle_left.pos_x - paddle_left.collider.box_width
-                paddle_left_y = paddle_left.pos_y - paddle_left.collider.box_height
-                paddle_right_x = paddle_right.pos_x - paddle_right.collider.box_width
-                paddle_right_y = paddle_right.pos_y - paddle_right.collider.box_height
-                left_score = ball.scores[0]
-                right_score = ball.scores[1]
+                data = self.raw_to_json(ball, paddle_left, paddle_right)
             await self.channel_layer.group_send(
                 self.ticket,
                 {
-                    "type": "state.update", "objects": {
-                        "score":{
-                            "left": left_score,
-                            "right": right_score,
-                        },
-                        "ball": {
-                            "x": x,
-                            "y": y,
-                            "vel_x": vel_x,
-                            "vel_y": vel_y,
-                        },
-                        "paddle_left": {
-                            "x": paddle_left_x,
-                            "y": paddle_left_y,
-                        },
-                        "paddle_right": {
-                            "x": paddle_right_x,
-                            "y": paddle_right_y,
-                        },
-                    }
+                    "type": "state.update", "objects": data 
                 }
             )
             await asyncio.sleep(0.03)
@@ -311,3 +304,36 @@ class PongConsumer(AsyncWebsocketConsumer):
         participant = Participant.objects.get(player=self.player, game_id=self.game_id)
         stats = Stats.objects.create(participant, score, result)
         return stats
+
+    def raw_to_json(self, ball: Ball, paddle_left: Paddle, paddle_right: Paddle) -> dict:
+        x = ball.pos_x - ball.collider.radius
+        y = ball.pos_y - ball.collider.radius
+        vel_x = ball.vel_x / 60
+        vel_y = ball.vel_y / 60
+        paddle_left_x = paddle_left.pos_x - paddle_left.collider.box_width
+        paddle_left_y = paddle_left.pos_y - paddle_left.collider.box_height
+        paddle_right_x = paddle_right.pos_x - paddle_right.collider.box_width
+        paddle_right_y = paddle_right.pos_y - paddle_right.collider.box_height
+        left_score = ball.scores[0]
+        right_score = ball.scores[1]
+        data = {
+            "score":{
+                "left": left_score,
+                "right": right_score,
+            },
+            "ball": {
+                "x": x,
+                "y": y,
+                "vel_x": vel_x,
+                "vel_y": vel_y,
+            },
+            "paddle_left": {
+                "x": paddle_left_x,
+                "y": paddle_left_y,
+            },
+            "paddle_right": {
+                "x": paddle_right_x,
+                "y": paddle_right_y,
+            },
+        }
+        return data

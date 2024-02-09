@@ -240,7 +240,7 @@ class Ball(MyObject):
             hit_zone = self.pos_y - hitted.pos_y
             sign = 1 if hit_zone > 0 else -1
             hit_zone = abs(hit_zone)
-            mapped = 5 * hit_zone / hitted.box_height
+            mapped = 5 * hit_zone / hitted.collider.box_height
             mapped = 4 if mapped == 5 else mapped
             alpha = int(mapped) * 15
             alpha_rad = alpha * math.pi / 180
@@ -253,7 +253,7 @@ class Ball(MyObject):
 
     def hit_left_wall(self, wall_pos, **kwargs):
         self.scores[1] += 1
-        self.last_score = "rigth"
+        self.last_score = "right"
         width = kwargs["width"]
         height = kwargs["height"]
         self.pos_x = width / 2
