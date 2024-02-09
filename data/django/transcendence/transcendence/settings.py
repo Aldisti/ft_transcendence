@@ -323,6 +323,16 @@ MS_URLS = {
         "PASSWORD_RECOVERY": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/password/recovery/",
         "PASSWORD_RESET": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/password/reset/",
         "VERIFY_EMAIL": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/verify/email/",
+        # oauth2 app
+        "INTRA_URL": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/intra/v2/url/",
+        "INTRA_LINK": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/intra/v2/link/",
+        "INTRA_LOGIN": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/intra/v2/login/",
+        "INTRA_UNLINK": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/intra/disable/",
+        "GOOGLE_URL": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/google/v2/url/",
+        "GOOGLE_LINK": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/google/v2/link/",
+        "GOOGLE_LOGIN": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/google/v2/login/",
+        "GOOGLE_UNLINK": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/google/unlink/",
+        "OAUTH2_LINKED": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/linked/",
     }
 }
 

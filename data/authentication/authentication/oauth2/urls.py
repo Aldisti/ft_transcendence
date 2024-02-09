@@ -6,11 +6,12 @@ from . import views
 
 urlpatterns = [
     path('intra/', include([
-        path('url/', views.get_intra_url, name='get_intra_url'),
-        path('callback/<str:req_type>/', views.intra_callback, name='get_intra_token'),
-        path('login/', views.intra_login, name='intra_login'),
-        path('link/', views.IntraLink.as_view(), name='intra_link'),
-        path('disable/', views.IntraLink.as_view(), name='intra_disable'),
+        path('v2/', include([
+            path('url/', views.v2_intra_get_url),
+            path('login/', views.v2_intra_login),
+            path('link/', views.v2_intra_link),
+        ])),
+        path('unlink/', views.IntraLink.as_view(), name='intra_disable'),
     ])),
     path('google/', include([
         path('v2/', include([
