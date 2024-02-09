@@ -26,6 +26,7 @@ clean:
 		trinity/ntf_listener \
 		trinity/email_listener \
 		trinity/rabbit_mq \
+		trinity/redis \
 		trinity/ntf  2> /dev/null
 
 fclean: clean

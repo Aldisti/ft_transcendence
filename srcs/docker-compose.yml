@@ -107,6 +107,7 @@ services:
     networks:
       - django-net
       - pongdb-net
+      - redis-net
     depends_on:
       pongdb:
         condition: service_healthy
@@ -374,6 +375,15 @@ services:
     networks:
       - authdb-net
 
+  redis:
+    container_name: redis
+    build:
+      context: ./redis
+    image: trinity/redis
+    restart: always
+    networks:
+      - redis-net
+
 
 volumes:
   django:
@@ -474,6 +484,9 @@ networks:
 
   rabbit-net:
     name: "rabbit-net"
+
+  redis-net:
+    name: "redis-net"
 
   authdb-net:
     name: "authdb-net"

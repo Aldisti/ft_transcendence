@@ -46,14 +46,6 @@ ALLOWED_HOSTS = ["*"]
 
 ASGI_APPLICATION = "pong.asgi.application"
 
-# Channels layer
-
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer"
-    }
-}
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -84,6 +76,17 @@ MIDDLEWARE = [
     'pong.middlewares.MyMiddleware',
     'django.middleware.common.CommonMiddleware',
 ]
+
+# Channels layer
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis", 6379)],
+        },
+    },
+}
 
 # Django REST Framework
 

@@ -71,7 +71,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             logger.warning(f"LOG: generate game instance")
 
             # generate the game
-            ball = Ball(object_id="ball", radius=10, pos_x=400, pos_y=225, vel_x=0, vel_y=0)
+            ball = Ball(object_id="ball", radius=10, pos_x=400, pos_y=225, vel_x=0, vel_y=0, max_mod_vel=700)
             paddle_left = Paddle(object_id="player_left", width=20, height=80, pos_y=225, pos_x=40)
             paddle_right = Paddle(object_id="player_right", width=20, height=80, pos_y=225, pos_x=760)
             self.game = Field(objs=[ball, paddle_left, paddle_right], dinamics=newton_dynamics, width=800, height=450)
@@ -100,6 +100,9 @@ class PongConsumer(AsyncWebsocketConsumer):
 
             logger.warning(f"LOG: setting up players")
             # inform the players
+            await self.send(
+                text_data=json.dumps({"message": "I'm alive"})
+            )
             await self.channel_layer.group_send(
                 self.ticket,
                 {"type": "game.start", "objects": self.game_id}
@@ -253,6 +256,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             elif message_type == "start" and self.pos != ball.last_score and ball.vel_x == 0 and ball.vel_y == 0:
                 direction = 1 if self.pos == "left" else -1
                 ball.vel_x = direction * 360
+                ball.acc_x = direction * 100
 
 
     async def game_loop(self):
@@ -310,6 +314,8 @@ class PongConsumer(AsyncWebsocketConsumer):
         y = ball.pos_y - ball.collider.radius
         vel_x = ball.vel_x / 60
         vel_y = ball.vel_y / 60
+        acc_x = ball.acc_x / 60
+        acc_y = ball.acc_y / 60
         paddle_left_x = paddle_left.pos_x - paddle_left.collider.box_width
         paddle_left_y = paddle_left.pos_y - paddle_left.collider.box_height
         paddle_right_x = paddle_right.pos_x - paddle_right.collider.box_width
@@ -326,6 +332,8 @@ class PongConsumer(AsyncWebsocketConsumer):
                 "y": y,
                 "vel_x": vel_x,
                 "vel_y": vel_y,
+                "acc_x": acc_x,
+                "acc_y": acc_y,
             },
             "paddle_left": {
                 "x": paddle_left_x,

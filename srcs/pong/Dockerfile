@@ -15,6 +15,8 @@ RUN pip install psycopg \
 RUN pip install django-cors-headers
 # for asgi server and channels
 RUN pip install -U channels["daphne"]
+# for redis
+RUN pip install channels-redis
 
 
 RUN mkdir /etc/develop
