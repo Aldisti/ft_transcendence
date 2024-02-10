@@ -163,11 +163,12 @@ function checkMessage(game, msg){
 function handleSocketMesssage(game, message){
 	let msg = JSON.parse(message.data);
 
-    console.log(msg)
     if (msg.message != undefined)
         checkMessage(game, msg);
 
     if (msg.objects != undefined){
+        if (game.ball.deltaX != 0)
+            document.querySelector(".gameWait").style.display = "none";
         game.activeUser.updateScore(msg.objects.score);
         game.opponent.updateScore(msg.objects.score);
     }
@@ -215,11 +216,8 @@ export default class {
         this.image.src = this.texture;
         this.positionUpdated = false;
         this.socket;
-        this.actualHref = window.location.href;
         this.upHandler = handleKeyUp.bind(null, this)
         this.downHandler = handleKeyDown.bind(null, this);
-        this.leftScoreDisplay = document.querySelector("#opponentDisplay h2")
-        this.rightScoreDisplay = document.querySelector("#currentUserDisplay h2")
         this.activeUser = new User(localStorage.getItem("username"))
         this.opponent = new User(gameCfg.opponentName)
 

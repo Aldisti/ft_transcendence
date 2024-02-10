@@ -136,6 +136,21 @@
     background-color: white;
 }
 
+@keyframes pulse {
+    0%{
+        background-color: white;
+        color: black;
+    }
+    50%{
+        background-color: var(--bs-success);
+        color: white;
+    }
+    100%{
+        background-color: white;
+        color: black;
+    }
+} 
+
 #gameAdvice{
     width: 100%;
     height: 50%;
@@ -146,8 +161,6 @@
     justify-content: space-between;
     align-items: center;
     h5{
-        background-color: var(--bs-danger);
-        color: white;
         width: 100%;
         height: 15%;
         justify-content: center;
@@ -155,9 +168,11 @@
     }
     .gameWait{
         display: flex;
+        animation: pulse 2s infinite;
     }
     .gameStart{
         display: none;
+        animation: pulse 2s infinite;
     }
 }
 

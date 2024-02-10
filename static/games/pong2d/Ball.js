@@ -12,8 +12,8 @@ export default class {
 		this.ballOffSet = (this.ballSize / 2);
         this.x = 0;
 		this.y = 0;
-        this.deltaX = 6;
-		this.deltaY = 6;
+        this.deltaX = 0;
+		this.deltaY = 0;
         this.ctx = canvas.getContext("2d");
         this.needToCalculate = true;
         this.image =  new Image()
