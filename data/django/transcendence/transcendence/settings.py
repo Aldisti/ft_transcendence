@@ -333,6 +333,11 @@ MS_URLS = {
         "GOOGLE_LOGIN": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/google/v2/login/",
         "GOOGLE_UNLINK": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/google/unlink/",
         "OAUTH2_LINKED": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/linked/",
+        # 2fa app
+        "TFA_MANAGE": f"http://{AUTH_HOST}:{AUTH_PORT}/2fa/manage/",
+        "TFA_LOGIN": f"http://{AUTH_HOST}:{AUTH_PORT}/2fa/manage/",
+        "TFA_ACTIVATE": f"http://{AUTH_HOST}:{AUTH_PORT}/2fa/manage/",
+        "TFA_RECOVER": f"http://{AUTH_HOST}:{AUTH_PORT}/2fa/manage/",
     }
 }
 

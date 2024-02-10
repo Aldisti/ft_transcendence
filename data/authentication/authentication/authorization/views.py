@@ -136,12 +136,12 @@ def password_recovery(request) -> Response:
         user = User.objects.get(username=username)
     except User.DoesNotExist:
         return Response(data={'message': 'user not found'}, status=404)
-    if user.has_tfa():
-        user_tfa = UserTFA.objects.generate_url_token(user.user_tfa)
-        return Response(data={'url_token': user_tfa.url_token}, status=200)
     if user.has_password_token():
         user.password_token.delete()
     token = PasswordResetToken.objects.create(user=user)
+    if user.has_tfa():
+        user_tfa = UserTFA.objects.generate_url_token(user.user_tfa)
+        return Response(data={'url_token': user_tfa.url_token}, status=200)
     return Response(data=token.to_data(), status=200)
 
 

@@ -172,7 +172,7 @@ OAUTH2["CLIENT_URL"] = f"{OAUTH2['CLIENT']['PROTOCOL']}://{OAUTH2['CLIENT']['HOS
 OAUTH2.update({
     "INTRA_LOGIN_REDIRECT_URI": f"{OAUTH2['SERVER_URL']}/oauth2/intra/callback/login/",
     "INTRA_LINK_REDIRECT_URI": f"{OAUTH2['SERVER_URL']}/oauth2/intra/callback/link/",
-    "INTRA_REDIRECT_URI": f"{OAUTH2['CLIENT_URI']}/intra/callback/",
+    "INTRA_REDIRECT_URI": f"{OAUTH2['CLIENT_URL']}/intra/callback/",
     "GOOGLE_REDIRECT_URI": f"{OAUTH2['CLIENT_URL']}/google/callback",
     "CLIENT_REDIRECT_LOGIN": f"{OAUTH2['CLIENT_URL']}/login/",
     "CLIENT_REDIRECT_LINK": f"{OAUTH2['CLIENT_URL']}/home/",
@@ -196,7 +196,8 @@ OAUTH2["GOOGLE_REQUEST_BODY"] = {
 
 TFA = {
     'EMAIL_INTERVAL': 100,
-    'VALID_WINDOW': 1,
+    'EMAIL_WINDOW': 1,
+    'SOFTWARE_WINDOW': 1,
 }
 
 # Database

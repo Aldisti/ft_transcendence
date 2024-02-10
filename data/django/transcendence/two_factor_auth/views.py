@@ -6,11 +6,15 @@ from django.core.exceptions import ValidationError
 from django.conf import settings
 
 from authentication.models import UserTokens
+from transcendence.decorators import get_credentials
 from two_factor_auth.models import UserTFA, OtpCode
 
 from authentication.throttles import HighLoadThrottle, MediumLoadThrottle, LowLoadThrottle
 from authentication.serializers import TokenPairSerializer
 
+from requests import post as post_request
+from requests import get as get_request
+from requests import put as put_request
 from datetime import datetime
 import pyotp
 import logging
@@ -33,25 +37,42 @@ def verify_otp_code(user_tfa: UserTFA, code: str) -> bool:
 class ManageView(APIView):
     throttle_classes = [LowLoadThrottle]
 
+    @get_credentials
     def get(self, request) -> Response:
-        user_tfa = request.user.user_tfa
-        data = {'is_active': user_tfa.is_active()}
-        if data['is_active']:
-            data['type'] = user_tfa.type
-        return Response(data=data, status=200)
+        # user_tfa = request.user.user_tfa
+        # data = {'is_active': user_tfa.is_active()}
+        # if data['is_active']:
+        #     data['type'] = user_tfa.type
+        # return Response(data=data, status=200)
+        api_response = get_request(
+            settings.MS_URLS['AUTH']['TFA_MANAGE'],
+            headers=request.api_headers,
+        )
+        return Response(data=api_response.json(), status=api_response.status_code)
 
+    @get_credentials
     def post(self, request) -> Response:
-        tfa_type = request.data.get('type', '').lower()
-        user_tfa = request.user.user_tfa
-        try:
-            user_tfa = UserTFA.objects.activating(user_tfa, tfa_type=tfa_type)
-        except ValidationError as e:
-            return Response(data={'message': e.message}, status=400)
-        if user_tfa.is_email():
+        # tfa_type = request.data.get('type', '').lower()
+        # user_tfa = request.user.user_tfa
+        # try:
+        #     user_tfa = UserTFA.objects.activating(user_tfa, tfa_type=tfa_type)
+        # except ValidationError as e:
+        #     return Response(data={'message': e.message}, status=400)
+        # if user_tfa.is_email():
+        #     return Response(status=200)
+        # uri = (pyotp.totp.TOTP(user_tfa.otp_token)
+        #        .provisioning_uri(name=user_tfa.user.email, issuer_name='Transcendence'))
+        # return Response({'uri': uri, 'token': user_tfa.otp_token}, status=200)
+        api_response = post_request(
+            settings.MS_URLS['AUTH']['TFA_MANAGE'],
+            headers=request.api_headers,
+            json=request.data,
+        )
+        if api_response.status_code != 200:
+            return Response(data=api_response.json(), status=200)
+        elif api_response.status_code == 204:
             return Response(status=200)
-        uri = (pyotp.totp.TOTP(user_tfa.otp_token)
-               .provisioning_uri(name=user_tfa.user.email, issuer_name='Transcendence'))
-        return Response({'uri': uri, 'token': user_tfa.otp_token}, status=200)
+        return Response(data=api_response.json(), status=api_response.status_code)
 
     def put(self, request) -> Response:
         user_tfa = request.user.user_tfa
