@@ -11,7 +11,7 @@ export default function game(ballTexture, groundTexture, pillTexture, gameConfig
         height: gameCanvas / 1.77,
         frameInterval: 1000 / 60,
         ratio: 1.77,
-        playersNames: {user1: gameConfig.user1, user2: gameConfig.user2},
+        opponentName: gameConfig.user1 == localStorage.getItem("username") ? gameConfig.user2 : gameConfig.user1,
         texture: groundTexture,
         gameTicket: gameConfig.ticket,
         currentUser: gameConfig.user1 == localStorage.getItem("username") ? "paddleLeft" : "paddleRight",

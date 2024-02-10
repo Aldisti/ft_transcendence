@@ -10,7 +10,7 @@ import * as URL from"/API/URL.js"
 let pills = [ "/imgs/pillsTexture/pill1.png", "/imgs/pillsTexture/pill.png"]
 let grounds = [ "/imgs/groundTexture/ground1.jpg", "/imgs/groundTexture/ground2.avif", "/imgs/groundTexture/ground3.jpg"]
 let balls = [ "/imgs/ballTexture/tennis.png", "/imgs/ballTexture/basket.png", "/imgs/ballTexture/soccer.png"]
-let gameObj = 0
+let gameObj = 0;
 
 
 export default class extends Aview{
@@ -31,14 +31,32 @@ export default class extends Aview{
                     <h4 class="user1"></h4>
                     <h2>0</h2>
                 </div>
+                <div id="currentUserDisplay">
+                    <h4 class="user2"></h4>
+                    <h2>0</h2>
+                </div>
+                <div id="gameAdvice">
+                    <ul>
+                        <li>W: Go Up</li>
+                        <li>D: Go down</li>
+                        <li>P: Start The Game!</li>
+                        <li>If you leave the window or refresh the page you will automatically loose!</li>
+                    </ul>
+                    <h5 class="gameStart">
+                        You need to press P to start the game
+                    </h5>
+                    <h5 class="gameWait">
+                        Waiting other player starting the game
+                    </h5>
+                </div>
             </div>
             <div class="center">
                 <div class="display">
-                    <div id="opponentDisplay">
+                    <div id="opponentDisplayMobile">
                         <h4></h4>
                         <h2>0</h2>
                     </div>
-                    <div id="currentUserDisplay">
+                    <div id="currentUserDisplayMobile">
                         <h4></h4>
                         <h2>0</h2>
                     </div>
@@ -51,9 +69,11 @@ export default class extends Aview{
                         </div>
                         <div class="gameOverlayWin">
                             <h2>You have Win</h2>
+                            <a href="/games/pong2d/" data-link>Play Again!</a>
                         </div>
                         <div class="gameOverlayLoose">
                             <h2>You have Lost</h2>
+                            <a href="/games/pong2d/" data-link>Play Again!</a>
                         </div>
                         <canvas id="myCanv"></canvas>
                     </div>
@@ -62,13 +82,8 @@ export default class extends Aview{
                 </div>
                 <div class="mobileControl">
                     <div class="mobile up">⬆</div>
+                    <div class="mobile start">Start</div>
                     <div class="mobile down">⬇</div>
-                </div>
-            </div>
-            <div class="right">
-                <div id="currentUserDisplay">
-                    <h4 class="user2"></h4>
-                    <h2>0</h2>
                 </div>
             </div>
         </div>
@@ -154,6 +169,7 @@ export default class extends Aview{
                     localStorage.setItem("gameStarted", "true");
                     document.querySelector("#app").innerHTML = this.getGameHtml();
                     gameObj = startGame(this.ballTexture, this.groundTexture, this.pillTexture, msg);
+                    this.socket.close();
                 })
             })
         })
@@ -164,6 +180,9 @@ export default class extends Aview{
         // this.socket.close();
         if (gameObj != 0)
             gameObj.socket.close(3002);
+        document.removeEventListener("keyup", gameObj.upHandler)
+        document.removeEventListener("keydown", gameObj.downHandler)
+        localStorage.setItem("stop", "true")
     }
 	
 }

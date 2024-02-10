@@ -1,10 +1,15 @@
 import Game from "/games/pong2d/Game.js"
 
 let game;
+let animationId
 
 function animate(currentTime)
 {
-	requestAnimationFrame(animate);
+	animationId = window.requestAnimationFrame(animate);
+	if (localStorage.getItem("stop") == "true"){
+		window.cancelAnimationFrame(animationId);
+		localStorage.setItem("stop", "false");
+	}
 
 	if (!game.positionUpdated)
 		game.ball.calculatePosition();
@@ -15,6 +20,7 @@ function animate(currentTime)
 
 export default function setupGame(config){
 	game = new Game(config)
+	localStorage.setItem("stop", "false")
 	animate()
 	return game;
 }
