@@ -34,7 +34,7 @@ let language = {
 			submitBtn: "Submit!",
 			displayNameError: "Bad input valid character are A-Za-z0-9!?*@$~_- and 5-32 length range",
 			invalidInput: " invalid Input",
-			invalidPartecipants: " Only numbers are accepted here!",
+			invalidPartecipants: " Invalid Input, possible number are 4, 8, 16...",
 			invalidDateTime: "You can program you tournament up to one hour!", 
 			tournamentSubmit: "Tournament successfully Joined!",
 			tournamentSubmitError: "Error joining Tournament!",

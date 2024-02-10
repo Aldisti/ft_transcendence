@@ -10,7 +10,6 @@ export function handleTournamentSubscription(dupThis, e){
             helpFunction.movementHandler("open", card);
         else
             helpFunction.movementHandler("close", card);
-        document.querySelector(".displayBodyAndSubbmit .bodyContainer").innerHTML = helpFunction.getCardBody(e.target).innerHTML;
         helpFunction.resetBtnClass(e.target);
         e.target.classList.toggle("bodyOpened");
     }
@@ -60,9 +59,6 @@ export function handleTournamentCreation(dupThis, e){
     })
     if (!flag)
         return
-    if (!helpFunction.checkDate(obj, dupThis)){
-        return ;
-    }
     API.createTournament(1, obj).then(res=>{
         if (res)
             alert(dupThis.language.tournament.tournamentCreated);

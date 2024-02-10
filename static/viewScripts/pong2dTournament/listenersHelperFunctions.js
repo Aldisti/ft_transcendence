@@ -1,3 +1,5 @@
+let possiblePartecipants = [4, 8, 16]
+
 export function movementHandler(newState, obj){
     if (newState === "close"){
         document.querySelector(".tournamentManager").style.width = "47svw"
@@ -24,27 +26,13 @@ export function getCardBody(el){
     return el.querySelector(".hiddenBody");
 }
 
-export function checkDate(obj, dupThis){
-    let [hours, minutes] = obj.tTime.split(":");
-    //one hour in milliseconds
-    let margin = 3600000;
-    let currDate = new Date();
-    let inputDate = new Date(currDate.getFullYear(), currDate.getMonth(), currDate.getDate(), hours, minutes).getTime();
-    let timeDelta = inputDate - currDate.getTime();
-
-    if ( timeDelta < margin && timeDelta > 0)
-        return (true);
-    alert(dupThis.language.tournament.invalidDateTime)
-    return (false);
-}
-
 export function fieldValidate(val, key, dupThis){
     let regLength = key == "tDescription" ? 300 : 20;
     let genericRegex = new RegExp(`^[A-Za-z0-9!?*@$~_ :-]{5,${regLength}}$`);
     let partecipantsRegex = /^[0-9]+$/;
 
     if (key == "tPartecipants"){
-        if (partecipantsRegex.test(val))
+        if (partecipantsRegex.test(val) && possiblePartecipants.includes(Number(val)))
             return (Number(val));
         else{
             alert(window.escapeHtml(val) + dupThis.language.tournament.invalidPartecipants)

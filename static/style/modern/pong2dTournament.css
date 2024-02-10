@@ -333,7 +333,7 @@
 
 .tournamentCard{
     width: 100%;
-    height: 25%;
+    height: 35%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -374,40 +374,28 @@
 
 }
 
-.hiddenBody{
-    display: none;
+.tournamentBody{
+    width: 60%;
+    height: 100%;
+    color: white;
+    text-justify: justify;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
 }
 
 .bottomLine{
     width: 100%;
-    height: 45%;
+    height: 60%;
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 20px;
 
-
-    .eventDate{
-        width: 40%;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: flex-start;
-
-        .label, .dateAndTime{
-            width: 100%;
-            height: 50%;
-            display: flex;
-            color: white;
-            justify-content: space-between;
-            align-items: center;
-        }
-    }
-
     button{
         width: 30%;
-        height: 100%;
+        height: 60%;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -426,28 +414,22 @@
     left: 1svw;
     background-color: white;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     gap: 30px;
     padding: 20px;
     z-index: 10;
-    background: linear-gradient(to right, var(--bs-dark), #7209b7);
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+    background: transparent;
 }
 
-.bodyContainer{
-    width: 70%;
-    height: 100%;
-    padding: 20px;
-    color: white;
-}
 
 .displayNameAndSubmit{
-    width: 30%;
+    width: 80%;
     height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    align-items: center;
     background: linear-gradient(to bottom, var(--bs-dark), #f72585);
     padding: 10px;
 
@@ -499,7 +481,7 @@
 
     form{
         width: 100%;
-        height: 85%;
+        height: 90%;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -508,18 +490,10 @@
             width: 100%;
             height: 80%;
             display: flex;
+            justify-content: center;
 
             .leftSide{
-                width: 50%;
-                height: 100%;
-                display: flex;
-                flex-direction: column;
-                padding: 10px;
-                justify-content: space-between;
-                gap: 10px;
-            }
-            .rightSide{
-                width: 50%;
+                width: 100%;
                 height: 100%;
                 display: flex;
                 flex-direction: column;

@@ -48,21 +48,10 @@ export default class extends Aview{
                         </span>
                     </div>
                 </div>
-                <div class="hiddenBody">
-                    ${obj.description}
-                </div>
+
                 <div class="bottomLine">
-                    <div class="eventDate">
-                        <div class="label">
-                            <span class="dateLabel">
-                                ${this.language.tournament.tournamentCard.dateLabel}
-                            </span>
-                        </div>
-                        <div class="dateAndTime">
-                            <span class="time">
-                                ${obj.time}
-                            </span>
-                        </div>
+                    <div class="tournamentBody">
+                        ${obj.description}
                     </div>
                     <button class="subscribeBtn ${obj.registered ? `unSubscribe` : `subscribe`}" style="background-color: ${obj.registered ? `var(--bs-danger)` : `var(--bs-success)`}">
                         ${obj.registered ? this.language.tournament.tournamentCard.unSubscribe : this.language.tournament.tournamentCard.subScribe}
@@ -84,20 +73,12 @@ export default class extends Aview{
                             <input required id="tournamentName" name="tName" type="text">
                         </div>
                         <div class="inputLine">
-                            <label for="tournamentDescription">${this.language.tournament.newTournament.tDescription}</label>
-                            <textarea required maxlength="500" name="tDescription" id="tournamentDescription" type="text"></textarea>
-                        </div>
-                    </div>
-                    <div class="rightSide">
-                        <div class="inputLine">
-                            <label for="tournamentDate">${this.language.tournament.newTournament.tDate}</label>
-                            <div class="dateTimeInput">
-                                <input required id="tournamentHour" name="tTime" type="time">
-                            </div>
-                        </div>
-                        <div class="inputLine">
                             <label for="maxPartecipants">${this.language.tournament.newTournament.tPartecipants}</label>
                             <input required id="maxPartecipants" name="tPartecipants" type="text">
+                        </div>
+                        <div class="inputLine">
+                            <label for="tournamentDescription">${this.language.tournament.newTournament.tDescription}</label>
+                            <textarea required maxlength="500" name="tDescription" id="tournamentDescription" type="text"></textarea>
                         </div>
                     </div>
                 </div>
@@ -110,9 +91,6 @@ export default class extends Aview{
     tournamentInfoAndBodyName(){
         return `
         <div class="displayBodyAndSubbmit">
-            <div class="bodyContainer">
-
-            </div>
             <div class="displayNameAndSubmit">
                 <h3>${this.language.tournament.displayName}</h3>
                 <input >
