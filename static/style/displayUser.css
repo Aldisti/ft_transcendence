@@ -76,7 +76,7 @@ border: 2px solid black;
 
 .cardBody{
     width: 100%;
-    height: 75%;
+    height: 100%;
     display: flex;
     justify-content: space-between;
     flex-direction: column;
@@ -98,10 +98,10 @@ border: 2px solid black;
 .userAndImage
 {
     width: 100%;
-    height: 65%;
+    height: 40%;
     display: flex;
     flex-direction: column;
-    padding: 20px;
+    padding: 10px;
     justify-content: space-between;
     align-items: center;
     background-color: white;
@@ -113,8 +113,8 @@ border: 2px solid black;
 
 .imgContainer {
     width: 50%;
-    height: 70%;
-    padding: 10px;
+    height: 60%;
+    padding: 5px;
     box-shadow: 7px 7px black;border: 2px solid black;
 }
 
@@ -127,7 +127,7 @@ border: 2px solid black;
 
 .name{
     width: 100%;
-    height: 20%;
+    height: 15%;
     display: flex;
     justify-content: space-between;
     align-items:center ;
@@ -159,6 +159,18 @@ box-shadow: 7px 7px black;border: 2px solid black;
 
 h3{
     font-size: x-small;
+}
+
+.matchHistory{
+    width: 100%;
+    height: 15%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.matchHistory:hover{
+    cursor: pointer;
 }
 
 .stats

@@ -58,6 +58,9 @@ export default class extends Aview {
                         ${this.language.displayUser.userInfo.manageAccount}
                     </a>
                 </div>
+                <div class="matchHistory">
+                    <h1>Match History</h1>
+                </div>
             `
             this.username = document.querySelector(".friendRequest").getAttribute("name");
             API.friendStatus(1, this.username).then(res=>{
@@ -79,24 +82,6 @@ export default class extends Aview {
             <div class="base">
                 <div class="left">
                     <div class="cardBody">
-                    </div>
-                    <div class="filler">
-                        <div class="gameStat">
-                            <h6>${this.language.displayUser.gameStats[0]}</h6>
-                            <h3>34</h3>
-                        </div>
-                        <div class="gameStat">
-                            <h6>${this.language.displayUser.gameStats[1]}</h6>
-                            <h3>54</h3>
-                        </div>
-                        <div class="gameStat">
-                            <h6>${this.language.displayUser.gameStats[2]}</h6>
-                            <h3>98</h3>
-                        </div>
-                        <div class="gameStat">
-                            <h6>${this.language.displayUser.gameStats[3]}</h6>
-                            <h3>200</h3>
-                        </div>
                     </div>
                 </div>
                 <div class="statsContainer">

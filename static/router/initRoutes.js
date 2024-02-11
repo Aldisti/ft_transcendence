@@ -11,6 +11,7 @@ import UserDisplay from "/views/DisplayUser.js"
 import Admin from "/views/Admin.js"
 import Notification from "/views/Notification.js"
 import NotFound from "/views/NotFound.js"
+import MatchHistory from "/views/MatchHistory.js"
 
 const   Routes = [
     { path: "/error/", view: NotFound, style: "/style/notFound.css", modernStyle: "/style/modern/notFound.css"},
@@ -27,6 +28,8 @@ const   Routes = [
     { path: "/user/", view: UserDisplay, style: "/style/displayUser.css", modernStyle: "/style/modern/displayUser.css"},
     { path: "/admin/", view: Admin, style: "/style/admin.css", modernStyle: "/style/modern/admin.css"},
     { path: "/notification/", view: Notification, style: "/style/notification.css", modernStyle: "/style/modern/notification.css"},
+    { path: "/match-history/", view: MatchHistory, style: "/style/matchHistory.css", modernStyle: "/style/modern/matchHistory.css"},
+
 ]
 
 export default Routes;

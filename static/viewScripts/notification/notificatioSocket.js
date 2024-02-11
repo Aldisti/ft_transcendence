@@ -85,10 +85,9 @@ function infoNotification(notification){
             document.querySelector(".askFriend h3").innerHTML = "Remove Friend";
 
         //update friend list on chat element  
-        document.querySelector(".chatSideList").innerHTML = ""; 
-        create.createUser(create.global);
         API.getFriends(1).then(users=>{
             document.querySelector(".chatSideList").innerHTML = "";
+            create.createUser(create.global);
             for (let i = 0; i < users.length; i++)
                 create.createUser(users[i]);
         })
