@@ -213,6 +213,9 @@ def validate_activate(request) -> Response:
     # codes = [otp_code.code for otp_code in otp_codes]
     # UserTFA.objects.activate(user_tfa)
     # return Response(data={'codes': codes}, status=200)
+    data = request.data
+    if 'token' not in data:
+        data['token'] = request.query_params.get('token', '')
     api_response = post_request(
         settings.MS_URLS['AUTH']['TFA_ACTIVATE'],
         headers=request.api_headers,
