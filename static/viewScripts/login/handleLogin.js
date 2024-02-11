@@ -12,7 +12,7 @@ function validateLoginCode()
             if (Object.keys(token).length  > 0)
             {
                 localStorage.setItem("token", token.access_token)
-                history.pushState(null, null, "/home/");
+                history.pushState(null, null, "/");
                 Router();
             }
         })
@@ -21,7 +21,7 @@ function validateLoginCode()
 
 export function normal(res){
     localStorage.setItem("token", res.access_token)
-    history.pushState(null, null, "/home/");
+    history.pushState(null, null, "/");
     Router();
 }
 

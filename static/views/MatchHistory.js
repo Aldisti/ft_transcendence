@@ -102,7 +102,7 @@ export default class extends Aview{
         let username = urlParams.get("username");
 
         if (username == undefined){
-            history.pushState(null, null, "/home/");
+            history.pushState(null, null, "/");
             Router();
         }
 

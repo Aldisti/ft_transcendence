@@ -9,7 +9,7 @@ import handleClick from "/viewScripts/userInfo/handleClick.js"
 import * as prepare from "/viewScripts/userInfo/prepareForms.js"
 
 window.goHome = ()=>{
-    history.pushState(null, null, "/home/");
+    history.pushState(null, null, "/");
     Router();
 }
 

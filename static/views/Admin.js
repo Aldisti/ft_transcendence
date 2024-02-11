@@ -134,7 +134,7 @@ export default class extends Aview{
         console.log(role)
         if (role != "A" && role != "M")
         {
-            history.pushState(null, null, "/home/");
+            history.pushState(null, null, "/");
             Router();
         }
         else if (role == "M"){
