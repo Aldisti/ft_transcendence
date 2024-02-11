@@ -1,4 +1,5 @@
-from django.core.exceptions import ValidationError
+
+
 from django.conf import settings
 from rest_framework import status
 
@@ -10,21 +11,17 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from email_manager.email_sender import send_password_reset_email
 from transcendence.decorators import get_func_credentials
-from two_factor_auth.models import UserTFA
 
 # TODO: move url in main setting
 from .models import JwtToken, UserTokens, WebsocketTicket
 from .throttles import LowLoadThrottle, MediumLoadThrottle
-from .serializers import TokenPairSerializer
 from .settings import MATCHMAKING_TOKEN
 from .permissions import IsUser
-
-from accounts.models import User
-from accounts.serializers import UserSerializer
 
 from requests import post as post_request
 from datetime import datetime
 import logging
+
 
 logger = logging.getLogger(__name__)
 

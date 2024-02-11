@@ -338,6 +338,7 @@ MS_URLS = {
         "TFA_LOGIN": f"http://{AUTH_HOST}:{AUTH_PORT}/2fa/validate/login/",
         "TFA_ACTIVATE": f"http://{AUTH_HOST}:{AUTH_PORT}/2fa/validate/activate/",
         "TFA_RECOVER": f"http://{AUTH_HOST}:{AUTH_PORT}/2fa/validate/recover/",
+        "TFA_EMAIL": f"http://{AUTH_HOST}:{AUTH_PORT}/2fa/otp/",
     }
 }
 

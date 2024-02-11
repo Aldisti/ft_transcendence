@@ -150,3 +150,24 @@ def validate_activate(request) -> Response:
     codes = [otp_code.code for otp_code in otp_codes]
     UserTFA.objects.update_active(user_tfa)
     return Response(data={'codes': codes}, status=200)
+
+
+@api_view(['GET'])
+@permission_classes([])
+def get_email_code(request) -> Response:
+    if request.user.is_authenticated:
+        user_tfa = request.user.user_tfa
+    else:
+        try:
+            user_tfa = UserTFA.objects.get(url_token=request.data.get('url_token'))
+        except UserTFA.DoesNotExist:
+            return Response(data={'message': 'user not found'}, status=404)
+    if not user_tfa.active and not user_tfa.is_activating():
+        return Response(data={'message': '2fa not active'}, status=403)
+    if not user_tfa.is_email():
+        return Response(data={'message': '2fa type is not email'}, status=400)
+    return Response(data={
+        'username': user_tfa.user.username,
+        'email': user_tfa.user.email,
+        'code': user_tfa.get_code(),
+    }, status=200)

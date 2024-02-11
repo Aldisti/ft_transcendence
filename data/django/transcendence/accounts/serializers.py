@@ -3,7 +3,6 @@ from django.core.validators import RegexValidator, EmailValidator
 from rest_framework import serializers
 
 from accounts.models import User, UserInfo
-from two_factor_auth.models import UserTFA
 from authentication.models import UserTokens
 from accounts.validators import image_validator
 from django.core.validators import RegexValidator, EmailValidator
@@ -78,7 +77,6 @@ class CompleteUserSerializer(serializers.ModelSerializer):
         user_info = validated_data.pop("user_info", {})
         user = User.objects.create_user(**validated_data)
         user.user_info = UserInfo.objects.create(user, **user_info)
-        user.user_tfa = UserTFA.objects.create(user=user)
         user.user_tokens = UserTokens.objects.create(user=user)
         return user
 

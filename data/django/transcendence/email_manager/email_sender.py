@@ -4,16 +4,13 @@ from pyotp import TOTP
 
 from accounts.models import User
 from authentication.models import UserTokens
-from django.conf import settings
-from django.urls import reverse
 from django.template import loader
-
-from two_factor_auth.models import UserTFA
 
 from transcendence.producers import EmailProducer
 
 import json
 import logging
+
 
 logger = logging.getLogger(__name__)
 
@@ -123,12 +120,11 @@ def send_verify_email(username: str, email: str, token: str) -> None:
     EmailProducer().publish(json.dumps(body))
 
 
-def send_tfa_code_email(user_tfa: UserTFA) -> None:
+def send_tfa_code_email(username: str, email: str, code: str) -> None:
     # generate message
     title = "OTP code"
-    head = f"Dear {user_tfa.user.username},\nthis is your otp code\n"
+    head = f"Dear {username},\nthis is your otp code\n"
     body = head + "Please insert it in 5 minutes"
-    code = TOTP(user_tfa.otp_token, interval=180).now()
     company = "Trinity"
 
     # email_message = generate_email(title, body, url, company)
@@ -142,5 +138,5 @@ def send_tfa_code_email(user_tfa: UserTFA) -> None:
     email_message = template.render(context)
 
     # send mail
-    body = {"subject": "OTP code", "receiver_mail": user_tfa.user.email, "text": "", "html": email_message}
+    body = {"subject": "OTP code", "receiver_mail": email, "text": "", "html": email_message}
     EmailProducer().publish(json.dumps(body))

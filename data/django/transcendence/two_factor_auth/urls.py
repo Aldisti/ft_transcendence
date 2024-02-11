@@ -10,4 +10,5 @@ urlpatterns = [
         path('recover/', views.validate_recover, name='validate_recover'),
         path('activate/', views.validate_activate, name='validate_activate'),
     ])),
+    path('otp/', views.get_email_code, name='get_email_code'),
 ]

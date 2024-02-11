@@ -61,26 +61,3 @@ def password_reset(request):
     if api_response.status_code != 200:
         return Response(data=api_response.json(), status=api_response.status_code)
     return Response(status=200)
-
-
-class SendOtpCodeView(APIView):
-    throttle_scope = 'email'
-    permission_classes = []
-
-    # TODO: redo this
-    def get(self, request) -> Response:
-        if request.auth is not None:
-            user_tfa = request.user.user_tfa
-        else:
-            url_token = request.query_params.get("token")
-            try:
-                user_tfa = UserTFA.objects.get(url_token=url_token)
-            except UserTFA.DoesNotExist:
-                return Response(data={'message': 'token not found'}, status=404)
-        if not user_tfa.is_email():
-            return Response(data={'message': '2fa not active'}, status=400)
-        try:
-            send_tfa_code_email(user_tfa)
-        except SMTPException as e:
-            return Response(data={'message': f"\n{str(e)}\n"}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
-        return Response(status=200)

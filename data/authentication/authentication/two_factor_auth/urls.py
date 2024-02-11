@@ -11,4 +11,5 @@ urlpatterns = [
         path('login/', views.validate_login, name='validate_login'),
         path('recover/', views.validate_recover, name='validate_recover'),
     ])),
+    path('otp/', views.get_email_code, name='get_email_code'),
 ]
