@@ -361,11 +361,11 @@
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
 }
 
-.won{
+.rightWin{
     background: linear-gradient(105deg, var(--bs-success) 50%, var(--bs-danger) 50%);
 }
 
-.lost{
+.leftWin{
     background: linear-gradient(105deg, var(--bs-danger) 50%, var(--bs-success) 50%);
 
 }
@@ -401,6 +401,27 @@
         box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
 
     }
+}
+
+.popover-container {
+    position: relative;
+    display: inline-block;
+}
+
+.popover-content {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    display: none;
+}
+
+.popover-trigger:hover + .popover-content {
+    display: block;
 }
 
 .matchInfoContainer{
@@ -500,18 +521,35 @@
 
 .tournamentImageWrap{
     height: 100%;
-    padding: 3px;
+    padding: 6px;
+}
+
+.popover{
+    background: #333;
+    color: white;
+    font-weight: 400;
+    padding: 1rem;
+    max-width: 200px;
+    line-height: 1.4;
+    position: absolute;
+    top: 1rem;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+}
+
+.popover-container{
+    width: 50%;
+    height: 100%;
 }
 
 .tournamentImageWrap[winner=true]{
-    width: 50%;
+    width: 100%;
     background-color: var(--bs-success);
 }
-.tournamentImageWrap[tournamentWinner=true]{
-    width: 100%;
-}
+
 .tournamentImageWrap[winner=false]{
-    width: 50%;
+    width: 100%;
     background-color: var(--bs-danger);
 }
 
@@ -524,11 +562,17 @@
     object-fit: contain;
 }
 
+.bracket[tournamentWinner=true]{
+    .popover-container{
+        width: 100% !important;
+        height: 100%;
+    }
+}
+
 .bracket{
     max-width: 30%;
     max-height: 70%;
     position: relative;
-    padding: 3px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -570,6 +614,7 @@
     min-width: 35%;
     height: 100%;
     display: flex;
+    padding-right: 20px;
     justify-content: center;
     align-items: center;
 }

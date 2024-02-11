@@ -6,32 +6,27 @@ import * as API from "/API/APICall.js"
 
 let matches = [{
     opponent: "gpanico",
-    won: true,
     id: "test",
     rank: ["user1", "user2", "user3", "user4", "user5"],
     scores: [4, 11]
 
 },{
     opponent: "gpanico",
-    won: false,
     rank: ["user1", "user2", "user3", "user4", "user5"],
-    scores: [4, 11]
+    scores: [11, 9]
 
 },{
     opponent: "gpanico",
-    won: true,
+    id:"test",
+    rank: ["user1", "user2", "user3", "user4", "user5"],
+    scores: [11, 3]
+},{
+    opponent: "gpanico",
     id:"test",
     rank: ["user1", "user2", "user3", "user4", "user5"],
     scores: [4, 11]
 },{
     opponent: "gpanico",
-    won: true,
-    id:"test",
-    rank: ["user1", "user2", "user3", "user4", "user5"],
-    scores: [4, 11]
-},{
-    opponent: "gpanico",
-    won: true,
     id:"test",
     rank: ["user1", "user2", "user3", "user4", "user5"],
     scores: [4, 11]
@@ -46,7 +41,7 @@ export default class extends Aview{
 
         return `
             <div class="cardWrap ${obj.id == undefined ? "normalMatchWrap" : "tournamentCardWrap"}">
-            <div class="matchCard ${obj.won ? "won" : "lost"} ${obj.id == undefined ? "normalMatch" : "tournamentCard"}">
+            <div class="matchCard ${obj.scores[0] > obj.scores[1] ? "rightWin" : "leftWin"} ${obj.id == undefined ? "normalMatch" : "tournamentCard"}">
                 <div class="topLine">
                     <h3>${username}</h3>
                     <span>VS</span>
@@ -57,7 +52,7 @@ export default class extends Aview{
                         <h1>${obj.scores[0]}</h1>
                     </div>       
                     <div class="scores">
-                        <h1>${obj.scores[0]}</h1>
+                        <h1>${obj.scores[1]}</h1>
                     </div>     
                 </div>
             </div>
