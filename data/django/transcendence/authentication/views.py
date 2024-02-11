@@ -1,21 +1,18 @@
 
 
 from django.conf import settings
-from rest_framework import status
 
 from rest_framework.decorators import APIView, api_view, permission_classes, throttle_classes
 from rest_framework.response import Response
 
-from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from email_manager.email_sender import send_password_reset_email
+
 from transcendence.decorators import get_func_credentials
 
 # TODO: move url in main setting
-from .models import JwtToken, UserTokens, WebsocketTicket
 from .throttles import LowLoadThrottle, MediumLoadThrottle
-from .settings import MATCHMAKING_TOKEN
 from .permissions import IsUser
 
 from requests import post as post_request
@@ -136,7 +133,7 @@ def get_queue_ticket(request) -> Response:
     username = request.user.username
     data = {'username': username}
     #logger.warning("#" * 50)
-    api_response = post_request(MATCHMAKING_TOKEN, json=data)
+    api_response = post_request(settings.MS_URLS['MATCHMAKING_TOKEN'], json=data)
     #logger.warning("#" * 50)
     if api_response.status_code != 200:
         #logger.warning(f"status code: {api_response.status_code}")

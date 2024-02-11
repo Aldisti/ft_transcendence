@@ -1,32 +1,14 @@
-from rest_framework_simplejwt.exceptions import TokenError
-from rest_framework_simplejwt.tokens import Token
 
-from django.db import models
-from django.conf import settings
-
-from datetime import datetime
-from uuid import uuid4
 from django.core import validators
+from django.db import models
+
 from accounts.models import User
+
 from secrets import token_urlsafe
+from uuid import uuid4
 
 
 # Managers
-
-
-class JwtTokenManager(models.Manager):
-    def create(self, token: Token):
-        if token is None or 'csrf' not in token.payload:
-            raise TokenError("invalid token")
-        # TODO: timezone thing
-        expiry = datetime.fromtimestamp(token['exp'], tz=settings.TZ)
-        # TODO: timezone thing
-        if expiry < datetime.now(tz=settings.TZ):
-            raise TokenError("token already expired")
-        jwt_token = self.model(token=token['csrf'], exp=expiry)
-        jwt_token.full_clean()
-        jwt_token.save()
-        return jwt_token
 
 
 class UserTokensManger(models.Manager):
@@ -70,28 +52,6 @@ class WebsocketTicketManager(models.Manager):
         ticket.full_clean()
         ticket.save()
         return ticket
-
-
-# Models
-
-
-class JwtToken(models.Model):
-    token = models.CharField(
-        db_column="token",
-        max_length=32,
-        unique=True,
-    )
-    exp = models.DateTimeField(
-        db_column="exp",
-    )
-
-    objects = JwtTokenManager()
-
-    class Meta:
-        db_table = "jwt_token"
-
-    def __str__(self) -> str:
-        return f"token: {self.token}, exp: {self.exp}"
 
 
 class UserTokens(models.Model):

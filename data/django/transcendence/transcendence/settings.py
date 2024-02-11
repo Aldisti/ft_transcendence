@@ -303,6 +303,7 @@ MS_URLS = {
     # pong urls
     "PONG_REGISTER": f"http://{PONG_HOST}:{PONG_PORT}/user/register/",
     "PONG_DELETE": f"http://{PONG_HOST}:{PONG_PORT}/user/<pk>/delete/",
+    "MATCHMAKING_TOKEN": f"http://{PONG_HOST}:{PONG_PORT}/matchmaking/token/",
     # auth urls
     "AUTH_REGISTER": f"http://{AUTH_HOST}:{AUTH_PORT}/users/register/",
     "AUTH": {
