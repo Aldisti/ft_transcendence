@@ -24,7 +24,7 @@ from rest_framework.response import Response
 from requests import post as post_request
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from transcendence.decorators import get_credentials
+from transcendence.decorators import get_func_credentials
 from logging import getLogger
 
 logger = getLogger(__name__)
@@ -33,7 +33,7 @@ logger = getLogger(__name__)
 # TODO: delete this function
 @api_view(['GET'])
 @permission_classes([])
-@get_credentials
+@get_func_credentials
 def intra_callback(request) -> Response:
     logger.warning(f"we got here\n{request.api_headers}\n{request.api_cookies}")
     return Response(status=307, headers={

@@ -7,7 +7,7 @@ from django.conf import settings
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from authentication.models import UserTokens
-from transcendence.decorators import get_credentials
+from transcendence.decorators import get_func_credentials, get_class_credentials
 from two_factor_auth.models import UserTFA, OtpCode
 
 from authentication.throttles import HighLoadThrottle, MediumLoadThrottle, LowLoadThrottle
@@ -38,7 +38,7 @@ def verify_otp_code(user_tfa: UserTFA, code: str) -> bool:
 class ManageView(APIView):
     throttle_classes = [LowLoadThrottle]
 
-    @get_credentials
+    @get_class_credentials
     def get(self, request) -> Response:
         # user_tfa = request.user.user_tfa
         # data = {'is_active': user_tfa.is_active()}
@@ -51,7 +51,7 @@ class ManageView(APIView):
         )
         return Response(data=api_response.json(), status=api_response.status_code)
 
-    @get_credentials
+    @get_class_credentials
     def post(self, request) -> Response:
         # tfa_type = request.data.get('type', '').lower()
         # user_tfa = request.user.user_tfa
@@ -69,12 +69,13 @@ class ManageView(APIView):
             headers=request.api_headers,
             json=request.data,
         )
-        if api_response.status_code != 200:
-            return Response(data=api_response.json(), status=200)
-        elif api_response.status_code == 204:
+        if api_response.status_code == 204:
             return Response(status=200)
+        # elif api_response.status_code != 200:
+        #     return Response(data=api_response.json(), status=200)
         return Response(data=api_response.json(), status=api_response.status_code)
 
+    @get_class_credentials
     def put(self, request) -> Response:
         # user_tfa = request.user.user_tfa
         # if user_tfa.is_inactive():
@@ -101,6 +102,7 @@ class ManageView(APIView):
 @api_view(['POST'])
 @permission_classes([])
 @throttle_classes([HighLoadThrottle])
+@get_func_credentials
 def validate_login(request) -> Response:
     # url_token = request.query_params.get('token', None)
     # code = request.data.get('code', None)
@@ -136,9 +138,12 @@ def validate_login(request) -> Response:
     #     samesite=None,
     # )
     # return response
+    data = request.data
+    if 'token' not in data:
+        data['token'] = request.query_params.get('token')
     api_response = post_request(
         settings.MS_URLS['AUTH']['TFA_LOGIN'],
-        json=request.data,
+        json=data,
     )
     if api_response.status_code != 200:
         return Response(data=api_response.json(), status=api_response.status_code)
@@ -160,6 +165,7 @@ def validate_login(request) -> Response:
 @api_view(['POST'])
 @permission_classes([])
 @throttle_classes([HighLoadThrottle])
+@get_func_credentials
 def validate_recover(request) -> Response:
     # url_token = request.query_params.get('token', None)
     # code = request.data.get('code', None)
@@ -182,13 +188,14 @@ def validate_recover(request) -> Response:
     api_response = post_request(
         settings.MS_URLS['AUTH']['TFA_RECOVER'],
         headers=request.api_headers,
-        data=data,
+        json=data,
     )
     return Response(data=api_response.json(), status=api_response.status_code)
 
 
 @api_view(['POST'])
 @throttle_classes([MediumLoadThrottle])
+@get_func_credentials
 def validate_activate(request) -> Response:
     # code = request.data.get('code', None)
     # if code is None:
@@ -209,6 +216,6 @@ def validate_activate(request) -> Response:
     api_response = post_request(
         settings.MS_URLS['AUTH']['TFA_ACTIVATE'],
         headers=request.api_headers,
-        data=request.data,
+        json=request.data,
     )
-    return Response(data=api_response.json(), status=api_response)
+    return Response(data=api_response.json(), status=api_response.status_code)

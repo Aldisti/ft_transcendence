@@ -29,7 +29,7 @@ import logging
 import pika
 import os
 
-from transcendence.decorators import get_credentials
+from transcendence.decorators import get_func_credentials
 
 logger = logging.getLogger(__name__)
 
@@ -125,7 +125,7 @@ def registration(request):
 
 @api_view(['PATCH'])
 @permission_classes([IsAdmin])
-@get_credentials
+@get_func_credentials
 def change_role(request):
     """
     Request: {"username": <username>, "role": <[U, M]>}
@@ -151,7 +151,7 @@ def change_role(request):
 
 @api_view(['PATCH'])
 @permission_classes([IsUser])
-@get_credentials
+@get_func_credentials
 def update_password(request):
     """
     Request: {"password": <password>, "new_password"}
@@ -191,7 +191,7 @@ def update_password(request):
 
 @api_view(['PATCH'])
 @permission_classes([IsModerator])
-@get_credentials
+@get_func_credentials
 def change_active(request):
     """
     Request: {"username": <username>, "banned": <[True, False]>}

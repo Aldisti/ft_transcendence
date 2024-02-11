@@ -9,7 +9,7 @@ from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from email_manager.email_sender import send_password_reset_email
-from transcendence.decorators import get_credentials
+from transcendence.decorators import get_func_credentials
 from two_factor_auth.models import UserTFA
 
 # TODO: move url in main setting
@@ -37,7 +37,9 @@ def login(request) -> Response:
     if api_response.status_code != 200:
         return Response(data=api_response.json(), status=api_response.status_code)
     body = api_response.json()
-    refresh_token = RefreshToken(body.pop('refresh_token', ''))
+    if 'token' in body:
+        return Response(data=body, status=200)
+    refresh_token = RefreshToken(body.pop('refresh_token'))
     exp = datetime.fromtimestamp(refresh_token['exp'], tz=settings.TZ) - datetime.now(tz=settings.TZ)
     response = Response(data=body, status=200)
     response.set_cookie(
@@ -53,7 +55,7 @@ def login(request) -> Response:
 
 @api_view(['POST'])
 @throttle_classes([LowLoadThrottle])
-@get_credentials
+@get_func_credentials
 def logout(request) -> Response:
     url = settings.MS_URLS['AUTH']['LOGOUT']
     if request.path.endswith('all/'):

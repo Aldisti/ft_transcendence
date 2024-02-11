@@ -29,7 +29,7 @@ class ManageView(APIView):
         return Response(data=user_tfa.to_data(), status=200)
 
     def post(self, request) -> Response:
-        tfa_type = request.data.get('type', '')
+        tfa_type = request.data.get('type', '').upper()
         if tfa_type == '':
             return Response(data={'message': 'invalid type'}, status=400)
         user_tfa = request.user.user_tfa
@@ -38,7 +38,7 @@ class ManageView(APIView):
         try:
             user_tfa = UserTFA.objects.activate(user_tfa, otp_type=tfa_type)
         except ValidationError as e:
-            return Response(data={'message': e.message}, status=400)
+            return Response(data={'message': str(e)}, status=400)
         if user_tfa.is_email():
             return Response(status=204)
         return Response({

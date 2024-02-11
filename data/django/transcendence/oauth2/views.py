@@ -13,7 +13,7 @@ from requests import get as get_request
 from datetime import datetime
 import logging
 
-from transcendence.decorators import get_credentials
+from transcendence.decorators import get_func_credentials
 
 
 logger = logging.getLogger(__name__)
@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 @api_view(['GET'])
 @throttle_classes([LowLoadThrottle])
-@get_credentials
+@get_func_credentials
 def is_user_linked(request) -> Response:
     api_response = get_request(
         settings.MS_URLS['AUTH']['OAUTH2_LINKED'],
@@ -57,7 +57,7 @@ def intra_get_url(request) -> Response:
 @api_view(['POST'])
 @permission_classes([])
 @throttle_classes([])
-@get_credentials
+@get_func_credentials
 def intra_login(request) -> Response:
     """
     cookies: 'intra_state=<intra_state>'
@@ -87,7 +87,7 @@ def intra_login(request) -> Response:
 
 @api_view(['POST'])
 @throttle_classes([])
-@get_credentials
+@get_func_credentials
 def intra_link(request) -> Response:
     """
     header: 'Authorization: Bearer <access_token>'
@@ -107,7 +107,7 @@ def intra_link(request) -> Response:
 
 @api_view(['DELETE'])
 @throttle_classes([])
-@get_credentials
+@get_func_credentials
 def intra_unlink(request) -> Response:
     """
     header: 'Authorization: Bearer <access_token>'
@@ -124,7 +124,7 @@ def intra_unlink(request) -> Response:
 @api_view(['GET'])
 @permission_classes([])
 @throttle_classes([LowLoadThrottle])
-@get_credentials
+@get_func_credentials
 def get_google_url(request) -> Response:
     api_response = get_request(
         settings.MS_URLS['AUTH']['GOOGLE_URL'],
@@ -149,7 +149,7 @@ def get_google_url(request) -> Response:
 
 @api_view(['POST'])
 @throttle_classes([])
-@get_credentials
+@get_func_credentials
 def google_link(request) -> Response:
     api_response = post_request(
         settings.MS_URLS['AUTH']['GOOGLE_LINK'],
@@ -167,7 +167,7 @@ def google_link(request) -> Response:
 @api_view(['POST'])
 @permission_classes([])
 @throttle_classes([])
-@get_credentials
+@get_func_credentials
 def google_login(request) -> Response:
     api_response = post_request(
         settings.MS_URLS['AUTH']['GOOGLE_LINK'],
@@ -195,7 +195,7 @@ def google_login(request) -> Response:
 
 @api_view(['DELETE'])
 @throttle_classes([LowLoadThrottle])
-@get_credentials
+@get_func_credentials
 def unlink_google(request) -> Response:
     api_response = delete_request(
         settings.MS_URLS['AUTH']['GOOGLE_UNLINK'],
