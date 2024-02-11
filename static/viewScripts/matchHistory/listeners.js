@@ -8,7 +8,7 @@ let tournament = [
     [{username: "mpaterno", winner: true, picture: "https://user-images.githubusercontent.com/11250/39013954-f5091c3a-43e6-11e8-9cac-37cf8e8c8e4e.jpg"}, {username: "gpanico", winner: false, picture: "https://cdn3.vectorstock.com/i/1000x1000/30/97/flat-business-man-user-profile-avatar-icon-vector-4333097.jpg"}, {username: "mpaterno", winner: true, picture: "https://user-images.githubusercontent.com/11250/39013954-f5091c3a-43e6-11e8-9cac-37cf8e8c8e4e.jpg"}, {username: "gpanico", winner: false, picture: "https://cdn3.vectorstock.com/i/1000x1000/30/97/flat-business-man-user-profile-avatar-icon-vector-4333097.jpg"}, {username: "mpaterno", winner: true, picture: "https://user-images.githubusercontent.com/11250/39013954-f5091c3a-43e6-11e8-9cac-37cf8e8c8e4e.jpg"}, {username: "gpanico", winner: false, picture: "https://cdn3.vectorstock.com/i/1000x1000/30/97/flat-business-man-user-profile-avatar-icon-vector-4333097.jpg"}, {username: "mpaterno", winner: true, picture: "https://user-images.githubusercontent.com/11250/39013954-f5091c3a-43e6-11e8-9cac-37cf8e8c8e4e.jpg"}, {username: "gpanico", winner: false, picture: "https://cdn3.vectorstock.com/i/1000x1000/30/97/flat-business-man-user-profile-avatar-icon-vector-4333097.jpg"}],
     [{username: "mpaterno", winner: true, picture: "https://user-images.githubusercontent.com/11250/39013954-f5091c3a-43e6-11e8-9cac-37cf8e8c8e4e.jpg"}, {username: "gpanico", winner: false, picture: "https://cdn3.vectorstock.com/i/1000x1000/30/97/flat-business-man-user-profile-avatar-icon-vector-4333097.jpg"}, {username: "mpaterno", winner: true, picture: "https://user-images.githubusercontent.com/11250/39013954-f5091c3a-43e6-11e8-9cac-37cf8e8c8e4e.jpg"}, {username: "gpanico", winner: false, picture: "https://cdn3.vectorstock.com/i/1000x1000/30/97/flat-business-man-user-profile-avatar-icon-vector-4333097.jpg"}],
     [{username: "mpaterno", winner: true, picture: "https://user-images.githubusercontent.com/11250/39013954-f5091c3a-43e6-11e8-9cac-37cf8e8c8e4e.jpg"}, {username: "gpanico", winner: false, picture: "https://cdn3.vectorstock.com/i/1000x1000/30/97/flat-business-man-user-profile-avatar-icon-vector-4333097.jpg"}],
-    [{username: "mpaterno", winner: true, picture: "https://user-images.githubusercontent.com/11250/39013954-f5091c3a-43e6-11e8-9cac-37cf8e8c8e4e.jpg"}],
+    [{username: "winner", winner: true, picture: "https://user-images.githubusercontent.com/11250/39013954-f5091c3a-43e6-11e8-9cac-37cf8e8c8e4e.jpg"}],
 ]
 
 let imageId = 0
@@ -87,7 +87,6 @@ function handleCanvas(tournament){
         partecipants /= 2;
         document.querySelector(".drawMatch").appendChild(divContainer);
     }
-    
 }
 
 export function handleTournamentSubscription(dupThis, e){
@@ -96,6 +95,7 @@ export function handleTournamentSubscription(dupThis, e){
     if (e.target.classList.contains("matchDetails")){
         if (!e.target.classList.contains("bodyOpened")){
             helpFunction.movementHandler("open", card);
+            document.querySelector(".drawMatch").innerHTML = "";
             setTimeout(() => {
                 handleCanvas(tournament)
             }, 350);
