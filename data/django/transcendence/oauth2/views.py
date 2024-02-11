@@ -1,6 +1,6 @@
 
 from django.conf import settings
-from rest_framework import status
+
 from rest_framework.decorators import APIView, api_view, permission_classes, throttle_classes
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken

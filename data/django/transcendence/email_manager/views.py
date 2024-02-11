@@ -1,16 +1,10 @@
 from django.conf import settings
-from rest_framework import status
+
 from rest_framework.decorators import api_view, permission_classes, APIView
 from rest_framework.response import Response
 
-from authentication.models import UserTokens
 from email_manager.email_sender import send_password_email, send_tfa_code_email, send_password_reset_email
 
-from accounts.models import User
-
-from two_factor_auth.models import UserTFA
-
-from smtplib import SMTPException
 from requests import post as post_request
 from logging import getLogger
 
