@@ -118,6 +118,7 @@ def validate_activate(request) -> Response:
 @api_view(['GET'])
 @permission_classes([])
 @throttle_classes([EmailThrottle])
+@get_func_credentials
 def get_email_code(request) -> Response:
     data = request.data
     if 'token' not in data:
