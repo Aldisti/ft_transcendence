@@ -170,7 +170,7 @@ def google_link(request) -> Response:
 @get_func_credentials
 def google_login(request) -> Response:
     api_response = post_request(
-        settings.MS_URLS['AUTH']['GOOGLE_LINK'],
+        settings.MS_URLS['AUTH']['GOOGLE_LOGIN'],
         headers=request.api_headers,
         cookies=request.api_cookies,
         json=request.data,
