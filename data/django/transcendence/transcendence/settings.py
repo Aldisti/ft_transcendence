@@ -328,7 +328,7 @@ MS_URLS = {
         "INTRA_URL": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/intra/v2/url/",
         "INTRA_LINK": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/intra/v2/link/",
         "INTRA_LOGIN": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/intra/v2/login/",
-        "INTRA_UNLINK": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/intra/disable/",
+        "INTRA_UNLINK": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/intra/unlink/",
         "GOOGLE_URL": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/google/v2/url/",
         "GOOGLE_LINK": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/google/v2/link/",
         "GOOGLE_LOGIN": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/google/v2/login/",
