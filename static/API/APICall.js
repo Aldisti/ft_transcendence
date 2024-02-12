@@ -1046,12 +1046,28 @@ export async function getMatchHistory(recursionProtection, username){
     });
     if (res.ok){
         let parsed = await res.json();
-        console.log(parsed)
-
         return (parsed);
     }
     if (res.status == 401 && recursionProtection)
         return await refreshAndRetry(getMatchHistory, 0, username);
+    return ([])
+}
+export async function getTournamentInfo(recursionProtection){
+    const res = await fetch(URL.tournaments.GET_TOURNAMENT_HISTORY, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json"
+        },
+        // credentials: "include",
+    });
+    console.log(res)
+    if (res.ok){
+        let parsed = await res.json();
+        return (parsed);
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(getTournamentInfo, 0);
     return ([])
 }
 //end of Dummy call

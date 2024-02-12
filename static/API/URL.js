@@ -79,6 +79,7 @@ export const tournaments = {
     CREATE: `${protocol}://${ip}:3000/create/`,
     UNSUBSCRIBE: `${protocol}://${ip}:3000/unsubscribe/`,
     GET_MATCH_HISTORY: `${protocol}://${ip}:3000/match-history/`,
+    GET_TOURNAMENT_HISTORY: `${protocol}://${ip}:3000/tournament-info/`,
 }
 
 export const manageUsers ={
