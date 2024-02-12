@@ -12,7 +12,7 @@
     <style>
       .loaderOverlay{
         width: 100svw;
-        height: 100svh;
+        height: 100%;
         background-color: var(--bs-dark);
         position: absolute;
         top: 0;
@@ -22,20 +22,6 @@
         display: flex;
         justify-content: center;
         align-items: center;
-      }
-
-      .image {
-        background-image: url("/imgs/gameConstruction.jpeg");
-        border-radius: 10% !important;
-        width: 50%;
-        height: 80%;
-      }
-
-      .spinner-grow{
-        width: 20svw;
-        height: 20svw;
-        margin: 2svw;
-        border-radius: 50% !important;
       }
     </style>
     <script type="importmap">
@@ -50,8 +36,6 @@
 </head>
 <body>
   <div class="loaderOverlay">
-    <div class="image" role="status">
-    </div>
   </div>
     <div id="navbar">
 
@@ -109,7 +93,7 @@
     </div>
     </footer>
     <script>
-            if (localStorage.getItem("language") == null)
+      if (localStorage.getItem("language") == null)
         localStorage.setItem("language", "en");
       if (localStorage.getItem("style") == null)
         localStorage.setItem("style", "modern");
