@@ -10,7 +10,7 @@ from email_manager.email_sender import send_password_reset_email
 
 from transcendence.decorators import get_func_credentials
 
-from .throttles import LowLoadThrottle, MediumLoadThrottle, EmailThrottle, HighLoadThrottle
+from transcendence.throttles import LowLoadThrottle, MediumLoadThrottle, EmailThrottle, HighLoadThrottle
 from transcendence.permissions import IsUser
 
 from requests import post as post_request

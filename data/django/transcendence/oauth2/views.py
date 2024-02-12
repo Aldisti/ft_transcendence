@@ -1,11 +1,11 @@
 
 from django.conf import settings
 
-from rest_framework.decorators import APIView, api_view, permission_classes, throttle_classes
+from rest_framework.decorators import api_view, permission_classes, throttle_classes
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from authentication.throttles import HighLoadThrottle, MediumLoadThrottle, LowLoadThrottle
+from transcendence.throttles import LowLoadThrottle
 
 from requests import delete as delete_request
 from requests import post as post_request

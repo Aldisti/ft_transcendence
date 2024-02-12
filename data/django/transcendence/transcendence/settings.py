@@ -98,8 +98,8 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_THROTTLE_CLASSES": [
         "rest_framework.throttling.ScopedRateThrottle",
-        "authentication.throttles.AnonAuthThrottle",
-        "authentication.throttles.UserAuthThrottle",
+        "transcendence.throttles.AnonAuthThrottle",
+        "transcendence.throttles.UserAuthThrottle",
     ],
     "DEFAULT_THROTTLE_RATES": {
         "auth": "30/minute",

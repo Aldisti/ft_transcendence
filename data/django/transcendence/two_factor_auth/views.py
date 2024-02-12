@@ -8,7 +8,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from email_manager.email_sender import send_tfa_code_email
 from transcendence.decorators import get_func_credentials, get_class_credentials
 
-from authentication.throttles import HighLoadThrottle, MediumLoadThrottle, LowLoadThrottle, EmailThrottle
+from transcendence.throttles import HighLoadThrottle, MediumLoadThrottle, LowLoadThrottle, EmailThrottle
 
 from requests import post as post_request
 from requests import get as get_request
