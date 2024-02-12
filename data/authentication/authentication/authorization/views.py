@@ -142,7 +142,7 @@ def password_recovery(request) -> Response:
     token = PasswordResetToken.objects.create(user=user)
     if user.has_tfa():
         user_tfa = UserTFA.objects.generate_url_token(user.user_tfa)
-        return Response(data={'url_token': user_tfa.url_token}, status=200)
+        return Response(data={'token': user_tfa.url_token}, status=200)
     return Response(data=token.to_data(), status=200)
 
 
