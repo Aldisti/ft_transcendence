@@ -83,7 +83,7 @@ def password_recovery(request) -> Response:
     if api_response.status_code != 200:
         return Response(data=api_response.json(), status=api_response.status_code)
     kwargs = api_response.json()
-    if 'url_token' in kwargs:
+    if 'token' in kwargs:
         return Response(data=kwargs, status=200)
     send_password_reset_email(**kwargs)
     return Response(status=200)
