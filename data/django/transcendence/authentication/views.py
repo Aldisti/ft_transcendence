@@ -149,6 +149,21 @@ def retrieve_pubkey(request) -> Response:
     return Response(data={'public_key': settings.SIMPLE_JWT['VERIFYING_KEY']}, status=200)
 
 
+@api_view(['GET'])
+@permission_classes([])
+def email_token_validation(request) -> Response:
+    token = request.query_params.get("token", "")
+    if token == '':
+        return Response(data={'message': 'missing token'}, status=400)
+    api_response = post_request(
+        settings.MS_URLS['AUTH']['VERIFY_EMAIL'],
+        json={'token': token}
+    )
+    if api_response.status_code != 200:
+        return Response(api_response.json(), status=api_response.status_code)
+    return Response(status=200)
+
+
 # @api_view(['GET', 'POST'])
 # @permission_classes([])
 # def test(request) -> Response:

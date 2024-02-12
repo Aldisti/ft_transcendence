@@ -18,5 +18,8 @@ urlpatterns = [
     path('retrieve/', include([
         path('public-key/', views.retrieve_pubkey, name='api-retrieve-public-key')
     ])),
+    path('recovery/', views.password_recovery, name='api-recovery-password'),
+    path('password/', views.password_reset, name='api-password-reset'),
+    path('email/', views.email_token_validation, name='api-email-verification'),
     # path('test/', views.test),
 ]
