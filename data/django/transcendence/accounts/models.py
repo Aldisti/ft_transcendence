@@ -18,8 +18,6 @@ from requests import get as get_request
 logger = logging.getLogger(__name__)
 
 
-# Create your models here.
-
 class User(AbstractBaseUser):
     username = models.CharField(
         db_column="username",

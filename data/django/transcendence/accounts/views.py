@@ -126,10 +126,6 @@ def change_role(request):
     """
     Request: {"username": <username>, "role": <[U, M]>}
     """
-    user_serializer = CompleteUserSerializer(data=request.data)
-    if not user_serializer.is_valid():
-        return Response(status=400)
-    user = user_serializer.update_role(user_serializer.validated_data)
     # auth server
     api_response = patch_request(
         settings.MS_URLS['AUTH']['UPDATE_ROLE'],
@@ -138,7 +134,11 @@ def change_role(request):
     )
     if api_response.status_code != 200:
         return Response(data=api_response.json(), status=api_response.status_code)
-    ###
+
+    user_serializer = CompleteUserSerializer(data=request.data)
+    if not user_serializer.is_valid():
+        return Response(status=400)
+    user = user_serializer.update_role(user_serializer.validated_data)
     return Response({"username": user.username, "new_role": user.role}, status=200)
 
 
