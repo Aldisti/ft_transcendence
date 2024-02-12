@@ -19,7 +19,6 @@ from users.models import User
 from users.serializers import UserSerializer
 
 from datetime import datetime, timedelta
-import requests
 import logging
 
 logger = logging.getLogger(__name__)
@@ -43,6 +42,8 @@ def login(request) -> Response:
     if not user.check_password(user_serializer.validated_data['password']):
         return error_response
     # TODO: turn on this check in production
+    # I'd like to send a verification email when a non-verified user tries to login
+    # But I need to slow down the sending of the emails like a throttle does
     # if not user.verified:
     #     return Response(data={'message': 'user not verified yet'}, status=400)
     if not user.active:
@@ -165,22 +166,4 @@ def password_reset(request) -> Response:
         User.objects.reset_password(user, password)
     except ValueError as e:
         return Response(data={'message': str(e)}, status=400)
-    return Response(status=200)
-
-
-@api_view(['POST'])
-@permission_classes([])
-def verify_email(request) -> Response:
-    """
-    body: {'token': <token>}
-    """
-    token = request.data.get('token', '')
-    if token == '':
-        return Response(data={'message': 'missing token'}, status=400)
-    try:
-        user = EmailVerificationToken.objects.get(token=token).user
-    except EmailVerificationToken.DoesNotExist:
-        return Response(data={'message': 'invalid token'}, status=400)
-    User.objects.update_verified(user, True)
-    user.email_token.delete()
     return Response(status=200)

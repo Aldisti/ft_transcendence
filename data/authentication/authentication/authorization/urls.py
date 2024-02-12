@@ -16,5 +16,4 @@ urlpatterns = [
         path('recovery/', views.password_recovery, name='api-password'),
         path('reset/', views.password_reset, name='api-password-reset'),
     ])),
-    path('verify/email/', views.verify_email, name='api-verify-email'),
 ]

@@ -131,14 +131,6 @@ def update_email(request) -> Response:
 
 
 @api_view(['PATCH'])
-@throttle_classes([MediumLoadThrottle])
-def update_verified(request) -> Response:
-    # TODO: well, the function's name says everything
-    # maybe a token or more are needed
-    pass
-
-
-@api_view(['PATCH'])
 @permission_classes([IsModerator])
 @throttle_classes([MediumLoadThrottle])
 def update_active(request) -> Response:
@@ -156,6 +148,24 @@ def update_active(request) -> Response:
         User.objects.update_active(user, request.data['banned'])
     except ValueError as e:
         return Response(data={'message': str(e)}, status=400)
+    return Response(status=200)
+
+
+@api_view(['POST'])
+@permission_classes([])
+def verify_email(request) -> Response:
+    """
+    body: {'token': <token>}
+    """
+    token = request.data.get('token', '')
+    if token == '':
+        return Response(data={'message': 'missing token'}, status=400)
+    try:
+        email_token = EmailVerificationToken.objects.get(token=token)
+    except EmailVerificationToken.DoesNotExist:
+        return Response(data={'message': 'invalid token'}, status=400)
+    User.objects.update_verified(email_token.user, True)
+    email_token.delete()
     return Response(status=200)
 
 

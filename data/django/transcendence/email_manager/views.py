@@ -3,7 +3,7 @@ from django.conf import settings
 from rest_framework.decorators import api_view, permission_classes, APIView
 from rest_framework.response import Response
 
-from email_manager.email_sender import send_password_email, send_tfa_code_email, send_password_reset_email
+from email_manager.email_sender import send_password_reset_email
 
 from requests import post as post_request
 from logging import getLogger
@@ -14,7 +14,7 @@ logger = getLogger(__name__)
 
 @api_view(['GET'])
 @permission_classes([])
-def email_token_validation(request):
+def email_token_validation(request) -> Response:
     token = request.query_params.get("token", "")
     if token == '':
         return Response(data={'message': 'missing token'}, status=400)
@@ -29,7 +29,7 @@ def email_token_validation(request):
 
 @api_view(['POST'])
 @permission_classes([])
-def password_recovery(request):
+def password_recovery(request) -> Response:
     api_response = post_request(settings.MS_URLS['AUTH']['PASSWORD_RECOVERY'], json=request.data)
     if api_response.status_code != 200:
         return Response(data=api_response.json(), status=api_response.status_code)
@@ -42,7 +42,7 @@ def password_recovery(request):
 
 @api_view(['POST'])
 @permission_classes([])
-def password_reset(request):
+def password_reset(request) -> Response:
     token = request.query_params.get("token", "")
     if token == '':
         return Response(data={'message': 'missing token'}, status=400)
