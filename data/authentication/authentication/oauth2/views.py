@@ -75,6 +75,7 @@ def v2_intra_login(request) -> Response:
     return Response(data={
         'access_token': str(refresh_token.access_token),
         'refresh_token': str(refresh_token),
+        'username': user.username,
     }, status=200)
 
 

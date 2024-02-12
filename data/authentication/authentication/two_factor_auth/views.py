@@ -35,6 +35,8 @@ class ManageView(APIView):
         user_tfa = request.user.user_tfa
         if user_tfa.active:
             return Response(data={'message': 'tfa already active'}, status=400)
+        # if not user_tfa.user.verified:
+        #     return Response(data={'message': 'user email not verified'}, status=400)
         try:
             user_tfa = UserTFA.objects.activate(user_tfa, otp_type=tfa_type)
         except ValidationError as e:
