@@ -1,7 +1,7 @@
 
 from django.conf import settings
 
-from rest_framework.decorators import APIView, api_view, permission_classes, throttle_classes
+from rest_framework.decorators import api_view, permission_classes, throttle_classes
 from rest_framework.response import Response
 
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -10,10 +10,11 @@ from email_manager.email_sender import send_password_reset_email
 
 from transcendence.decorators import get_func_credentials
 
-from .throttles import LowLoadThrottle, MediumLoadThrottle
-from .permissions import IsUser
+from .throttles import LowLoadThrottle, MediumLoadThrottle, EmailThrottle, HighLoadThrottle
+from transcendence.permissions import IsUser
 
 from requests import post as post_request
+from requests import get as get_request
 from datetime import datetime
 import logging
 
@@ -77,7 +78,7 @@ def refresh(request) -> Response:
 
 @api_view(['POST'])
 @permission_classes([])
-@throttle_classes([])
+@throttle_classes([HighLoadThrottle])
 def password_recovery(request) -> Response:
     api_response = post_request(settings.MS_URLS['AUTH']['PASSWORD_RECOVERY'], json=request.data)
     if api_response.status_code != 200:
@@ -91,7 +92,7 @@ def password_recovery(request) -> Response:
 
 @api_view(['POST'])
 @permission_classes([])
-@throttle_classes([])
+@throttle_classes([MediumLoadThrottle])
 def password_reset(request) -> Response:
     body = request.data
     body.update({'token': request.query_params.get('token', '')})
@@ -145,7 +146,10 @@ def get_queue_ticket(request) -> Response:
 @permission_classes([])
 @throttle_classes([LowLoadThrottle])
 def retrieve_pubkey(request) -> Response:
-    return Response(data={'public_key': settings.SIMPLE_JWT['VERIFYING_KEY']}, status=200)
+    api_response = get_request(settings.MS_URLS['AUTH']['RETRIEVE_PUBKEY'])
+    if api_response.status_code != 200:
+        return Response(data=api_response.text, status=api_response.status_code)
+    return Response(data=api_response.json(), status=200)
 
 
 @api_view(['GET'])
@@ -160,6 +164,20 @@ def email_token_validation(request) -> Response:
     )
     if api_response.status_code != 200:
         return Response(api_response.json(), status=api_response.status_code)
+    return Response(status=200)
+
+
+@api_view(['GET'])
+@throttle_classes([EmailThrottle])
+@get_func_credentials
+def send_verification_email(request) -> Response:
+    api_response = get_request(
+        settings.MS_URLS['AUTH']['EMAIL_DETAILS'],
+        headers=request.api_headers,
+    )
+    if api_response.status_code != 200:
+        return Response(data=api_response.text, status=api_response.status_code)
+    send_verification_email(**api_response.json())
     return Response(status=200)
 
 

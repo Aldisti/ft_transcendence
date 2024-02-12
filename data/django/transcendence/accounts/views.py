@@ -1,25 +1,21 @@
 from datetime import datetime
 
 from django.core.exceptions import ValidationError
-from django.shortcuts import render
-from django.core.mail import send_mail
 from django.conf import settings
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.generics import RetrieveDestroyAPIView, ListAPIView
-from rest_framework.exceptions import APIException
 from rest_framework import filters
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from accounts.paginations import MyPageNumberPagination
 from accounts.serializers import CompleteUserSerializer, UploadImageSerializer, UserInfoSerializer
 from accounts.models import User, UserInfo, UserGame
-from accounts.validators import image_validator
 
-from email_manager.email_sender import send_verification_email, send_verify_email
+from email_manager.email_sender import send_verify_email
 
-from authentication.permissions import IsActualUser, IsAdmin, IsModerator, IsUser
+from transcendence.permissions import IsAdmin, IsModerator, IsUser
 
 from requests import post as post_request
 from requests import delete as delete_request

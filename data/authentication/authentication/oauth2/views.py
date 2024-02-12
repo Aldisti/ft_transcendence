@@ -57,14 +57,16 @@ def v2_intra_login(request) -> Response:
     request_body = settings.OAUTH2['INTRA_REQUEST_BODY'].copy()
     request_body['code'] = request.data['code']
     request_body['state'] = request.data['state']
-    api_response = requests.post(settings.OAUTH2['INTRA']['TOKEN'], json=request_body)
+    api_response = requests.post(settings.OAUTH2['INTRA']['TOKEN'], data=request_body)
+    logger.warning(f"\n{api_response.text}")
+    logger.warning(f"{type(api_response.text)}\n")
     if api_response.status_code != 200:
-        return Response(data=api_response.text, status=502)
+        return Response(data=api_response.json(), status=502)
     data = api_response.json()
     headers = {'Authorization': f"Bearer {data['access_token']}"}
     api_response = requests.get(settings.OAUTH2['INTRA']['INFO'], headers=headers)
     if api_response.status_code != 200:
-        return Response(data=api_response.text, status=502)
+        return Response(data=api_response.json(), status=502)
     email = api_response.json()['email']
     del api_response
     try:
@@ -87,14 +89,14 @@ def v2_intra_link(request) -> Response:
     request_body = settings.OAUTH2['INTRA_REQUEST_BODY'].copy()
     request_body['code'] = request.data['code']
     request_body['state'] = request.data['state']
-    api_response = requests.post(settings.OAUTH2['INTRA']['TOKEN'], json=request_body)
+    api_response = requests.post(settings.OAUTH2['INTRA']['TOKEN'], data=request_body)
     if api_response.status_code != 200:
-        return Response(data=api_response.json(), status=502)
+        return Response(data=api_response.text, status=502)
     data = api_response.json()
     headers = {'Authorization': f"Bearer {data['access_token']}"}
     api_response = requests.get(settings.OAUTH2['INTRA']['INFO'], headers=headers)
     if api_response.status_code != 200:
-        return Response(data=api_response.json(), status=502)
+        return Response(data=api_response.text, status=502)
     email = api_response.json()['email']
     del api_response
     try:
@@ -150,7 +152,7 @@ class GoogleLink(APIView):
             response = Response(data={'message': 'user already linked'}, status=400)
             response.set_cookie(key='google_state', value='deleted', max_age=0)
             return response
-        api_response = requests.post(settings.OAUTH2['GOOGLE']['TOKEN'], json=request_body)
+        api_response = requests.post(settings.OAUTH2['GOOGLE']['TOKEN'], data=request_body)
         if api_response.status_code != 200:
             return Response(data={
                 'status': api_response.status_code,
@@ -186,7 +188,7 @@ def google_login(request) -> Response:
         response = Response(data={'message': 'csrf suspected'}, status=403)
         response.set_cookie(key='google_state', value='deleted', max_age=0)
         return response
-    api_response = requests.post(settings.OAUTH2['GOOGLE']['TOKEN'], json=request_body)
+    api_response = requests.post(settings.OAUTH2['GOOGLE']['TOKEN'], data=request_body)
     if api_response.status_code != 200:
         response = Response(data={
             'status': api_response.status_code,

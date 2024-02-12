@@ -94,7 +94,7 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": [
-        "authentication.permissions.IsUser",
+        "transcendence.permissions.IsUser",
     ],
     "DEFAULT_THROTTLE_CLASSES": [
         "rest_framework.throttling.ScopedRateThrottle",
@@ -126,19 +126,8 @@ SIMPLE_JWT = {
     "AUDIENCE": "transcendence",
     "ISSUER": "transcendence.auth",
 
-    "AUTH_HEADER_TYPES": ("Bearer",),
-    "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
     "USER_ID_FIELD": "username",
     "USER_ID_CLAIM": "username",
-    "USER_AUTHENTICATION_RULE": "rest_framework_simplejwt.authentication.default_user_authentication_rule",
-
-    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
-    "TOKEN_TYPE_CLAIM": "token_type",
-    "TOKEN_USER_CLASS": "rest_framework_simplejwt.models.TokenUser",
-
-    "TOKEN_OBTAIN_SERIALIZER": "authentication.serializers.MyTokenObtainPairSerializer",
-    "TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSerializer",
-    "TOKEN_VERIFY_SERIALIZER": "rest_framework_simplejwt.serializers.TokenVerifySerializer",
 }
 
 
@@ -323,7 +312,8 @@ MS_URLS = {
         "LOGOUT_ALL": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/logout/all/",
         "PASSWORD_RECOVERY": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/password/recovery/",
         "PASSWORD_RESET": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/password/reset/",
-        "VERIFY_EMAIL": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/verify/email/",
+        "EMAIL_DETAILS": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/email/details/",
+        "RETRIEVE_PUBKEY": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/retrieve/public-key/",
         # oauth2 app
         "INTRA_URL": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/intra/v2/url/",
         "INTRA_LINK": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/intra/v2/link/",
@@ -340,7 +330,11 @@ MS_URLS = {
         "TFA_ACTIVATE": f"http://{AUTH_HOST}:{AUTH_PORT}/2fa/validate/activate/",
         "TFA_RECOVER": f"http://{AUTH_HOST}:{AUTH_PORT}/2fa/validate/recover/",
         "TFA_EMAIL": f"http://{AUTH_HOST}:{AUTH_PORT}/2fa/otp/",
-    }
+    },
+    # emails
+    # TODO: use variables instead of localhost and 4200
+    "CLIENT_RESET_PAGE": f"http://localhost:4200/password/reset/",
+    "CLIENT_LOGIN_PAGE": f"http://localhost:4200/login/",
 }
 
 # rabbit config

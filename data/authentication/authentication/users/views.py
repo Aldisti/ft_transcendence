@@ -185,7 +185,7 @@ def get_user(request, username: str) -> Response:
 #     username = request.user.username
 #     data = {'username': username}
 #     logger.warning("#" * 50)
-#     api_response = post_request(MATCHMAKING_TOKEN, json=data)
+#     api_response = post_request(MATCHMAKING_TOKEN, data=data)
 #     logger.warning("#" * 50)
 #     if api_response.status_code != 200:
 #         logger.warning(f"status code: {api_response.status_code}")

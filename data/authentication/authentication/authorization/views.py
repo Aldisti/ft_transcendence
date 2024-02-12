@@ -41,11 +41,6 @@ def login(request) -> Response:
         return error_response
     if not user.check_password(user_serializer.validated_data['password']):
         return error_response
-    # TODO: turn on this check in production
-    # I'd like to send a verification email when a non-verified user tries to login
-    # But I need to slow down the sending of the emails like a throttle does
-    # if not user.verified:
-    #     return Response(data={'message': 'user not verified yet'}, status=400)
     if not user.active:
         return Response(data={'message': "user is not active"}, status=400)
     if user.has_password_token():
@@ -81,7 +76,7 @@ def logout(request) -> Response:
         JwtBlackList.objects.create(token=refresh_token['csrf'], exp=exp)
     except ValidationError or ValueError:
         return error_response
-    if request.path.strip('/').split('/')[-1] == 'all':
+    if 'all' in request.path:
         User.objects.update_last_logout(request.user)
     return Response(status=200)
 
@@ -101,7 +96,7 @@ def refresh(request) -> Response:
                 raise TokenError()
         except KeyError as e:
             logger.warning(f"\n{str(e)}\ntoken received: {str(refresh_token)}\n\n")
-            return Response(status=500)
+            return Response(status=status.HTTP_418_IM_A_TEAPOT)
     except TokenError:
         return Response(data={'message': 'invalid refresh token'}, status=403)
     try:
@@ -125,7 +120,6 @@ def retrieve_pubkey(request) -> Response:
 
 @api_view(['POST'])
 @permission_classes([])
-@throttle_classes([HighLoadThrottle])
 def password_recovery(request) -> Response:
     """
     body: {'username': <username>}
@@ -151,7 +145,6 @@ def password_recovery(request) -> Response:
 
 @api_view(['POST'])
 @permission_classes([])
-@throttle_classes([MediumLoadThrottle])
 def password_reset(request) -> Response:
     """
     body: {'token': <token>', 'password': <password>}
@@ -170,3 +163,8 @@ def password_reset(request) -> Response:
     except ValueError as e:
         return Response(data={'message': str(e)}, status=400)
     return Response(status=200)
+
+
+@api_view(['GET'])
+def get_verification_details(request) -> Response:
+    return Response(data=request.user.email_token.to_data(), status=200)

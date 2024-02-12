@@ -1,10 +1,10 @@
+
 from channels.sessions import CookieMiddleware
 from channels.middleware import BaseMiddleware
 from channels.auth import UserLazyObject
 from channels.db import database_sync_to_async
-from authentication.models import WebsocketTicket
+
 from accounts.models import User
-from rest_framework_simplejwt.tokens import RefreshToken
 
 import logging
 
@@ -15,10 +15,10 @@ logger = logging.getLogger(__name__)
 def get_user(query_params: dict) -> User:
     if "ticket" not in query_params:
         raise ValueError("Ticket not found")
-    try:
-        ticket = WebsocketTicket.objects.get(ticket=query_params["ticket"])
-    except WebsocketTicket.DoesNotExist:
-        raise ValueError("Ticket not found in database")
+    # try:
+    #     ticket = WebsocketTicket.objects.get(ticket=query_params["ticket"])
+    # except WebsocketTicket.DoesNotExist:
+    raise ValueError("Ticket not found in database")
     user = ticket.user_tokens.user
     ticket.delete()
     return user

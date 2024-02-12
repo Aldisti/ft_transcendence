@@ -5,7 +5,7 @@ from rest_framework.response import Response
 
 from accounts.models import User
 
-from authentication.permissions import IsUser
+from transcendence.permissions import IsUser
 
 from friends.serializers import FriendsSerializer
 
@@ -13,8 +13,6 @@ from requests import post as post_request
 from requests import get as get_request
 
 import logging
-
-import json
 
 logger = logging.getLogger(__name__)
 

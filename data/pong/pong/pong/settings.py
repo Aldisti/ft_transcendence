@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 from os import environ
 from pytz import timezone
-from requests import get
+from requests import get, exceptions
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 def get_public_key() -> str:
     try:
         api_response = get("http://django:8000/auth/retrieve/public-key/")
-    except ConnectionError:
+    except exceptions.ConnectionError:
         exit(69)
     if api_response.status_code == 200:
         return api_response.json().get("public_key", '')

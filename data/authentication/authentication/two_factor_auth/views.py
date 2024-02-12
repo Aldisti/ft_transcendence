@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from django.core.exceptions import ValidationError
 from django.conf import settings
 
-from two_factor_auth.models import UserTFA, OtpCode
+from two_factor_auth.models import UserTFA, OtpCode, TFATypes
 
 from authentication.throttles import HighLoadThrottle, MediumLoadThrottle, LowLoadThrottle
 
@@ -35,8 +35,8 @@ class ManageView(APIView):
         user_tfa = request.user.user_tfa
         if user_tfa.active:
             return Response(data={'message': 'tfa already active'}, status=400)
-        # if not user_tfa.user.verified:
-        #     return Response(data={'message': 'user email not verified'}, status=400)
+        if not user_tfa.user.verified and tfa_type == TFATypes.EMAIL:
+            return Response(data={'message': 'user\'s email not verified'}, status=400)
         try:
             user_tfa = UserTFA.objects.activate(user_tfa, otp_type=tfa_type)
         except ValidationError as e:
@@ -80,9 +80,8 @@ def validate_login(request) -> Response:
         user_tfa = UserTFA.objects.get(url_token=url_token)
     except UserTFA.DoesNotExist:
         return Response(data={'message': 'user not found'}, status=404)
-    # TODO: check if user is trying to reset the password, idk why
-    # if user_tfa.user.user_tokens.is_resetting_password():
-    #     return Response(status=403)
+    if user_tfa.user.user_tokens.is_resetting_password():
+        return Response(data={'message': 'user is trying to reset password'}, status=403)
     user_tfa = UserTFA.objects.delete_url_token(user_tfa)
     if not user_tfa.verify_otp_code(code):
         if not OtpCode.objects.validate_code(user_tfa, code):
