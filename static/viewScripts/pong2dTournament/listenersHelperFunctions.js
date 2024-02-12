@@ -28,8 +28,8 @@ export function getCardBody(el){
 
 export function fieldValidate(val, key, dupThis){
     let regLength = key == "tDescription" ? 300 : 20;
-    let genericRegex = new RegExp(`^[A-Za-z0-9!?*@$~_ :-]{5,${regLength}}$`);
-    let partecipantsRegex = /^[0-9]+$/;
+    let genericRegex = new RegExp(`^[A-Za-z0-9!?*()$~_ :.;,-]{5,${regLength}}$`);
+        let partecipantsRegex = /^[0-9]+$/;
 
     if (key == "tPartecipants"){
         if (partecipantsRegex.test(val) && possiblePartecipants.includes(Number(val)))

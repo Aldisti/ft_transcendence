@@ -136,7 +136,6 @@ export function triggerLogout(dupThis) {
 
 export function triggerIntraLink(dupThis) {
     if (localStorage.getItem("intraLinked") == null && confirm(dupThis.language.update.intraLinkConfirm)) {
-        localStorage.setItem("userWantLink", "true");
         window.location.href = dupThis.intraUrl;
     } else if (localStorage.getItem("intraLinked") != null && confirm(dupThis.language.update.intraUnlinkConfirm)) {
         //console.log("unlink")

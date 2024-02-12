@@ -12,6 +12,7 @@ import Admin from "/views/Admin.js"
 import Notification from "/views/Notification.js"
 import NotFound from "/views/NotFound.js"
 import MatchHistory from "/views/MatchHistory.js"
+import CallBack from "/views/Oauth2.js"
 
 const   Routes = [
     { path: "/error/", view: NotFound, style: "/style/notFound.css", modernStyle: "/style/modern/notFound.css"},
@@ -23,8 +24,9 @@ const   Routes = [
     { path: "/games/pong2d/", view: Pong2d, style: "/style/pong2d.css", modernStyle: "/style/modern/pong2d.css"},
     { path: "/games/pong2d/tournaments/", view: Pong2dTournaments, style: "/style/pong2dTournament.css", modernStyle: "/style/modern/pong2dTournament.css"},
     { path: "/account/", view: UserInfo, style: "/style/userInfo.css", modernStyle: "/style/modern/userInfo.css"}, 
-    { path: "/password/recovery/", view: PasswordRecovery, style: "/style/passwordRecovery.css", modernStyle: "/style/modern/passwordRecovery.css"},
-    { path: "/google/callback", view: UserInfo, style: "/style/userInfo.css", modernStyle: "/style/modern/userInfo.css"},
+    { path: "/password/reset/", view: PasswordRecovery, style: "/style/passwordRecovery.css", modernStyle: "/style/modern/passwordRecovery.css"},
+    { path: "/google/callback", view: CallBack, style: "/style/userInfo.css", modernStyle: "/style/modern/userInfo.css"},
+    { path: "/intra/callback/", view: CallBack, style: "/style/userInfo.css", modernStyle: "/style/modern/userInfo.css"},
     { path: "/user/", view: UserDisplay, style: "/style/displayUser.css", modernStyle: "/style/modern/displayUser.css"},
     { path: "/admin/", view: Admin, style: "/style/admin.css", modernStyle: "/style/modern/admin.css"},
     { path: "/notification/", view: Notification, style: "/style/notification.css", modernStyle: "/style/modern/notification.css"},

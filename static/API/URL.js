@@ -1,4 +1,4 @@
-let ip = "192.168.1.32";
+let ip = "localhost";
 let port = "8000";
 let protocol = "http";
 let pongPort = "7000";
@@ -17,25 +17,26 @@ export const general = {
     INTRA_URL: `${protocol}://${ip}:${authPort}/oauth2/intra/url/`,
     CONVERT_INTRA_TOKEN: `${protocol}://${ip}:${authPort}/oauth2/intra/login/`,
     LINK_INTRA_TOKEN_ACCOUNT: `${protocol}://${ip}:${authPort}/oauth2/intra/link/`,
+    UNLINK_INTRA_TOKEN_ACCOUNT: `${protocol}://${ip}:${authPort}/oauth2/intra/unlink/`,
 }
 
 export const auth = {
     ACTIVATE_TFA: `${protocol}://${ip}:${port}/2fa/manage/`,
-    GET_EMAIL_CODE: `${protocol}://${ip}:${port}/tokens/otp/`,
+    GET_EMAIL_CODE: `${protocol}://${ip}:${port}/2fa/otp/`,
     VALIDATE_CODE: `${protocol}://${ip}:${port}/2fa/validate/activate/`,
     VALIDATE_CODE_LOGIN: `${protocol}://${ip}:${port}/2fa/validate/login/`,
     VALIDATE_CODE_RECOVERY: `${protocol}://${ip}:${port}/2fa/validate/recover/`,
     CHECK_TFA_STATUS: `${protocol}://${ip}:${port}/2fa/manage/`,
     REMOVE_TFA: `${protocol}://${ip}:${port}/2fa/manage/`,
-    SEND_RECOVERY_CODE: `${protocol}://${ip}:${port}/tokens/recovery/`,
-    UPDATE_PASSWORD: `${protocol}://${ip}:${port}/tokens/password/`,
+    SEND_RECOVERY_CODE: `${protocol}://${ip}:${port}/auth/recovery/`,
+    UPDATE_PASSWORD: `${protocol}://${ip}:${port}/auth/password/`,
     INTRA_STATUS: `${protocol}://${ip}:${authPort}/oauth2/linked/`,
 
     GET_GOOGLE_URL: `${protocol}://${ip}:${authPort}/oauth2/google/v2/url/`,
     UNLINK_GOOGLE_ACCOUNT: `${protocol}://${ip}:${authPort}/oauth2/google/unlink/`,
     LINK_GOOGLE_ACCOUNT: `${protocol}://${ip}:${authPort}/oauth2/google/v2/link/`,
     LOGIN_WITH_GOOGLE: `${protocol}://${ip}:${authPort}/oauth2/google/v2/login/`,
-    VALIDATE_EMAIL: `${protocol}://${ip}:${authPort}/tokens/email/`,
+    VALIDATE_EMAIL: `${protocol}://${ip}:${authPort}/auth/email/`,
 }
 
 export const friendship = {

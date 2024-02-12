@@ -1,16 +1,12 @@
 import * as API from "/API/APICall.js"
-
+import Router from "/router/mainRouterFunc.js"
 
 export function intraLoginHandle(){
-    if (localStorage.getItem("loginWithIntra") != null)
-    {
-        API.convertIntraToken(1).then(res=>{})
-        localStorage.removeItem("loginWithIntra");
-    }
     document.querySelector(".intraBtn").addEventListener("click", ()=>{
         API.getIntraUrl("login").then((url) => {
-            localStorage.setItem("loginWithIntra", "true");
+            localStorage.setItem("intraLogin", "true");
             window.location.href = url;
+            Router();
         })
     })
 }

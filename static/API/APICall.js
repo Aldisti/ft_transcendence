@@ -74,17 +74,21 @@ export async function checkForEmailAvailability(email) {
     return (false)
 }
 
-export async function convertIntraToken() {
-    if (getCookie("api_token") == undefined)
-        return (false);
-
+export async function convertIntraToken(code, state) {
     const res = await fetch(URL.general.CONVERT_INTRA_TOKEN, {
         method: "POST",
         credentials: "include",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            code: code,
+            state: state
+        })
     });
     if (res.ok) {
         let token = await res.json();
-        localStorage.setItem("token", token.access_token)
+        localStorage.setItem("linktoken", token.access_token)
         localStorage.setItem("username", token.username);
         history.pushState(null, null, "/");
         Router();
@@ -92,26 +96,30 @@ export async function convertIntraToken() {
     }
     return (false);
 }
-export async function convertIntraTokenAccount(recursionProtection) {
-    if (getCookie("api_token") == undefined)
-        return (false);
+export async function linkIntraAccount(recursionProtection, code, state) {
     const res = await fetch(URL.general.LINK_INTRA_TOKEN_ACCOUNT, {
         method: "POST",
         headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json"
         },
+        body: JSON.stringify({
+            code: code,
+            state: state,
+        }),
         credentials: "include",
     });
+    console.log(res)
     if (res.ok) {
         return (true);
     }
     if (res.status == 401 && recursionProtection)
-        return await refreshAndRetry(convertIntraTokenAccount, 0);
+        return await refreshAndRetry(linkIntraAccount, 0, code, state);
     return (false);
 }
 
 export async function unlinkIntra(recursionProtection) {
-    const res = await fetch(URL.general.LINK_INTRA_TOKEN_ACCOUNT, {
+    const res = await fetch(URL.general.UNLINK_INTRA_TOKEN_ACCOUNT, {
         method: "DELETE",
         headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,

@@ -10,6 +10,12 @@ export const global = {
 
 //function that append to the chat user container a line with friend info
 export function createUser(info){
+    let parsedChat = JSON.parse(localStorage.getItem("chat"));
+
+    if (parsedChat[info.username] == undefined){
+        parsedChat[info.username] = [];
+        localStorage.setItem("chat", JSON.stringify(parsedChat))
+    }
     let userLine = `
         <div tabindex="-1" class="chat userLine">
             <div class="nameContainer chat" name="${info.username}">
