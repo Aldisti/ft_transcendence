@@ -39,25 +39,6 @@ class User(AbstractBaseUser):
         choices=Roles.ROLES_CHOICES,
         default=Roles.USER,
     )
-    active = models.BooleanField(
-        db_column="active",
-        db_comment="False when user is banned",
-        default=True,
-    )
-    verified = models.BooleanField(
-        db_column="verified",
-        db_comment="True when email is verified",
-        default=False,
-    )
-    linked = models.BooleanField(
-        db_column="linked",
-        db_comment="True when oauth2 is active",
-        default=False,
-    )
-    last_logout = models.DateTimeField(
-        db_column="last_logout",
-        db_comment="the datetime of the last logout from all devices",
-    )
 
     USERNAME_FIELD = "username"
     EMAIL_FIELD = "email"

@@ -17,11 +17,8 @@ class UserManager(BaseUserManager):
         if not email:
             raise ValueError("Missing email")
         email = self.normalize_email(email)
-        # TODO: timezone thing
-        kwargs.setdefault('last_logout', datetime.datetime.now(tz=settings.TZ))
         if kwargs.get("role") != Roles.ADMIN:
             kwargs.pop("role", "")
-            kwargs["verified"] = False
         user = self.model(username=username, email=email, **kwargs)
         user.set_password(password)
         user.full_clean()
@@ -29,14 +26,9 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, username: str, email: str, password: str, **kwargs):
-        kwargs.setdefault("active", True)
-        kwargs.setdefault("verified", True)
+        kwargs.setdefault("", True)
         kwargs.setdefault("role", Roles.ADMIN)
 
-        if not kwargs.get("active"):
-            raise ValueError("active must be true")
-        if not kwargs.get("verified"):
-            raise ValueError("verified must be true")
         if not kwargs.get("role") == Roles.ADMIN:
             raise ValueError("admin must have admin role")
         user = self.create_user(username, email, password, **kwargs)
@@ -82,36 +74,8 @@ class UserManager(BaseUserManager):
         user.save()
         return user
 
-    def update_user_active(self, user, banned: bool):
-        if user.role != Roles.USER:
-            raise ValueError("Cannot ban/unban mod or admin")
-        user.active = not banned
-        user.full_clean()
-        user.save()
-        return user
-
-    def update_user_verified(self, user, verified: bool):
-        if user.role == Roles.ADMIN:
-            raise ValueError("Cannot change admin's verification")
-        user.verified = verified
-        user.full_clean()
-        user.save()
-        return user
-
-    def update_user_linked(self, user, linked: bool):
-        user.linked = linked
-        user.full_clean()
-        user.save()
-        return user
-
     def update_last_login(self, user):
         user.last_login = datetime.datetime.now(tz=settings.TZ)
-        user.full_clean()
-        user.save()
-        return user
-
-    def update_last_logout(self, user):
-        user.logout = datetime.datetime.now(tz=settings.TZ)
         user.full_clean()
         user.save()
         return user

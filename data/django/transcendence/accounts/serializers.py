@@ -36,13 +36,11 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["username", "email", "password", "new_password", "active", "verified", "linked"]
+        fields = ["username", "email", "password", "new_password"]
         extra_kwargs = {
             "password": {"write_only": True, "required": False},
             "username": {"validators": [RegexValidator("^[A-Za-z0-9!?*$~_-]{5,32}$")]},
             "email": {"required": False, "validators": [EmailValidator()]},
-            "active": {"read_only": True, "required": False},
-            "verified": {"read_only": True, "required": False},
         }
 
 
@@ -62,14 +60,12 @@ class CompleteUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["username", "email", "password", "new_password", "role", "active", "verified", "banned", "linked", "user_info"]
+        fields = ["username", "email", "password", "new_password", "role", "banned", "user_info"]
         extra_kwargs = {
             "password": {"write_only": True, "required": False},
             "username": {"validators": [RegexValidator("^[A-Za-z0-9!?*$~_-]{5,32}$")]},
             "email": {"required": False, "validators": [EmailValidator()]},
             "role": {"write_only": True, "required": False},
-            "active": {"read_only": True, "required": False},
-            "verified": {"read_only": True, "required": False}
         }
 
     def create(self, validated_data):
@@ -103,17 +99,9 @@ class CompleteUserSerializer(serializers.ModelSerializer):
             updated_user_info = UserInfo.objects.create(user, **user_info_dic)
         return updated_user_info
 
-
     def update_role(self, validated_data):
         user_role = validated_data.pop("role", "")
         username = validated_data.pop("username")
         user = User.objects.get(pk=username)
         updated_user = User.objects.update_user_role(user, user_role)
-        return updated_user
-
-    def update_active(self, validated_data):
-        username = validated_data.pop("username")
-        banned = validated_data.pop("banned", True)
-        user = User.objects.get(pk=username)
-        updated_user = User.objects.update_user_active(user, banned)
         return updated_user

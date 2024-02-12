@@ -196,11 +196,6 @@ def change_active(request):
     """
     Request: {"username": <username>, "banned": <[True, False]>}
     """
-    user_serializer = CompleteUserSerializer(data=request.data)
-    if not user_serializer.is_valid():
-        return Response(status=400)
-    user = user_serializer.update_active(user_serializer.validated_data)
-    # auth server
     api_response = patch_request(
         settings.MS_URLS['AUTH']['UPDATE_ACTIVE'],
         headers=request.api_headers,
@@ -208,8 +203,7 @@ def change_active(request):
     )
     if api_response.status_code != 200:
         return Response(data=api_response.json(), status=api_response.status_code)
-    ###
-    return Response({"username": user.username, "banned": not user.active}, status=200)
+    return Response(status=200)
 
 
 @api_view(['PUT'])
