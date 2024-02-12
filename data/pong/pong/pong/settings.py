@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'channels',
     'game',
+    'tournaments',
     'users',
     'matchmaking',
     'corsheaders',
@@ -197,3 +198,19 @@ CORS_ALLOW_CREDENTIALS = True
 # CORS_ALLOWED_ORIGINS = ["http://172.23.0.3", "http://localhost:4200"]
 CORS_ALLOWED_ORIGINS = []
 APPEND_SLASH = False
+
+# rabbitMq
+
+RABBIT = {
+    "host": environ['RABBIT_HOST'],
+    "port": int(environ['RABBIT_PORT']),
+    "heartbeat": int(environ['RABBIT_HEARTBEAT']),
+    "bc_timeout": int(environ['RABBIT_BC_TIMEOUT']),
+    "exchange": environ['EXCHANGE'],
+    "R_KEYS": {
+        "ntf": environ['NTF_ROUTING_KEY'],
+    },
+    "VHOSTS": {
+        "ntf": environ['VHOST_NTF']
+    },
+}

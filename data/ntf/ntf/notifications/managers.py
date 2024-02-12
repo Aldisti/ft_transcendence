@@ -50,6 +50,12 @@ class NotificationManager(models.Manager):
             {"type": "notification.message", "text": json.dumps(json_data)}
         })
 
+    def send_match_req(self, opponent, receiver, token):
+        ntf_body =f"token={token},opponent={opponent.username}"
+        ntf_type = NtfTypes.MATCH_REQ
+        notification = self.create(receiver, body=ntf_body, ntf_type=ntf_type)
+        self.send_notification(notification)
+
     def send_friend_req(self, sender, receiver, token):
         ntf_body =f"token={token},sender={sender.username}"
         ntf_type = NtfTypes.FRIEND_REQ

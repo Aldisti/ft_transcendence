@@ -104,6 +104,17 @@ services:
       - DB_HOST=${PONGDB_HOST}
       - DB_PORT=${PONGDB_PORT}
       - SERVER_FRONTEND_IP=${SERVER_FRONTEND_IP}
+
+      # rabbitMq vars
+      - RABBIT_PORT=5672
+      - RABBIT_HOST=rabbit_mq
+      - EXCHANGE=${EXCHANGE}
+      - NTF_ROUTING_KEY=${NTF_ROUTING_KEY}
+      - EMAIL_ROUTING_KEY=${EMAIL_ROUTING_KEY}
+      - VHOST_NTF=${VHOST_NTF}
+      - RABBIT_HEARTBEAT=${RABBIT_HEARTBEAT}
+      - RABBIT_BC_TIMEOUT=${RABBIT_BC_TIMEOUT}
+
     networks:
       - django-net
       - pongdb-net

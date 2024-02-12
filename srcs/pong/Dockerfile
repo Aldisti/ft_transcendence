@@ -17,6 +17,8 @@ RUN pip install django-cors-headers
 RUN pip install -U channels["daphne"]
 # for redis
 RUN pip install channels-redis
+# for rabbitMq
+RUN pip install pika
 
 
 RUN mkdir /etc/develop

@@ -31,6 +31,11 @@ logger = logging.getLogger(__name__)
 @api_view(['GET'])
 @permission_classes([])
 def test(request):
+    logger.warning(f"{request.query_params.get('prova')}")
+    if request.query_params.get('prova'):
+        return Response({"message": "setted"}, status=200)
+    else:
+        return Response({"message": "not setted"}, status=200)
     params = pika.ConnectionParameters(host=os.environ['RABBIT_HOST'], port=int(os.environ['RABBIT_PORT']))
     connection = pika.BlockingConnection(params)
     channel = connection.channel()
@@ -208,6 +213,7 @@ class ListUser(ListAPIView):
     pagination_class = MyPageNumberPagination
     permission_classes = []
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    #filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ["=username", "=email"]
     ordering_filters = ["username", "email"]
     ordering = ["username"]
