@@ -15,10 +15,12 @@ let tournament = [
 let imageId = 0
 
 function makePopoverTarget(username){
-    let popContainer = document.createElement("div");
+    let popContainer = document.createElement("a");
     let popContent = document.createElement("div");
     let text = document.createElement("span")
 
+    popContainer.href = `/user/?username=${username}`;
+    popContainer.setAttribute("data-link", "")
     popContainer.classList.add("popover-container");
     popContent.classList.add("popover-content");
     text.textContent = username
@@ -90,7 +92,7 @@ function handleCanvas(tournament){
     }
 }
 
-export function handleTournamentSubscription(dupThis, e){
+export function handleTournamentHistory(dupThis, e){
     let card = document.querySelector(".matchInfoContainer");
 
     if (e.target.classList.contains("matchDetails")){

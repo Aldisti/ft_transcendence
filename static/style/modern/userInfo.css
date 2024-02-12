@@ -408,6 +408,7 @@ input {
     justify-content: center;
     align-items: center;
     color: white;
+    z-index: 10000;
 }
 
 .f-line {
@@ -525,9 +526,27 @@ input {
     .userInfoContainer {
         justify-content: center;
         align-items: center;
+        padding: 10px;
     }
-    .formContainer {
-        width: 90svw;
+    .formContainer, .imageContainer {
+        width: 100%;
+        box-shadow: none !important;
+        background-color: white;
+        margin-top: 20;
+        box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+
+        /* border-radius: 8px; */
+    }
+
+    .decisionBox{
+        margin: 0;
+        box-shadow: none !important;
+        justify-content: space-evenly;
+    }
+    .inputLine{
+        margin: 0;
+        width: 100%;
+        margin-top: 20px;
     }
     .formMenu {
         width: 100%;
@@ -536,6 +555,7 @@ input {
     .leftSide {
         width: 90%;
         position: absolute;
+        background-color: var(--bs-dark);
         top: 0;
         left: 0;
         transform: translateX(-91svw);

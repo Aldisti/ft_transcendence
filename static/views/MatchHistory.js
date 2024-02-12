@@ -90,7 +90,7 @@ export default class extends Aview{
                             </div>
                         </div>
                     </div>
-                    <div class="matchesList">
+                    <div classatchesList">
                     </div>
                 </div>
             </div>
@@ -111,7 +111,7 @@ export default class extends Aview{
             document.querySelector(".matchesList").innerHTML += this.getMatchCard(el);
         })
 
-        document.querySelector(".matchesList").addEventListener("click", listeners.handleTournamentSubscription.bind(null, this))
+        document.querySelector(".matchesList").addEventListener("click", listeners.handleTournamentHistory.bind(null, this))
 
         this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpeg")
 	}

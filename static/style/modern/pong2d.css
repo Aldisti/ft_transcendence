@@ -265,7 +265,7 @@
 }
 
 .nextPill, .nextGround, .nextBall{
-    flex-grow: 1;
+    height: fit-content;
     width: 100%;
     display: flex;
     justify-content: center;
@@ -322,10 +322,21 @@
     .themeContainer{
         width: 100%;
         height: 70svh;
+        padding: 0px;
+
     }
     .themeContainer h3{
         font-size: smaller;
     }
+    .info, .nextPill, .nextGround, .nextBall, .pillsTheme, .groundTheme, .ballTheme{
+        padding: 5px;
+        justify-content: space-evenly;
+        box-shadow: none;
+
+    }
+    .nextPill, .nextGround, .nextBall{
+        width: 80%;
+    }   
     .base{
         flex-direction: column;
         height: fit-content;

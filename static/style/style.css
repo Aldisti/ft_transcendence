@@ -460,14 +460,19 @@ html, body
 .showUserList{
     transform: translateX(56.5%);
 }
+
+.switchLable{
+    min-width: 25%;
+    width: fit-content;
+}
 .fullOpen{
     transform: translateX(0) ;
 }
 
 .dropdown-menu {
     z-index: 100000000000 !important;
+    width: 30svw;;
 }
-
 .darkSwitch{
     height: 4svh;
     width: 6svw;
@@ -832,41 +837,78 @@ a img{
             transform: translateX(100%);
         }
     }
-    .chatSideList{
+    footer{
+        flex-direction: column;
+        height: fit-content;
+    }
+    .logo-side{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    
+        img{
+            width: 40svw;
+            height: 40svw;
+            object-fit: contain;
+            border-radius: 15% !important;
+        }
+    }
+    
+    .creators, .donate, .legals{
+        width: 100%;
+        height: 20svh;
+        margin-top: 30px;
+        justify-content: space-evenly;
+    }
+
+    .dropdown-menu {
+        width: 90svw;
+        height: fit-content;
+    }
+
+    .darkSwitch{
+        width: 30%;
+    }
+    .styleSwitch{
+        width: 30%;
+    }
+    .chatSideList {
         flex-direction: row;
         width: 50%;
     }
-    .hideUsersList{
+    .hideUsersList {
         animation: none;
         transform: translateX(0);
     }
-    .showUserList{
+    .showUserList {
         transform: translateX(50%);
     }
-    .fullOpen{
-        transform: translateX(1%) ;
+    .fullOpen {
+        transform: translateX(1%);
     }
-    .chatContainer{
+    .chatContainer {
         width: 200%;
     }
-    .chatFull{
+    .chatFull {
         width: 50%;
     }
-    .account
-    {
+    .account {
         flex-direction: row-reverse;
         width: fit-content;
     }
-
     .navbar-collapse {
-        background-color: rgba(var(--bs-dark-rgb),var(--bs-bg-opacity)) !important; /* Set the background color of the collapsed menu */
+        background-color: rgba(var(--bs-dark-rgb), var(--bs-bg-opacity)) !important;
+        /* Set the background color of the collapsed menu */
         height: fit-content;
         z-index: 1000000;
         padding: 20px;
     }
-    
-    .navbar-brand, .navbar-nav .nav-link {
-        line-height: 60px; /* Center content vertically within the navbar */
+    .navbar-brand,
+    .navbar-nav .nav-link {
+        line-height: 60px;
+        /* Center content vertically within the navbar */
     }
-    
+    .dropdown {
+        margin: 10px 0 0 0 !important;
+    }
 }

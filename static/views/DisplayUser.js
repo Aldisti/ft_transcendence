@@ -59,7 +59,9 @@ export default class extends Aview {
                     </a>
                 </div>
                 <div class="matchHistory">
-                    <h1>Match History</h1>
+                    <a href="/match-history/?username=${urlParams.get("username")}">
+                        <h1>Match History</h1>
+                    </a>
                 </div>
             `
             this.username = document.querySelector(".friendRequest").getAttribute("name");

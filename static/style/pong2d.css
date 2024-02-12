@@ -152,8 +152,8 @@
 }
 
 .nextPill, .nextGround, .nextBall{
-    flex-grow: 1;
     width: 100%;
+    height: fit-content;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -211,19 +211,27 @@
         width: 100%;
         height: 70svh;
         box-shadow: 7px 7px black;
+        padding: 0px;
 
     }
 
     .themeDisplay{
         box-shadow: 7px 7px black;
+        /* padding: 5px; */
     }
     .themeContainer h3{
         font-size: smaller;
     }
     .info, .nextPill, .nextGround, .nextBall, .pillsTheme, .groundTheme, .ballTheme{
         box-shadow: 7px 7px black;
+        padding: 5px;
+        justify-content: space-evenly;
 
     }
+    .nextPill, .nextGround, .nextBall{
+        width: 80%;
+        box-shadow: 5px 5px black;
+    }   
     .base{
         flex-direction: column;
         height: fit-content;

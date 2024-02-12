@@ -583,8 +583,13 @@ body {
     background-position: center;
 }
 
+.dropdown-menu{
+    width: 30svw;
+}
+
 .switchLable{
-    width: 7svw;
+    min-width: 20%;
+    width: fit-content;
 }
 
 li{
@@ -695,7 +700,7 @@ a img{
     fill: #8502B1;
 }
 
-.custom-shape-divider-bottom-1706863183 {
+.custom-shape-divider-bottom-1707748625 {
     position: absolute;
     bottom: 0;
     left: 0;
@@ -703,42 +708,39 @@ a img{
     overflow: hidden;
     line-height: 0;
     transform: rotate(180deg);
+    border-radius: 0 !important;
 }
 
-.custom-shape-divider-bottom-1706863183 svg {
+.custom-shape-divider-bottom-1707748625 svg {
     position: relative;
     display: block;
     width: calc(100% + 1.3px);
-    height: 92px;
+    height: 23px;
 }
 
-.custom-shape-divider-bottom-1706863183 .shape-fill {
-    fill: #8502B1;
-
+.custom-shape-divider-bottom-1707748625 .shape-fill {
+    fill: #B60382;
 }
 
 
-/* bottom divider */
-
-.custom-shape-divider-bottom-1706978918 {
+.custom-shape-divider-top-1707748811 {
     position: absolute;
-    bottom: 0;
+    top: 0;
     left: 0;
     width: 100%;
     overflow: hidden;
     line-height: 0;
-    transform: rotate(180deg);
 }
 
-.custom-shape-divider-bottom-1706978918 svg {
+.custom-shape-divider-top-1707748811 svg {
     position: relative;
     display: block;
     width: calc(100% + 1.3px);
-    height: 49px;
+    height: 43px;
 }
 
-.custom-shape-divider-bottom-1706978918 .shape-fill {
-    fill: #8502B1;
+.custom-shape-divider-top-1707748811 .shape-fill {
+    fill: #B60382;
 }
 
 @keyframes glow {
@@ -767,6 +769,41 @@ a img{
         100% {
             transform: translateX(100%);
         }
+    }
+    footer{
+        flex-direction: column;
+        height: fit-content;
+    }
+    .logo-side{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    
+        img{
+            width: 40svw;
+            height: 40svw;
+            object-fit: contain;
+            border-radius: 15% !important;
+        }
+    }
+    
+    .creators, .donate, .legals{
+        width: 100%;
+        height: 20svh;
+        margin-top: 30px;
+        justify-content: space-evenly;
+    }
+
+    .dropdown-menu {
+        width: 90svw;
+        height: fit-content;
+    }
+
+    .darkSwitch{
+        width: 30%;
+    }
+    .styleSwitch{
+        width: 30%;
     }
     .chatSideList {
         flex-direction: row;
@@ -805,6 +842,6 @@ a img{
         /* Center content vertically within the navbar */
     }
     .dropdown {
-        margin: 20px 0px 0 0px;
+        margin: 10px 0 0 0 !important;
     }
 }

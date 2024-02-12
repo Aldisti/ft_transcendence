@@ -87,6 +87,10 @@ border: 2px solid black;
     background-color: white;
     border: 2px solid black;
     box-shadow: 10px 10px black;
+    a:not(.askFriend){
+        color: white;
+        text-decoration: none;
+    }
 }
 
 .anagraph h3, .gameStat h3, .gameStat h6{
