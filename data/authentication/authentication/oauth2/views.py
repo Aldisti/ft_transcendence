@@ -59,12 +59,12 @@ def v2_intra_login(request) -> Response:
     request_body['state'] = request.data['state']
     api_response = requests.post(settings.OAUTH2['INTRA']['TOKEN'], json=request_body)
     if api_response.status_code != 200:
-        return Response(data=api_response.json(), status=502)
+        return Response(data=api_response.text, status=502)
     data = api_response.json()
     headers = {'Authorization': f"Bearer {data['access_token']}"}
     api_response = requests.get(settings.OAUTH2['INTRA']['INFO'], headers=headers)
     if api_response.status_code != 200:
-        return Response(data=api_response.json(), status=502)
+        return Response(data=api_response.text, status=502)
     email = api_response.json()['email']
     del api_response
     try:
