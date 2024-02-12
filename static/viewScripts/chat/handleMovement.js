@@ -11,9 +11,6 @@ function getUserClicked(element, className){
     return element.closest("." + className)
 }
 
-if (localStorage.getItem("chat") == null)
-    localStorage.setItem("chat", JSON.stringify({global: []}));
-
 window.finish = true;
 window.userList = true;
 

@@ -134,9 +134,9 @@ export default class extends Aview{
                 <div class="btnWindow">
                     <h1>Pong Queue</h1>
                     <canvas id="waitCanv" style="display: none;"></canvas>
-                    <button id="startQueque">
+                    <div id="startQueque">
                         Enter !
-                    </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -159,19 +159,34 @@ export default class extends Aview{
             
             document.querySelector(".btnWindow").style.height = "70%";
             document.querySelector("#waitCanv").style.display= "flex";
-            document.querySelector("#startQueque").innerHTML = `<span>Searching opponent...</span><div class="spinner-border text-warning" style="border-radius: 50% !important"></div>` 
 
-            API.startQueque(1).then(res=>{
-                this.socket = new WebSocket(`${URL.socket.QUEUE_SOCKET}?ticket=${res.ticket}&username=${localStorage.getItem("username")}`);
-                this.socket.addEventListener("message", (message)=>{
-                    let msg = JSON.parse(message.data);
-                    console.log(msg)
-                    localStorage.setItem("gameStarted", "true");
-                    document.querySelector("#app").innerHTML = this.getGameHtml();
-                    gameObj = startGame(this.ballTexture, this.groundTexture, this.pillTexture, msg);
-                    this.socket.close();
+            if (document.querySelector("#startQueque").innerHTML.trim() != `Enter !`){
+                document.querySelector("#waitCanv").style.display= "none";
+                document.querySelector(".btnWindow").style.height = "30%";
+                document.querySelector("#startQueque").innerHTML = `Enter !`
+                this.socket.close();
+            }else{
+                document.querySelector("#startQueque").innerHTML = `
+                <div>
+                    Searching opponent...
+                </div>
+
+                <button class="stopSearching">X</button> 
+                ` 
+                API.startQueque(1).then(res=>{
+                    this.socket = new WebSocket(`${URL.socket.QUEUE_SOCKET}?ticket=${res.ticket}&username=${localStorage.getItem("username")}`);
+                    this.socket.onopen = ()=>{
+                        this.socket.addEventListener("message", (message)=>{
+                            let msg = JSON.parse(message.data);
+                            localStorage.setItem("gameStarted", "true");
+                            document.querySelector("#app").innerHTML = this.getGameHtml();
+                            gameObj = startGame(this.ballTexture, this.groundTexture, this.pillTexture, msg);
+                            this.socket.close();
+                        })
+                    } 
                 })
-            })
+            }
+
         })
 
     }

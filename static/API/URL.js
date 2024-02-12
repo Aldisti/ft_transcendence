@@ -1,4 +1,4 @@
-let ip = "192.168.137.117";
+let ip = "localhost";
 let port = "8000";
 let protocol = "http";
 let pongPort = "7000";
@@ -78,6 +78,7 @@ export const tournaments = {
     SUBMIT: `${protocol}://${ip}:3000/submit/`,
     CREATE: `${protocol}://${ip}:3000/create/`,
     UNSUBSCRIBE: `${protocol}://${ip}:3000/unsubscribe/`,
+    GET_MATCH_HISTORY: `${protocol}://${ip}:3000/match-history/`,
 }
 
 export const manageUsers ={

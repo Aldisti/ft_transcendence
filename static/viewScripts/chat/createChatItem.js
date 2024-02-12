@@ -10,6 +10,9 @@ export const global = {
 
 //function that append to the chat user container a line with friend info
 export function createUser(info){
+    if (localStorage.getItem("chat") == null)
+        localStorage.setItem("chat", JSON.stringify({}))
+    
     let parsedChat = JSON.parse(localStorage.getItem("chat"));
 
     if (parsedChat[info.username] == undefined){

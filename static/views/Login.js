@@ -121,13 +121,15 @@ export default class extends Aview {
 
             //send username and password to the server to be validated
             API.login(this.field).then(res=>{
-                //perform a normal login justi redirect to HOME and refresh the page
-                if (Object.keys(res).length == 1)
-                    handleLogin.normal(res);
-                
-                //perform a login with TFA on so the user is asked to insert verification code to be redirected
-                else if (Object.keys(res).length > 1)
-                    handleLogin.Tfa(this, res)
+                if (res != undefined){
+                    //perform a normal login justi redirect to HOME and refresh the page
+                    if (Object.keys(res).length == 1)
+                        handleLogin.normal(res);
+                    
+                    //perform a login with TFA on so the user is asked to insert verification code to be redirected
+                    else if (Object.keys(res).length > 1)
+                        handleLogin.Tfa(this, res)
+                }
             })
         })
         this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpeg")

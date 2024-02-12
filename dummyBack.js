@@ -20,6 +20,34 @@ const listOfObjects ={results: [
     { username: "test7", user_info: {picture: null} },
 ]};
 
+let matches = [{
+  opponent: "gpanico",
+  id: "test",
+  rank: ["user1", "user2", "user3", "user4", "user5"],
+  scores: [4, 11]
+
+},{
+  opponent: "gpanico",
+  rank: ["user1", "user2", "user3", "user4", "user5"],
+  scores: [11, 9]
+
+},{
+  opponent: "gpanico",
+  id:"test",
+  rank: ["user1", "user2", "user3", "user4", "user5"],
+  scores: [11, 3]
+},{
+  opponent: "gpanico",
+  id:"test",
+  rank: ["user1", "user2", "user3", "user4", "user5"],
+  scores: [4, 11]
+},{
+  opponent: "gpanico",
+  id:"test",
+  rank: ["user1", "user2", "user3", "user4", "user5"],
+  scores: [4, 11]
+},]
+
 // Define a route that returns the list of objects
 app.get('/objects', (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -69,6 +97,11 @@ const tournaments = [
     res.setHeader('Access-Control-Allow-Origin', '*');
 
     res.json(tournaments);
+  });
+  app.get('/match-history/', (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+
+    res.json(matches);
   });
   app.patch('/submit', (req, res) => {
     res.status(200).send();

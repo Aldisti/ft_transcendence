@@ -129,19 +129,10 @@ function checkMessage(game, msg){
     else if (msg.message == "Game is finished"){
         localStorage.setItem("stop", "true")
 
-        if (game.currentUser == "paddleLeft"){
-            if (game.leftScoreDisplay.innerHTML == game.winScore)
-                document.querySelector(".gameOverlayWin").style.transform = "translate(0)"
-            else
-                document.querySelector(".gameOverlayLoose").style.transform = "translate(0)"
-        }
-        if (game.currentUser == "paddleRight"){
-
-            if (game.rightScoreDisplay.innerHTML == game.winScore)
-                document.querySelector(".gameOverlayWin").style.transform = "translate(0)"
-            else
-                document.querySelector(".gameOverlayLoose").style.transform = "translate(0)"
-        }
+        if (game.activeUser.scoreDisplay.innerHTML == game.winScore)
+            document.querySelector(".gameOverlayWin").style.transform = "translate(0)"
+        else
+            document.querySelector(".gameOverlayLoose").style.transform = "translate(0)"
     }
     else if (msg.message == "Apparently you connected to late"){
         NOTIFICATION.simple({

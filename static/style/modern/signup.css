@@ -115,7 +115,7 @@ input {
 .passwordSwitch,
 .confirmPasswordSwitch {
     width: 6%;
-    height: 80%;
+    height: 6svh;
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
     padding: 5px;
     background-color: white;
@@ -134,7 +134,7 @@ input {
 
 .passInput {
     width: 100%;
-    height: 50%;
+    height: 6svh;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -142,7 +142,7 @@ input {
 
 .passInput input {
     width: 80% !important;
-    height: 80% !important;
+    height: 6svh !important;
 }
 
 .passwordSwitch img,
@@ -183,7 +183,7 @@ input {
 
 .line input {
     width: 100%;
-    height: 4svh;
+    height: 6svh;
     border: none;
     font-size: 20px;
     border: 2px solid black;

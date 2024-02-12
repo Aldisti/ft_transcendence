@@ -1034,6 +1034,24 @@ export async function validateEmail(token){
     }
     return (false)
 }
+export async function getMatchHistory(recursionProtection, username){
+    const res = await fetch(`${URL.tournaments.GET_MATCH_HISTORY}?username=${username}`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json"
+        },
+        // credentials: "include",
 
+    });
+    if (res.ok){
+        let parsed = await res.json();
+        console.log(parsed)
 
+        return (parsed);
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(getMatchHistory, 0, username);
+    return ([])
+}
 //end of Dummy call

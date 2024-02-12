@@ -4,33 +4,6 @@ import * as listeners from "/viewScripts/matchHistory/listeners.js"
 
 import * as API from "/API/APICall.js"
 
-let matches = [{
-    opponent: "gpanico",
-    id: "test",
-    rank: ["user1", "user2", "user3", "user4", "user5"],
-    scores: [4, 11]
-
-},{
-    opponent: "gpanico",
-    rank: ["user1", "user2", "user3", "user4", "user5"],
-    scores: [11, 9]
-
-},{
-    opponent: "gpanico",
-    id:"test",
-    rank: ["user1", "user2", "user3", "user4", "user5"],
-    scores: [11, 3]
-},{
-    opponent: "gpanico",
-    id:"test",
-    rank: ["user1", "user2", "user3", "user4", "user5"],
-    scores: [4, 11]
-},{
-    opponent: "gpanico",
-    id:"test",
-    rank: ["user1", "user2", "user3", "user4", "user5"],
-    scores: [4, 11]
-},]
 
 export default class extends Aview{
     constructor(){
@@ -90,7 +63,7 @@ export default class extends Aview{
                             </div>
                         </div>
                     </div>
-                    <div classatchesList">
+                    <div class="matchesList">
                     </div>
                 </div>
             </div>
@@ -106,9 +79,11 @@ export default class extends Aview{
             Router();
         }
 
-        document.querySelector(".matchesList").innerHTML = "";
-        matches.forEach(el=>{
-            document.querySelector(".matchesList").innerHTML += this.getMatchCard(el);
+        API.getMatchHistory(1, username).then(res=>{
+            document.querySelector(".matchesList").innerHTML = "";
+            res.forEach(el=>{
+                document.querySelector(".matchesList").innerHTML += this.getMatchCard(el);
+            })
         })
 
         document.querySelector(".matchesList").addEventListener("click", listeners.handleTournamentHistory.bind(null, this))
