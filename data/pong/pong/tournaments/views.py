@@ -14,6 +14,9 @@ import logging
 
 import json
 
+import time
+import threading
+
 logger = logging.getLogger(__name__)
 
 class MyPageNumberPagination(pagination.PageNumberPagination):
@@ -43,10 +46,8 @@ class CreateTournament(CreateAPIView):
     serializer_class = TournamentSerializer
 
     def create(self, request, *args, **kwargs):
-        # TODO: use middleware/permissions to set user in the request
-        try:
-            player = PongUser.objects.get(pk=request.data.get("username", ""))
-        except PongUser.DoesNotExist:
+        player = request.pong_user
+        if player is None:
             return Response({"message": "User not found"}, status=404)
 
         # call the create method and return error if needed
@@ -58,8 +59,40 @@ class CreateTournament(CreateAPIView):
         tournament = Tournament.objects.get(pk=response.data["id"])
         game = Game.objects.create()
         participant_tournament = ParticipantTournament.objects.create(1, player, tournament, game)
+        ParticipantTournament.objects.update_column(tournament, 1)
         
         # update the subscribed field in the response
         tour = Tournament.objects.get(pk=response.data["id"])
         response.data["subscribed"] = tour.get_subscribed()
         return response
+
+
+@api_view(['POST'])
+def register_tournament(request):
+    player = request.pong_user
+    if player is None:
+        return Response({"message": "User not found"}, status=404)
+
+    tournament_id = request.data.get('tournament_id', -1)
+    try:
+        tournament = Tournament.objects.get(pk=tournament_id)
+    except Tournament.DoesNotExist:
+        return Response({"message": "Tournament  not found"}, status=404)
+
+    if tournament.is_full():
+        return Response({"message": "Tournament is full"}, status=400)
+    return Response(status=200)
+
+    #num_participants = tournament.get_subscribed()
+    #if num_participants % 2 == 0:
+    #    game = Game.objects.create()
+    #else:
+    #    game = tournament.participant.get(level=1, )
+
+
+    thread = threading.Thread(target=test)
+    thread.start()
+
+
+def test():
+    pass

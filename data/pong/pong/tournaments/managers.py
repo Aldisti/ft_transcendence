@@ -80,6 +80,3 @@ class TournamentManager(models.Manager):
         tournament.full_clean()
         tournament.save()
         return tournament
-
-
-

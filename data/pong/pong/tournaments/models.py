@@ -6,6 +6,11 @@ from tournaments.managers import TournamentManager, ParticipantTournamentManager
 
 from users.models import PongUser, Game
 
+import logging
+
+
+logger = logging.getLogger(__name__)
+
 
 class Tournament(models.Model):
     class Meta:
@@ -41,8 +46,8 @@ class Tournament(models.Model):
     def __str__(self):
         return f"id: {self.id}, name: {self.name}, n_parts: {self.participants_num}"
 
-    def get_subscribed(self):
-        return ParticipantTournament.objects.filter(tournament_id=self.id, level=1).count()
+    def get_subscribed(self, level=1):
+        return self.participant.filter(level=level).count()
 
     def is_full(self):
         if self.participant.count() >= self.participants_num:

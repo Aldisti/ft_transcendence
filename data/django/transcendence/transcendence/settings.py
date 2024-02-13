@@ -303,6 +303,9 @@ MS_URLS = {
     # pong urls
     "PONG_REGISTER": f"http://{PONG_HOST}:{PONG_PORT}/user/register/",
     "PONG_DELETE": f"http://{PONG_HOST}:{PONG_PORT}/user/<pk>/delete/",
+    "TOURNAMENT_LIST": f"http://{PONG_HOST}:{PONG_PORT}/tournaments/",
+    "TOURNAMENT_CREATE": f"http://{PONG_HOST}:{PONG_PORT}/tournaments/create/",
+    "TOURNAMENT_RETRIEVE":f"http://{PONG_HOST}:{PONG_PORT}/tournaments/<pk>/",
 	# auth urls
 	"AUTH_REGISTER": f"http://{AUTH_HOST}:{AUTH_PORT}/users/register/",
 }
