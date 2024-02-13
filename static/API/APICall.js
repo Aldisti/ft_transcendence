@@ -952,8 +952,10 @@ export async function manageModerator(recursionProtection, username, moderatorSt
 
 //still dummy call need to be implemente with real backEnd
 
-export async function getTournamentsList(recursionProtection){
-    const res = await fetch(URL.tournaments.GET_TOURNAMENTS_LIST, {
+export async function getTournamentsList(recursionProtection, page, size, options){
+    let url = `${URL.tournaments.GET_TOURNAMENTS_LIST}?page=${page}&size=${size}${options.title}${options.participants}`
+    
+    const res = await fetch(url, {
         method: "GET",
         headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -965,28 +967,29 @@ export async function getTournamentsList(recursionProtection){
         return (parsed);
     }
     if (res.status == 401 && recursionProtection)
-        return await refreshAndRetry(getTournamentsList, 0);
+        return await refreshAndRetry(getTournamentsList, 0, page, size);
     return ([])
 }
 
-export async function tournamentSubmit(recursionProtection, displayName){
-    const res = await fetch(URL.tournaments.SUBMIT, {
-        method: "PATCH",
+export async function tournamentSubmit(recursionProtection, displayName, id){
+    const res = await fetch(URL.tournaments.REGISTER, {
+        method: "POST",
         headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
             displayName: displayName,
+            tournament_id: Number(id)
         }),
-        // credentials: "include",
+        credentials: "include",
 
     });
     if (res.ok) {
         return (true);
     }
     if (res.status == 401 && recursionProtection)
-        return await refreshAndRetry(tournamentSubmit, 0, displayName);
+        return await refreshAndRetry(tournamentSubmit, 0, displayName, id);
     return (false)
 }
 export async function unsubscribeTournament(recursionProtection){

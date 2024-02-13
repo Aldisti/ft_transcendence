@@ -225,6 +225,7 @@
     padding: 0 10px 0 10px;
     position: relative;
     z-index: 21;
+    gap: 20px;
     background-color: white;
 
     .titleLeft{
@@ -339,7 +340,7 @@
     justify-content: space-between;
     align-items: center;
     color: white;
-    h5{
+    & h5{
         width: 70%;
         height: 100%;
         text-align: start;
@@ -347,7 +348,7 @@
         display: flex;
         align-items: center;
     }
-    .partecipants{
+    & .partecipants{
         width: 30%;
         height: 100%;
         display: flex;
@@ -368,7 +369,7 @@
     align-items: center;
     gap: 20px;
 
-    .tournamentBody{
+    & .tournamentBody{
         width: 60%;
         height: 100%;
         font-size: x-small;
@@ -379,7 +380,7 @@
 
     }
 
-    button{
+    & button{
         width: 30%;
         height: 70%;
         display: flex;
@@ -419,11 +420,11 @@
     padding: 10px;
     border: 3px solid black; box-shadow: 6px 6px black;
 
-    h3{
+    & h3{
         color: white;
     }
 
-    input{
+    & input{
         border: none;
         outline: none;
         height: 20%;
@@ -431,7 +432,7 @@
         border: 3px solid black; box-shadow: 6px 6px black;
     }
 
-    button{
+    & button{
         border: none;
         outline: none;
         width: 100%;
@@ -463,24 +464,24 @@
 
     z-index: 10;
 
-    h2{
+    & h2{
         width: 100%;
         margin: 0;
     }
 
-    form{
+    & form{
         width: 100%;
         height: 90%;
         display: flex;
         flex-direction: column;
         justify-content: center;
 
-        .inputContainer{
+        & .inputContainer{
             width: 100%;
             height: 80%;
             display: flex;
 
-            .leftSide{
+            & .leftSide{
                 width: 100%;
                 height: 100%;
                 display: flex;
@@ -490,7 +491,7 @@
                 gap: 10px;
             }
         }
-        .inputLine{
+        & .inputLine{
             width: 100%;
             height: 50%;
             display: flex;
@@ -500,26 +501,26 @@
         }
     }
     
-    .dateTimeInput{
+    & .dateTimeInput{
         display: flex;
         gap: 20px;
         width: 100%;
         height: 45%;
-        input{
+        & input{
             height: 100%;
         }
-        input[type="date"]{
+        & input[type="date"]{
             width: 65%;
             font-size: xx-small;
         }
-        input[type="time"]{
+        & input[type="time"]{
             width: fit-content;
             font-size: xx-small;
 
         }
     }
 
-    input, textarea{
+    & input, textarea{
         border: none;
         outline: none;
         width: 100%;
@@ -527,7 +528,7 @@
         border: 3px solid black; box-shadow: 6px 6px black;
     }
 
-    button{
+    & button{
         border: none;
         outline: none;
         background-color: var(--bs-success);

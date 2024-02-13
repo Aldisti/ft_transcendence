@@ -27,6 +27,14 @@
     align-items: center;
 }
 
+select{
+    height: 50%;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+    background-color: white;
+    border: none;
+    outline: none;
+}
+
 /* .left, .right{
     width: 15%;
     height: 80%;
@@ -235,14 +243,16 @@
 
 .tournamentsTitle{
     display: flex;
+    align-items: flex-end;
     width: 100%;
     height: 10%;
     padding: 0 10px 0 10px;
     position: relative;
     z-index: 21;
+    gap: 20px;
     background-color: white;
 
-    .titleLeft{
+    & .titleLeft{
         width: 50%;
         height: 100%;
         display: flex;
@@ -250,7 +260,7 @@
         justify-content: flex-end;
         align-items: center;
     }
-    .titleRight{
+    & .titleRight{
         width: 50%;
         height: 100%;
         display: flex;
@@ -258,13 +268,13 @@
         justify-content: flex-start;
     }
 
-    h3{
+    & h3{
         width: 100%;
         height: 50%;
         margin: 0;
     }
 
-    .tournamentSearchBar{
+    & .tournamentSearchBar{
         display: flex;
         justify-content: flex-start;
         align-items: center;
@@ -274,7 +284,7 @@
         height: 50%;
     }
 
-    .showNewTournamentForm{
+    & .showNewTournamentForm{
         background-color: var(--bs-warning);
         width: 30%;
         height: 100%;
@@ -285,7 +295,7 @@
         box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
     }
 
-    input{
+    & input{
         border: none;
         outline: none;
         width: 100%;
@@ -293,19 +303,19 @@
         padding: 4px;
         box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
     }
-    .search{
+    & .search{
         background-color: var(--bs-success);
         width: 50%;
         height: 100%;
     }
-    .restoreBtn{
+    & .restoreBtn{
         background-color: var(--bs-danger);
         width: 30%;
         height: 100%;
 
     }
 
-    .restoreBtn, .search{
+    & .restoreBtn, .search{
         border: none;
         outline: none;
         box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
@@ -353,7 +363,7 @@
     justify-content: space-between;
     align-items: center;
     color: white;
-    h5{
+    & h5{
         width: 70%;
         height: 100%;
         text-align: start;
@@ -361,7 +371,7 @@
         display: flex;
         align-items: center;
     }
-    .partecipants{
+    & .partecipants{
         width: 30%;
         height: 100%;
         display: flex;
@@ -393,7 +403,7 @@
     align-items: center;
     gap: 20px;
 
-    button{
+    & button{
         width: 30%;
         height: 60%;
         display: flex;
@@ -433,18 +443,18 @@
     background: linear-gradient(to bottom, var(--bs-dark), #f72585);
     padding: 10px;
 
-    h3{
+    & h3{
         color: white;
     }
 
-    input{
+    & input{
         border: none;
         outline: none;
         height: 20%;
         width: 100%;
     }
 
-    button{
+    & button{
         border: none;
         outline: none;
         width: 100%;
@@ -474,25 +484,25 @@
 
     z-index: 10;
 
-    h2{
+    & h2{
         width: 100%;
         margin: 0;
     }
 
-    form{
+    & form{
         width: 100%;
         height: 90%;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
 
-        .inputContainer{
+        & .inputContainer{
             width: 100%;
             height: 80%;
             display: flex;
             justify-content: center;
 
-            .leftSide{
+            & .leftSide{
                 width: 100%;
                 height: 100%;
                 display: flex;
@@ -502,7 +512,7 @@
                 gap: 10px;
             }
         }
-        .inputLine{
+        & .inputLine{
             width: 100%;
             height: 50%;
             display: flex;
@@ -512,23 +522,23 @@
         }
     }
     
-    .dateTimeInput{
+    & .dateTimeInput{
         display: flex;
         gap: 20px;
         width: 100%;
         height: 45%;
-        input{
+        & input{
             height: 100%;
         }
-        input[type="date"]{
+        & input[type="date"]{
             width: 65%;
         }
-        input[type="time"]{
+        & input[type="time"]{
             width: fit-content;
         }
     }
 
-    input, textarea{
+    & input, textarea{
         border: none;
         outline: none;
         width: 100%;
@@ -536,11 +546,11 @@
         box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
     }
 
-    textarea{
+    & textarea{
         height: 70%;
     }
 
-    button{
+    & button{
         border: none;
         outline: none;
         background-color: var(--bs-success);

@@ -68,23 +68,23 @@
     color: white;
     text-decoration: none !important;
     font-weight: 900;
-    img{
+    & img{
         width: 100%;
         height: 100%;
         object-fit: cover;
         object-position: center;
     }
-    h2{
+    & h2{
         width: 70%;
         height: 100%;
         justify-content: flex-start;
     }
-    h4{
+    & h4{
         width: 100%;
         height: 15%;
         justify-content: space-between;
     }
-    h2, h4{
+    & h2, h4{
         margin: 0;
         background-color: white;
         color: var(--bs-dark);
@@ -93,7 +93,7 @@
         padding: 20px;
 	    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
     }
-    a{
+    & a{
         width: 100%;
         height: fit-content;
         margin: 0;
@@ -103,7 +103,7 @@
         padding: 20px;
 	    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
     }
-    span{
+    & span{
         font-size: x-large;
     }
 
@@ -138,7 +138,7 @@
     padding: 10px;
     background-color: var(--bs-success);
 	box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
-    img{
+    & img{
         width: 100%;
         height: 100%;
         background-color: var(--bs-success);

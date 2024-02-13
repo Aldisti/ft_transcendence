@@ -1,4 +1,4 @@
-let ip = "192.168.137.117";
+let ip = "localhost";
 let port = "8000";
 let protocol = "http";
 let pongPort = "7000";
@@ -75,9 +75,9 @@ export const userAction = {
 
 export const tournaments = {
     CREATE: `${protocol}://${ip}:${port}/pong/tournaments/create/`,
-    SUBMIT: `${protocol}://${ip}:3000/submit/`,
+    UNREGISTER: `${protocol}://${ip}:${port}/pong/tournaments/unregister/`,
     GET_TOURNAMENTS_LIST: `${protocol}://${ip}:${port}/pong/tournaments/`,
-    UNSUBSCRIBE: `${protocol}://${ip}:3000/unsubscribe/`,
+    REGISTER: `${protocol}://${ip}:${port}/pong/tournaments/register/`,
     GET_MATCH_HISTORY: `${protocol}://${ip}:3000/match-history/`,
     GET_TOURNAMENT_HISTORY: `${protocol}://${ip}:${port}/pong/tournaments/`,
 }

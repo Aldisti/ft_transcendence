@@ -625,7 +625,7 @@ footer{
     justify-content: center;
     align-items: center;
 
-    img{
+    & img{
         width: 10svw;
         height: 10svw;
         object-fit: contain;
@@ -641,7 +641,7 @@ footer{
     align-items: center;
     justify-content: space-between;
     color: white;
-    h4{
+    & h4{
         width: 100%;
         height: 10%;
         text-align: start;
@@ -650,7 +650,7 @@ footer{
         justify-content: space-between;
     }
 
-    h1{
+    & h1{
         width: 100%;
         height: 20%;
         font-size: medium !important;
@@ -779,7 +779,7 @@ a img{
         justify-content: center;
         align-items: center;
     
-        img{
+        & img{
             width: 40svw;
             height: 40svw;
             object-fit: contain;

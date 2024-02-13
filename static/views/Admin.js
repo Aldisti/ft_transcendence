@@ -127,6 +127,10 @@ export default class extends Aview{
         `
     }
 
+    /**
+     * The setup function initializes the user interface and event handlers for managing users, moderators,
+     * and banned users in an admin panel.
+     */
     setup(){
         this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpeg")
         let role = JSON.parse(window.decode64(localStorage.getItem("jwt"))).role;

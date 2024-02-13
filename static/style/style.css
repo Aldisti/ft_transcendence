@@ -585,7 +585,7 @@ footer{
     justify-content: center;
     align-items: center;
 
-    img{
+    & img{
         width: 10svw;
         height: 10svw;
         object-fit: contain;
@@ -601,7 +601,7 @@ footer{
     align-items: center;
     justify-content: space-between;
     color: white;
-    h4{
+    & h4{
         width: 100%;
         height: 10%;
         text-align: start;
@@ -610,7 +610,7 @@ footer{
         justify-content: space-between;
     }
 
-    h1{
+    & h1{
         width: 100%;
         /* height: 20%; */
         margin: 0;
@@ -721,7 +721,7 @@ a img{
     gap: 20px;
     font-size: xx-large;
     object-fit: cover;
-    a{
+    & a{
         color: white;.menu{
             height: 100%;
             width: 70%;
@@ -732,19 +732,19 @@ a img{
             gap: 20px;
             font-size: xx-large;
             object-fit: cover;
-            a{
+            & a{
                 color: white;
             }
-            h2{
+            & h2{
                 margin: 0;
             }
         }
         
-        .menu:hover{
+        & .menu:hover{
             cursor: pointer;
         }
         
-        .chatUserMenu{
+        & .chatUserMenu{
             width: 100%;
             height: 200%;
             background-color: #E63946;
@@ -754,7 +754,7 @@ a img{
             left: 0;
         }
         
-        .chatUserMenuDisplay{
+        & .chatUserMenuDisplay{
             padding: 10px;
             display: flex !important;
             gap: 20px;
@@ -763,7 +763,7 @@ a img{
             justify-content: space-between;
         }
         
-        .chatUserMenuLine{
+        & .chatUserMenuLine{
             width: 100%;
             height: 40%;
             padding: 10px;
@@ -773,11 +773,11 @@ a img{
             background-color: var(--bs-dark);
         }
         
-        .chatUserMenuLine h3{
+        & .chatUserMenuLine h3{
             margin: 0;
         }
     }
-    h2{
+    & h2{
         margin: 0;
     }
 }
@@ -846,7 +846,7 @@ a img{
         justify-content: center;
         align-items: center;
     
-        img{
+        & img{
             width: 40svw;
             height: 40svw;
             object-fit: contain;

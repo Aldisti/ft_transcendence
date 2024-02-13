@@ -2,22 +2,16 @@ import Aview from "/views/abstractView.js";
 import * as listeners from "/viewScripts/pong2dTournament/listeners.js"
 import * as API from"/API/APICall.js"
 
-
-export default class extends Aview{
+export default class extends Aview{page
     constructor(){
         super();
+        this.page = 1;
+        this.size = 5;
+        this.options = {title: "", participants: ""}
+        this.endTournament = false;
+        this.flag = false;
+        
     }
-
-    populateList(){
-        document.querySelector(".tournamentsList").innerHTML = "";
-        API.getTournamentsList(1).then(tournaments=>{
-            tournaments.results.forEach(element => {
-                document.querySelector(".tournamentsList").innerHTML += this.getTournamentCard(element);
-            });
-        })
-    }
-
-
 
     getTournamentCard(obj){
         let percentage = obj.subscribed / obj.participants;
@@ -51,7 +45,7 @@ export default class extends Aview{
                     <div class="tournamentBody">
                         ${obj.description}
                     </div>
-                    <button class="subscribeBtn ${obj.registered.includes(localStorage.getItem("username")) ? `unSubscribe` : `subscribe`}" style="background-color: ${obj.registered.includes(localStorage.getItem("username")) ? `var(--bs-danger)` : `var(--bs-success)`}">
+                    <button tournamentId="${obj.id}" class="subscribeBtn ${obj.registered.includes(localStorage.getItem("username")) ? `unSubscribe` : `subscribe`}" style="background-color: ${obj.registered.includes(localStorage.getItem("username")) ? `var(--bs-danger)` : `var(--bs-success)`}">
                         ${obj.registered.includes(localStorage.getItem("username")) ? this.language.tournament.tournamentCard.unSubscribe : this.language.tournament.tournamentCard.subScribe}
                     </button>
                 </div>
@@ -92,7 +86,7 @@ export default class extends Aview{
             <div class="displayNameAndSubmit">
                 <h3>${this.language.tournament.displayName}</h3>
                 <input >
-                <button>${this.language.tournament.submitBtn}</button>
+                <button class="submitter">${this.language.tournament.submitBtn}</button>
             </div>
         </div>
         `
@@ -108,7 +102,13 @@ export default class extends Aview{
                         <div class="titleLeft">
                             <h3>${this.language.tournament.title}</h3>
                             <input>
-                        </div>
+                            </div>
+                            <select>
+                                <option>all</option>
+                                <option>4</option>
+                                <option>8</option>
+                                <option>16</option>
+                            </select>
                         <div class="titleRight">
                             <div class="tournamentSearchBar">
                                 <button class="importantSubmit search">${this.language.tournament.searchBtn}</button><button class="restoreBtn">X</button>
@@ -124,26 +124,88 @@ export default class extends Aview{
         `
     }
 
-	setup(){
-        this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpeg")
-        this.populateList()
+/**
+ * The function `populateList` populates a list of tournaments on a webpage, with an option to erase
+ * the existing list before populating it.
+ * @param erase - The `erase` parameter is a boolean value that determines whether the existing content
+ * of the ".tournamentsList" element should be erased before populating it with new data. If `erase` is
+ * `true`, the content will be erased; if `erase` is `false`, the new data will
+ * @returns The function does not have a return statement.
+ */
+    populateList(erase){
+        if (this.flag)
+            return ;
+        else
+            this.flag = true
+        if (this.endTournament)
+            return ;
+        if (erase)
+            document.querySelector(".tournamentsList").innerHTML = "";
+        API.getTournamentsList(1, this.page, this.size, this.options).then(tournaments=>{
+            if (tournaments.next == null){
+                this.endTournament = true;
+                this.page = -1;
+            }
+            else 
+                this.page++;
+            if (tournaments.results == undefined)
+                return ;
+            tournaments.results.forEach(element => {
+                document.querySelector(".tournamentsList").innerHTML += this.getTournamentCard(element);
+            });
+            this.flag = false;
+        })
+    }
 
-        //if the button pressed is subscribe show the displayName form otherwise make the apicall to unsubscribe the selceted event
+	setup(){
+        this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpeg");
+        this.populateList(1)
+
+        /* This line of code is adding an event listener to the element with the class "tournamentsList". When
+        that element is clicked, it will trigger the "handleTournamentSubscription" function from the
+        "listeners" module, passing in the current instance of the class as an argument. The "bind" method
+        is used to bind the "this" value to null, meaning that the "this" value inside the
+        "handleTournamentSubscription" function will be undefined. */
         document.querySelector(".tournamentsList").addEventListener("click", listeners.handleTournamentSubscription.bind(null, this))
 
-        //show the form when the + button is clicked
+        /* This line of code is adding an event listener to the element with the class "showNewTournamentForm".
+        When that element is clicked, it will trigger the "exposeNewTournamentForm" function from the
+        "listeners" module. */
         document.querySelector(".showNewTournamentForm").addEventListener("click", listeners.exposeNewTournamentForm)
         
-        //submit the form to create new tournament
+        /* This line of code is adding an event listener to the element with the class "createTournamentBtn".
+        When that element is clicked, it will trigger the "handleTournamentCreation" function from the
+        "listeners" module, passing in the current instance of the class as an argument. The "bind" method
+        is used to bind the "this" value to null, meaning that the "this" value inside the
+        "handleTournamentCreation" function will be undefined. */
         document.querySelector(".createTournamentBtn").addEventListener("click", listeners.handleTournamentCreation.bind(null, this));
 
-        //handle the subscription to the selected tournament
+        /* This line of code is adding an event listener to the button element with the class
+        "displayNameAndSubmit". When that button is clicked, it will trigger the "handleTournamentSubscribe"
+        function from the "listeners" module, passing in the current instance of the class as an argument.
+        The "bind" method is used to bind the "this" value to null, meaning that the "this" value inside the
+        "handleTournamentSubscribe" function will be undefined. */
         document.querySelector(".displayNameAndSubmit button").addEventListener("click", listeners.handleTournamentSubscribe.bind(null, this))
 
-        document.querySelector(".restoreBtn").addEventListener("click", ()=>{
-            this.populateList();
-        })
 
-        
+        /* This line of code is adding an event listener to the "restoreBtn" element. When the button is
+        clicked, it will trigger the "handleRestoreBtn" function from the "listeners" module, passing in the
+        current instance of the class as an argument. The "bind" method is used to bind the "this" value to
+        null, meaning that the "this" value inside the "handleRestoreBtn" function will be undefined. */
+        document.querySelector(".restoreBtn").addEventListener("click", listeners.handleRestoreBtn.bind(null, this));
+
+        /* This line of code is adding an event listener to the element with the class "search". When that
+        element is clicked, it will trigger the "handleSearchBtn" function from the "listeners" module,
+        passing in the current instance of the class as an argument. The "bind" method is used to bind the
+        "this" value to null, meaning that the "this" value inside the "handleSearchBtn" function will be
+        undefined. */
+        document.querySelector(".search").addEventListener("click", listeners.handleSearchBtn.bind(null, this))
+
+        /* This line of code is adding an event listener to the element with the class "tournamentsList". When
+        the user scrolls within this element, it will trigger the "handleTournamentsListScroll" function
+        from the "listeners" module, passing in the current instance of the class as an argument. The "bind"
+        method is used to bind the "this" value to null, meaning that the "this" value inside the
+        "handleTournamentsListScroll" function will be undefined. */
+        document.querySelector(".tournamentsList").addEventListener("scroll", listeners.handleTournamentsListScroll.bind(null, this))
     }
 }
