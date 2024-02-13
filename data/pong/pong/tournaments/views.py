@@ -73,25 +73,37 @@ def register_tournament(request):
     if player is None:
         return Response({"message": "User not found"}, status=404)
 
+    # retrieve tournament from db
     tournament_id = request.data.get('tournament_id', -1)
     try:
         tournament = Tournament.objects.get(pk=tournament_id)
     except Tournament.DoesNotExist:
         return Response({"message": "Tournament  not found"}, status=404)
 
+    # check if player is subscribed
+    if player.username in tournament.get_participants():
+        return Response({"message": "You're already registered"}, status=400)
+
+    # check if tournament is full
     if tournament.is_full():
         return Response({"message": "Tournament is full"}, status=400)
-    return Response(status=200)
 
+    # get or create a new game
     num_participants = tournament.get_subscribed()
     if num_participants % 2 == 0:
         game = Game.objects.create()
     else:
         game = tournament.participant.get(level=1, column=num_participants).game
 
+    # create participant and add to tournament
+    participant_tournament = ParticipantTournament.objects.create(1, player, tournament, game)
+    ParticipantTournament.objects.update_column(tournament, num_participants + 1)
 
-    thread = threading.Thread(target=test)
-    thread.start()
+    if (num_participants + 1) == tournament.participants_num:
+        thread = threading.Thread(target=test)
+        thread.start()
+
+    return Response(TournamentSerializer(tournament).data, status=200)
 
 
 def test():
