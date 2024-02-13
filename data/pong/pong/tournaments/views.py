@@ -30,7 +30,7 @@ class ListTournament(ListAPIView):
     pagination_class = MyPageNumberPagination
     permission_classes = []
     filter_backends = [MyFilterBackend, filters.OrderingFilter]
-    search_fields = ["finished", "participants"]
+    search_fields = ["finished", "title"]
     ordering_filters = ["title"]
 
 
