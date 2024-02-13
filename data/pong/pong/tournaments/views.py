@@ -101,7 +101,7 @@ def register_tournament(request):
 
     # create participant and add to tournament
     participant_tournament = ParticipantTournament.objects.create(1, player, tournament, game)
-    ParticipantTournament.objects.update_column(tournament, num_participants + 1)
+    ParticipantTournament.objects.update_column(participant_tournament, num_participants + 1)
 
     if (num_participants + 1) == tournament.participants_num:
         thread = threading.Thread(target=start_tournament)
