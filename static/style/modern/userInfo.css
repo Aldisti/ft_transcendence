@@ -117,7 +117,7 @@ input {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-    gap: 40px;
+    gap: 20px;
     align-items: center;
     padding: 20px;
     backdrop-filter: blur(10px);

@@ -147,3 +147,22 @@
     height: 100%;
     width: 40%;
 }
+
+@media screen and (max-width: 900px) {
+    .base{
+        flex-direction: column;
+        height: fit-content;
+    }  
+    .firendRequestSection, .infoSection{
+        width: 100%;
+        height: 80svh;
+    }
+    .choiceCardContainer, .simpleCardContainer{
+        height: 40%;
+    }
+    .choiceCardBtns{
+        height: 35%;
+        padding: 5px;
+        font-size: x-small;
+    }
+}

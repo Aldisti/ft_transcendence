@@ -1,10 +1,6 @@
 import Aview from "/views/abstractView.js";
-import language from "/language/language.js";
-import handleSlider from "/viewScripts/pong2d/sliders.js"
-import Router from "/router/mainRouterFunc.js"
 import * as listeners from "/viewScripts/pong2dTournament/listeners.js"
 import * as API from"/API/APICall.js"
-import * as URL from"/API/URL.js"
 
 
 export default class extends Aview{
@@ -15,14 +11,16 @@ export default class extends Aview{
     populateList(){
         document.querySelector(".tournamentsList").innerHTML = "";
         API.getTournamentsList(1).then(tournaments=>{
-            tournaments.forEach(element => {
+            tournaments.results.forEach(element => {
                 document.querySelector(".tournamentsList").innerHTML += this.getTournamentCard(element);
             });
         })
-    }    
+    }
+
+
 
     getTournamentCard(obj){
-        let percentage = obj.participants / obj.total;
+        let percentage = obj.subscribed / obj.participants;
         let color = "white"
         if (percentage < 0.4)
             color = "var(--bs-success)";
@@ -38,13 +36,13 @@ export default class extends Aview{
                 
                     <div class="partecipants" style="background-color: ${color};">
                         <span class="actualPartecipants">
-                            ${obj.participants != undefined ? obj.participants : "0"}
+                            ${obj.subscribed != undefined ? obj.subscribed : "0"}
                         </span>
                         <span>
                             /
                         </span>
                         <span class="totalPartecipants">
-                            ${obj.total != undefined ? obj.total : "0"}
+                            ${obj.participants != undefined ? obj.participants : "0"}
                         </span>
                     </div>
                 </div>
@@ -53,8 +51,8 @@ export default class extends Aview{
                     <div class="tournamentBody">
                         ${obj.description}
                     </div>
-                    <button class="subscribeBtn ${obj.registered ? `unSubscribe` : `subscribe`}" style="background-color: ${obj.registered ? `var(--bs-danger)` : `var(--bs-success)`}">
-                        ${obj.registered ? this.language.tournament.tournamentCard.unSubscribe : this.language.tournament.tournamentCard.subScribe}
+                    <button class="subscribeBtn ${obj.registered.includes(localStorage.getItem("username")) ? `unSubscribe` : `subscribe`}" style="background-color: ${obj.registered.includes(localStorage.getItem("username")) ? `var(--bs-danger)` : `var(--bs-success)`}">
+                        ${obj.registered.includes(localStorage.getItem("username")) ? this.language.tournament.tournamentCard.unSubscribe : this.language.tournament.tournamentCard.subScribe}
                     </button>
                 </div>
             </div>
@@ -141,5 +139,11 @@ export default class extends Aview{
 
         //handle the subscription to the selected tournament
         document.querySelector(".displayNameAndSubmit button").addEventListener("click", listeners.handleTournamentSubscribe.bind(null, this))
+
+        document.querySelector(".restoreBtn").addEventListener("click", ()=>{
+            this.populateList();
+        })
+
+        
     }
 }

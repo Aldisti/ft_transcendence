@@ -966,7 +966,7 @@ export async function getTournamentsList(recursionProtection){
     }
     if (res.status == 401 && recursionProtection)
         return await refreshAndRetry(getTournamentsList, 0);
-    return ({})
+    return ([])
 }
 
 export async function tournamentSubmit(recursionProtection, displayName){
@@ -1009,22 +1009,28 @@ export async function unsubscribeTournament(recursionProtection){
 
 export async function createTournament(recursionProtection, form){
     const res = await fetch(URL.tournaments.CREATE, {
-        method: "PATCH",
+        method: "POST",
         headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(form),
-        // credentials: "include",
+        body: JSON.stringify({
+            title: form.tName,
+            description: form.tDescription,
+            participants: form.tPartecipants
+        }),
+        credentials: "include",
 
     });
     if (res.ok) {
-        return (true);
+        let parsed = await res.json();
+        return (parsed);
     }
     if (res.status == 401 && recursionProtection)
         return await refreshAndRetry(createTournament, 0, form);
-    return (false)
+    return ([])
 }
+
 export async function validateEmail(token){
     const res = await fetch(`${URL.auth.VALIDATE_EMAIL}?token=${token}`, {
         method: "GET",
