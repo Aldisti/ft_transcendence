@@ -30,7 +30,7 @@ class ListTournament(ListAPIView):
     pagination_class = MyPageNumberPagination
     permission_classes = []
     filter_backends = [MyFilterBackend, filters.OrderingFilter]
-    search_fields = ["finished", "title"]
+    search_fields = ["finished", "title", "participants"]
     ordering_filters = ["title"]
 
 
@@ -104,11 +104,15 @@ def register_tournament(request):
     ParticipantTournament.objects.update_column(tournament, num_participants + 1)
 
     if (num_participants + 1) == tournament.participants_num:
-        thread = threading.Thread(target=test)
+        thread = threading.Thread(target=start_tournament)
         thread.start()
 
     return Response(TournamentSerializer(tournament).data, status=200)
 
 
-def test():
-    pass
+def start_tournament(tournament):
+    Tournament.start_tournament_level(self, tournament, 1)
+    time.sleep(300)
+    #for participant in tournament.get_participants()[::2]:
+    #    game = participant.game
+    #pass

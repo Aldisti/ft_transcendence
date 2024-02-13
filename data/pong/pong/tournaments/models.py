@@ -99,5 +99,3 @@ class ParticipantTournament(models.Model):
 
     def __str__(self):
         return f"player: {self.player_id}, game: {self.game_id}"
-
-
