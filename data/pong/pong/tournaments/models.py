@@ -49,6 +49,9 @@ class Tournament(models.Model):
     def get_subscribed(self, level=1):
         return self.participant.filter(level=level).count()
 
+    def get_participants(self):
+        return [participant.player.username for participant in self.participant.filter(level=1)]
+
     def is_full(self):
         if self.participant.count() >= self.participants_num:
             return True

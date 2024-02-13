@@ -83,11 +83,11 @@ def register_tournament(request):
         return Response({"message": "Tournament is full"}, status=400)
     return Response(status=200)
 
-    #num_participants = tournament.get_subscribed()
-    #if num_participants % 2 == 0:
-    #    game = Game.objects.create()
-    #else:
-    #    game = tournament.participant.get(level=1, )
+    num_participants = tournament.get_subscribed()
+    if num_participants % 2 == 0:
+        game = Game.objects.create()
+    else:
+        game = tournament.participant.get(level=1, column=num_participants).game
 
 
     thread = threading.Thread(target=test)

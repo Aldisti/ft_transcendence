@@ -23,11 +23,15 @@ class TournamentSerializer(serializers.ModelSerializer):
         source="get_subscribed",
         read_only=True,
     )
+    registered = serializers.ListField(
+        source="get_participants",
+        read_only=True,
+    )
 
 
     class Meta:
         model = Tournament
-        fields = ["id", "title", "description", "participants", "subscribed", "finished"]
+        fields = ["id", "title", "description", "participants", "subscribed", "finished", "registered"]
         extra_kwargs = {
             "id": {"read_only": True},
             "finished": {"read_only": True},
