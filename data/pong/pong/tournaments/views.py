@@ -59,7 +59,7 @@ class CreateTournament(CreateAPIView):
         tournament = Tournament.objects.get(pk=response.data["id"])
         game = Game.objects.create()
         participant_tournament = ParticipantTournament.objects.create(1, player, tournament, game)
-        ParticipantTournament.objects.update_column(tournament, 1)
+        ParticipantTournament.objects.update_column(participant_tournament, 1)
         
         # update the subscribed field in the response
         tour = Tournament.objects.get(pk=response.data["id"])
@@ -93,7 +93,11 @@ def register_tournament(request):
     if num_participants % 2 == 0:
         game = Game.objects.create()
     else:
-        game = tournament.participant.get(level=1, column=num_participants).game
+        try:
+            game = tournament.participant.get(level=1, column=num_participants).game
+        except ParticipantTournament.objects.DoesNotExist:
+            Response({"message": "This message doesn't should be seen"}, status=500)
+            
 
     # create participant and add to tournament
     participant_tournament = ParticipantTournament.objects.create(1, player, tournament, game)
