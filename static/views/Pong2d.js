@@ -159,10 +159,12 @@ export default class extends Aview{
             
             document.querySelector(".btnWindow").style.height = "70%";
             document.querySelector("#waitCanv").style.display= "flex";
+            document.querySelector("#startQueque").style.justifyContent = "space-between";
 
             if (document.querySelector("#startQueque").innerHTML.trim() != `Enter !`){
                 document.querySelector("#waitCanv").style.display= "none";
                 document.querySelector(".btnWindow").style.height = "30%";
+                document.querySelector("#startQueque").style.justifyContent = "center";
                 document.querySelector("#startQueque").innerHTML = `Enter !`
                 this.socket.close();
             }else{
