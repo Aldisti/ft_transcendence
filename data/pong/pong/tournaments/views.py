@@ -95,7 +95,7 @@ def register_tournament(request):
     else:
         try:
             game = tournament.participant.get(level=1, column=num_participants).game
-        except ParticipantTournament.objects.DoesNotExist:
+        except ParticipantTournament.DoesNotExist:
             Response({"message": "This message doesn't should be seen"}, status=500)
             
 
