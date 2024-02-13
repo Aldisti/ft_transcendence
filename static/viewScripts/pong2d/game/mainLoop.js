@@ -1,4 +1,4 @@
-import Game from "/games/pong2d/Game.js"
+import Game from "/viewScripts/pong2d/game/Game.js"
 
 let game;
 let animationId

@@ -1,4 +1,4 @@
-import startGame from "/games/pong2d/mainLoop.js"
+import startGame from "/viewScripts/pong2d/game/mainLoop.js"
 
 export default function game(ballTexture, groundTexture, pillTexture, gameConfig){
 

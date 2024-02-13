@@ -1,5 +1,5 @@
-import Ball from "/games/pong2d/Ball.js"
-import Paddle from "/games/pong2d/Paddle.js"
+import Ball from "/viewScripts/pong2d/game/Ball.js"
+import Paddle from "/viewScripts/pong2d/game/Paddle.js"
 
 export default function startAnimation(){
     let ball = new Ball(document.querySelector("#waitCanv"), {size:22});

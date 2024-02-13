@@ -1,9 +1,7 @@
 import Aview from "/views/abstractView.js";
-import language from "/language/language.js";
 import pongLoader from "/viewScripts/pong2d/loader.js"
 import startGame from "/viewScripts/pong2d/startMatch.js"
 import handleSlider from "/viewScripts/pong2d/sliders.js"
-
 import * as API from"/API/APICall.js"
 import * as URL from"/API/URL.js"
 
@@ -11,7 +9,6 @@ let pills = [ "/imgs/pillsTexture/pill1.png", "/imgs/pillsTexture/pill.png"]
 let grounds = [ "/imgs/groundTexture/ground1.jpg", "/imgs/groundTexture/ground2.avif", "/imgs/groundTexture/ground3.jpg"]
 let balls = [ "/imgs/ballTexture/tennis.png", "/imgs/ballTexture/basket.png", "/imgs/ballTexture/soccer.png"]
 let gameObj = 0;
-
 
 export default class extends Aview{
     constructor(){
