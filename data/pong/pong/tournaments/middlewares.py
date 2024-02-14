@@ -44,14 +44,14 @@ def get_participant(user: PongUser, query_params: dict):
 @database_sync_to_async
 def get_token(participant, query_params: dict):
     if "token" not in query_params:
-        raise ValueError("Token not found in url")
+        return None
     token = query_params["token"]
     if participant is None:
         return token
     elif participant.player.tournament_ticket == token:
         PongUser.objects.delete_tournament_ticket(participant.player)
         return token
-    raise ValueError("Token not found in url")
+    return None
 
 
 class QueryParamMiddleware(BaseMiddleware):
