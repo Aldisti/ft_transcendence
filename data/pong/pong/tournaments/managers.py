@@ -5,6 +5,8 @@ from users.views import generate_ticket_user, generate_tournament_ticket_user
 from pong.producers import NotificationProducer
 from users.utils import Results
 
+import json
+
 import math
 
 class ParticipantTournamentManager(models.Manager):
