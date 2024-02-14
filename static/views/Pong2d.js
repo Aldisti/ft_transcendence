@@ -191,8 +191,10 @@ export default class extends Aview{
             let startQueque = document.querySelector(".btnWindow");
 
             startQueque.style.display = "none";
-            document.querySelector("acceptGame button").addEventListener("click", ()=>{
-                
+            document.querySelector(".acceptGame button").addEventListener("click", ()=>{
+                API.getTournamentTicket(1).then(res=>{
+
+                })
             })
         }
     }
@@ -207,6 +209,21 @@ export default class extends Aview{
 
 	setup(){
         this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpeg")
+        let params = new URLSearchParams(window.location.search)
+
+        if (params.size != 0){
+            document.querySelector("#app").innerHTML = this.getGameHtml();
+            let conf = {
+                user1: localStorage.getItem("username"),
+                userDisplay: btoa(params.get("userDisplay")),
+                user2: btoa(params.get("opponent")),
+                opponentDisplay: btoa(params.get("opponentDisplay")),
+                tournamentId: btoa(params.get("tournamentId")),
+                ticket: btoa(params.get("token"))
+            }
+            gameObj = startGame(this.ballTexture, this.groundTexture, this.pillTexture, conf);
+            return ;
+        }
 
         document.querySelector("#waitCanv").style.width = "100%"
         document.querySelector("#waitCanv").style.height = "50%"

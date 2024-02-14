@@ -4,6 +4,7 @@ import * as URL from "/API/URL.js"
 import * as create from "/viewScripts/chat/createChatItem.js"
 import * as API from "/API/APICall.js";
 import * as notificationView from "/viewScripts/notification/notificationViewRouter.js";
+import Router from "/router/mainRouterFunc.js"
 
 function removeNotification(body){
     let parsedNotification = JSON.parse(localStorage.getItem("notification"));
@@ -110,6 +111,36 @@ function friendNotification(obj){
     NOTIFICATION.choice(config, choiceCallback)
 }
 
+function tournamentCallback(config, notificationElement){
+    let token = config.notification.token;
+    let tournamentId = config.notification.tournament_id;
+    let opponentDisplay = config.notification.opponentDisplay;
+    let opponent = config.notification.opponent;
+    let userDisplay = config.notification.display;
+
+    notificationElement.querySelector(".notificationAccept").addEventListener("click", ()=>{
+        history.pushState(null, null, `/games/pong2d/?token=${btoa(token)}&tournament=${btoa(tournamentId)}&opponentDisplay=${atob(opponentDisplay)}&opponent=${atob(opponent)}&userDisplay=${atob(userDisplay)}`);
+        Router();
+        document.body.removeChild(notificationElement);
+    });
+    notificationElement.querySelector(".notificationDeny").addEventListener("click", ()=>{
+        document.body.removeChild(notificationElement);
+    });
+}
+
+function matchReqNotification(notification){
+    let config = {
+        notification: notification,
+        title: "Tournament",
+        accept: "enter Tournament Match",
+        deny: "reject",
+        body: "incoming Tournament match...",
+        permanent: true
+    }
+    NOTIFICATION.choice(config, tournamentCallback)
+    console.log(notification);
+}
+
 function notificationRouter(notification){
     if (notification.type == "info")
         infoNotification(notification);
@@ -119,8 +150,8 @@ function notificationRouter(notification){
     //     handleFriendNotification(notification);
     else if (notification.type == "friend_req")
         friendNotification(notification);
-    // else if (notification.type == "match_req")
-    //     handleFriendNotification();
+    else if (notification.type == "match_req")
+        matchReqNotification(notification);
 }
 
 function updateNotification(newNotifications){

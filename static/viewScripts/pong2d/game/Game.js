@@ -186,7 +186,6 @@ function handleSocketMesssage(game, message){
 
 export default class {
     constructor(gameCfg){
-        this.winScore = "3";
         this.gameTicket = gameCfg.gameTicket;
         this.previusTime = gameCfg.previousTime;
         this.width = gameCfg.width;
@@ -208,6 +207,8 @@ export default class {
         this.downHandler = handleKeyDown.bind(null, this);
         this.activeUser = new User(localStorage.getItem("username"))
         this.opponent = new User(gameCfg.opponentName)
+        this.userDisplayName = gameCfg.userDisplayName
+        this.opponentDisplayName = gameCfg.opponentDisplayName
 
         if (window.innerWidth > 900){
             document.addEventListener("keyup", this.upHandler)
@@ -222,10 +223,7 @@ export default class {
                 this.socket.addEventListener("message", handleSocketMesssage.bind(null, this))
             }
         })
-        // this.getRefreshRate(5).then((estimatedFps)=>{
-        //     console.log(estimatedFps)
-        //     this.ball.fps = estimatedFps
-        // })
+
         NOTIFICATION.simple({
             title: "Fullscreen:",
             body: "press spacebar to enter fullscreen"

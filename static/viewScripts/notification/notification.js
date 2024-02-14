@@ -185,11 +185,13 @@ export function choice(notificationContent, callback){
 
     document.body.appendChild(notificationElement);
     setTimeout(() => {
-        notificationElement.style.transform = "translateX(0%)"
+        notificationElement.style.transform = "translateX(0)"
     }, 500);
-    setTimeout(() => {
-        document.body.removeChild(notificationElement);
-    }, 5000);
+    // if (notificationContent.permanent == undefined){
+        setTimeout(() => {
+            document.body.removeChild(notificationElement);
+        }, 5000);
+    // }
     if (callback == undefined)
         defaultChoiceCallback(notificationContent, notificationElement)
     else

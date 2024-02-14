@@ -79,7 +79,7 @@ export const tournaments = {
     GET_TOURNAMENTS_LIST: `${protocol}://${ip}:${port}/pong/tournaments/`,
     REGISTER: `${protocol}://${ip}:${port}/pong/tournaments/register/`,
     GET_MATCH_HISTORY: `${protocol}://${ip}:3000/match-history/`,
-    GET_TOURNAMENT_HISTORY: `${protocol}://${ip}:${port}/pong/tournaments/`,
+    GET_TOURNAMENT_HISTORY: `${protocol}://${ip}:3000/tournament-info/`,
 }
 
 export const manageUsers ={

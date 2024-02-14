@@ -1070,7 +1070,6 @@ export async function getTournamentInfo(recursionProtection){
         },
         // credentials: "include",
     });
-    console.log(res)
     if (res.ok){
         let parsed = await res.json();
         return (parsed);
@@ -1079,4 +1078,7 @@ export async function getTournamentInfo(recursionProtection){
         return await refreshAndRetry(getTournamentInfo, 0);
     return ([])
 }
+
+
+
 //end of Dummy call
