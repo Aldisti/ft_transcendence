@@ -128,8 +128,7 @@ function checkMessage(game, msg){
     }
     else if (msg.message == "Game is finished"){
         localStorage.setItem("stop", "true")
-
-        if (game.activeUser.scoreDisplay.innerHTML == game.winScore)
+        if (Number(game.activeUser.scoreDisplay.innerHTML.trim()) > Number(game.opponent.scoreDisplay.innerHTML.trim()))
             document.querySelector(".gameOverlayWin").style.transform = "translate(0)"
         else
             document.querySelector(".gameOverlayLoose").style.transform = "translate(0)"
@@ -190,10 +189,8 @@ export default class {
         this.winScore = "3";
         this.gameTicket = gameCfg.gameTicket;
         this.previusTime = gameCfg.previousTime;
-        this.frameInterval = gameCfg.frameIntervall;
         this.width = gameCfg.width;
         this.height = gameCfg.height;
-        this.ratio = gameCfg.ratio;
         this.canvas = gameCfg.canvas;
         this.currentUser = gameCfg.currentUser;
         this.canvas.width =  gameCfg.width;

@@ -46,14 +46,14 @@
     border: none;
     box-shadow: 10px 10px black;
     border: 2px solid black;
-
 }
 
 .btnContainer{
     width: 40%;
     height: 80%;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: space-evenly;
     align-items: center;
 }
 
@@ -64,9 +64,10 @@
 .btnWindow button{
     background-color: white;
 }
+ 
 
-.btnWindow{
-    width: 75%;
+.btnWindow.acceptGame{
+    width: 50%;
     height: 30%;
     padding: 20px;
     display: flex;

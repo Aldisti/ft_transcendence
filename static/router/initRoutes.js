@@ -22,6 +22,7 @@ const   Routes = [
     { path: "/games/", view: Games, style: "/style/games.css", modernStyle: "/style/modern/games.css"},
     { path: "/games/pongThreeD/", view: Pong3d, style: "/style/pong3d.css", modernStyle: "/style/modern/pong3d.css"},
     { path: "/games/pong2d/", view: Pong2d, style: "/style/pong2d.css", modernStyle: "/style/modern/pong2d.css"},
+    { path: "/games/pong2d/match/", view: Pong2d, style: "/style/pong2d.css", modernStyle: "/style/modern/pong2d.css"},
     { path: "/games/pong2d/tournaments/", view: Pong2dTournaments, style: "/style/pong2dTournament.css", modernStyle: "/style/modern/pong2dTournament.css"},
     { path: "/account/", view: UserInfo, style: "/style/userInfo.css", modernStyle: "/style/modern/userInfo.css"}, 
     { path: "/password/reset/", view: PasswordRecovery, style: "/style/passwordRecovery.css", modernStyle: "/style/modern/passwordRecovery.css"},

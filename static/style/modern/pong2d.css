@@ -109,7 +109,7 @@
 }
 
 #startQueque{
-    width: 80%;
+    width: 100%;
     height: fit-content;
     padding: 10px;
     display: flex;
@@ -136,9 +136,10 @@
 
 .btnContainer{
     width: 40%;
-    height: 80%;
+    height: 90%;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: space-evenly;
     align-items: center;
 }
 
@@ -186,8 +187,21 @@
     }
 }
 
-.btnWindow{
-    width: 75%;
+.acceptGame{
+    & button{
+        width: 100%;
+        height: fit-content;
+        padding: 15px;
+        background-color: var(--bs-success);
+        color: white;
+        border: none;
+        box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+
+    }
+}
+
+.btnWindow, .acceptGame{
+    width: 50%;
     height: 30%;
     padding: 20px;
     color: white;
@@ -198,7 +212,10 @@
     align-items: center;
     justify-content: space-between;
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+
 }
+
+
 
 .gameContainerPadding{
     width: 100%;

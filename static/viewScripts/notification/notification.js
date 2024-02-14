@@ -198,6 +198,7 @@ export function choice(notificationContent, callback){
 
 export function simple(notificationContent, callback){
     let parser = new DOMParser();
+    let removed = false;
     let notification = `
         <div class="notificationContainer">
             <div class="notificationClose">
@@ -224,8 +225,10 @@ export function simple(notificationContent, callback){
     document.body.appendChild(notificationElement);
     notificationElement.querySelector(".notificationClose").addEventListener("click", ()=>{
         document.body.removeChild(notificationElement);
+        removed = true;
     })
     setTimeout(() => {
+        if (!removed)
         document.body.removeChild(notificationElement);
     }, 5000);
 }

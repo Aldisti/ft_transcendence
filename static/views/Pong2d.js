@@ -9,6 +9,7 @@ let pills = [ "/imgs/pillsTexture/pill1.png", "/imgs/pillsTexture/pill.png"]
 let grounds = [ "/imgs/groundTexture/ground1.jpg", "/imgs/groundTexture/ground2.avif", "/imgs/groundTexture/ground3.jpg"]
 let balls = [ "/imgs/ballTexture/tennis.png", "/imgs/ballTexture/basket.png", "/imgs/ballTexture/soccer.png"]
 let gameObj = 0;
+let socket = 0;
 
 export default class extends Aview{
     constructor(){
@@ -16,7 +17,6 @@ export default class extends Aview{
         this.pillTexture = pills[0];
         this.groundTexture = grounds[0];
         this.ballTexture = balls[0];
-        this.socket = 0;
         this.game = 0;
     }
 
@@ -128,6 +128,10 @@ export default class extends Aview{
                 </div>
             </div>
             <div class="btnContainer">
+                <div class="acceptGame">
+                    <h3>Press to Start The Game</h3>
+                    <button>Start</button>
+                </div>
                 <div class="btnWindow">
                     <h1>Pong Queue</h1>
                     <canvas id="waitCanv" style="display: none;"></canvas>
@@ -140,9 +144,71 @@ export default class extends Aview{
         `
     }
 
+    startQueueBtn(){
+        document.querySelector("#startQueque").innerHTML = `
+        <div>
+            Searching opponent...
+        </div>
+
+        <button class="stopSearching">X</button> 
+        ` 
+        API.startQueque(1).then(res=>{
+            if (res == undefined)
+                return ;
+            socket = new WebSocket(`${URL.socket.QUEUE_SOCKET}?ticket=${res.ticket}&username=${localStorage.getItem("username")}`);
+            socket.onopen = ()=>{
+                socket.addEventListener("message", (message)=>{
+                    let msg = JSON.parse(message.data);
+                    localStorage.setItem("gameStarted", "true");
+                    document.querySelector("#app").innerHTML = this.getGameHtml();
+                    gameObj = startGame(this.ballTexture, this.groundTexture, this.pillTexture, msg);
+                    socket.close();
+                    socket = 0;
+                })
+            } 
+        })
+    }
+
+    defineQueue(){
+        const url = window.location.href;
+
+        if (url.indexOf("match") == -1){
+            let startGame = document.querySelector(".acceptGame");
+
+            startGame.style.display = "none";
+            document.querySelector("#startQueque").addEventListener("click", async ()=>{
+                document.querySelector(".btnWindow").style.height = "50%";
+                document.querySelector("#waitCanv").style.display= "flex";
+                document.querySelector("#startQueque").style.justifyContent = "space-between";
+    
+                if (document.querySelector("#startQueque").innerHTML.trim() != `Enter !`)
+                    this.restoreQueueBtn()
+                else
+                    this.startQueueBtn()
+            })
+        }
+        else{
+            let startQueque = document.querySelector(".btnWindow");
+
+            startQueque.style.display = "none";
+            document.querySelector("acceptGame button").addEventListener("click", ()=>{
+                
+            })
+        }
+    }
+
+    restoreQueueBtn(){
+        document.querySelector("#waitCanv").style.display= "none";
+        document.querySelector(".btnWindow").style.height = "30%";
+        document.querySelector("#startQueque").style.justifyContent = "center";
+        document.querySelector("#startQueque").innerHTML = `Enter !`
+        socket.close();
+    }
+
 	setup(){
         this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpeg")
-        document.querySelector("#waitCanv").style.width = "80%"
+
+        document.querySelector("#waitCanv").style.width = "100%"
         document.querySelector("#waitCanv").style.height = "50%"
         localStorage.setItem("gameStarted", "false");
 
@@ -151,47 +217,13 @@ export default class extends Aview{
         handleSlider(".sliderBall", ".nextBall", balls, "ballTexture", this);
 
         pongLoader();
-
-        document.querySelector("#startQueque").addEventListener("click", async ()=>{
-            
-            document.querySelector(".btnWindow").style.height = "70%";
-            document.querySelector("#waitCanv").style.display= "flex";
-            document.querySelector("#startQueque").style.justifyContent = "space-between";
-
-            if (document.querySelector("#startQueque").innerHTML.trim() != `Enter !`){
-                document.querySelector("#waitCanv").style.display= "none";
-                document.querySelector(".btnWindow").style.height = "30%";
-                document.querySelector("#startQueque").style.justifyContent = "center";
-                document.querySelector("#startQueque").innerHTML = `Enter !`
-                this.socket.close();
-            }else{
-                document.querySelector("#startQueque").innerHTML = `
-                <div>
-                    Searching opponent...
-                </div>
-
-                <button class="stopSearching">X</button> 
-                ` 
-                API.startQueque(1).then(res=>{
-                    this.socket = new WebSocket(`${URL.socket.QUEUE_SOCKET}?ticket=${res.ticket}&username=${localStorage.getItem("username")}`);
-                    this.socket.onopen = ()=>{
-                        this.socket.addEventListener("message", (message)=>{
-                            let msg = JSON.parse(message.data);
-                            localStorage.setItem("gameStarted", "true");
-                            document.querySelector("#app").innerHTML = this.getGameHtml();
-                            gameObj = startGame(this.ballTexture, this.groundTexture, this.pillTexture, msg);
-                            this.socket.close();
-                        })
-                    } 
-                })
-            }
-
-        })
-
+        this.defineQueue();
     }
 
     destroy(){
-        // this.socket.close();
+        if (socket != 0){
+            socket.close();
+        }
         if (gameObj != 0)
             gameObj.socket.close(3002);
         document.removeEventListener("keyup", gameObj.upHandler)
