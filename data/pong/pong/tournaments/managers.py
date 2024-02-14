@@ -70,6 +70,7 @@ class TournamentManager(models.Manager):
                 # generate ticket
                 ticket = generate_tournament_ticket_user(user_1, user_2)
                 # send notification
+                logger.warning(f"SENDING NTF TO {user_1.username} {user_2.username}")
                 data = {
                     "requested": user_2.username,
                     "body": {
