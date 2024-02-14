@@ -51,11 +51,11 @@ class TournamentManager(models.Manager):
             # get users
             try:
                 user_1 = participants.get(column=(i * 2)).player
-            except ParticipantTournament.DoesNotExits:
+            except Exception:
                 user_1 = None
             try:
                 user_2 = participants.get(column=(i * 2)).player
-            except ParticipantTournament.DoesNotExits:
+            except Exception:
                 user_2 = None
 
             if user_1 is None and user_2 is None:
