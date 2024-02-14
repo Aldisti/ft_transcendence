@@ -4,13 +4,9 @@ services:
   django:
     container_name: django
     build:
-      context: ./django
-      args:
-        UID: ${UID}
-        GID: ${GID}
-        USERNAME: ${USERNAME}
+      context: ./transcendence
     user: ${UID}:${GID}
-    image: trinity/django
+    image: trinity/transcendence
     restart: always
     ports:
       - "8000-8020:8000-8020"
@@ -68,10 +64,6 @@ services:
     container_name: auth
     build:
       context: ./auth
-      args:
-        UID: ${UID}
-        GID: ${GID}
-        USERNAME: ${USERNAME}
     user: ${UID}:${GID}
     image: trinity/auth
     restart: unless-stopped
@@ -111,10 +103,6 @@ services:
     container_name: pong
     build:
       context: ./pong
-      args:
-        UID: ${UID}
-        GID: ${GID}
-        USERNAME: ${USERNAME}
     user: ${UID}:${GID}
     image: trinity/pong
     restart: always
@@ -145,10 +133,6 @@ services:
     container_name: chat
     build:
       context: ./chat
-      args:
-        UID: ${UID}
-        GID: ${GID}
-        USERNAME: ${USERNAME}
     user: ${UID}:${GID}
     image: trinity/chat
     restart: always
@@ -186,10 +170,6 @@ services:
     container_name: ntf
     build:
       context: ./ntf
-      args:
-        UID: ${UID}
-        GID: ${GID}
-        USERNAME: ${USERNAME}
     user: ${UID}:${GID}
     image: trinity/ntf
     restart: always
@@ -294,14 +274,7 @@ services:
 
   postgres:
     container_name: postgres
-    build:
-      context: ./db
-      args:
-        UID: ${UID}
-        GID: ${GID}
-        USERNAME: ${USERNAME}
-    image: trinity/db
-#    image: postgres:16-bookworm
+    image: trinity/postgres
     restart: always
     expose:
       - "$DB_PORT"
@@ -323,14 +296,7 @@ services:
 
   authdb:
     container_name: authdb
-    build:
-      context: ./db
-      args:
-        UID: ${UID}
-        GID: ${GID}
-        USERNAME: ${USERNAME}
-    image: trinity/db
-#    image: postgres:16-bookworm
+    image: trinity/postgres
     user: ${UID}:${GID}
     restart: always
     volumes:
@@ -351,14 +317,7 @@ services:
 
   chatdb:
     container_name: chatdb
-    build:
-      context: ./db
-      args:
-        UID: ${UID}
-        GID: ${GID}
-        USERNAME: ${USERNAME}
-    image: trinity/db
-#    image: postgres:16-bookworm
+    image: trinity/postgres
     restart: always
     expose:
       - "$CHATDB_PORT"
@@ -380,14 +339,7 @@ services:
 
   ntfdb:
     container_name: ntfdb
-    build:
-      context: ./db
-      args:
-        UID: ${UID}
-        GID: ${GID}
-        USERNAME: ${USERNAME}
-    image: trinity/db
-#    image: postgres:16-bookworm
+    image: trinity/postgres
     restart: always
     expose:
       - "$NTFDB_PORT"
@@ -409,14 +361,7 @@ services:
 
   pongdb:
     container_name: pongdb
-    build:
-      context: ./db
-      args:
-        UID: ${UID}
-        GID: ${GID}
-        USERNAME: ${USERNAME}
-    image: trinity/db
-#    image: postgres:16-bookworm
+    image: trinity/postgres
     restart: always
     expose:
       - "$PONGDB_PORT"
