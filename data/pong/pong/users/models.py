@@ -25,6 +25,12 @@ class PongUser(models.Model):
         blank=True,
     )
 
+    tournament_ticket = models.CharField(
+        max_length=16,
+        db_column="tournament_ticket",
+        blank=True,
+    )
+
     objects = PongUserManager()
 
     def __str__(self):

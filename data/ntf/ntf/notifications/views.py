@@ -30,16 +30,13 @@ def group_ntf(request):
 def match_req_ntf(request):
     data = request.data
     try:
-        opponent = UserWebsockets.objects.get(pk=data.get("opponent", ""))
         requested = UserWebsockets.objects.get(pk=data.get("requested", ""))
     except UserWebsockets.DoesNotExist:
         return Response({"message": "User not found"}, status=404)
-    if opponent == requested:
-        return Response({"message": "Invalid users"}, status=400)
-    token = data.get("token", "")
-    if token == "":
-        return Response({"message": "Invalid token"}, status=400)
-    Notification.objects.send_match_req(opponent, requested, token)
+    body = data.get("body", "")
+    if body == "":
+        return Response({"message": "Invalid body"}, status=400)
+    Notification.objects.send_match_req(requested, json.dumps(body))
     return Response({"message": "Match request notification sent"}, status=200)
 
 

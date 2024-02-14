@@ -24,7 +24,7 @@ declare -A PROJECTS_PATH=(
 
 declare -A APPS_PATH=(
 	['transcendence']="/accounts /authentication /chat /email_manager /friends /notifications /oauth2 /two_factor_auth /pong"
-	['pong']="/users /matchmaking /game"
+	['pong']="/users /matchmaking /game /tournaments"
 	['auth']="/users /authorization /oauth2 /two_factor_auth"
 	['chat']="/users /friends /messages"
 	['ntf']="/users /notifications"

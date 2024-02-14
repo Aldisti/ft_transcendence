@@ -119,6 +119,7 @@ services:
       - django-net
       - pongdb-net
       - redis-net
+      - rabbit-net
     depends_on:
       pongdb:
         condition: service_healthy

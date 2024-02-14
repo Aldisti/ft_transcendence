@@ -38,6 +38,7 @@ class MyThread(threading.Thread):
                 url += "group/"
                 post_request(url, json=json.loads(body.decode()))
             case "match_request_ntf":
+                #logger.warning("ENTERED IN MATCH REQ")
                 url += "match_req/"
                 api_response = post_request(url, json=json.loads(body.decode()))
             case "friends_request_ntf":

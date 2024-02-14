@@ -2,9 +2,10 @@ from django.db import models
 from django.core import validators
 
 from tournaments.validators import ParticipantsValidator
-from tournaments.managers import TournamentManager, ParticipantTournamentManager
+from tournaments.managers import TournamentManager, ParticipantTournamentManager, StatsTournamentManager
 
 from users.models import PongUser, Game
+from users.utils import Results
 
 import logging
 
@@ -49,8 +50,8 @@ class Tournament(models.Model):
     def get_subscribed(self, level=1):
         return self.participant.filter(level=level).count()
 
-    def get_participants(self):
-        return [participant.player.username for participant in self.participant.filter(level=1)]
+    def get_participants(self, level=1):
+        return [participant.player.username for participant in self.participant.filter(level=level).order_by(column)]
 
     def is_full(self):
         if self.participant.count() >= self.participants_num:
@@ -94,8 +95,43 @@ class ParticipantTournament(models.Model):
         db_column="game_id"
     )
 
+    entered = models.BooleanField(
+        db_column="entered",
+        default=False,
+    )
+
     # TODO: create ParticipantTournamentManager
     objects = ParticipantTournamentManager()
 
     def __str__(self):
         return f"player: {self.player_id}, game: {self.game_id}"
+
+
+class StatsTournament(models.Model):
+    class Meta:
+        db_table = "stats_tournament"
+
+
+    participant = models.OneToOneField(
+        ParticipantTournament,
+        on_delete=models.CASCADE,
+        db_column="participant_id",
+        related_name="stats",
+    )
+
+    # TODO: ask mpaterno if this should be capped
+    score = models.IntegerField(
+        db_column="score",
+        validators=[validators.MinValueValidator(0, "score cannot be negative")]
+    )
+
+    result = models.CharField(
+        db_column="result",
+        max_length=10,
+        choices=Results.RESULTS_CHOICES
+    )
+
+    objects = StatsTournamentManager()
+
+    def __str__(self):
+        return f"player: {self.participant.player_id}, result: {self.result}, score: {self.score}"

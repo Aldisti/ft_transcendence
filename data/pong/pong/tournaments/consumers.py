@@ -10,20 +10,22 @@ from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import async_to_sync, sync_to_async
 from game.engine import Ball, Paddle, Field, newton_dynamics
-from users.models import Participant, Game, Stats
+from users.models import Game
+from tournaments.models import ParticipantTournament, StatsTournament
 from users.utils import Results
 
 logger = logging.getLogger(__name__)
 
 
-class PongConsumer(AsyncWebsocketConsumer):
+class TournamentConsumer(AsyncWebsocketConsumer):
     PLAYER_VELOCITY = 500
     GAME_TIME = 60
-    WINNING = 11
+    WINNING = 3
     CLOSE_CODES = [1001, 3002]
 
     start_lock = asyncio.Lock()
 
+    game_ids = 1
     games = {}
     tickets = {}
     expired_tickets = []
@@ -36,8 +38,12 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.other_lock = asyncio.Lock()
 
         self.player = self.scope["user"]
-        self.pos = "left"
+        self.participant = self.scope["participant"]
         self.ticket = self.scope["token"]
+        self.pos = "left"
+
+        # update entered value
+        await self.update_entered(self, self.participant)
         logger.warning(f"LOG: user {self.player}")
         logger.warning(f"LOG: ticket {self.ticket}")
         await self.accept()
@@ -86,16 +92,10 @@ class PongConsumer(AsyncWebsocketConsumer):
                 "saved": False,
                 "setted": [0, 0],
             }
-
-            logger.warning(f"LOG: save game instance")
-
-            # save game instance in the database
-            game_db = await self.create_game(self.player, other_player)
-
-            logger.warning(f"LOG: game created in database")
             
             # save game in games
-            self.game_id = game_db.id
+            self.game_id = self.game_ids
+            self.game_ids += 1
             self.games[self.game_id] = game_info
 
             logger.warning(f"LOG: setting up players")
@@ -122,7 +122,7 @@ class PongConsumer(AsyncWebsocketConsumer):
                 text_data=json.dumps({"message": "Apparently you connected to late"})
             )
             # close the connection
-            await self.close(code=42)
+            await self.close(code=41)
 
         asyncio.create_task(self.check_other())
 
@@ -162,12 +162,20 @@ class PongConsumer(AsyncWebsocketConsumer):
         if close_code == 42:
             return
 
+        elif close_code == 41:
+            await self.update_exited(self, self.participant)
+            return
+
         async with update_lock:
             ball = self.games[self.game_id]["ball"]
             score = ball.scores[0] if self.pos == "left" else ball.scores[1]
+            other_score = ball.scores[0] if self.pos != "left" else ball.scores[1]
             if self.games[self.game_id]["end"]:
                 # save stats in database
-                result = Results.WIN if score == self.WINNING else Results.LOSE
+                if score == other_score:
+                    result = Results.DRAW
+                else:
+                    result = Results.WIN if score == WINNING else Results.LOSE
                 await self.create_stats(score, result)
             elif close_code in self.CLOSE_CODES and self.games[self.game_id]["connected"]:
                 self.games[self.game_id]["connected"] = False
@@ -282,10 +290,13 @@ class PongConsumer(AsyncWebsocketConsumer):
         )
 
         # game loop
-        while max(ball.scores) < self.WINNING and self.games[self.game_id]["connected"]:
+        start_time = time.time()
+        current_time = time.time() - start_time
+        while max(ball.scores) < self.WINNING and self.games[self.game_id]["connected"] and current_time < self.GAME_TIME:
             async with update_lock:
                 self.game.update()
-                data = self.raw_to_json(ball, paddle_left, paddle_right)
+                current_time = time.time() - start_time
+                data = self.raw_to_json(ball, paddle_left, paddle_right, current_time)
             await self.channel_layer.group_send(
                 self.ticket,
                 {
@@ -293,6 +304,7 @@ class PongConsumer(AsyncWebsocketConsumer):
                 }
             )
             await asyncio.sleep(0.03)
+            current_time = time.time() - start_time
 
         # ending conditions
         if self.games[self.game_id]["connected"]:
@@ -304,19 +316,21 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 
     @database_sync_to_async
-    def create_game(self, player, other_player):
-        game_db = Game.objects.create()
-        Participant.objects.create(player, game_db)
-        Participant.objects.create(other_player, game_db)
-        return game_db
+    def update_entered(self, player):
+        ParticipantTournament.objects.update_entered(player, True)
+
+
+    @database_sync_to_async
+    def update_exited(self, player):
+        ParticipantTournament.objects.update_entered(player, False)
+
 
     @database_sync_to_async
     def create_stats(self, score, result):
-        participant = Participant.objects.get(player=self.player, game_id=self.game_id)
-        stats = Stats.objects.create(participant, score, result)
+        stats = StatsTournament.objects.create(self.participant, score, result)
         return stats
 
-    def raw_to_json(self, ball: Ball, paddle_left: Paddle, paddle_right: Paddle) -> dict:
+    def raw_to_json(self, ball: Ball, paddle_left: Paddle, paddle_right: Paddle, time: float) -> dict:
         x = ball.pos_x - ball.collider.radius
         y = ball.pos_y - ball.collider.radius
         vel_x = ball.vel_x / 60
@@ -330,6 +344,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         left_score = ball.scores[0]
         right_score = ball.scores[1]
         data = {
+            "time": round(60 - time),
             "score":{
                 "left": left_score,
                 "right": right_score,

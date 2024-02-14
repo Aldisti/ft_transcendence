@@ -30,6 +30,24 @@ class PongUserManager(models.Manager):
         pong_user.save()
         return pong_user
 
+    def generate_tournament_ticket(self, pong_user):
+        pong_user.tournament_ticket = token_urlsafe(12)
+        pong_user.full_clean()
+        pong_user.save()
+        return pong_user
+
+    def update_tournament_ticket(self, pong_user, tournament_ticket):
+        pong_user.tournament_ticket = tournament_ticket
+        pong_user.full_clean()
+        pong_user.save()
+        return pong_user
+
+    def delete_tournament_ticket(self, pong_user):
+        pong_user.tournament_ticket = ""
+        pong_user.full_clean()
+        pong_user.save()
+        return pong_user
+
 
 class GameManager(models.Manager):
     def create(self, **kwargs):

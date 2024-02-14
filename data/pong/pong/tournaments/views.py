@@ -9,6 +9,9 @@ from tournaments.serializers import TournamentSerializer
 from tournaments.filters import MyFilterBackend
 
 from users.models import PongUser, Game
+from users.utils import Results
+
+from pong.producers import NotificationProducer
 
 import logging
 
@@ -69,6 +72,8 @@ class CreateTournament(CreateAPIView):
 
 @api_view(['POST'])
 def register_tournament(request):
+    body = {"opponent": "gpanico", "requested": "gpanico", "token": "012356789012345"}
+    NotificationProducer().publish(method="match_request_ntf", body=json.dumps(body))
     player = request.pong_user
     if player is None:
         return Response({"message": "User not found"}, status=404)
@@ -104,15 +109,102 @@ def register_tournament(request):
     ParticipantTournament.objects.update_column(participant_tournament, num_participants + 1)
 
     if (num_participants + 1) == tournament.participants_num:
-        thread = threading.Thread(target=start_tournament)
+        thread = threading.Thread(target=tournament_loop, kwargs={"tournament": tournament})
         thread.start()
 
     return Response(TournamentSerializer(tournament).data, status=200)
 
 
-def start_tournament(tournament):
-    Tournament.start_tournament_level(self, tournament, 1)
-    time.sleep(300)
-    #for participant in tournament.get_participants()[::2]:
-    #    game = participant.game
-    #pass
+def tournament_loop(tournament):
+    level = 0
+    while tournament.participants_num != (2 ** level):
+        level += 1
+        Tournament.start_tournament_level(self, tournament, level)
+        participants = tournament.participant.filter(level=level).order_by("column")
+        # wait that everyone is connected
+        time.sleep(240)
+        # delete all tickets from database
+        delete_tournament_tickets(participants)
+        # wait that everyone played
+        time.sleep(70)
+        # get info about games and create the new participants
+        for i in range(math.ceil(participants.count() / 2)):
+            # get users
+            user_1, user_2 = get_adjancent_users(participants, (i * 2))
+
+            if user_1 is None and user_2 is None:
+                continue
+
+            elif user_1 is None or user_2 is None:
+                user = user_1 or user_2
+                # create stats for this user
+                stats = StatsTournament.object.create(user, 0, Results.WIN)
+                # create a new participant for the next level
+                create_new_participant(tournament, user.player, level, i)
+
+            else:
+                # check the stats
+                user = check_stats(user_1, user_2)
+                if user is None:
+                    continue
+                # create a new participant for the next level
+                create_new_participant(tournament, user.player, level, i)
+
+    # end tournament
+    Tournament.end_tournament(self, tournament, level)
+
+
+def get_adjancent_users(participants, column: int) -> tuple[ParticipantTournament, ParticipantTournament]:
+    try:
+        user_1 = participants.get(column=column)
+    except ParticipantTournament.DoesNotExits:
+        user_1 = None
+    try:
+        user_2 = participants.get(column=column)
+    except ParticipantTournament.DoesNotExits:
+        user_2 = None
+    return user_1, user_2
+
+
+def create_new_participant(tournament: Tournament, user: PongUser, level: int, column: int) -> ParticipantTournament:
+    # get game from the previous participant or create a new one
+    if column % 2 == 0:
+        game = Game.objects.create()
+    else:
+        game = tournament.participant.get(level=level, column=(column - 1)).game
+    # create a new participant for the next level
+    participant = ParticipantTournament.objects.create(level, user, tournament, game)
+    ParticipantTournament.objects.update_column(participant, column)
+    return participant
+
+
+def check_stats(user_1: ParticipantTournament, user_2: ParticipantTournament) -> ParticipantTournament:
+    # check the stats
+    try:
+        stats = StatsTournament.objects.get(participant=user_1)
+    except StatsTournament.DoesNotExist:
+        stats = None
+
+    if stats is None:
+        # someone didn't connect, check who
+        if not user_1.entered and not user_2.entered:
+            user = None
+        else:
+            user = user_1 if user_1.entered else user_2
+            # create stats for this user
+            stats = StatsTournament.object.create(user, 0, Results.WIN)
+
+    elif stats.Results == Results.DRAW:
+        user = None
+
+    else:
+        # check who won the game
+        user = user_1 if stats.result == Results.WIN else user_2
+
+    return user
+
+
+def delete_tournament_tickets(participants):
+    for participant in participants:
+        PongUser.objects.delete_tournament_ticket(participant.player)
+
