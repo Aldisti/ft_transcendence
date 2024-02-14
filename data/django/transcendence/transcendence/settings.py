@@ -221,7 +221,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_ROOT = "/etc/develop/static/"
+STATIC_ROOT = "./static/"
 STATIC_URL = "static/"
 DEFAULT_USER_IMAGE = "default.jpeg"
 
@@ -252,7 +252,7 @@ EMAIL_HOST_PASSWORD = environ['EMAIL_HOST_PASSWORD']
 
 # storage
 
-MEDIA_ROOT = "/etc/develop/images/"
+MEDIA_ROOT = "./images/"
 MEDIA_URL = "/media/"
 FILE_UPLOAD_PERMISSIONS = 0o644
 
