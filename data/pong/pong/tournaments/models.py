@@ -51,7 +51,7 @@ class Tournament(models.Model):
         return self.participant.filter(level=level).count()
 
     def get_participants(self, level=1):
-        return [participant.player.username for participant in self.participant.filter(level=level).order_bya("column")]
+        return [participant.player.username for participant in self.participant.filter(level=level).order_by("column")]
 
     def is_full(self):
         if self.participant.count() >= self.participants_num:
