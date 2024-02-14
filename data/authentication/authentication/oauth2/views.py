@@ -58,8 +58,6 @@ def v2_intra_login(request) -> Response:
     request_body['code'] = request.data['code']
     request_body['state'] = request.data['state']
     api_response = requests.post(settings.OAUTH2['INTRA']['TOKEN'], data=request_body)
-    logger.warning(f"\n{api_response.text}")
-    logger.warning(f"{type(api_response.text)}\n")
     if api_response.status_code != 200:
         return Response(data=api_response.json(), status=502)
     data = api_response.json()
