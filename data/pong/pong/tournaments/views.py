@@ -119,7 +119,7 @@ def tournament_loop(tournament):
     level = 0
     while tournament.participants_num != (2 ** level):
         level += 1
-        Tournament.objects.start_tournament_level(self, tournament, level)
+        Tournament.objects.start_tournament_level(tournament, level)
         participants = tournament.participant.filter(level=level).order_by("column")
         # wait that everyone is connected
         time.sleep(240)
