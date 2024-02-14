@@ -5,6 +5,8 @@ from users.models import UserWebsockets
 from notifications.managers import NotificationManager
 from notifications.utils import NotificationTypes as NtfTypes
 
+import json
+
 
 # Create your models here.
 
@@ -43,9 +45,13 @@ class Notification(models.Model):
         return f"username: {self.user.username}, notification: {self.body}, sent_time: {self.sent_time}"
 
     def to_json(self) -> dict:
+        if self.ntf_type in [NtfTypes.MATCH_REQ, NtfTypes.FRIEND_REQ]:
+            body = json.loads(self.body)
+        else:
+            body = self.body
         data = {
             "type": self.ntf_type,
-            "body": self.body,
+            "body": body,
             "sent_time": self.sent_time.strftime("%Y/%m/%d:%H.%M.%S"),
         }
         return data

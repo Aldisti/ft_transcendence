@@ -74,8 +74,6 @@ class CreateTournament(CreateAPIView):
 
 @api_view(['POST'])
 def register_tournament(request):
-    body = {"opponent": "gpanico", "requested": "gpanico", "token": "012356789012345"}
-    NotificationProducer().publish(method="match_request_ntf", body=json.dumps(body))
     player = request.pong_user
     if player is None:
         return Response({"message": "User not found"}, status=404)
@@ -111,6 +109,7 @@ def register_tournament(request):
     ParticipantTournament.objects.update_column(participant_tournament, num_participants + 1)
 
     if (num_participants + 1) == tournament.participants_num:
+        logger.warning("STARTING THREAD")
         thread = threading.Thread(target=tournament_loop, kwargs={"tournament": tournament})
         thread.start()
 
@@ -132,7 +131,7 @@ def tournament_loop(tournament):
         # get info about games and create the new participants
         for i in range(math.ceil(participants.count() / 2)):
             # get users
-            user_1, user_2 = get_adjancent_users(participants, (i * 2))
+            user_1, user_2 = get_adjancent_users(participants, (i * 2 + 1))
 
             if user_1 is None and user_2 is None:
                 continue
@@ -162,7 +161,7 @@ def get_adjancent_users(participants, column: int) -> tuple[ParticipantTournamen
     except ParticipantTournament.DoesNotExits:
         user_1 = None
     try:
-        user_2 = participants.get(column=column)
+        user_2 = participants.get(column=(column + 1))
     except ParticipantTournament.DoesNotExits:
         user_2 = None
     return user_1, user_2

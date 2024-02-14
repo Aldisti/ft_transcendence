@@ -52,15 +52,18 @@ class TournamentManager(models.Manager):
 
     def start_tournament_level(self, tournament, level):
         participants = tournament.participant.filter(level=level).order_by("column")
+        logger.warning(f"PARTICIPANTS: {participants}")
 
         for i in range(math.ceil(participants.count() / 2)):
             # get users
+            logger.warning(f"COLUMN: {(i * 2)}")
+            logger.warning(f"COLUMN: {(i * 2 + 1)}")
             try:
-                user_1 = participants.get(column=(i * 2)).player
+                user_1 = participants.get(column=(i * 2 + 1)).player
             except Exception:
                 user_1 = None
             try:
-                user_2 = participants.get(column=(i * 2 + 1)).player
+                user_2 = participants.get(column=(i * 2 + 2)).player
             except Exception:
                 user_2 = None
 
@@ -80,7 +83,7 @@ class TournamentManager(models.Manager):
                     "body": {
                         "opponent": user_1.username,
                         "opponent_display": user_1.username,
-                        "user_display": user_1.username,
+                        "user_display": user_2.username,
                         "token": ticket,
                         "tournament_id": tournament.id,
                     },
@@ -91,7 +94,7 @@ class TournamentManager(models.Manager):
                     "body": {
                         "opponent": user_2.username,
                         "opponent_display": user_2.username,
-                        "user_display": user_2.username,
+                        "user_display": user_1.username,
                         "token": ticket,
                         "tournament_id": tournament.id,
                     },
