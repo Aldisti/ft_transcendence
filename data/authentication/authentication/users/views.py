@@ -9,6 +9,7 @@ from rest_framework.response import Response
 
 from authorization.models import EmailVerificationToken
 from authorization.serializers import TokenPairSerializer
+from authorization.views import get_exp
 from two_factor_auth.models import UserTFA
 from .models import User
 from .serializers import UserSerializer
@@ -101,6 +102,7 @@ def update_password(request) -> Response:
     return Response(data={
         'access_token': str(refresh_token.access_token),
         'refresh_token': str(refresh_token),
+        'exp': get_exp(refresh_token).seconds,
     }, status=200)
 
 

@@ -29,20 +29,19 @@ def login(request) -> Response:
     api_response = post_request(settings.MS_URLS['AUTH']['LOGIN'], json=request.data)
     if api_response.status_code != 200:
         return Response(data=api_response.json(), status=api_response.status_code)
-    body = api_response.json()
-    if 'token' in body:
-        return Response(data=body, status=200)
-    refresh_token = RefreshToken(body.pop('refresh_token'))
-    exp = datetime.fromtimestamp(refresh_token['exp'], tz=settings.TZ) - datetime.now(tz=settings.TZ)
-    response = Response(data=body, status=200)
+    data = api_response.json()
+    if 'token' in data:
+        return Response(data=data, status=200)
+    response = Response(status=200)
     response.set_cookie(
         key='refresh_token',
-        value=str(refresh_token),
-        max_age=exp.seconds,
+        value=data.pop('refresh_token'),
+        max_age=data.pop('exp'),
         secure=False,
         httponly=True,
         samesite=None,
     )
+    response.data = data
     return response
 
 

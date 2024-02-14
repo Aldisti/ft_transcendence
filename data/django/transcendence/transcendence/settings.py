@@ -16,6 +16,10 @@ from os import environ, path
 from datetime import timedelta
 from pytz import timezone
 
+from requests import get as get_request
+from requests.exceptions import ConnectionError as ConnectionErrorRequest
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -113,16 +117,24 @@ REST_FRAMEWORK = {
 # Django SimpleJWT
 # https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html
 
-RSA_PRIVATE_KEY_PATH = environ['RSA_PRIVATE_KEY_PATH']
-RSA_PUBLIC_KEY_PATH = environ['RSA_PUBLIC_KEY_PATH']
+
+def get_pubkey() -> str:
+    try:
+        api_response = get_request('http://auth:8000/auth/retrieve/public-key/')
+    except ConnectionErrorRequest:
+        exit(21)
+    if api_response.status_code != 200:
+        exit(22)
+    return api_response.json()['public_key']
+
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 
     "ALGORITHM": "RS256",
-    "SIGNING_KEY": open(RSA_PRIVATE_KEY_PATH, 'r').read() if path.isfile(RSA_PRIVATE_KEY_PATH) else None,
-    "VERIFYING_KEY": open(RSA_PUBLIC_KEY_PATH, 'r').read() if path.isfile(RSA_PUBLIC_KEY_PATH) else None,
+    "SIGNING_KEY": "",
+    "VERIFYING_KEY": get_pubkey(),
     "AUDIENCE": "transcendence",
     "ISSUER": "transcendence.auth",
 

@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from django.core.exceptions import ValidationError
 from django.conf import settings
 
+from authorization.views import get_exp
 from two_factor_auth.models import UserTFA, OtpCode, TFATypes
 
 from authentication.throttles import HighLoadThrottle, MediumLoadThrottle, LowLoadThrottle
@@ -96,6 +97,7 @@ def validate_login(request) -> Response:
     response = Response(data={
         'access_token': str(refresh_token.access_token),
         'refresh_token': str(refresh_token),
+        'exp': get_exp(refresh_token).seconds
     }, status=200)
     return response
 

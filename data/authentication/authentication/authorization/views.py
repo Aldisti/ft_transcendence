@@ -7,7 +7,7 @@ from rest_framework.decorators import APIView, api_view, permission_classes, thr
 from rest_framework.response import Response
 
 from rest_framework_simplejwt.exceptions import TokenError
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken, Token
 
 from two_factor_auth.models import UserTFA
 from .models import JwtBlackList, PasswordResetToken, EmailVerificationToken
@@ -22,6 +22,10 @@ from datetime import datetime, timedelta
 import logging
 
 logger = logging.getLogger(__name__)
+
+
+def get_exp(token: Token) -> timedelta:
+    return datetime.fromtimestamp(token['exp'], tz=settings.TZ) - datetime.now(tz=settings.TZ)
 
 
 @api_view(['POST'])
@@ -56,6 +60,7 @@ def login(request) -> Response:
     return Response(data={
         'access_token': str(refresh_token.access_token),
         'refresh_token': str(refresh_token),
+        'exp': get_exp(refresh_token).seconds,
     }, status=200)
 
 

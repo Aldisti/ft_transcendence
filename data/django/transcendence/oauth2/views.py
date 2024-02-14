@@ -71,17 +71,16 @@ def intra_login(request) -> Response:
     if api_response.status_code != 200:
         return Response(data=api_response.json(), status=api_response.status_code)
     data = api_response.json()
-    refresh_token = RefreshToken(data.pop('refresh_token'))
-    exp = datetime.fromtimestamp(refresh_token['exp'], tz=settings.TZ) - datetime.now(tz=settings.TZ)
-    response = Response(data=data, status=200)
+    response = Response(status=200)
     response.set_cookie(
         key='refresh_token',
-        value=str(refresh_token),
-        max_age=exp,
+        value=data.pop('refresh_token'),
+        max_age=data.pop('exp'),
         secure=False,
         httponly=False,
         samesite=None,
     )
+    response.data = data
     return response
 
 
@@ -178,18 +177,17 @@ def google_login(request) -> Response:
     if api_response.status_code != 200:
         return Response(data=api_response.json(), status=api_response.status_code)
     data = api_response.json()
-    refresh_token = RefreshToken(data.pop('refresh_token'))
-    exp = datetime.fromtimestamp(refresh_token['exp'], tz=settings.TZ) - datetime.now(tz=settings.TZ)
-    response = Response(data=data, status=200)
+    response = Response(status=200)
     response.set_cookie('google_state', 'deleted', max_age=0)
     response.set_cookie(
         key='refresh_token',
-        value=str(refresh_token),
-        max_age=exp,
+        value=data.pop('refresh_token'),
+        max_age=data.pop('exp'),
         secure=False,
         httponly=False,
         samesite=None,
     )
+    response.data = data
     return response
 
 
