@@ -1,5 +1,9 @@
 FROM python:3.12.0
 
+ARG USERNAME
+ARG UID
+ARG GID
+
 RUN apt update && apt upgrade -y 
 RUN apt install vim -y
 
@@ -7,22 +11,27 @@ RUN pip install django \
 	djangorestframework \
 	djangorestframework-simplejwt
 
-# postgres connection
-RUN pip install psycopg
-# two factor auth
-RUN pip install pyotp
-# for testing reasons
-RUN pip install httpie
-RUN pip install django-cors-headers
-# for asgi server and channels
+RUN pip install psycopg \
+	pyotp \
+	requests \
+	httpie \
+	django-cors-headers
 RUN pip install -U channels["daphne"]
 
-RUN mkdir /etc/develop
+RUN addgroup --gid $GID $USERNAME
+RUN adduser --uid $UID --gid $GID --disabled-password $USERNAME
 
-COPY ./tools/setting.sh /etc/setting.sh
+# TODO: remove this?
 COPY ./conf/rsa /etc/.rsa
+RUN chown -R $UID:$GID /etc/.rsa
 
-WORKDIR /etc/develop
+USER $USERNAME
 
-ENTRYPOINT ["/bin/bash", "/etc/setting.sh"]
+RUN mkdir -p /home/$USERNAME/develop/
+
+COPY ./tools/setting.sh /home/$USERNAME/setting.sh
+
+WORKDIR /home/$USERNAME/develop/
+
+ENTRYPOINT ["/bin/bash", "../setting.sh"]
 

@@ -154,3 +154,13 @@ create_env
 create_volume_dirs
 cron_env
 
+if ! grep -q 'UID' "$ENV_FILE"; then
+	echo "UID=$(id -u)" >> "$ENV_FILE"
+fi
+if ! grep -q 'GID' "$ENV_FILE"; then
+	echo "GID=$(id -g)" >> "$ENV_FILE"
+fi
+if ! grep -q 'USERNAME' "$ENV_FILE"; then
+	echo "USERNAME=$USERNAME" >> "$ENV_FILE"
+fi
+

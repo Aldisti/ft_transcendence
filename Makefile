@@ -26,7 +26,9 @@ clean:
 		trinity/ntf_listener \
 		trinity/email_listener \
 		trinity/rabbit_mq \
-		trinity/ntf  2> /dev/null
+		trinity/ntf \
+		trinity/db \
+		2> /dev/null
 
 fclean: clean
 	@docker volume rm -f django postgres pong pongdb auth authdb chat chatdb ntf ntfdb 2> /dev/null
