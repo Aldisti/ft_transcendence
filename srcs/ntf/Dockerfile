@@ -1,8 +1,11 @@
 FROM python:3.12.0
 
+ARG USERNAME
+ARG UID
+ARG GID
+
 RUN apt update && apt upgrade -y 
-RUN apt install vim -y
-RUN apt install gettext -y
+RUN apt install vim curl -y
 
 RUN pip install django
 RUN pip install djangorestframework
@@ -20,10 +23,15 @@ RUN pip install pyjwt && pip install pyjwt[crypto]
 # for asgi server and channels
 RUN pip install -U channels["daphne"]
 
+RUN addgroup --gid $GID $USERNAME
+RUN adduser --uid $UID --gid $GID --disabled-password $USERNAME
 
-RUN mkdir /etc/develop
+USER $USERNAME
 
-COPY ./tools/setting.sh /etc/setting.sh
-COPY ./conf/settings.py /tmp/settings.py
+RUN mkdir -p /home/$USERNAME/develop
 
-ENTRYPOINT ["/bin/bash", "/etc/setting.sh"]
+WORKDIR /home/$USERNAME/develop
+
+COPY ./tools/setting.sh ../setting.sh
+
+ENTRYPOINT ["/bin/bash", "../setting.sh"]

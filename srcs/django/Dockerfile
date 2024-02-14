@@ -1,5 +1,9 @@
 FROM python:3.12.0
 
+ARG USERNAME
+ARG UID
+ARG GID
+
 RUN apt update && apt upgrade -y 
 RUN apt install vim -y
 RUN apt install gettext -y
@@ -10,6 +14,7 @@ RUN pip install django \
 
 # postgres connection
 RUN pip install psycopg
+RUN pip install requests
 # for testing reasons
 RUN pip install httpie
 RUN pip install django-cors-headers
@@ -22,11 +27,16 @@ RUN pip install -U channels["daphne"]
 # for rabbitMq
 RUN pip install pika
 
+RUN addgroup --gid $GID $USERNAME
+RUN adduser --uid $UID --gid $GID --disabled-password $USERNAME
 
-RUN mkdir /etc/develop
+USER $USERNAME
 
-COPY ./tools/setting.sh /etc/setting.sh
-COPY ./conf/rsa /etc/.rsa
+RUN mkdir -p /home/$USERNAME/develop/
 
-ENTRYPOINT ["/bin/bash", "/etc/setting.sh"]
+COPY ./tools/setting.sh /home/$USERNAME/setting.sh
+
+WORKDIR /home/$USERNAME/develop/
+
+ENTRYPOINT ["/bin/bash", "../setting.sh"]
 

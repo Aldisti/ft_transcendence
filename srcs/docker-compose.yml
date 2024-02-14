@@ -9,12 +9,13 @@ services:
         UID: ${UID}
         GID: ${GID}
         USERNAME: ${USERNAME}
+    user: ${UID}:${GID}
     image: trinity/django
     restart: always
     ports:
       - "8000-8020:8000-8020"
     volumes:
-      - django:/etc/develop
+      - django:/home/$USERNAME/develop
 #    healthcheck:
 #      test: curl -sf http://localhost:8000/auth/retrieve/public-key/ -o /dev/null
 #      retries: 3
@@ -71,6 +72,7 @@ services:
         UID: ${UID}
         GID: ${GID}
         USERNAME: ${USERNAME}
+    user: ${UID}:${GID}
     image: trinity/auth
     restart: unless-stopped
     healthcheck:
@@ -109,12 +111,17 @@ services:
     container_name: pong
     build:
       context: ./pong
+      args:
+        UID: ${UID}
+        GID: ${GID}
+        USERNAME: ${USERNAME}
+    user: ${UID}:${GID}
     image: trinity/pong
     restart: always
     ports:
       - "7000-7020:8000-8020"
     volumes:
-      - pong:/etc/develop
+      - pong:/home/$USERNAME/develop
     environment:
       - PROJECT_NAME=${PONGAPP_NAME}
       - DB_USER=${PONGDB_USER}
@@ -138,12 +145,17 @@ services:
     container_name: chat
     build:
       context: ./chat
+      args:
+        UID: ${UID}
+        GID: ${GID}
+        USERNAME: ${USERNAME}
+    user: ${UID}:${GID}
     image: trinity/chat
     restart: always
     ports:
       - "9001:8000"
     volumes:
-      - chat:/etc/develop
+      - chat:/home/$USERNAME/develop
     environment:
       - PROJECT_NAME=${CHATAPP_NAME}
       - DB_USER=${CHATDB_USER}
@@ -174,12 +186,17 @@ services:
     container_name: ntf
     build:
       context: ./ntf
+      args:
+        UID: ${UID}
+        GID: ${GID}
+        USERNAME: ${USERNAME}
+    user: ${UID}:${GID}
     image: trinity/ntf
     restart: always
     ports:
       - "9000:8000"
     volumes:
-      - ntf:/etc/develop
+      - ntf:/home/$USERNAME/develop
     environment:
       - PROJECT_NAME=${NTFAPP_NAME}
       - DB_USER=${NTFDB_USER}

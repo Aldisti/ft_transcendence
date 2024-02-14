@@ -1,7 +1,5 @@
 #!/bin/bash
 
-cd /etc/develop
-
 if ! test -d $PROJECT_NAME
 then
 	django-admin startproject $PROJECT_NAME
