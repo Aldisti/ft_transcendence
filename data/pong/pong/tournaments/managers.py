@@ -60,7 +60,7 @@ class TournamentManager(models.Manager):
             except Exception:
                 user_1 = None
             try:
-                user_2 = participants.get(column=(i * 2)).player
+                user_2 = participants.get(column=(i * 2 + 1)).player
             except Exception:
                 user_2 = None
 
