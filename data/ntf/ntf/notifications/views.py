@@ -28,6 +28,7 @@ def group_ntf(request):
 # url: /notification/match_req/
 @api_view(['POST'])
 def match_req_ntf(request):
+    logger.warning("MATCH REQ NTF")
     data = request.data
     try:
         requested = UserWebsockets.objects.get(pk=data.get("requested", ""))

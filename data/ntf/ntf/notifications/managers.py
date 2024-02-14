@@ -51,6 +51,7 @@ class NotificationManager(models.Manager):
         })
 
     def send_match_req(self, receiver, body):
+        logger.warning("MATCH REQ NTF MANAGER")
         ntf_body = body
         ntf_type = NtfTypes.MATCH_REQ
         notification = self.create(receiver, body=ntf_body, ntf_type=ntf_type)
