@@ -9,6 +9,10 @@ import json
 
 import math
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 class ParticipantTournamentManager(models.Manager):
     def create(self, level: int, player, tournament, game, **kwargs):
         participant_tournament = self.model(
