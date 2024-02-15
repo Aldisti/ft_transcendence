@@ -112,8 +112,10 @@ class TournamentManager(models.Manager):
                 NotificationProducer().publish(method="tournament_request_ntf", body=json.dumps(data))
 
     def end_tournament(self, tournament, level):
-        participants = tournament.participant.filter(level=level).order_by("column")
+        participants = tournament.participant.filter(level=1).order_by("column")
         winner = tournament.participant.filter(level=level)
+        logger.warning(f"PARTICIPANTS: {participants}")
+        logger.warning(f"WINNER: {winner}")
         if winner.count() == 1:
             message = f"{winner.display_name} won the tournament: {tournament.name}"
         else:
