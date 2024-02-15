@@ -53,6 +53,11 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             self.ticket, self.channel_name
         )
 
+        await self.channel_layer.group_send(
+            self.ticket,
+            {"type": "test.message", "objects": ""}
+        )
+
         logger.warning(f"LOG: user added to channel_name")
 
         # check if someone has connected with the same ticket
@@ -94,8 +99,9 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             }
             
             # save game in games
-            self.game_id = self.game_ids
-            self.game_ids += 1
+            async with self.start_lock:
+                self.game_id = self.game_ids
+                self.game_ids += 1
             self.games[self.game_id] = game_info
 
             logger.warning(f"LOG: setting up players")
@@ -103,6 +109,12 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             await self.send(
                 text_data=json.dumps({"message": "I'm alive"})
             )
+
+            await self.channel_layer.group_send(
+                self.ticket,
+                {"type": "test.message", "objects": ""}
+            )
+
             await self.channel_layer.group_send(
                 self.ticket,
                 {"type": "game.start", "objects": self.game_id}
@@ -226,6 +238,15 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                     "type": "stateUpdate",
                     "objects": event["objects"]
                 }
+            )
+        )
+
+
+    async def test_message(self, event):
+        logger.warning(f"LOG: user {self.player.username} send a test message")
+        await self.send(
+            text_data=json.dumps(
+                {"message": "this is a test"}
             )
         )
 
