@@ -100,7 +100,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             
             # save game in games
             async with self.start_lock:
-                self.game_id = self.ids
+                self.game_id = self.participant.game.id
                 self.ids += 1
                 logger.warning(f"HEREEEEEEEEEEEEEEEE: {self.ids}")
             self.games[self.game_id] = game_info
