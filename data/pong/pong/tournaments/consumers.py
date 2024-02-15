@@ -25,7 +25,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     start_lock = asyncio.Lock()
 
-    game_ids = 1
+    ids = 1
     games = {}
     tickets = {}
     expired_tickets = []
@@ -100,8 +100,9 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             
             # save game in games
             async with self.start_lock:
-                self.game_id = self.game_ids
-                self.game_ids += 1
+                self.game_id = self.ids
+                self.ids += 1
+                logger.warning(f"HEREEEEEEEEEEEEEEEE: {self.ids}")
             self.games[self.game_id] = game_info
 
             logger.warning(f"LOG: setting up players")
