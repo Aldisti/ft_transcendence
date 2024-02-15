@@ -247,7 +247,10 @@ def create_new_participant(tournament: Tournament, user: ParticipantTournament, 
     if column % 2 == 1:
         game = Game.objects.create()
     else:
-        game = tournament.participant.get(level=level, column=(column - 1)).game
+        try:
+            game = tournament.participant.get(level=level, column=(column - 1)).game
+        except ParticipantTournament.DoesNotExist:
+            game = Game.objects.create()
     # create a new participant for the next level
     participant = ParticipantTournament.objects.create(level, user.player, tournament, game, display_name=user.display_name)
     ParticipantTournament.objects.update_column(participant, column)
