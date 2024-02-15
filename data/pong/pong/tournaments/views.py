@@ -75,7 +75,7 @@ class CreateTournament(CreateAPIView):
 
 @api_view(['POST'])
 def unregister_tournament(request):
-    player = reques.pong_user
+    player = request.pong_user
     if player is None:
         return Response({"message": "User not found"}, status=404)
 
