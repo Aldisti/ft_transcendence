@@ -98,13 +98,14 @@ def unregister_tournament(request):
     participant_to_del = tournament.participant.get(level=1, player=player)
     column = participant_to_del.column
     participants = tournament.participant.filter(level=1).order_by("column")
+    p_num = participants.count()
 
     # if the participant is the last one and his game is not shared, delete the game 
-    if participant_to_del.player.username == participants[-1].player.username and column % 2 == 1:
+    if participant_to_del.player.username == participants[p_num - 1].player.username and column % 2 == 1:
         participant_to_del.game.delete()
 
     # if the participant is the last one and his game is shared, delete the participant
-    elif participant_to_del.player.username == participants[-1].player.username:
+    elif participant_to_del.player.username == participants[p_num - 1].player.username:
         participant_to_del.delete()
 
     # else traslate and delete the participant
@@ -222,7 +223,7 @@ def tournament_loop(tournament):
                 # create a new participant for the next level
                 create_new_participant(tournament, user, level, i)
         participants = tournament.participant.filter(level=level).order_by("column")
-        logger.warning(f"PARTICIPANTS IN THREAD", participants)
+        logger.warning(f"PARTICIPANTS IN THREAD {participants}")
 
     # end tournament
     Tournament.objects.end_tournament(tournament, level)

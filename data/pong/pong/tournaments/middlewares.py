@@ -33,7 +33,7 @@ def get_participant(user: PongUser, query_params: dict):
         return None
     try:
         participants = ParticipantTournament.objects.filter(player=user, tournament_id=query_params["tournament_id"])
-        participant = participants.order_by("level")[-1]
+        participant = participants.order_by("level")[participants.count() - 1]
     except ParticipantTournament.DoesNotExist:
         return None
     except IndexError:
