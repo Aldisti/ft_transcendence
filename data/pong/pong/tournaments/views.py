@@ -210,7 +210,7 @@ def tournament_loop(tournament):
                 logger.warning("ONLY ONE PARTICIPANT NOT FOUND")
                 user = user_1 or user_2
                 # create stats for this user
-                stats = StatsTournament.object.create(user, 0, Results.WIN)
+                stats = StatsTournament.objects.create(user, 0, Results.WIN)
                 # create a new participant for the next level
                 create_new_participant(tournament, user, level, i)
 
@@ -268,7 +268,7 @@ def check_stats(user_1: ParticipantTournament, user_2: ParticipantTournament) ->
         else:
             user = user_1 if user_1.entered else user_2
             # create stats for this user
-            stats = StatsTournament.object.create(user, 0, Results.WIN)
+            stats = StatsTournament.objects.create(user, 0, Results.WIN)
 
     elif stats.Results == Results.DRAW:
         logger.warning("DRAW NOBODY WON")
