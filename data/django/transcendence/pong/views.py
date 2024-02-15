@@ -63,3 +63,13 @@ def register_tournament(request):
     api_response = post_request(url, json=body)
     # TODO: ask adi-stef
     return Response(api_response.json(), status=api_response.status_code)
+
+@api_view(['POST'])
+@permission_classes([IsUser])
+def unregister_tournament(request):
+    user = request.user
+    url = settings.MS_URLS['TOURNAMENT_UNREGISTER'] + f"?username={user.username}"
+    body = request.data
+    api_response = post_request(url, json=body)
+    # TODO: ask adi-stef
+    return Response(api_response.json(), status=api_response.status_code)
