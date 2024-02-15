@@ -243,7 +243,7 @@ def get_adjancent_users(participants, column: int) -> tuple[ParticipantTournamen
 
 def create_new_participant(tournament: Tournament, user: ParticipantTournament, level: int, column: int) -> ParticipantTournament:
     # get game from the previous participant or create a new one
-    if column % 2 == 0:
+    if column % 2 == 1:
         game = Game.objects.create()
     else:
         game = tournament.participant.get(level=level, column=(column - 1)).game
