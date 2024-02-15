@@ -12,6 +12,8 @@ from json import loads
 from requests import post as post_request
 from requests import get as get_request
 
+from accounts.models import User
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -73,3 +75,26 @@ def unregister_tournament(request):
     api_response = post_request(url, json=body)
     # TODO: ask adi-stef
     return Response(api_response.json(), status=api_response.status_code)
+
+@api_view(['GET'])
+@permission_classes([])
+def get_schema_tournament(request, tournament_id):
+    user = request.user
+    url = settings.MS_URLS['TOURNAMENT_GET_SCHEMA'].replace("<pk>", str(tournament_id))
+    api_response = get_request(url)
+    # TODO: ask adi-stef
+    logger.warning(f"RESPONSE: {api_response.json()}")
+    body = api_response.json()
+    host = request.headers.get("Host", "")
+    for layer in body:
+        for participant in layer:
+            if participant.get("empty", False):
+                continue
+            try:
+                picture = User.objects.get(pk=participant.get("username")).get_picture()
+                picture = f"{settings.PROTOCOL}://{host}{picture.url}" if picture.name != "" else None
+            except User.DoesNotExist:
+                return Response({"message": "databases between apps desynchronized"}, status=500)
+            participant["picture"] = picture
+    return Response(body, status=api_response.status_code)
+

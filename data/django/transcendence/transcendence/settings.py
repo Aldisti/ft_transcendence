@@ -30,6 +30,7 @@ SECRET_KEY = 'django-insecure-&1ve_f1=v5e9=n$(u=@dfjxh)a93!&#39qi9f2atxuqn%mafyj
 # SECURE_SSL_REDIRECT = True
 # SESSION_COOKIE_SECURE = True
 # CSRF_COOKIE_SECURE = True
+PROTOCOL = "http"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -308,6 +309,7 @@ MS_URLS = {
     "TOURNAMENT_RETRIEVE":f"http://{PONG_HOST}:{PONG_PORT}/tournaments/<pk>/",
     "TOURNAMENT_REGISTER":f"http://{PONG_HOST}:{PONG_PORT}/tournaments/register/",
     "TOURNAMENT_UNREGISTER":f"http://{PONG_HOST}:{PONG_PORT}/tournaments/unregister/",
+    "TOURNAMENT_GET_SCHEMA":f"http://{PONG_HOST}:{PONG_PORT}/tournaments/schema/<pk>/",
 	# auth urls
 	"AUTH_REGISTER": f"http://{AUTH_HOST}:{AUTH_PORT}/users/register/",
 }

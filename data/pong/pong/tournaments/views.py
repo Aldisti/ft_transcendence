@@ -5,7 +5,7 @@ from rest_framework import filters
 from rest_framework import pagination
 
 from tournaments.models import Tournament, ParticipantTournament, StatsTournament
-from tournaments.serializers import TournamentSerializer
+from tournaments.serializers import TournamentSerializer, ParticipantTournamentSerializer
 from tournaments.filters import MyFilterBackend
 
 from users.models import PongUser, Game
@@ -45,6 +45,7 @@ class RetrieveTournament(RetrieveAPIView):
     serializer_class = TournamentSerializer
     lookup_field = "id"
 
+
 class CreateTournament(CreateAPIView):
     queryset = Tournament.objects.all()
     permission_classes = []
@@ -71,6 +72,37 @@ class CreateTournament(CreateAPIView):
         tour = Tournament.objects.get(pk=response.data["id"])
         response.data["subscribed"] = tour.get_subscribed()
         return response
+
+
+@api_view(['GET'])
+def get_tournament(request, tournament_id):
+    try:
+        tournament = Tournament.objects.get(pk=tournament_id)
+    except Tournament.DoesNotExist:
+        return Response({"message": "Tournament not found"}, status=404)
+    participants_num = tournament.participants_num
+    data = []
+    level = 1
+    while 2 ** (level - 1) <= participants_num:
+        layer = tournament.participant.filter(level=level).order_by("column")
+        data.append(ParticipantTournamentSerializer(layer, many=True).data)
+        #fill_empty
+        j = 0
+        logger.warning(f"HEREEEEEE: {participants_num // (2 ** (level - 1))}")
+        for i in range(1, participants_num // (2 ** (level - 1)) + 1):
+            logger.warning(f"IIIIIII: {i}")
+            try:
+                if data[level - 1][i - 1]["column"] == i:
+                    continue
+                logger.warning(f"INSERTING: column {i}, level {level}")
+                data[level - 1].insert(i - 1, {"empty": True})
+            except IndexError:
+                data[level - 1].insert(i - 1, {"empty": True})
+
+            
+        level += 1
+    return Response(data, status=200)
+
 
 
 @api_view(['POST'])

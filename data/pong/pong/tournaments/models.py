@@ -114,6 +114,16 @@ class ParticipantTournament(models.Model):
     def __str__(self):
         return f"player: {self.player_id}, game: {self.game_id}, level: {self.level}, column: {self.column}"
 
+    def get_username(self):
+        return self.player.username
+
+    def is_winner(self):
+        try:
+            if self.stats.result == Results.WIN:
+                return True
+        finally:
+            return False
+
 
 class StatsTournament(models.Model):
     class Meta:
