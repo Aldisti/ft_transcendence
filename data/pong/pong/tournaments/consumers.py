@@ -175,7 +175,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 if score == other_score:
                     result = Results.DRAW
                 else:
-                    result = Results.WIN if score == WINNING else Results.LOSE
+                    result = Results.WIN if score == self.WINNING else Results.LOSE
                 await self.create_stats(score, result)
             elif close_code in self.CLOSE_CODES and self.games[self.game_id]["connected"]:
                 self.games[self.game_id]["connected"] = False
