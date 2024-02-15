@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 class TournamentConsumer(AsyncWebsocketConsumer):
     PLAYER_VELOCITY = 500
-    GAME_TIME = 60
+    GAME_TIME = 30
     WINNING = 3
     CLOSE_CODES = [1001, 3002]
 
@@ -219,7 +219,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
 
     async def state_update(self, event):
-        logger.warning(f"LOG: user {self.player} update")
+        #logger.warning(f"LOG: user {self.player} update")
         await self.send(
             text_data=json.dumps(
                 {
