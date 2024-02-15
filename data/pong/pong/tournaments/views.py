@@ -195,15 +195,18 @@ def tournament_loop(tournament):
         delete_tournament_tickets(participants)
         # wait that everyone played
         time.sleep(70)
+        logger.warning(f"PARTICIPANTS BEFORE CHECK: {participants}")
         # get info about games and create the new participants
         for i in range(math.ceil(participants.count() / 2)):
             # get users
             user_1, user_2 = get_adjancent_users(participants, (i * 2 + 1))
 
             if user_1 is None and user_2 is None:
+                logger.warning("PARTICIPANTS NOT FOUND")
                 continue
 
             elif user_1 is None or user_2 is None:
+                logger.warning("ONLY ONE PARTICIPANT NOT FOUND")
                 user = user_1 or user_2
                 # create stats for this user
                 stats = StatsTournament.object.create(user, 0, Results.WIN)
@@ -212,11 +215,14 @@ def tournament_loop(tournament):
 
             else:
                 # check the stats
+                logger.warning("PARTICIPANTS FOUND")
                 user = check_stats(user_1, user_2)
                 if user is None:
                     continue
                 # create a new participant for the next level
                 create_new_participant(tournament, user, level, i)
+        participants = tournament.participant.filter(level=level).order_by("column")
+        logger.warning(f"PARTICIPANTS IN THREAD", participants)
 
     # end tournament
     Tournament.objects.end_tournament(self, tournament, level)
@@ -255,6 +261,7 @@ def check_stats(user_1: ParticipantTournament, user_2: ParticipantTournament) ->
 
     if stats is None:
         # someone didn't connect, check who
+        logger.warning("STATS NOT FOUND")
         if not user_1.entered and not user_2.entered:
             user = None
         else:
@@ -263,11 +270,14 @@ def check_stats(user_1: ParticipantTournament, user_2: ParticipantTournament) ->
             stats = StatsTournament.object.create(user, 0, Results.WIN)
 
     elif stats.Results == Results.DRAW:
+        logger.warning("DRAW NOBODY WON")
         user = None
 
     else:
         # check who won the game
+        logger.warning("SOMEONE WON")
         user = user_1 if stats.result == Results.WIN else user_2
+        logger.warning(f"WINNER: {user.player.username}")
 
     return user
 
