@@ -53,10 +53,10 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             self.ticket, self.channel_name
         )
 
-        await self.channel_layer.group_send(
-            self.ticket,
-            {"type": "test.message", "objects": ""}
-        )
+        #await self.channel_layer.group_send(
+        #    self.ticket,
+        #    {"type": "test.message", "objects": ""}
+        #)
 
         logger.warning(f"LOG: user added to channel_name")
 
@@ -110,14 +110,14 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 text_data=json.dumps({"message": "I'm alive"})
             )
 
-            await self.channel_layer.group_send(
-                self.ticket,
-                {"type": "test.message", "objects": ""}
-            )
+            #await self.channel_layer.group_send(
+            #    self.ticket,
+            #    {"type": "test.message", "objects": ""}
+            #)
 
             await self.channel_layer.group_send(
                 self.ticket,
-                {"type": "game.start", "objects": self.game_id}
+                {"type": "test.message", "objects": self.game_id}
             )
             logger.warning(f"LOG: info sent")
 
@@ -242,16 +242,16 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         )
 
 
+    #async def test_message(self, event):
+    #    logger.warning(f"LOG: user {self.player.username} send a test message")
+    #    await self.send(
+    #        text_data=json.dumps(
+    #            {"message": "this is a test"}
+    #        )
+    #    )
+
+
     async def test_message(self, event):
-        logger.warning(f"LOG: user {self.player.username} send a test message")
-        await self.send(
-            text_data=json.dumps(
-                {"message": "this is a test"}
-            )
-        )
-
-
-    async def game_start(self, event):
         # inform players that they are connected
         logger.warning(f"LOG: {self.player} setting other true")
         async with self.other_lock:
