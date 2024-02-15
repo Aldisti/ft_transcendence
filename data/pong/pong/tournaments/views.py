@@ -232,11 +232,11 @@ def tournament_loop(tournament):
 def get_adjancent_users(participants, column: int) -> tuple[ParticipantTournament, ParticipantTournament]:
     try:
         user_1 = participants.get(column=column)
-    except ParticipantTournament.DoesNotExits:
+    except ParticipantTournament.DoesNotExist:
         user_1 = None
     try:
         user_2 = participants.get(column=(column + 1))
-    except ParticipantTournament.DoesNotExits:
+    except ParticipantTournament.DoesNotExist:
         user_2 = None
     return user_1, user_2
 
