@@ -102,7 +102,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             async with self.start_lock:
                 self.game_id = await self.take_game_id()
                 self.ids += 1
-                logger.warning(f"HEREEEEEEEEEEEEEEEE: {self.ids}")
             self.games[self.game_id] = game_info
 
             logger.warning(f"LOG: setting up players")

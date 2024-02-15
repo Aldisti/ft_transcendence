@@ -212,7 +212,7 @@ def tournament_loop(tournament):
                 # create stats for this user
                 stats = StatsTournament.objects.create(user, 0, Results.WIN)
                 # create a new participant for the next level
-                create_new_participant(tournament, user, level, i)
+                create_new_participant(tournament, user, level + 1, i + 1)
 
             else:
                 # check the stats
@@ -221,8 +221,8 @@ def tournament_loop(tournament):
                 if user is None:
                     continue
                 # create a new participant for the next level
-                create_new_participant(tournament, user, level, i)
-        participants = tournament.participant.filter(level=level).order_by("column")
+                create_new_participant(tournament, user, level + 1, i + 1)
+        participants = tournament.participant.filter(level=level + 1).order_by("column")
         logger.warning(f"PARTICIPANTS IN THREAD {participants}")
 
     # end tournament
