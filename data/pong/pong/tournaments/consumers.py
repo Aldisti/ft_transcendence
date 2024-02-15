@@ -254,7 +254,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
 
     async def receive(self, text_data):
-        logger.warning(f"LOG: user {self.player} received")
+        #logger.warning(f"LOG: user {self.player} received")
         text_data_json = json.loads(text_data)
         message_type = text_data_json.get("type", "")
         update_lock = self.games[self.game_id]["update_lock"]

@@ -270,7 +270,7 @@ def check_stats(user_1: ParticipantTournament, user_2: ParticipantTournament) ->
             # create stats for this user
             stats = StatsTournament.objects.create(user, 0, Results.WIN)
 
-    elif stats.Results == Results.DRAW:
+    elif stats.results == Results.DRAW:
         logger.warning("DRAW NOBODY WON")
         user = None
 
