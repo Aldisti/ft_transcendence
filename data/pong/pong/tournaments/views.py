@@ -126,7 +126,7 @@ def unregister_tournament(request):
         game = participant_to_del.game
         for participant in participants[column:]:
             if game.id == participant.game.id:
-            ParticipantTournament.objects.update_column(participant, participant.column - 1)
+                ParticipantTournament.objects.update_column(participant, participant.column - 1)
                 continue
             next_game = participant.game
             ParticipantTournament.objects.update_game(participant, game)
