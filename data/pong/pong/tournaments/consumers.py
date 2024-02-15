@@ -43,7 +43,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         self.pos = "left"
 
         # update entered value
-        await self.update_entered(self, self.participant)
+        await self.update_entered(self.participant)
         logger.warning(f"LOG: user {self.player}")
         logger.warning(f"LOG: ticket {self.ticket}")
         await self.accept()
@@ -163,7 +163,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             return
 
         elif close_code == 41:
-            await self.update_exited(self, self.participant)
+            await self.update_exited(self.participant)
             return
 
         async with update_lock:
