@@ -34,7 +34,7 @@ export function handleTournamentSubscription(dupThis, e){
         helpFunction.movementHandler("close", card);
         setTimeout(() => {
             if (confirm("Do You really want to unsubscribe dupThis event?")){
-                API.unsubscribeTournament(1).then(res=>{
+                API.unsubscribeTournament(1, e.target.getAttribute("tournamentId")).then(res=>{
                     if (res)
                         alert(dupThis.language.tournament.tournamentUnSubscribed);
                     else
@@ -111,7 +111,6 @@ export function handleTournamentSubscribe (dupThis, e){
     let input = document.querySelector(".displayNameAndSubmit input");
     let tournamentId = e.target.getAttribute("tournamentId");
 
-    console.log(tournamentId)
     if (/^[A-Za-z0-9!?*@$~_-]{5,32}$/.test(input.value)){
         API.tournamentSubmit(1, input.value, tournamentId).then(res=>{
             if (!res)
@@ -119,6 +118,8 @@ export function handleTournamentSubscribe (dupThis, e){
             Router();
         })
     }
+    else
+        input.style.backgroundColor = "var(--bs-danger)";
 }
 
 /**

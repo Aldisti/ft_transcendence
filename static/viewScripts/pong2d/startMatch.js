@@ -12,9 +12,10 @@ export default function game(ballTexture, groundTexture, pillTexture, gameConfig
         opponentName: gameConfig.user1 == localStorage.getItem("username") ? gameConfig.user2 : gameConfig.user1,
         texture: groundTexture,
         opponentDisplayName: gameConfig.opponentDisplay ?? undefined,
-        userDisplayName: gameConfig.userDisplayName ?? undefined,
+        userDisplayName: gameConfig.userDisplay ?? undefined,
         gameTicket: gameConfig.ticket,
         currentUser: gameConfig.user1 == localStorage.getItem("username") ? "paddleLeft" : "paddleRight",
+        tournamentId: gameConfig.tournamentId,
         ballConfig: {
             texture: ballTexture, 
             size: 20

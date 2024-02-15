@@ -97,13 +97,13 @@ function infoNotification(notification){
 
 //send a choice notification that can be acceoted or denied
 function friendNotification(obj){
-    let sender = obj.body.split("=")[2];
+    let sender = obj.body.sender;
     let config = {
         title: "Friend Request",
         deny: "Deny friend request",
         accept: "accept friend request",
         body: `${sender} sent a friendship request`,
-        token: obj.body.split(",")[0].split("=")[1],
+        token: obj.body.token,
         fullBody: obj.body
     }
 
@@ -112,14 +112,14 @@ function friendNotification(obj){
 }
 
 function tournamentCallback(config, notificationElement){
-    let token = config.notification.token;
-    let tournamentId = config.notification.tournament_id;
-    let opponentDisplay = config.notification.opponentDisplay;
-    let opponent = config.notification.opponent;
-    let userDisplay = config.notification.display;
+    let token = config.notification.body.token;
+    let tournamentId = config.notification.body.tournament_id;
+    let opponentDisplay = config.notification.body.opponent_display;
+    let opponent = config.notification.body.opponent;
+    let userDisplay = config.notification.body.user_display;
 
     notificationElement.querySelector(".notificationAccept").addEventListener("click", ()=>{
-        history.pushState(null, null, `/games/pong2d/?token=${btoa(token)}&tournament=${btoa(tournamentId)}&opponentDisplay=${atob(opponentDisplay)}&opponent=${atob(opponent)}&userDisplay=${atob(userDisplay)}`);
+        history.pushState(null, null, `/games/pong2d/?token=${token}&tournamentId=${tournamentId}&opponentDisplay=${opponentDisplay}&opponent=${opponent}&userDisplay=${userDisplay}`);
         Router();
         document.body.removeChild(notificationElement);
     });
@@ -150,7 +150,7 @@ function notificationRouter(notification){
     //     handleFriendNotification(notification);
     else if (notification.type == "friend_req")
         friendNotification(notification);
-    else if (notification.type == "match_req")
+    else if (notification.type == "tournament_req")
         matchReqNotification(notification);
 }
 

@@ -215,11 +215,11 @@ export default class extends Aview{
             document.querySelector("#app").innerHTML = this.getGameHtml();
             let conf = {
                 user1: localStorage.getItem("username"),
-                userDisplay: btoa(params.get("userDisplay")),
-                user2: btoa(params.get("opponent")),
-                opponentDisplay: btoa(params.get("opponentDisplay")),
-                tournamentId: btoa(params.get("tournamentId")),
-                ticket: btoa(params.get("token"))
+                userDisplay: params.get("userDisplay"),
+                user2: params.get("opponent"),
+                opponentDisplay: params.get("opponentDisplay"),
+                tournamentId: params.get("tournamentId"),
+                ticket: params.get("token")
             }
             gameObj = startGame(this.ballTexture, this.groundTexture, this.pillTexture, conf);
             return ;

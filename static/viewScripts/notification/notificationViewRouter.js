@@ -99,14 +99,14 @@ export function infoNotification(obj){
 }
 
 export function friendNotification(obj){
-    let sender = obj.body.split("=")[2];
+    let sender = obj.body.sender;
     let notificationList = document.querySelector(".friendRequestContainer");
     let config = {
         title: "Friend Request",
         deny: "Deny friend request",
         accept: "accept friend request",
         body: `${sender} sent a friendship request`,
-        token: obj.body.split(",")[0].split("=")[1],
+        token: obj.body.token,
         time: obj.sent_time,
         fullBody: obj.body
     }

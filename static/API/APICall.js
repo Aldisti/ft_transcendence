@@ -972,6 +972,7 @@ export async function getTournamentsList(recursionProtection, page, size, option
 }
 
 export async function tournamentSubmit(recursionProtection, displayName, id){
+    console.log(displayName)
     const res = await fetch(URL.tournaments.REGISTER, {
         method: "POST",
         headers: {
@@ -979,7 +980,7 @@ export async function tournamentSubmit(recursionProtection, displayName, id){
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            displayName: displayName,
+            display_name: displayName,
             tournament_id: Number(id)
         }),
         credentials: "include",
@@ -992,25 +993,29 @@ export async function tournamentSubmit(recursionProtection, displayName, id){
         return await refreshAndRetry(tournamentSubmit, 0, displayName, id);
     return (false)
 }
-export async function unsubscribeTournament(recursionProtection){
-    const res = await fetch(URL.tournaments.UNSUBSCRIBE, {
-        method: "DELETE",
+export async function unsubscribeTournament(recursionProtection, tournamentId){
+    const res = await fetch(URL.tournaments.UNREGISTER, {
+        method: "POST",
         headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "application/json"
         },
-        // credentials: "include",
+        body: JSON.stringify({
+            tournament_id: tournamentId,
+        }),
+        credentials: "include",
 
     });
     if (res.ok) {
         return (true);
     }
     if (res.status == 401 && recursionProtection)
-        return await refreshAndRetry(unsubscribeTournament, 0);
+        return await refreshAndRetry(unsubscribeTournament, 0, tournamentId);
     return (false)
 }
 
 export async function createTournament(recursionProtection, form){
+    console.log(form)
     const res = await fetch(URL.tournaments.CREATE, {
         method: "POST",
         headers: {
@@ -1019,6 +1024,7 @@ export async function createTournament(recursionProtection, form){
         },
         body: JSON.stringify({
             title: form.tName,
+            display_name: form.tDisplayName,
             description: form.tDescription,
             participants: form.tPartecipants
         }),

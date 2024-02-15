@@ -449,7 +449,7 @@
 
 .newTournament{
     width: 40%;
-    height: 50%;
+    height: 70%;
     background-color:  #f72585;
     color: white;
     display: flex;
@@ -486,7 +486,6 @@
                 height: 100%;
                 display: flex;
                 flex-direction: column;
-                padding: 10px;
                 justify-content: space-between;
                 gap: 10px;
             }

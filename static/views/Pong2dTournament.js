@@ -15,12 +15,13 @@ export default class extends Aview{page
 
     getTournamentCard(obj){
         let percentage = obj.subscribed / obj.participants;
+        console.log(percentage)
         let color = "white"
-        if (percentage < 0.4)
+        if (percentage < 0.6)
             color = "var(--bs-success)";
-        if (percentage >= 0.4 && percentage <= 0.7)
+        if (percentage >= 0.6 && percentage < 1)
             color = "var(--bs-warning)";
-        if (percentage > 0.7)
+        if (percentage == 1)
             color = "var(--bs-danger)";
 
         return `
@@ -45,9 +46,11 @@ export default class extends Aview{page
                     <div class="tournamentBody">
                         ${obj.description}
                     </div>
-                    <button tournamentId="${obj.id}" class="subscribeBtn ${obj.registered.includes(localStorage.getItem("username")) ? `unSubscribe` : `subscribe`}" style="background-color: ${obj.registered.includes(localStorage.getItem("username")) ? `var(--bs-danger)` : `var(--bs-success)`}">
-                        ${obj.registered.includes(localStorage.getItem("username")) ? this.language.tournament.tournamentCard.unSubscribe : this.language.tournament.tournamentCard.subScribe}
-                    </button>
+                    ${percentage < 1 ? `
+                        <button tournamentId="${obj.id}" class="subscribeBtn ${obj.registered.includes(localStorage.getItem("username")) ? `unSubscribe` : `subscribe`}" style="background-color: ${obj.registered.includes(localStorage.getItem("username")) ? `var(--bs-danger)` : `var(--bs-success)`}">
+                            ${obj.registered.includes(localStorage.getItem("username")) ? this.language.tournament.tournamentCard.unSubscribe : this.language.tournament.tournamentCard.subScribe}
+                        </button>
+                    ` : ``}
                 </div>
             </div>
         `
@@ -62,15 +65,19 @@ export default class extends Aview{page
                     <div class="leftSide">
                         <div class="inputLine">
                             <label for="tournamentName">${this.language.tournament.newTournament.tName}</label>
-                            <input required id="tournamentName" name="tName" type="text">
+                            <input placeholder="${this.language.tournament.normalLimit}" required id="tournamentName" name="tName" type="text">
                         </div>
                         <div class="inputLine">
                             <label for="maxPartecipants">${this.language.tournament.newTournament.tPartecipants}</label>
-                            <input required id="maxPartecipants" name="tPartecipants" type="text">
+                            <input value="4" required id="maxPartecipants" name="tPartecipants" type="number">
+                        </div>
+                        <div class="inputLine">
+                            <label for="maxPartecipants">${this.language.tournament.newTournament.tDisplayName}</label>
+                            <input placeholder="${this.language.tournament.normalLimit}" required id="displayName" name="tDisplayName" type="text">
                         </div>
                         <div class="inputLine">
                             <label for="tournamentDescription">${this.language.tournament.newTournament.tDescription}</label>
-                            <textarea required maxlength="500" name="tDescription" id="tournamentDescription" type="text"></textarea>
+                            <textarea placeholder="${this.language.tournament.bigLimit}" required maxlength="500" name="tDescription" id="tournamentDescription" type="text"></textarea>
                         </div>
                     </div>
                 </div>

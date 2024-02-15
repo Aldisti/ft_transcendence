@@ -42,13 +42,16 @@ let language = {
 			tournamentUnSubscribedError: "Error Unsubscribing Tournament!",
 			tournamentCreated: "Tournament successfully Created!",
 			tournamentCreateError: "Error Creating Tournament!",
+			normalLimit: "at least 5 character and max 32",
+			bigLimit: "at least 5 character and max 255",
 			newTournament: {
 				tTitle: "Create Tournament",
 				tName: "Tournament Name:",
 				tDescription: "Tournament Description:",
 				tDate: "Tournament Date:",
 				tPartecipants: "Max Partecipants:",
-				tCreate: "Create!"
+				tCreate: "Create!",
+				tDisplayName: "Display Name"
 			},
 			tournamentCard: {
 				dateLabel: "Starting Date: ",

@@ -122,7 +122,6 @@ function checkMessage(game, msg){
     {
         document.querySelector(".gameOverlay").style.transform = "translateX(100%)";
         game.currentUser = msg.player_pos == "right" ? "paddleRight" : "paddleLeft";
-        console.log(game.currentUser)
         game.activeUser.initPlayer(msg.player_pos);
         game.opponent.initPlayer(msg.player_pos == "left" ? "right" : "left");
     }
@@ -205,8 +204,8 @@ export default class {
         this.socket;
         this.upHandler = handleKeyUp.bind(null, this)
         this.downHandler = handleKeyDown.bind(null, this);
-        this.activeUser = new User(localStorage.getItem("username"))
-        this.opponent = new User(gameCfg.opponentName)
+        this.activeUser = new User(localStorage.getItem("username"), gameCfg.userDisplayName)
+        this.opponent = new User(gameCfg.opponentName, gameCfg.opponentDisplayName)
         this.userDisplayName = gameCfg.userDisplayName
         this.opponentDisplayName = gameCfg.opponentDisplayName
 
@@ -218,7 +217,10 @@ export default class {
         }
 
         API.startQueque(1).then(res=>{
-            this.socket = new WebSocket(`${URL.socket.GAME_SOCKET}?ticket=${res.ticket}&token=${this.gameTicket}&username=${localStorage.getItem("username")}`);
+            if (gameCfg.opponentDisplayName == undefined)
+                this.socket = new WebSocket(`${URL.socket.GAME_SOCKET}?ticket=${res.ticket}&token=${this.gameTicket}&username=${localStorage.getItem("username")}`);
+            else
+                this.socket = new WebSocket(`${URL.socket.TOURNAMENT_SOCKET}?ticket=${res.ticket}&token=${this.gameTicket}&username=${localStorage.getItem("username")}&tournament_id=${gameCfg.tournamentId}`);
             this.socket.onopen = ()=>{
                 this.socket.addEventListener("message", handleSocketMesssage.bind(null, this))
             }

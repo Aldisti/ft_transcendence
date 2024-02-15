@@ -1,4 +1,4 @@
-let ip = "192.168.137.117";
+let ip = "localhost";
 let port = "8000";
 let protocol = "http";
 let pongPort = "7000";
@@ -52,6 +52,7 @@ export const socket = {
     CHAT_SOCKET: `${protocol == "https" ? "wss" : "ws"}://${ip}:${chatSocketPort}/ws/chat/socket/`,
     NOTIFICATION_SOCKET: `${protocol == "https" ? "wss" : "ws"}://${ip}:${notificationSocketPort}/ws/notification/socket/`,
     GAME_SOCKET: `${protocol == "https" ? "wss" : "ws"}://${ip}:${pongPort}/ws/game/socket/`,
+    TOURNAMENT_SOCKET: `${protocol == "https" ? "wss" : "ws"}://${ip}:${pongPort}/ws/tournament/socket/`,
     QUEUE_SOCKET: `${protocol == "https" ? "wss" : "ws"}://${ip}:${pongPort}/ws/matchmaking/queue/`,
     
     NOTIFICATION_SOCKET_TICKET: `${protocol}://${ip}:${port}/auth/ticket/ntf/`,

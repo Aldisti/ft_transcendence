@@ -32,15 +32,19 @@ export function fieldValidate(val, key, dupThis){
         let partecipantsRegex = /^[0-9]+$/;
 
     if (key == "tPartecipants"){
-        if (partecipantsRegex.test(val) && possiblePartecipants.includes(Number(val)))
+        if (partecipantsRegex.test(val) && possiblePartecipants.includes(Number(val))){
+            document.getElementsByName(key)[0].style.backgroundColor = "white";
             return (Number(val));
+        }
         else{
-            alert(window.escapeHtml(val) + dupThis.language.tournament.invalidPartecipants)
+            document.getElementsByName(key)[0].style.backgroundColor = "var(--bs-danger)";
             return (null);
         }
     }
+    document.getElementsByName(key)[0].style.backgroundColor = "white";
     if (genericRegex.test(val))
         return (val);
-    alert(window.escapeHtml(val) + dupThis.language.tournament.invalidInput)
+    console.log(key)
+    document.getElementsByName(key)[0].style.backgroundColor = "var(--bs-danger)";
     return (null);
 }
