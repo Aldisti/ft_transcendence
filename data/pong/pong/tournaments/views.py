@@ -225,7 +225,7 @@ def tournament_loop(tournament):
         logger.warning(f"PARTICIPANTS IN THREAD", participants)
 
     # end tournament
-    Tournament.objects.end_tournament(self, tournament, level)
+    Tournament.objects.end_tournament(tournament, level)
 
 
 def get_adjancent_users(participants, column: int) -> tuple[ParticipantTournament, ParticipantTournament]:
