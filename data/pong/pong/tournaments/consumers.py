@@ -238,6 +238,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         logger.warning(f"LOG: player: {self.player.username}, the other {self.other}")
         # save game key
         self.game_id = event['objects']
+        logger.warning(f"LOG: player: {self.player.username}, has game_id {self.game_id}")
         if self.pos == "left":
             self.games[self.game_id]["setted"][0] = 1
         else:
