@@ -112,13 +112,14 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
             await self.channel_layer.group_send(
                 self.ticket,
-                {"type": "test.message", "objects": ""}
+                {"type": "test.message", "objects": self.game_id}
             )
 
             await self.channel_layer.group_send(
                 self.ticket,
-                {"type": "game.start", "objects": ""}
+                {"type": "game.start", "objects": self.game_id}
             )
+
             logger.warning(f"LOG: info sent")
 
             # start the game
@@ -246,7 +247,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         logger.warning(f"LOG: user {self.player.username} send a test message")
         await self.send(
             text_data=json.dumps(
-                {"message": "this is a test"}
+                {"message": f"this is a test, game_id = {event['objects']}"}
             )
         )
 
@@ -254,16 +255,16 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def game_start(self, event):
         # inform players that they are connected
         logger.warning(f"LOG: {self.player} setting other true")
-        async with self.other_lock:
-            self.other = True
-        logger.warning(f"LOG: player: {self.player.username}, the other {self.other}")
-        # save game key
-        self.game_id = event['objects']
-        logger.warning(f"LOG: player: {self.player.username}, has game_id {self.game_id}")
-        if self.pos == "left":
-            self.games[self.game_id]["setted"][0] = 1
-        else:
-            self.games[self.game_id]["setted"][1] = 1
+        #async with self.other_lock:
+        #    self.other = True
+        #logger.warning(f"LOG: player: {self.player.username}, the other {self.other}")
+        ## save game key
+        #self.game_id = event['objects']
+        #logger.warning(f"LOG: player: {self.player.username}, has game_id {self.game_id}")
+        #if self.pos == "left":
+        #    self.games[self.game_id]["setted"][0] = 1
+        #else:
+        #    self.games[self.game_id]["setted"][1] = 1
         logger.warning(f"LOG: {self.player} ends setting up")
 
 
