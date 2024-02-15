@@ -100,7 +100,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             
             # save game in games
             async with self.start_lock:
-                self.game_id = self.participant.game.id
+                self.game_id = await self.take_game_id()
                 self.ids += 1
                 logger.warning(f"HEREEEEEEEEEEEEEEEE: {self.ids}")
             self.games[self.game_id] = game_info
@@ -256,16 +256,16 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def game_start(self, event):
         # inform players that they are connected
         logger.warning(f"LOG: {self.player} setting other true")
-        #async with self.other_lock:
-        #    self.other = True
-        #logger.warning(f"LOG: player: {self.player.username}, the other {self.other}")
-        ## save game key
-        #self.game_id = event['objects']
-        #logger.warning(f"LOG: player: {self.player.username}, has game_id {self.game_id}")
-        #if self.pos == "left":
-        #    self.games[self.game_id]["setted"][0] = 1
-        #else:
-        #    self.games[self.game_id]["setted"][1] = 1
+        async with self.other_lock:
+            self.other = True
+        logger.warning(f"LOG: player: {self.player.username}, the other {self.other}")
+        # save game key
+        self.game_id = event['objects']
+        logger.warning(f"LOG: player: {self.player.username}, has game_id {self.game_id}")
+        if self.pos == "left":
+            self.games[self.game_id]["setted"][0] = 1
+        else:
+            self.games[self.game_id]["setted"][1] = 1
         logger.warning(f"LOG: {self.player} ends setting up")
 
 
@@ -338,6 +338,10 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 {"type": "game.end", "objects": "end"}
             )
 
+
+    @database_sync_to_async
+    def take_game_id(self):
+        return self.participant.game.id
 
     @database_sync_to_async
     def update_entered(self, player):
