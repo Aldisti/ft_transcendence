@@ -117,7 +117,7 @@ class TournamentManager(models.Manager):
         logger.warning(f"PARTICIPANTS: {participants}")
         logger.warning(f"WINNER: {winner}")
         if winner.count() == 1:
-            message = f"{winner.display_name} won the tournament: {tournament.name}"
+            message = f"{winner[0].display_name} won the tournament: {tournament.name}"
         else:
             message = f"Nobody claimed the first place in the tournament: {tournament.name}"
         for participant in participants:
