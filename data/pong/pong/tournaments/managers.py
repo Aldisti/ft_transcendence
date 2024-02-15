@@ -15,9 +15,11 @@ logger = logging.getLogger(__name__)
 
 class ParticipantTournamentManager(models.Manager):
     def create(self, level: int, player, tournament, game, **kwargs):
+        display_name = kwargs.get("display_name", "player")
         participant_tournament = self.model(
             level=level,
             column=0,
+            display_name=display_name,
             player=player,
             tournament=tournament,
             game=game,
@@ -34,6 +36,12 @@ class ParticipantTournamentManager(models.Manager):
 
     def update_entered(self, participant_tournament, entered: bool, **kwargs):
         participant_tournament.entered = entered
+        participant_tournament.full_clean()
+        participant_tournament.save()
+        return participant_tournament
+
+    def update_game(self, participant_tournament, game, **kwargs):
+        participant_tournament.game = game
         participant_tournament.full_clean()
         participant_tournament.save()
         return participant_tournament
@@ -59,11 +67,13 @@ class TournamentManager(models.Manager):
             logger.warning(f"COLUMN: {(i * 2)}")
             logger.warning(f"COLUMN: {(i * 2 + 1)}")
             try:
-                user_1 = participants.get(column=(i * 2 + 1)).player
+                participant_1 = participants.get(column=(i * 2 + 1))
+                user_1 = participant_1.player
             except Exception:
                 user_1 = None
             try:
-                user_2 = participants.get(column=(i * 2 + 2)).player
+                participant_2 = participants.get(column=(i * 2 + 2))
+                user_2 = participant_2.player
             except Exception:
                 user_2 = None
 
@@ -82,30 +92,30 @@ class TournamentManager(models.Manager):
                     "requested": user_2.username,
                     "body": {
                         "opponent": user_1.username,
-                        "opponent_display": user_1.username,
-                        "user_display": user_2.username,
+                        "opponent_display": participant_1.display_name,
+                        "user_display": participant_2.display_name,
                         "token": ticket,
                         "tournament_id": tournament.id,
                     },
                 }
-                NotificationProducer().publish(method="match_request_ntf", body=json.dumps(data))
+                NotificationProducer().publish(method="tournament_request_ntf", body=json.dumps(data))
                 data = {
                     "requested": user_1.username,
                     "body": {
                         "opponent": user_2.username,
-                        "opponent_display": user_2.username,
-                        "user_display": user_1.username,
+                        "opponent_display": participant_2.display_name,
+                        "user_display": participant_1.display_name,
                         "token": ticket,
                         "tournament_id": tournament.id,
                     },
                 }
-                NotificationProducer().publish(method="match_request_ntf", body=json.dumps(data))
+                NotificationProducer().publish(method="tournament_request_ntf", body=json.dumps(data))
 
     def end_tournament(self, tournament, level):
         participants = tournament.participant.filter(level=level).order_by("column")
         winner = tournament.participant.filter(level=level)
         if winner.count() == 1:
-            message = f"{winner.username} won the tournament: {tournament.name}"
+            message = f"{winner.display_name} won the tournament: {tournament.name}"
         else:
             message = f"Nobody claimed the first place in the tournament: {tournament.name}"
         for participant in participants:

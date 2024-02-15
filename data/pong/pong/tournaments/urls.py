@@ -6,4 +6,5 @@ urlpatterns = [
     path('tournaments/create/', views.CreateTournament.as_view(), name="api-create-tournament"),
     path('tournaments/<int:id>/', views.RetrieveTournament.as_view(), name="api-retrieve-tournament"),
     path('tournaments/register/', views.register_tournament, name="api-register-tournament"),
+    path('tournaments/unregister/', views.unregister_tournament, name="api-register-tournament"),
 ]

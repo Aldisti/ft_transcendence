@@ -4,7 +4,7 @@ from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView
 from rest_framework import filters
 from rest_framework import pagination
 
-from tournaments.models import Tournament, ParticipantTournament
+from tournaments.models import Tournament, ParticipantTournament, StatsTournament
 from tournaments.serializers import TournamentSerializer
 from tournaments.filters import MyFilterBackend
 
@@ -63,13 +63,79 @@ class CreateTournament(CreateAPIView):
         # register user to tournament
         tournament = Tournament.objects.get(pk=response.data["id"])
         game = Game.objects.create()
-        participant_tournament = ParticipantTournament.objects.create(1, player, tournament, game)
+        display_name = request.data.get("display_name", "player")
+        participant_tournament = ParticipantTournament.objects.create(1, player, tournament, game, display_name=display_name)
         ParticipantTournament.objects.update_column(participant_tournament, 1)
         
         # update the subscribed field in the response
         tour = Tournament.objects.get(pk=response.data["id"])
         response.data["subscribed"] = tour.get_subscribed()
         return response
+
+
+@api_view(['POST'])
+def unregister_tournament(request):
+    player = reques.pong_user
+    if player is None:
+        return Response({"message": "User not found"}, status=404)
+
+    # retrieve tournament from db
+    tournament_id = request.data.get('tournament_id', -1)
+    try:
+        tournament = Tournament.objects.get(pk=tournament_id)
+    except Tournament.DoesNotExist:
+        return Response({"message": "Tournament  not found"}, status=404)
+
+    # check if player is subscribed
+    if player.username not in tournament.get_participants():
+        return Response({"message": "You're already not registered"}, status=400)
+
+    # check if tournament is full
+    if tournament.is_full():
+        return Response({"message": "Tournament is full, cannot unregister now"}, status=400)
+    
+    # get participants and the one that will be deleted
+    participant_to_del = tournament.participant.get(level=1, player=player)
+    column = participant_to_del.column
+    participants = tournament.participant.filter(level=1).order_by("column")
+
+    # if the participant is the last one and his game is not shared, delete the game 
+    if participant_to_del.player.username == participants[-1].player.username and column % 2 == 1:
+        participant_to_del.game.delete()
+
+    # if the participant is the last one and his game is shared, delete the participant
+    elif participant_to_del.player.username == participants[-1].player.username:
+        participant_to_del.delete()
+
+    # else traslate and delete the participant
+    #elif column % 2 == 1:
+    #    game = participant_to_del.game
+    #    for participant in participants[column:]:
+    #        if game.id == participant.game.id:
+    #            continue
+    #        next_game = participant.game
+    #        ParticipantTournament.objects.update_game(participant, game)
+    #        ParticipantTournament.objects.update_column(participant, participant.column - 1)
+    #        game = next_game
+    #    if participants.count() % 2 == 1:
+    #        game.delete()
+    #    participant_to_del.delete()
+
+    else:
+        game = participant_to_del.game
+        for participant in participants[column:]:
+            if game.id == participant.game.id:
+                continue
+            next_game = participant.game
+            ParticipantTournament.objects.update_game(participant, game)
+            ParticipantTournament.objects.update_column(participant, participant.column - 1)
+            game = next_game
+        if participants.count() % 2 == 1:
+            game.delete()
+        participant_to_del.delete()
+    return Response({"message": "Successfully unregistered"}, status=200)
+
+
 
 
 @api_view(['POST'])
@@ -105,7 +171,8 @@ def register_tournament(request):
             
 
     # create participant and add to tournament
-    participant_tournament = ParticipantTournament.objects.create(1, player, tournament, game)
+    display_name = request.data.get("display_name", "player")
+    participant_tournament = ParticipantTournament.objects.create(1, player, tournament, game, display_name=display_name)
     ParticipantTournament.objects.update_column(participant_tournament, num_participants + 1)
 
     if (num_participants + 1) == tournament.participants_num:
@@ -141,7 +208,7 @@ def tournament_loop(tournament):
                 # create stats for this user
                 stats = StatsTournament.object.create(user, 0, Results.WIN)
                 # create a new participant for the next level
-                create_new_participant(tournament, user.player, level, i)
+                create_new_participant(tournament, user, level, i)
 
             else:
                 # check the stats
@@ -149,7 +216,7 @@ def tournament_loop(tournament):
                 if user is None:
                     continue
                 # create a new participant for the next level
-                create_new_participant(tournament, user.player, level, i)
+                create_new_participant(tournament, user, level, i)
 
     # end tournament
     Tournament.objects.end_tournament(self, tournament, level)
@@ -167,14 +234,14 @@ def get_adjancent_users(participants, column: int) -> tuple[ParticipantTournamen
     return user_1, user_2
 
 
-def create_new_participant(tournament: Tournament, user: PongUser, level: int, column: int) -> ParticipantTournament:
+def create_new_participant(tournament: Tournament, user: ParticipantTournament, level: int, column: int) -> ParticipantTournament:
     # get game from the previous participant or create a new one
     if column % 2 == 0:
         game = Game.objects.create()
     else:
         game = tournament.participant.get(level=level, column=(column - 1)).game
     # create a new participant for the next level
-    participant = ParticipantTournament.objects.create(level, user, tournament, game)
+    participant = ParticipantTournament.objects.create(level, user.player, tournament, game, display_name=user.display_name)
     ParticipantTournament.objects.update_column(participant, column)
     return participant
 

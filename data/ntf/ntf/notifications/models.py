@@ -45,7 +45,7 @@ class Notification(models.Model):
         return f"username: {self.user.username}, notification: {self.body}, sent_time: {self.sent_time}"
 
     def to_json(self) -> dict:
-        if self.ntf_type in [NtfTypes.MATCH_REQ, NtfTypes.FRIEND_REQ]:
+        if self.ntf_type in [NtfTypes.TOURNAMENT_REQ, NtfTypes.MATCH_REQ, NtfTypes.FRIEND_REQ]:
             body = json.loads(self.body)
         else:
             body = self.body

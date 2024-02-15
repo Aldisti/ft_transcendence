@@ -100,11 +100,19 @@ class ParticipantTournament(models.Model):
         default=False,
     )
 
+    display_name = models.CharField(
+        max_length=32,
+        validators=[validators.RegexValidator(regex="^[A-Za-z0-9!?*$:;,.()~ _-]{5,32}$")],
+        db_column="display_name",
+        blank=True,
+        default="",
+    )
+
     # TODO: create ParticipantTournamentManager
     objects = ParticipantTournamentManager()
 
     def __str__(self):
-        return f"player: {self.player_id}, game: {self.game_id}"
+        return f"player: {self.player_id}, game: {self.game_id}, level: {self.level}, column: {self.column}"
 
 
 class StatsTournament(models.Model):
