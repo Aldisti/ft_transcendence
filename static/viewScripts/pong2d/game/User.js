@@ -7,6 +7,7 @@ export default class User{
         this.score = 0;
         this.opponentScore = 0;
         this.scoreDisplay;
+        this.sound;
         this.displayName = displayName ?? undefined;
     }
 
@@ -17,14 +18,15 @@ export default class User{
             if (this.loggedUser == this.name){
                 document.querySelector(".gameStart").style.display = "none"
                 document.querySelector(".gameWait").style.display = "flex"
+                this.sound = window.playFile("/sound/win.wav")
             }
-
         }
         if (scores[this.opponentPosition] != this.opponentScore){
             this.opponentScore = scores[this.opponentPosition];
             if (this.loggedUser == this.name){
                 document.querySelector(".gameStart").style.display = "flex"
                 document.querySelector(".gameWait").style.display = "none"
+                this.sound = window.playFile("/sound/gameOver.wav")
             }
         }
     }

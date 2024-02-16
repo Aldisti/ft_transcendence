@@ -102,3 +102,17 @@ window.downloadFile = (fileName, content)=>{
         }
     });
 }
+
+window.playFile = (soundTrack)=>{
+    let clip = new Audio(soundTrack);
+
+    clip.play();
+    return clip;
+}
+window.playFileLoop = (soundTrack)=>{
+    let clip = new Audio(soundTrack);
+
+    clip.volume = 0.3;
+    clip.play();
+    return clip;
+}

@@ -127,10 +127,16 @@ function checkMessage(game, msg){
     }
     else if (msg.message == "Game is finished"){
         localStorage.setItem("stop", "true")
-        if (Number(game.activeUser.scoreDisplay.innerHTML.trim()) > Number(game.opponent.scoreDisplay.innerHTML.trim()))
+        game.gameOst.pause();
+        game.activeUser.sound.pause();
+        if (Number(game.activeUser.scoreDisplay.innerHTML.trim()) > Number(game.opponent.scoreDisplay.innerHTML.trim())){
             document.querySelector(".gameOverlayWin").style.transform = "translate(0)"
-        else
+            window.playFile("/sound/finalGameWin.mp3")
+        }
+        else{
             document.querySelector(".gameOverlayLoose").style.transform = "translate(0)"
+            window.playFile("/sound/finalGameOver.mp3")
+        }
     }
     else if (msg.message == "Apparently you connected to late"){
         NOTIFICATION.simple({
@@ -140,12 +146,17 @@ function checkMessage(game, msg){
         Router();
     }
     else if (msg.message == "The other player has been disconnected"){
+        game.gameOst.pause();
         localStorage.setItem("stop", "true")
         document.querySelector(".gameOverlayWin").style.transform = "translate(0)"
+        window.playFile("/sound/finalGameWin.mp3")
+
     }
     else if (msg.message == "The other player doesn't show up"){
+        game.gameOst.pause();
         localStorage.setItem("stop", "true")
         document.querySelector(".gameOverlayWin").style.transform = "translate(0)"
+        window.playFile("/sound/finalGameWin.mp3")
     }
 }
 
@@ -172,8 +183,12 @@ function handleSocketMesssage(game, message){
         msg.objects.ball.x = msg.objects.ball.x  * game.canvas.width / ORIGINAL_WIDTH;
         msg.objects.ball.y = msg.objects.ball.y  * game.canvas.height / ORIGINAL_HEIGHT;
         if (msg.objects != undefined){
-            if ((msg.objects.ball.vel_x != game.ball.deltaX || msg.objects.ball.vel_y != game.ball.deltaY)
-                || (Math.abs(msg.objects.ball.x - game.ball.x) > 10  || Math.abs(msg.objects.ball.y - game.ball.y) > 10)){
+            if ((Math.sign(msg.objects.ball.vel_x) != Math.sign(game.ball.deltaX) || Math.sign(msg.objects.ball.vel_y) != Math.sign(game.ball.deltaY))){
+                game.ball.updatePosition(msg.objects.ball.x, msg.objects.ball.y, msg.objects.ball.vel_x, msg.objects.ball.vel_y);
+                game.positionUpdated = true
+                window.playFile('/sound/ballHit.wav');
+            }
+            if (Math.abs(msg.objects.ball.x - game.ball.x) > 2  || Math.abs(msg.objects.ball.y - game.ball.y) > 2){
                 game.ball.updatePosition(msg.objects.ball.x, msg.objects.ball.y, msg.objects.ball.vel_x, msg.objects.ball.vel_y);
                 game.positionUpdated = true
             }
@@ -206,8 +221,8 @@ export default class {
         this.downHandler = handleKeyDown.bind(null, this);
         this.activeUser = new User(localStorage.getItem("username"), gameCfg.userDisplayName)
         this.opponent = new User(gameCfg.opponentName, gameCfg.opponentDisplayName)
-        this.userDisplayName = gameCfg.userDisplayName
-        this.opponentDisplayName = gameCfg.opponentDisplayName
+        this.gameOst = window.playFileLoop("/sound/gameOst.mp3")
+
 
         if (window.innerWidth > 900){
             document.addEventListener("keyup", this.upHandler)
