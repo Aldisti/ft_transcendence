@@ -79,8 +79,8 @@ export const tournaments = {
     UNREGISTER: `${protocol}://${ip}:${port}/pong/tournaments/unregister/`,
     GET_TOURNAMENTS_LIST: `${protocol}://${ip}:${port}/pong/tournaments/`,
     REGISTER: `${protocol}://${ip}:${port}/pong/tournaments/register/`,
-    GET_MATCH_HISTORY: `${protocol}://${ip}:3000/match-history/`,
-    GET_TOURNAMENT_HISTORY: `${protocol}://${ip}:3000/tournament-info/`,
+    GET_MATCH_HISTORY: `${protocol}://${ip}:${port}/pong/matches/`,
+    GET_TOURNAMENT_HISTORY: `${protocol}://${ip}:${port}/pong/tournaments/schema/`,
 }
 
 export const manageUsers ={

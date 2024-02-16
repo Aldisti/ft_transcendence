@@ -9,12 +9,25 @@ export default class extends Aview{
     constructor(){
         super();
     }
-    getMatchCard(obj){
-        let username = localStorage.getItem("username");
+    getMatchCard(obj, username){
+        let winner = obj.scores[0] > obj.scores[1] ? "left" : "right";
+        winner = obj.scores[0] == obj.scores[1] ? "left" : "right";
+
+        if (obj.scores[0] > obj.scores[1])
+            winner = "leftWin"
+        else if (obj.scores[0] === obj.scores[1])
+            winner = "draw"
+        else if (obj.scores[0] < obj.scores[1])
+            winner = "rightWin"
+
+        if (obj.opponent == null){
+            obj.opponent = "User";
+            winner = "left";
+        }
 
         return `
-            <div class="cardWrap ${obj.id == undefined ? "normalMatchWrap" : "tournamentCardWrap"}">
-            <div class="matchCard ${obj.scores[0] > obj.scores[1] ? "rightWin" : "leftWin"} ${obj.id == undefined ? "normalMatch" : "tournamentCard"}">
+            <div class="cardWrap ${obj.tournament_id == undefined ? "normalMatchWrap" : "tournamentCardWrap"}">
+            <div class="matchCard ${winner} ${obj.tournament_id == undefined ? "normalMatch" : "tournamentCard"} ">
                 <div class="topLine">
                     <h3>${username}</h3>
                     <span>VS</span>
@@ -29,9 +42,9 @@ export default class extends Aview{
                     </div>     
                 </div>
             </div>
-                ${obj.id != undefined ? `
+                ${obj.tournament_id != undefined ? `
                     <div class="tournamentInfo">
-                        <span class="matchDetails">Get tournament Detais >>></span>
+                        <span tournamentId="${obj.tournament_id}" class="matchDetails">Get tournament Detais >>></span>
                     </div>
                 ` : ``}
             </div>
@@ -41,29 +54,27 @@ export default class extends Aview{
         return `
         <div class="matchInfoContainer">
             <div class="drawMatch" style="width: 100%; height: 100%; display: flex; flex-direction: column-reverse;">
-            
             </div>
         </div>
         `
     }
     getHtml(){
+        let urlParams = new URLSearchParams(window.location.search);
+        let username = urlParams.get("username");
+
         return `
         <div class="base">
             <div class="matchManager">
                 ${this.matchInfoAndBodyName()}
                 <div class="allTournaments">
                     <div class="matchesTitle">
-                        <div class="titleLeft">
-                            <h3>test</h3>
-                            <input>
-                        </div>
-                        <div class="titleRight">
-                            <div class="matchSearchBar">
-                                <button class="importantSubmit search">test</button><button class="restoreBtn">X</button>
-                            </div>
+                        <div class="title">
+                            <h3>${username} Match History</h3>
                         </div>
                     </div>
                     <div class="matchesList">
+                        <div class="spinner-border matchesSpinner text-success" style="border-radius: 50% !important" role="status">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -80,9 +91,10 @@ export default class extends Aview{
         }
 
         API.getMatchHistory(1, username).then(res=>{
+            document.querySelector(".matchesSpinner").style.display = "none"
             document.querySelector(".matchesList").innerHTML = "";
             res.forEach(el=>{
-                document.querySelector(".matchesList").innerHTML += this.getMatchCard(el);
+                document.querySelector(".matchesList").innerHTML += this.getMatchCard(el, username);
             })
         })
 

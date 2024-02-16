@@ -9,7 +9,6 @@ export function chatInitializer(userArray){
         localStorage.setItem("chat", "{}");
 
     }
-    document.querySelector(`#${key}`).computedStyleMap.backgroundColor = "red"
 
     //parse the chat item in localstorage to be updated
     chatHistory = JSON.parse(localStorage.getItem("chat"));

@@ -1056,7 +1056,7 @@ export async function getMatchHistory(recursionProtection, username){
             Authorization: `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "application/json"
         },
-        // credentials: "include",
+        credentials: "include",
 
     });
     if (res.ok){
@@ -1067,14 +1067,14 @@ export async function getMatchHistory(recursionProtection, username){
         return await refreshAndRetry(getMatchHistory, 0, username);
     return ([])
 }
-export async function getTournamentInfo(recursionProtection){
-    const res = await fetch(URL.tournaments.GET_TOURNAMENT_HISTORY, {
+export async function getTournamentInfo(recursionProtection, tournamentId){
+    const res = await fetch(`${URL.tournaments.GET_TOURNAMENT_HISTORY}${tournamentId}/`, {
         method: "GET",
         headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "application/json"
         },
-        // credentials: "include",
+        credentials: "include",
     });
     if (res.ok){
         let parsed = await res.json();

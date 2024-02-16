@@ -1,7 +1,14 @@
 import * as API from"/API/APICall.js"
 import * as helpFunction from "/viewScripts/matchHistory/listenersHelperFunctions.js"
 
-function makePopoverTarget(username){
+function addSpinner(){
+    return `
+        <div class="spinner-border tournamentsSpinner text-success" style="border-radius: 50% !important" role="status">
+        </div>
+    `
+}
+
+function makePopoverTarget(username, displayName){
     let popContainer = document.createElement("a");
     let popContent = document.createElement("div");
     let text = document.createElement("span")
@@ -10,7 +17,7 @@ function makePopoverTarget(username){
     popContainer.setAttribute("data-link", "")
     popContainer.classList.add("popover-container");
     popContent.classList.add("popover-content");
-    text.textContent = username
+    text.textContent = displayName;
 
     popContent.appendChild(text);
     popContainer.appendChild(popContent);
@@ -20,11 +27,14 @@ function makePopoverTarget(username){
 function createTournamentImage(obj, bracket){
     let image = document.createElement("img");
     let imageWrap = document.createElement("div");
-    let popoverEl = makePopoverTarget(obj.username);
+    let popoverEl = makePopoverTarget(obj.username, obj.display_name);
     let firstPopChild = popoverEl.firstChild;
 
-    image.src = obj.picture;
-    image.classList.add("tournamentImage");
+    image.src = obj.picture ?? "/imgs/defaultImg.jpg";
+    if (obj.empty == true)
+        image.classList.add("tournamentImageEmpty");
+    else
+        image.classList.add("tournamentImage");
     imageWrap.classList.add("tournamentImageWrap");
     imageWrap.classList.add("popover-trigger");
 
@@ -45,6 +55,17 @@ function getCrown(){
     return (image)
 }
 
+function checkForEmptyUser(tournaments){
+    tournaments.forEach(obj=>{
+        if (obj.empty == true){
+            obj.username = null;
+            obj.display_name = "Nobody Show Up";
+            obj.picture = "/imgs/warning.png";
+            obj.winner = false;
+        }
+    })
+}
+
 function handleCanvas(tournament){
     let iterations = tournament.length;
     let partecipants = tournament[0].length;
@@ -55,12 +76,12 @@ function handleCanvas(tournament){
 
         divContainer.classList.add("bracketLine")
         divContainer.style.height = `${(document.querySelector(".matchInfoContainer").clientHeight / iterations)}px`
-
+        checkForEmptyUser(tournament[i]);
         for (let j = 0; j < tournament[i].length; j += 2){
             let bracket = document.createElement("div");
 
             bracket.classList.add("bracket");
-            bracket.style.height = `${bracketSize / 2}px`
+            bracket.style.height = `${bracketSize / 2}px`;
             createTournamentImage(tournament[i][j], bracket);
             if (tournament[i][j + 1] != undefined){
                 createTournamentImage(tournament[i][j + 1], bracket);
@@ -86,8 +107,15 @@ export function handleTournamentHistory(dupThis, e){
         if (!e.target.classList.contains("bodyOpened")){
             helpFunction.movementHandler("open", card);
             document.querySelector(".drawMatch").innerHTML = "";
+            document.querySelector(".drawMatch").style.display = "none";
+            if (document.querySelector(".tournamentsSpinner") == undefined)
+                document.querySelector(".matchInfoContainer").innerHTML += addSpinner();
+            else
+                document.querySelector(".tournamentsSpinner").style.display = "flex"
             setTimeout(() => {
-                API.getTournamentInfo(1).then(res=>{
+                API.getTournamentInfo(1, e.target.getAttribute("tournamentId")).then(res=>{
+                    document.querySelector(".tournamentsSpinner").style.display = "none";
+                    document.querySelector(".drawMatch").style.display = "flex";
                     handleCanvas(res);
                 })
             }, 350);
