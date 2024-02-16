@@ -73,7 +73,7 @@ def serialize_tournament_matches(participants, opponents, games) -> dict:
         participant_stats = getattr(participant, "stats", None)
         participant_score = getattr(participant_stats, "score", 0)
         match = {
-            "opponent": opponent.player_id,
+            "opponent": None if opponent is None else opponent.player_id,
             "scores": [participant_score, opponent_score],
             "date": game.get_created(),
             "tournament_id": participant.tournament_id,

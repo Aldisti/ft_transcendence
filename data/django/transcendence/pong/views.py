@@ -106,15 +106,24 @@ def get_schema_tournament(request, tournament_id):
 @api_view(['GET'])
 @permission_classes([IsUser])
 def get_matches(request):
-    user = request.user
+    # get user from query params
+    username = request.query_params.get("username", "")
+    try:
+        user = User.objects.get(pk=username)
+    except User.DoesNotExist:
+        return Response({"message": "User not found"}, status=404)
+
     game_url = settings.MS_URLS['GAME_GET_MATCHES'] + f"?username={user.username}"
     game_response = get_request(game_url)
     tournament_url = settings.MS_URLS['TOURNAMENT_GET_MATCHES'] + f"?username={user.username}"
     tournament_response = get_request(tournament_url)
     if game_response.status_code != 200 or tournament_response.status_code != 200:
         return Response({"message": "Databases desynchronized"}, status=500)
+
+    # put together the two responses and sort
     tournament_matches = tournament_response.json()
     game_matches = game_response.json()
     matches = tournament_matches + game_matches
     matches = sorted(matches, key=itemgetter("date"), reverse=True)
+
     return Response(matches, status=200)
