@@ -14,6 +14,8 @@ from requests import get as get_request
 
 from accounts.models import User
 
+from operator import itemgetter
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -105,6 +107,14 @@ def get_schema_tournament(request, tournament_id):
 @permission_classes([IsUser])
 def get_matches(request):
     user = request.user
-    url = settings.MS_URLS['GAME_GET_MATCHES'] + f"?username={user.username}"
-    api_response = get_request(url)
-    return Response(api_response.json(), status=api_response.status_code)
+    game_url = settings.MS_URLS['GAME_GET_MATCHES'] + f"?username={user.username}"
+    game_response = get_request(game_url)
+    tournament_url = settings.MS_URLS['TOURNAMENT_GET_MATCHES'] + f"?username={user.username}"
+    tournament_response = get_request(tournament_url)
+    if game_response.status_code != 200 or tournament_response.status_code != 200:
+        return Response({"message": "Databases desynchronized"}, status=500)
+    tournament_matches = tournament_response.json()
+    game_matches = game_response.json()
+    matches = tournament_matches + game_matches
+    matches = sorted(matches, key=itemgetter("date"), reverse=True)
+    return Response(matches, status=200)

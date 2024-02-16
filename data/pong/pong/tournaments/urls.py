@@ -8,4 +8,5 @@ urlpatterns = [
     path('register/', views.register_tournament, name="api-register-tournament"),
     path('unregister/', views.unregister_tournament, name="api-register-tournament"),
     path('schema/<int:tournament_id>/', views.get_tournament, name="api-get-tournament"),
+    path('matches/', views.get_tournament_matches, name="api-get-tournament-matches"),
 ]

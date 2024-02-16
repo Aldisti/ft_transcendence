@@ -7,20 +7,23 @@ from rest_framework import filters
 from rest_framework import pagination
 
 from tournaments.models import Tournament, ParticipantTournament, StatsTournament
-from tournaments.serializers import TournamentSerializer, ParticipantTournamentSerializer
 from tournaments.filters import MyFilterBackend
+from tournaments.serializers import (
+    TournamentSerializer,
+    ParticipantTournamentSerializer,
+    serialize_tournament_matches
+)
 
 from users.models import PongUser, Game
 from users.utils import Results
 
 from pong.producers import NotificationProducer
 
+from operator import attrgetter
+
 import logging
-
 import json
-
 import math
-
 import time
 import threading
 
@@ -74,6 +77,28 @@ class CreateTournament(CreateAPIView):
         tour = Tournament.objects.get(pk=response.data["id"])
         response.data["subscribed"] = tour.get_subscribed()
         return response
+
+
+@api_view(["GET"])
+def get_tournament_matches(request):
+    player = request.pong_user
+    if player is None:
+        return Response({"message": "User not found"}, status = 404)
+
+    # get participants entities
+    parts = player.participant_tournament.all()
+    # get all games and sort
+    games = [part.game for part in parts]
+    games = sorted(games, key=attrgetter("created"), reverse=True)
+    # get sorted parts
+    parts = [game.participant_tournament.filter(player_id = player.username).first() for game in games]
+    # get sorted opponents
+    opponents = [game.participant_tournament.exclude(player_id = player.username).first() for game in games]
+
+    # serialize data
+    data = serialize_tournament_matches(parts, opponents, games)
+
+    return Response(data, status=200)
 
 
 @api_view(['GET'])

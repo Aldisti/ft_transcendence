@@ -44,6 +44,7 @@ class TournamentSerializer(serializers.ModelSerializer):
         tournament = Tournament.objects.create(**validated_data)
         return tournament
 
+
 class ParticipantTournamentSerializer(serializers.ModelSerializer):
     username = serializers.CharField(
         source="get_username",
@@ -62,3 +63,20 @@ class ParticipantTournamentSerializer(serializers.ModelSerializer):
             "display_name": {"read_only": True},
             "column": {"read_only": True},
         }
+
+
+def serialize_tournament_matches(participants, opponents, games) -> dict:
+    data = []
+    for participant, opponent, game in zip(participants, opponents, games):
+        opponent_stats = getattr(opponent, "stats", None)
+        opponent_score = getattr(opponent_stats, "score", 0)
+        participant_stats = getattr(participant, "stats", None)
+        participant_score = getattr(participant_stats, "score", 0)
+        match = {
+            "opponent": opponent.player_id,
+            "scores": [participant_score, opponent_score],
+            "date": game.get_created(),
+            "tournament_id": participant.tournament_id,
+        }
+        data.append(match)
+    return data
