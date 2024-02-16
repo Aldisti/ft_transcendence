@@ -76,7 +76,6 @@ export default class extends Aview{
     }
 	getThirdForm(){
 		return `
-		<div class="base">
 			<div class="signupForm">
 				<h1 id="title">${this.language.register.thirdRegister}</h1>
 				<div class="line">
@@ -112,12 +111,10 @@ export default class extends Aview{
 					<button id="submit" class="signupBtn importantSubmit retroShade retroBtn btnColor-green">${this.language.register.submit}</button>
 				</div>
 			</div>
-	   </div>
     	`
 	}
 	getSecondForm(){
 		return `
-		<div class="base">
 			<div class="signupForm">
 				<h1 id="title">${this.language.register.secondRegister}</h1>
 				<div class="line">
@@ -146,7 +143,6 @@ export default class extends Aview{
 					<button id="flow3" class="signupBtn importantSubmit retroShade retroBtn btnColor-green">${this.language.register.next}</button>
 				</div>
 			</div>
-		</div>
 		`
 	}
 
@@ -184,7 +180,8 @@ export default class extends Aview{
 	}
 	setup(){
 		check.showErrors(document.querySelectorAll(".data"), this.errors)
-		document.addEventListener("click", (e)=>{
+		document.querySelector(".base").addEventListener("click", (e)=>{
+			console.log("clicked")
 			//go Next
 			if (e.target.id == "flow2")
 			{
@@ -192,7 +189,7 @@ export default class extends Aview{
 				check.flow1Check(this.field, this.errors, document.querySelectorAll(".data")).then((res)=>{
 					if (res)
 					{
-						document.querySelector("#app").innerHTML = this.getSecondForm();
+						document.querySelector(".base").innerHTML = this.getSecondForm();
 						check.showErrors(document.querySelectorAll(".data"), this.errors)	
 					}
 				})
@@ -203,7 +200,7 @@ export default class extends Aview{
 				check.flow2Check(this.field, this.errors, document.querySelectorAll(".data")).then(res=>{
 					if (res)
 					{
-						document.querySelector("#app").innerHTML = this.getThirdForm();
+						document.querySelector(".base").innerHTML = this.getThirdForm();
 						check.setupSwitchListener();
 					}
 				})
@@ -226,13 +223,13 @@ export default class extends Aview{
 			else if (e.target.id == "goFlow2")
 			{
 				//console.log(this.errors)
-				document.querySelector("#app").innerHTML = this.getSecondForm();
+				document.querySelector(".base").innerHTML = this.getSecondForm();
 				check.showErrors(document.querySelectorAll(".data"), this.errors)
 			}
 			else if (e.target.id == "goFlow1")
 			{
 				//console.log(this.errors)
-				document.querySelector("#app").innerHTML = this.getHtml();
+				document.querySelector(".base").innerHTML = this.getHtml();
 				check.showErrors(document.querySelectorAll(".data"), this.errors)
 			}
 		})
@@ -245,4 +242,8 @@ export default class extends Aview{
             pair[0].parentNode.replaceChild(pair[1], pair[0]);
         }
     }
+
+	destroy(){
+
+	}
 }
