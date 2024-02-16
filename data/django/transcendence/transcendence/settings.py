@@ -310,6 +310,8 @@ MS_URLS = {
     "TOURNAMENT_REGISTER":f"http://{PONG_HOST}:{PONG_PORT}/tournaments/register/",
     "TOURNAMENT_UNREGISTER":f"http://{PONG_HOST}:{PONG_PORT}/tournaments/unregister/",
     "TOURNAMENT_GET_SCHEMA":f"http://{PONG_HOST}:{PONG_PORT}/tournaments/schema/<pk>/",
+    "TOURNAMENT_GET_MATCHES":f"http://{PONG_HOST}:{PONG_PORT}/tournaments/matches/",
+    "GAME_GET_MATCHES":f"http://{PONG_HOST}:{PONG_PORT}/game/matches/",
 	# auth urls
 	"AUTH_REGISTER": f"http://{AUTH_HOST}:{AUTH_PORT}/users/register/",
 }

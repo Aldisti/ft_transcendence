@@ -77,7 +77,7 @@ def unregister_tournament(request):
     return Response(api_response.json(), status=api_response.status_code)
 
 @api_view(['GET'])
-@permission_classes([])
+@permission_classes([IsUser])
 def get_schema_tournament(request, tournament_id):
     user = request.user
     url = settings.MS_URLS['TOURNAMENT_GET_SCHEMA'].replace("<pk>", str(tournament_id))
@@ -100,3 +100,11 @@ def get_schema_tournament(request, tournament_id):
             participant["picture"] = picture
     return Response(body, status=api_response.status_code)
 
+
+@api_view(['GET'])
+@permission_classes([IsUser])
+def get_matches(request):
+    user = request.user
+    url = settings.MS_URLS['GAME_GET_MATCHES'] + f"?username={user.username}"
+    api_response = get_request(url)
+    return Response(api_response.json(), status=api_response.status_code)
