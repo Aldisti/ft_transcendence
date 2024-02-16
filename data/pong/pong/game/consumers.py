@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 class PongConsumer(AsyncWebsocketConsumer):
     PLAYER_VELOCITY = 500
     GAME_TIME = 60
-    WINNING = 11
+    WINNING = 3
     CLOSE_CODES = [1001, 3002]
 
     start_lock = asyncio.Lock()

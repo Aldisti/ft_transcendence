@@ -1,3 +1,5 @@
+from django.conf import settings
+
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView
@@ -95,6 +97,7 @@ def get_tournament(request, tournament_id):
             except IndexError:
                 data[level - 1].insert(i - 1, {"empty": True})
         level += 1
+    data[-1][0]["winner"] = True
     return Response(data, status=200)
 
 
@@ -122,48 +125,12 @@ def unregister_tournament(request):
     
     # get participants and the one that will be deleted
     participant_to_del = tournament.participant.get(level=1, player=player)
-    column = participant_to_del.column
     participants = tournament.participant.filter(level=1).order_by("column")
-    p_num = participants.count()
 
-    # if the participant is the last one and his game is not shared, delete the game 
-    if participant_to_del.player.username == participants[p_num - 1].player.username and column % 2 == 1:
-        participant_to_del.game.delete()
+    # delete participant from tournament
+    delete_participant_from_list(participant_to_del, participants)
 
-    # if the participant is the last one and his game is shared, delete the participant
-    elif participant_to_del.player.username == participants[p_num - 1].player.username:
-        participant_to_del.delete()
-
-    # else traslate and delete the participant
-    #elif column % 2 == 1:
-    #    game = participant_to_del.game
-    #    for participant in participants[column:]:
-    #        if game.id == participant.game.id:
-    #            continue
-    #        next_game = participant.game
-    #        ParticipantTournament.objects.update_game(participant, game)
-    #        ParticipantTournament.objects.update_column(participant, participant.column - 1)
-    #        game = next_game
-    #    if participants.count() % 2 == 1:
-    #        game.delete()
-    #    participant_to_del.delete()
-
-    else:
-        game = participant_to_del.game
-        for participant in participants[column:]:
-            if game.id == participant.game.id:
-                ParticipantTournament.objects.update_column(participant, participant.column - 1)
-                continue
-            next_game = participant.game
-            ParticipantTournament.objects.update_game(participant, game)
-            ParticipantTournament.objects.update_column(participant, participant.column - 1)
-            game = next_game
-        if participants.count() % 2 == 1:
-            game.delete()
-        participant_to_del.delete()
     return Response({"message": "Successfully unregistered"}, status=200)
-
-
 
 
 @api_view(['POST'])
@@ -223,18 +190,18 @@ def tournament_loop(tournament):
         delete_tournament_tickets(participants)
         # wait that everyone played
         time.sleep(40)
-        logger.warning(f"PARTICIPANTS BEFORE CHECK: {participants}")
+        #logger.warning(f"PARTICIPANTS BEFORE CHECK: {participants}")
         # get info about games and create the new participants
         for i in range(math.ceil(participants.count() / 2)):
             # get users
             user_1, user_2 = get_adjancent_users(participants, (i * 2 + 1))
 
             if user_1 is None and user_2 is None:
-                logger.warning("PARTICIPANTS NOT FOUND")
+                #logger.warning("PARTICIPANTS NOT FOUND")
                 continue
 
             elif user_1 is None or user_2 is None:
-                logger.warning("ONLY ONE PARTICIPANT NOT FOUND")
+                #logger.warning("ONLY ONE PARTICIPANT NOT FOUND")
                 user = user_1 or user_2
                 # create stats for this user
                 stats = StatsTournament.objects.create(user, 0, Results.WIN)
@@ -243,14 +210,14 @@ def tournament_loop(tournament):
 
             else:
                 # check the stats
-                logger.warning("PARTICIPANTS FOUND")
+                #logger.warning("PARTICIPANTS FOUND")
                 user = check_stats(user_1, user_2)
                 if user is None:
                     continue
                 # create a new participant for the next level
                 create_new_participant(tournament, user, level + 1, i + 1)
-        participants = tournament.participant.filter(level=level + 1).order_by("column")
-        logger.warning(f"PARTICIPANTS IN THREAD {participants}")
+        #participants = tournament.participant.filter(level=level + 1).order_by("column")
+        #logger.warning(f"PARTICIPANTS IN THREAD {participants}")
 
     # end tournament
     Tournament.objects.end_tournament(tournament, level + 1)
@@ -292,7 +259,7 @@ def check_stats(user_1: ParticipantTournament, user_2: ParticipantTournament) ->
 
     if stats is None:
         # someone didn't connect, check who
-        logger.warning("STATS NOT FOUND")
+        #logger.warning("STATS NOT FOUND")
         if not user_1.entered and not user_2.entered:
             user = None
         else:
@@ -301,14 +268,14 @@ def check_stats(user_1: ParticipantTournament, user_2: ParticipantTournament) ->
             stats = StatsTournament.objects.create(user, 0, Results.WIN)
 
     elif stats.result == Results.DRAW:
-        logger.warning("DRAW NOBODY WON")
+        #logger.warning("DRAW NOBODY WON")
         user = None
 
     else:
         # check who won the game
-        logger.warning("SOMEONE WON")
+        #logger.warning("SOMEONE WON")
         user = user_1 if stats.result == Results.WIN else user_2
-        logger.warning(f"WINNER: {user.player.username}")
+        #logger.warning(f"WINNER: {user.player.username}")
 
     return user
 
@@ -317,3 +284,29 @@ def delete_tournament_tickets(participants):
     for participant in participants:
         PongUser.objects.delete_tournament_ticket(participant.player)
 
+
+def delete_participant_from_list(participant_to_del, participants):
+    column = participant_to_del.column
+
+    # if the participant is the last one and his game is not shared, delete the game 
+    if participant_to_del.player.username == participants.last().player.username and column % 2 == 1:
+        participant_to_del.game.delete()
+
+    # if the participant is the last one and his game is shared, delete the participant
+    elif participant_to_del.player.username == participants.last().player.username:
+        participant_to_del.delete()
+
+    # else traslate and delete the participant
+    else:
+        game = participant_to_del.game
+        for participant in participants[column:]:
+            if game.id == participant.game.id:
+                ParticipantTournament.objects.update_column(participant, participant.column - 1)
+                continue
+            next_game = participant.game
+            ParticipantTournament.objects.update_game(participant, game)
+            ParticipantTournament.objects.update_column(participant, participant.column - 1)
+            game = next_game
+        if participants.count() % 2 == 1:
+            game.delete()
+        participant_to_del.delete()

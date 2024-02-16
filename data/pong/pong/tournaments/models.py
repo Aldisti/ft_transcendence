@@ -77,7 +77,7 @@ class ParticipantTournament(models.Model):
     player = models.ForeignKey(
         PongUser,
         on_delete=models.CASCADE,
-        related_name="+",
+        related_name="participant_tournament",
         db_column="player"
     )
     
@@ -91,7 +91,7 @@ class ParticipantTournament(models.Model):
     game = models.ForeignKey(
         Game,
         on_delete=models.CASCADE,
-        related_name="+",
+        related_name="participant_tournament",
         db_column="game_id"
     )
 
