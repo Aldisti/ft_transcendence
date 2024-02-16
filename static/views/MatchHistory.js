@@ -22,7 +22,7 @@ export default class extends Aview{
 
         if (obj.opponent == null){
             obj.opponent = "User";
-            winner = "left";
+            winner = "leftWin";
         }
 
         return `
