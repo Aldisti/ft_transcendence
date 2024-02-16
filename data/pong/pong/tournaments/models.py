@@ -118,11 +118,11 @@ class ParticipantTournament(models.Model):
         return self.player.username
 
     def is_winner(self):
-        try:
-            if self.stats.result == Results.WIN:
-                return True
-        finally:
-            return False
+        stats = getattr(self, "stats", None)
+        result = getattr(stats, "result", Results.LOSE)
+        if result == Results.WIN:
+            return True
+        return False
 
 
 class StatsTournament(models.Model):

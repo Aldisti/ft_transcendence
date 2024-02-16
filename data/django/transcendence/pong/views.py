@@ -91,10 +91,12 @@ def get_schema_tournament(request, tournament_id):
             if participant.get("empty", False):
                 continue
             try:
-                picture = User.objects.get(pk=participant.get("username")).get_picture()
-                picture = f"{settings.PROTOCOL}://{host}{picture.url}" if picture.name != "" else None
+                user = User.objects.get(pk=participant.get("username"))
+                picture = f"{settings.PROTOCOL}://{host}{user.get_picture().url}"
             except User.DoesNotExist:
                 return Response({"message": "databases between apps desynchronized"}, status=500)
+            except ValueError:
+                picture = None
             participant["picture"] = picture
     return Response(body, status=api_response.status_code)
 
