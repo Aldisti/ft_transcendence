@@ -1,5 +1,6 @@
 import * as general from "/viewScripts/chat/helpFunction.js"
 import * as API from "/API/APICall.js";
+import Router from "/router/mainRouterFunc.js"
 
 export const global = {
     username: "global",
@@ -51,10 +52,10 @@ export function createTitle(){
                         &#x2630;
                     </div>
                     <div tabindex="-1" class="chatUserMenu chat">
-                        <div tabindex="-1" class="chat chatUserMenuLine">
-                            <h3 tabindex="-1" class="chat">Block User</h3>
+                        <div tabindex="-1" class="chat chatUserMenuLine unfriendUser">
+                            <h3 tabindex="-1" class="chat">Remove Friend</h3>
                         </div>
-                        <div tabindex="-1" class="chat chatUserMenuLine">
+                        <div tabindex="-1" class="chat chatUserMenuLine matchReq">
                             <h3 tabindex="-1" class="chat">Invite</h3>
                         </div>
                     </div>
@@ -63,6 +64,16 @@ export function createTitle(){
             document.querySelector(".chatTitle").innerHTML = userLine; 
             document.querySelector(".menu").addEventListener("click", ()=>{
                 document.querySelector(".chatUserMenu").classList.toggle("chatUserMenuDisplay")
+            })
+            document.querySelector(".unfriendUser").addEventListener("click", ()=>{
+                if (confirm("are you sure?")){
+                    API.removeFriend(1, document.querySelector(".chatBox").getAttribute("name"));
+                    Router()
+                }
+
+            })
+            document.querySelector(".matchReq").addEventListener("click", ()=>{
+                console.log("invited")
             })
         })
     }

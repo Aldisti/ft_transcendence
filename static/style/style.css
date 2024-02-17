@@ -747,7 +747,7 @@ a img{
         & .chatUserMenu{
             width: 100%;
             height: 200%;
-            background-color: #E63946;
+            background-color: white;
             position: absolute;
             display: none;
             top: 110%;

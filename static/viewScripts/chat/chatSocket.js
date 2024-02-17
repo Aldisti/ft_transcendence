@@ -15,10 +15,14 @@ function sendSocketMessage(e){
         type: chatBox.getAttribute("name") == "global" ? "global" : "private",
         receiver: chatBox.getAttribute("name"),
         sender: localStorage.getItem("username"),
-        body: message.value,
+        body: message.value.trim(),
         sent_time: general.getTimeStamp()
     }
 
+    if (newMessage.body == ""){
+        message.value = "";
+        return
+    }
     general.localStoragePush(newMessage);
     delete newMessage.sender;
     socket.send(JSON.stringify(newMessage))

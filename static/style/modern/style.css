@@ -167,14 +167,22 @@ body {
     cursor: pointer;
 }
 
+.unfriendUser{
+    background-color: var(--bs-danger);
+}
+
+.matchReq{
+    background-color: var(--bs-success);
+}
+
 .chatUserMenu{
-    width: 100%;
+    width: 70%;
     height: 200%;
-    background-color: #E63946;
+    background-color: white;
     position: absolute;
     display: none;
     top: 110%;
-    left: 0;
+    right: 10px;
 }
 
 .chatUserMenuDisplay{
@@ -193,11 +201,18 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: var(--bs-dark);
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+
 }
 
 .chatUserMenuLine h3{
+    width: 100%;
+    text-align: center;
     margin: 0;
+}
+
+.chatUserMenuLine h3:hover{
+    cursor: pointer;
 }
 
 .account span {
