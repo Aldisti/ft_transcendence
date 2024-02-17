@@ -171,10 +171,12 @@ function alertNotification(notification){
         NOTIFICATION.simple({title: "Alert", body: notification.body})
         history.pushState(null, null, `/games/pong2d/match/?token=${localStorage.getItem("matchReqToken")}`);
         localStorage.removeItem("matchReqToken");
+        document.body.removeChild(document.querySelector("#matchReqOverlay"))
         Router();
     }
     else{
         NOTIFICATION.simple({title: "Alert", body: notification.body})
+        document.querySelector(".matchReq h3").innerHTML = "Invite";
     }
 }
 
@@ -184,7 +186,7 @@ function notificationRouter(notification){
         infoNotification(notification);
     // else if (notification.type == "ban")
     //     banNotification();
-    else if (notification.type == "alert")//will arrive notification if user accept or reject match req
+    else if (notification.type == "alert")
         alertNotification(notification);
     else if (notification.type == "friend_req")
         friendNotification(notification);

@@ -12,8 +12,12 @@ let gameObj = 0;
 let socket = 0;
 
 function composeUrl(ticket, token){
-    if (token != undefined)
-        return (`${URL.matchReq.MATCH_REQ_SOCKET}?ticket=${ticket}&username=${localStorage.getItem("username")}&match_token=${token}`)
+    if (token != undefined){
+        let url = `${URL.matchReq.MATCH_REQ_SOCKET}?ticket=${ticket}&username=${localStorage.getItem("username")}&match_token=${token}`;
+
+        history.pushState(null, null, "/games/pong2d/");
+        return (url)
+    }
     return (`${URL.socket.QUEUE_SOCKET}?ticket=${ticket}&username=${localStorage.getItem("username")}`);
 }
 
@@ -163,9 +167,9 @@ export default class extends Aview{
                     let msg = JSON.parse(message.data);
                     localStorage.setItem("gameStarted", "true");
                     document.querySelector("#app").innerHTML = this.getGameHtml();
-                    gameObj = startGame(this.ballTexture, this.groundTexture, this.pillTexture, msg);
                     socket.close();
                     socket = 0;
+                    gameObj = startGame(this.ballTexture, this.groundTexture, this.pillTexture, msg);
                 })
             } 
         })
@@ -209,6 +213,7 @@ export default class extends Aview{
                 ticket: params.get("token")
             }
             gameObj = startGame(this.ballTexture, this.groundTexture, this.pillTexture, conf);
+            history.pushState(null, null, "/games/pong2d/");
             return ;
         }
 

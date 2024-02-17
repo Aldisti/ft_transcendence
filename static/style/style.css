@@ -20,6 +20,32 @@ h1, h2, h3, h4, h5, h6{
     -webkit-user-select:none;
 }
 
+#matchReqOverlay{
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+
+    & button{
+        border: none;
+        outline: none;
+        width: fit-content;
+        height: fit-content;
+        padding: 20px;
+        background-color: var(--bs-danger);
+        color: white;
+
+    }
+
+    & h1{
+        color: white;
+    }
+
+    & .spinner-border{
+        border-radius: 50% !important;
+    }
+}
 
 input textarea{
     font-size: 18px !important;

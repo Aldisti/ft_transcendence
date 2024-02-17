@@ -8,7 +8,6 @@ export const global = {
     status: true
 }
 
-
 //function that append to the chat user container a line with friend info
 export function createUser(info){
     if (localStorage.getItem("chat") == null)
@@ -31,6 +30,37 @@ export function createUser(info){
         </div>
     `
     document.querySelector(".chatSideList").innerHTML += userLine; 
+}
+
+function blockUi(){
+    const overlay = document.createElement("div");
+    const spinner = document.createElement("div");
+    const heading = document.createElement("h1");
+    const release = document.createElement("button");
+
+    heading.innerHTML = "Request Sent!";
+    release.setAttribute("id", "releaseBtn");
+    overlay.setAttribute("id", "matchReqOverlay");
+    spinner.classList.add("spinner-border")
+    spinner.classList.add("text-warning")
+    release.innerHTML = "Cancel Request"
+    overlay.style.position = "fixed";
+    overlay.style.top = "0";
+    overlay.style.left = "0";
+    overlay.style.width = "100%";
+    overlay.style.height = "100%";
+    overlay.style.backgroundColor = "var(--bs-dark)"; // Transparent
+    overlay.style.pointerEvents = "auto"; // Prevent clicks from passing through
+    overlay.style.zIndex = "999999999999999999"; // Ensure it's above other elements
+    overlay.appendChild(release);
+    overlay.appendChild(spinner);
+    overlay.appendChild(heading);
+    document.body.appendChild(overlay);
+    document.querySelector("#releaseBtn").addEventListener("click", ()=>{
+        document.body.removeChild(document.querySelector("#matchReqOverlay"));
+        API.deleteMatchReq(1);
+        document.querySelector(".matchReq h3").innerHTML = "Invite";
+    })
 }
 
 //function that append to the chat user container a line with friend info
@@ -72,21 +102,14 @@ export function createTitle(){
                 }
 
             })
-            let reqSwitch = true;
-            document.querySelector(".matchReq").addEventListener("click", ()=>{
+            document.querySelector(".matchReq").addEventListener("click", (e)=>{
                 //to implementer=
-                if (reqSwitch){
+                if (document.querySelector(".matchReq h3").innerHTML.trim() == "Invite"){
                     API.sendMatchReq(1, document.querySelector(".chatBox").getAttribute("name")).then(res=>{
                         localStorage.setItem("matchReqToken", res.token);
                     })
-                    reqSwitch = false;
+                    blockUi();
                     document.querySelector(".matchReq h3").innerHTML = "Cancel Request...";
-                }
-                else{
-                    API.deleteMatchReq(1);
-                    reqSwitch = true;
-                    document.querySelector(".matchReq h3").innerHTML = "Invite";
-
                 }
                 //to do switch button to cancel request
             })
