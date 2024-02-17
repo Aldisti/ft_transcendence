@@ -96,7 +96,7 @@ class MatchConsumer(WebsocketConsumer):
             f"{self.match_token}_group", self.channel_name
         )
 
-        other_user = self.users.setdefault(self.match_token, self.pong_user.username)
+        other_user = MatchConsumer.users.setdefault(self.match_token, self.pong_user.username)
 
         if other_user == self.pong_user.username:
             return
@@ -115,8 +115,8 @@ class MatchConsumer(WebsocketConsumer):
         if close_code == 42:
             return
 
-        if self.users.get(self.match_token, "") != "":
-            del self.users[self.match_token]
+        if MatchConsumer.users.get(self.match_token, "") != "":
+            del MatchConsumer.users[self.match_token]
 
         async_to_sync(self.channel_layer.group_discard)(
             f"{self.match_token}_group", self.channel_name
