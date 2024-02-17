@@ -4,7 +4,7 @@ class NotificationTypes:
     TOURNAMENT_REQ = "tournament_req"
     MATCH_REQ = "match_req"
     INFO = "info"
-    ALERT = "allert"
+    ALERT = "alert"
     BAN = "ban"
     NOTIFICATION_CHOICES = [
         (FRIEND_REQ, "friend_req"),

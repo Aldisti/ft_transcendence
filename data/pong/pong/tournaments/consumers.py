@@ -33,13 +33,15 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
         logger.warning(f"LOG: someone connected")
+        self.player = self.scope["user"]
+        self.ticket = self.scope["token"]
+        self.participant = self.scope["participant"]
+        if self.ticket is None or self.participant is None:
+            await self.close(code=11)
 
         self.other = False
         self.other_lock = asyncio.Lock()
 
-        self.player = self.scope["user"]
-        self.participant = self.scope["participant"]
-        self.ticket = self.scope["token"]
         self.pos = "left"
 
         # update entered value
@@ -166,6 +168,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, close_code):
         logger.warning(f"LOG: user {self.player} disconnected with code {close_code}")
+        if close_code == 11:
+            return
         update_lock = self.games[self.game_id]["update_lock"]
 
         await self.channel_layer.group_discard(

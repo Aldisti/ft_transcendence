@@ -31,6 +31,13 @@ class PongUser(models.Model):
         blank=True,
     )
 
+    match_token = models.CharField(
+        max_length=16,
+        db_column="match_request",
+        blank=True,
+        default="",
+    )
+
     objects = PongUserManager()
 
     def __str__(self):

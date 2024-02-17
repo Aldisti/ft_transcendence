@@ -11,6 +11,7 @@ from json import loads
 
 from requests import post as post_request
 from requests import get as get_request
+from requests import delete as delete_request
 
 from accounts.models import User
 
@@ -127,3 +128,55 @@ def get_matches(request):
     matches = sorted(matches, key=itemgetter("date"), reverse=True)
 
     return Response(matches, status=200)
+
+
+@api_view(['POST'])
+@permission_classes([IsUser])
+def send_match_req(request):
+    """
+    {"requested": "<username>"}
+    """
+    user = request.user
+    url = settings.MS_URLS['SEND_MATCH_REQ'] + f"?username={user.username}"
+    body = request.data
+    api_response = post_request(url, json=body)
+    # TODO: ask adi-stef
+    return Response(api_response.json(), status=api_response.status_code)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsUser])
+def delete_match_req(request):
+    user = request.user
+    url = settings.MS_URLS['DELETE_MATCH_REQ'] + f"?username={user.username}"
+    api_response = delete_request(url)
+    # TODO: ask adi-stef
+    return Response(api_response.json(), status=api_response.status_code)
+
+
+@api_view(['POST'])
+@permission_classes([IsUser])
+def accept_match_req(request):
+    """
+    {"token": "<match_token>"}
+    """
+    user = request.user
+    url = settings.MS_URLS['ACCEPT_MATCH_REQ'] + f"?username={user.username}"
+    body = request.data
+    api_response = post_request(url, json=body)
+    # TODO: ask adi-stef
+    return Response(api_response.json(), status=api_response.status_code)
+
+
+@api_view(['POST'])
+@permission_classes([IsUser])
+def reject_match_req(request):
+    """
+    {"token": "<match_token>"}
+    """
+    user = request.user
+    url = settings.MS_URLS['REJECT_MATCH_REQ'] + f"?username={user.username}"
+    body = request.data
+    api_response = post_request(url, json=body)
+    # TODO: ask adi-stef
+    return Response(api_response.json(), status=api_response.status_code)

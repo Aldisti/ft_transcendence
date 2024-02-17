@@ -312,6 +312,10 @@ MS_URLS = {
     "TOURNAMENT_GET_SCHEMA":f"http://{PONG_HOST}:{PONG_PORT}/tournaments/schema/<pk>/",
     "TOURNAMENT_GET_MATCHES":f"http://{PONG_HOST}:{PONG_PORT}/tournaments/matches/",
     "GAME_GET_MATCHES":f"http://{PONG_HOST}:{PONG_PORT}/game/matches/",
+    "SEND_MATCH_REQ":f"http://{PONG_HOST}:{PONG_PORT}/game/match/",
+    "DELETE_MATCH_REQ":f"http://{PONG_HOST}:{PONG_PORT}/game/match/delete/",
+    "ACCEPT_MATCH_REQ":f"http://{PONG_HOST}:{PONG_PORT}/game/match/accept/",
+    "REJECT_MATCH_REQ":f"http://{PONG_HOST}:{PONG_PORT}/game/match/reject/",
 	# auth urls
 	"AUTH_REGISTER": f"http://{AUTH_HOST}:{AUTH_PORT}/users/register/",
 }

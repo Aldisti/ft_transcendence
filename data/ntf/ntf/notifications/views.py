@@ -55,7 +55,7 @@ def match_req_ntf(request):
     token = data.get("token", "")
     if token == "":
         return Response({"message": "Invalid token"}, status=400)
-    Notification.objects.send_friend_req(sender, requested, token)
+    Notification.objects.send_match_req(sender, requested, token)
     return Response({"message": "Match request notification sent"}, status=200)
 
 

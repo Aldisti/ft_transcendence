@@ -14,4 +14,10 @@ urlpatterns = [
         path('unregister/', views.unregister_tournament, name='unregister_tournament'),
         path('schema/<int:tournament_id>/', views.get_schema_tournament, name='get_schema_tournament'),
     ])),
+    path('match/', include([
+        path('', views.send_match_req, name='send_match_req'),
+        path('delete/', views.delete_match_req, name='delete_match_req'),
+        path('accept/', views.accept_match_req, name='accept_match_req'),
+        path('reject/', views.reject_match_req, name='reject_match_req'),
+    ])),
 ]

@@ -54,6 +54,14 @@ def get_token(participant, query_params: dict):
     return None
 
 
+@database_sync_to_async
+def get_match_token(user, query_params: dict):
+    match_token = query_params.get("match_token", "false")
+    if user.match_token == match_token:
+        return match_token
+    return None
+
+
 class QueryParamMiddleware(BaseMiddleware):
 
     async def __call__(self, scope, receive, send):
@@ -85,6 +93,7 @@ class AllAuthMiddleware(BaseMiddleware):
         scope["user"] = await get_user(scope["query_params"])
         scope["participant"] = await get_participant(scope["user"], scope["query_params"])
         scope["token"] = await get_token(scope["participant"], scope["query_params"])
+        scope["match_token"] = await get_match_token(scope["user"], scope["query_params"])
         #logger.warning(f"user: {scope['user']}")
         return await super().__call__(scope, receive, send)
 
