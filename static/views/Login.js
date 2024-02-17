@@ -15,7 +15,6 @@ export default class extends Aview {
     }
 
     showRecoveryPage(dupthis, e){
-        console.log(dupthis.language)
         document.querySelector("#app").innerHTML = `
         <div class="passwordPage">
             <div class="passwordContainer">

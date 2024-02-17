@@ -28,7 +28,6 @@ export default class extends Aview {
     getUserCard(){
         const urlParams = new URLSearchParams(window.location.search)
         API.getUserInfo(urlParams.get("username")).then(data=>{
-            console.log(data)
             document.querySelector(".cardBody").innerHTML = `
                 <div class="userAndImage">
                     <div class="imgContainer">

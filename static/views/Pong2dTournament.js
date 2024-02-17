@@ -15,7 +15,7 @@ export default class extends Aview{page
 
     getTournamentCard(obj){
         let percentage = obj.subscribed / obj.participants;
-        console.log(percentage)
+
         let color = "white"
         if (percentage < 0.6)
             color = "var(--bs-success)";

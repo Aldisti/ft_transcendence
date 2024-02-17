@@ -18,7 +18,6 @@ function searchUser(input)
 export default function handleSearchUser(){
     let inputRegex = /^[A-Za-z0-9!?*@$~_-]{1,32}$/
     let input = document.querySelector(".navBarSearchInput").value;
-    console.log(input)
   
     if (inputRegex.test(input))
       searchUser(input);

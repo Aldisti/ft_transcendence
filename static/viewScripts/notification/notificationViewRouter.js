@@ -144,7 +144,6 @@ export function setuplistenerToRemoveNotification(){
 }
 
 export function notificationRouter(notification){
-    console.log(notification)
     if (notification.type == "info")
         infoNotification(notification);
     // else if (notification.type == "ban")

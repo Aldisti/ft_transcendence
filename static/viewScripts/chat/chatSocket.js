@@ -19,7 +19,7 @@ function sendSocketMessage(e){
         sent_time: general.getTimeStamp()
     }
 
-    if (newMessage.body == ""){
+    if (newMessage.body == "" || newMessage.body == '\n'){
         message.value = "";
         return
     }

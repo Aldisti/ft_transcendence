@@ -71,7 +71,6 @@ function infoNotification(notification){
         API.getFriends(1).then(users=>{
             document.querySelector(".chatSideList").innerHTML = ""; 
             create.createUser(create.global);
-            console.log(users)
             for (let i = 0; i < users.length; i++)
                 create.createUser(users[i]);
         })
@@ -138,7 +137,6 @@ function matchReqNotification(notification){
         permanent: true
     }
     NOTIFICATION.choice(config, tournamentCallback)
-    console.log(notification);
 }
 
 function notificationRouter(notification){
