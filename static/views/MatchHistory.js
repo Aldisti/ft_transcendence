@@ -11,6 +11,8 @@ export default class extends Aview{
     }
     getMatchCard(obj, username){
         let winner = obj.scores[0] > obj.scores[1] ? "left" : "right";
+        let date = obj.date.split("-")[0];
+        let hour = obj.date.split("-")[1].split(":")[0] + ":" + obj.date.split("-")[1].split(":")[1];
         winner = obj.scores[0] == obj.scores[1] ? "left" : "right";
 
         if (obj.scores[0] > obj.scores[1])
@@ -41,12 +43,15 @@ export default class extends Aview{
                         <h1>${obj.scores[1]}</h1>
                     </div>     
                 </div>
-            </div>
-                ${obj.tournament_id != undefined ? `
-                    <div class="tournamentInfo">
-                        <span tournamentId="${obj.tournament_id}" class="matchDetails">Get tournament Detais >>></span>
+                </div>
+                <div class="matchHistoryBottom">
+                    <div class="historyDate">
+                        <span>${date}</span><span>  ${hour}</span>
                     </div>
-                ` : ``}
+                    ${obj.tournament_id != undefined ? `
+                        <span tournamentId="${obj.tournament_id}" class="matchDetails">Get tournament Detais >>></span>
+                    ` : ``}
+                </div>
             </div>
         `
     }
@@ -91,6 +96,7 @@ export default class extends Aview{
         }
 
         API.getMatchHistory(1, username).then(res=>{
+            console.log(res)
             document.querySelector(".matchesSpinner").style.display = "none"
             document.querySelector(".matchesList").innerHTML = "";
             res.forEach(el=>{

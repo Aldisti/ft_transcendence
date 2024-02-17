@@ -181,7 +181,6 @@ export default class extends Aview{
 	setup(){
 		check.showErrors(document.querySelectorAll(".data"), this.errors)
 		document.querySelector(".base").addEventListener("click", (e)=>{
-			console.log("clicked")
 			//go Next
 			if (e.target.id == "flow2")
 			{
