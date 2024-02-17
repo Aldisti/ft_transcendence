@@ -72,8 +72,23 @@ export function createTitle(){
                 }
 
             })
+            let reqSwitch = true;
             document.querySelector(".matchReq").addEventListener("click", ()=>{
-                console.log("invited")
+                //to implementer=
+                if (reqSwitch){
+                    API.sendMatchReq(1, document.querySelector(".chatBox").getAttribute("name")).then(res=>{
+                        localStorage.setItem("matchReqToken", res.token);
+                    })
+                    reqSwitch = false;
+                    document.querySelector(".matchReq h3").innerHTML = "Cancel Request...";
+                }
+                else{
+                    API.deleteMatchReq(1);
+                    reqSwitch = true;
+                    document.querySelector(".matchReq h3").innerHTML = "Invite";
+
+                }
+                //to do switch button to cancel request
             })
         })
     }

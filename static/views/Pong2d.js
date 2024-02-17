@@ -11,6 +11,12 @@ let balls = [ "/imgs/ballTexture/tennis.png", "/imgs/ballTexture/basket.png", "/
 let gameObj = 0;
 let socket = 0;
 
+function composeUrl(ticket, token){
+    if (token != undefined)
+        return (`${URL.matchReq.MATCH_REQ_SOCKET}?ticket=${ticket}&username=${localStorage.getItem("username")}&match_token=${token}`)
+    return (`${URL.socket.QUEUE_SOCKET}?ticket=${ticket}&username=${localStorage.getItem("username")}`);
+}
+
 export default class extends Aview{
     constructor(){
         super();
@@ -128,10 +134,6 @@ export default class extends Aview{
                 </div>
             </div>
             <div class="btnContainer">
-                <div class="acceptGame">
-                    <h3>Press to Start The Game</h3>
-                    <button>Start</button>
-                </div>
                 <div class="btnWindow">
                     <h1>Pong Queue</h1>
                     <canvas id="waitCanv" style="display: none;"></canvas>
@@ -144,7 +146,7 @@ export default class extends Aview{
         `
     }
 
-    startQueueBtn(){
+    startQueueBtn(token){
         document.querySelector("#startQueque").innerHTML = `
         <div>
             Searching opponent...
@@ -155,7 +157,7 @@ export default class extends Aview{
         API.startQueque(1).then(res=>{
             if (res == undefined)
                 return ;
-            socket = new WebSocket(`${URL.socket.QUEUE_SOCKET}?ticket=${res.ticket}&username=${localStorage.getItem("username")}`);
+            socket = new WebSocket(composeUrl(res.ticket, token));
             socket.onopen = ()=>{
                 socket.addEventListener("message", (message)=>{
                     let msg = JSON.parse(message.data);
@@ -169,34 +171,19 @@ export default class extends Aview{
         })
     }
 
-    defineQueue(){
+    defineQueue(params){
         const url = window.location.href;
 
-        if (url.indexOf("match") == -1){
-            let startGame = document.querySelector(".acceptGame");
+        document.querySelector("#startQueque").addEventListener("click", async ()=>{
+            document.querySelector(".btnWindow").style.height = "50%";
+            document.querySelector("#waitCanv").style.display= "flex";
+            document.querySelector("#startQueque").style.justifyContent = "space-between";
 
-            startGame.style.display = "none";
-            document.querySelector("#startQueque").addEventListener("click", async ()=>{
-                document.querySelector(".btnWindow").style.height = "50%";
-                document.querySelector("#waitCanv").style.display= "flex";
-                document.querySelector("#startQueque").style.justifyContent = "space-between";
-    
-                if (document.querySelector("#startQueque").innerHTML.trim() != `Enter !`)
-                    this.restoreQueueBtn()
-                else
-                    this.startQueueBtn()
-            })
-        }
-        else{
-            let startQueque = document.querySelector(".btnWindow");
-
-            startQueque.style.display = "none";
-            document.querySelector(".acceptGame button").addEventListener("click", ()=>{
-                API.getTournamentTicket(1).then(res=>{
-
-                })
-            })
-        }
+            if (document.querySelector("#startQueque").innerHTML.trim() != `Enter !`)
+                this.restoreQueueBtn()
+            else
+                this.startQueueBtn(params.get("token") ?? undefined)
+        })
     }
 
     restoreQueueBtn(){
@@ -211,7 +198,7 @@ export default class extends Aview{
         this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpeg")
         let params = new URLSearchParams(window.location.search)
 
-        if (params.size != 0){
+        if (params.size > 1){
             document.querySelector("#app").innerHTML = this.getGameHtml();
             let conf = {
                 user1: localStorage.getItem("username"),
@@ -234,7 +221,7 @@ export default class extends Aview{
         handleSlider(".sliderBall", ".nextBall", balls, "ballTexture", this);
 
         pongLoader();
-        this.defineQueue();
+        this.defineQueue(params);
     }
 
     destroy(){

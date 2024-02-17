@@ -234,6 +234,7 @@ function drawDonutChart(canvas, data)
     ctx.beginPath();
     ctx.moveTo(center.x + centerOffset,center.y);
     ctx.fillStyle = getComputedStyle(canvas).backgroundColor;
+    if (radius >= 0)
     ctx.arc((center.x + centerOffset), center.y, radius / 2, 0, 2 * Math.PI);
 
     //drawing border for inner circle

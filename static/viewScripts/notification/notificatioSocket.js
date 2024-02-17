@@ -127,7 +127,22 @@ function tournamentCallback(config, notificationElement){
     });
 }
 
-function matchReqNotification(notification){
+function matchReqCallback(config, notificationElement){
+    let token = config.notification.body.token
+
+    notificationElement.querySelector(".notificationAccept").addEventListener("click", ()=>{
+        API.acceptMatchReq(1, token);
+        history.pushState(null, null, `/games/pong2d/match/?token=${token}`);
+        Router();
+        document.body.removeChild(notificationElement);
+    });
+    notificationElement.querySelector(".notificationDeny").addEventListener("click", ()=>{
+        API.rejectMatchReq(1, token);
+        document.body.removeChild(notificationElement);
+    });
+}
+
+function tournamentReq(notification){
     let config = {
         notification: notification,
         title: "Tournament",
@@ -139,17 +154,44 @@ function matchReqNotification(notification){
     NOTIFICATION.choice(config, tournamentCallback)
 }
 
+function matchReqNotification(notification){
+    let config = {
+        notification: notification,
+        title: "Match Request",
+        accept: "Accept",
+        deny: "reject",
+        body: `${notification.opponent} sent you a match Request!`,
+        permanent: true
+    }
+    NOTIFICATION.choice(config, matchReqCallback)
+}
+
+function alertNotification(notification){
+    if (notification.body.split(":")[0] == "A new foe has appeared"){
+        NOTIFICATION.simple({title: "Alert", body: notification.body})
+        history.pushState(null, null, `/games/pong2d/match/?token=${localStorage.getItem("matchReqToken")}`);
+        localStorage.removeItem("matchReqToken");
+        Router();
+    }
+    else{
+        NOTIFICATION.simple({title: "Alert", body: notification.body})
+    }
+}
+
 function notificationRouter(notification){
+    console.log(notification)
     if (notification.type == "info")
         infoNotification(notification);
     // else if (notification.type == "ban")
     //     banNotification();
-    // else if (notification.type == "alert")
-    //     handleFriendNotification(notification);
+    else if (notification.type == "alert")//will arrive notification if user accept or reject match req
+        alertNotification(notification);
     else if (notification.type == "friend_req")
         friendNotification(notification);
     else if (notification.type == "tournament_req")
-        matchReqNotification(notification);
+        tournamentReq(notification);
+    else if (notification.type == "match_req")
+        matchReqNotification(notification)
 }
 
 function updateNotification(newNotifications){

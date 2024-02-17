@@ -1085,6 +1085,84 @@ export async function getTournamentInfo(recursionProtection, tournamentId){
     return ([])
 }
 
+export async function sendMatchReq(recursionProtection, username){
+    const res = await fetch(URL.matchReq.SEND_REQUEST, {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            requested: username,
+        }),
+        credentials: "include",
+
+    });
+    if (res.ok) {
+        let parsed = await res.json();
+        return (parsed);
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(sendMatchReq, 0, username);
+    return ({})
+}
+export async function deleteMatchReq(recursionProtection){
+    const res = await fetch(URL.matchReq.DELETE_REQUEST, {
+        method: "DELETE",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        credentials: "include",
+
+    });
+    if (res.ok) {
+        return (true);
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(deleteMatchReq, 0);
+    return (false)
+}
+export async function acceptMatchReq(recursionProtection, token){
+    const res = await fetch(URL.matchReq.ACCEPT_REQUEST, {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            token: token,
+        }),
+        credentials: "include",
+
+    });
+    if (res.ok) {
+        let parsed = await res.json();
+        return (parsed);
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(acceptMatchReq, 0, token);
+    return ({})
+}
+export async function rejectMatchReq(recursionProtection, token){
+    const res = await fetch(URL.matchReq.REJECT_REQUEST, {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            token: token,
+        }),
+        credentials: "include",
+
+    });
+    if (res.ok) {
+        return (true);
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(rejectMatchReq, 0, token);
+    return (false)
+}
 
 
 //end of Dummy call

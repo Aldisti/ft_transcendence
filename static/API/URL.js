@@ -83,6 +83,15 @@ export const tournaments = {
     GET_TOURNAMENT_HISTORY: `${protocol}://${ip}:${port}/pong/tournaments/schema/`,
 }
 
+export const matchReq = {
+    SEND_REQUEST:  `${protocol}://${ip}:${port}/pong/match/`,
+    DELETE_REQUEST:  `${protocol}://${ip}:${port}/pong/match/delete/`,
+    REJECT_REQUEST:  `${protocol}://${ip}:${port}/pong/match/reject/`,
+    ACCEPT_REQUEST:  `${protocol}://${ip}:${port}/pong/match/accept/`,
+
+    MATCH_REQ_SOCKET: `${protocol == "https" ? "wss" : "ws"}://${ip}:${pongPort}/ws/match/queue/`
+}
+
 export const manageUsers ={
     //come delete
     DELETE_USER: `${protocol}://${ip}:${port}/users/`,
