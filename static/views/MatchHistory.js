@@ -49,7 +49,7 @@ export default class extends Aview{
                         <span>${date}</span><span>  ${hour}</span>
                     </div>
                     ${obj.tournament_id != undefined ? `
-                        <span tournamentId="${obj.tournament_id}" class="matchDetails">Get tournament Detais >>></span>
+                        <span tournamentId="${obj.tournament_id}" class="matchDetails">${this.language.matchHistory.tournamentDetails}</span>
                     ` : ``}
                 </div>
             </div>
@@ -74,7 +74,7 @@ export default class extends Aview{
                 <div class="allTournaments">
                     <div class="matchesTitle">
                         <div class="title">
-                            <h3>${username} Match History</h3>
+                            <h3>${username}${this.language.matchHistory.title}</h3>
                         </div>
                     </div>
                     <div class="matchesList">

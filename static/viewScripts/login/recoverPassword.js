@@ -1,18 +1,19 @@
 import * as API from "/API/APICall.js"
 import Router from "/router/mainRouterFunc.js";
+import allLanguage from "/language/language.js"
+
+let language = allLanguage[localStorage.getItem("language")];
 
 export let emailError = `
     <ul style="margin: 0;">
-        <li>An Email has been sent Check you Inbox!</li>
-        <li>insert the Code in the box below</li>
-        <li>Submit and activate your 2FA</li>
+        <li>${language.emailSuggest[0]}</li>
+        <li>${language.emailSuggest[1]}</li>
+        <li>${language.emailSuggest[2]}</li>
     </ul>
 `
 export let qrError = `
     <ul style="margin: 0;">
-        <li>Open your app and look for your code</li>
-        <li>insert it in the box below</li>
-        <li>submit and login</li>
+        <li>${language.qrSuggest[0]}</li>
     </ul>
 `
 

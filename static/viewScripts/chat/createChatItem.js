@@ -1,6 +1,9 @@
 import * as general from "/viewScripts/chat/helpFunction.js"
 import * as API from "/API/APICall.js";
 import Router from "/router/mainRouterFunc.js"
+import allLanguage from "/language/language.js"
+
+let language = allLanguage[localStorage.getItem("language")];
 
 export const global = {
     username: "global",
@@ -38,7 +41,7 @@ function blockUi(){
     const heading = document.createElement("h1");
     const release = document.createElement("button");
 
-    heading.innerHTML = "Request Sent!";
+    heading.innerHTML = language.chatElement.reqSent;
     release.setAttribute("id", "releaseBtn");
     overlay.setAttribute("id", "matchReqOverlay");
     spinner.classList.add("spinner-border")
@@ -59,7 +62,7 @@ function blockUi(){
     document.querySelector("#releaseBtn").addEventListener("click", ()=>{
         document.body.removeChild(document.querySelector("#matchReqOverlay"));
         API.deleteMatchReq(1);
-        document.querySelector(".matchReq h3").innerHTML = "Invite";
+        document.querySelector(".matchReq h3").innerHTML = language.chatElement.restoreChat;
     })
 }
 
@@ -83,10 +86,10 @@ export function createTitle(){
                     </div>
                     <div tabindex="-1" class="chatUserMenu chat">
                         <div tabindex="-1" class="chat chatUserMenuLine unfriendUser">
-                            <h3 tabindex="-1" class="chat">Remove Friend</h3>
+                            <h3 tabindex="-1" class="chat">${language.chatElement.removeFriend}</h3>
                         </div>
                         <div tabindex="-1" class="chat chatUserMenuLine matchReq">
-                            <h3 tabindex="-1" class="chat">Invite</h3>
+                            <h3 tabindex="-1" class="chat">${language.chatElement.restoreChat}</h3>
                         </div>
                     </div>
                 </div>
@@ -109,7 +112,7 @@ export function createTitle(){
                         localStorage.setItem("matchReqToken", res.token);
                     })
                     blockUi();
-                    document.querySelector(".matchReq h3").innerHTML = "Cancel Request...";
+                    document.querySelector(".matchReq h3").innerHTML = language.chatElement.cancelRequest;
                 }
                 //to do switch button to cancel request
             })

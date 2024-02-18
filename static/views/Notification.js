@@ -12,7 +12,7 @@ export default class extends Aview{
             <div class="base">
                 <div class="firendRequestSection">
                     <div class="title">
-                        <h1>Friend Request</h1>
+                        <h1>${this.language.notification.friendSection}</h1>
                     </div>
                     <div class="friendRequestContainer">
 
@@ -20,10 +20,9 @@ export default class extends Aview{
                 </div>
                 <div class="infoSection">
                     <div class="title">
-                        <h1>Info Notification</h1>
+                        <h1>${this.language.notification.infoSection}</h1>
                     </div>
                     <div class="infoContainer">
-
                     </div>
                 </div>
             </div>

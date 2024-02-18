@@ -59,7 +59,7 @@ export default class extends Aview {
                 </div>
                 <div class="matchHistory">
                     <a href="/match-history/?username=${urlParams.get("username")}" data-link>
-                        <h1>Match History</h1>
+                        <h1>${this.language.displayUser.matchHistory}</h1>
                     </a>
                 </div>
             `

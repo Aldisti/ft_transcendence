@@ -62,12 +62,12 @@ export default function createNavBar(){
                   <option value="en">en</option>
                   <option value="ita">ita</option>
                   <option value="fr">fr</option>
-                  <option value="es">esp</option>
+                  <option value="esp">esp</option>
                   <option value="de">de</option>
                 </select>
               </li>
               <li id="darkMode">
-                <p class="switchLable">Light</p>
+                <p class="switchLable">${language.navbar.light}</p>
                   <div class="darkSwitch">
                     <div class="highlight">
                     </div>
@@ -76,10 +76,10 @@ export default function createNavBar(){
                     <div class="moonIcon">
                       </div>
                     </div>
-                  <p class="switchLable">Dark</p>
+                  <p class="switchLable">${language.navbar.dark}</p>
                 </li>
               <li id="darkMode">
-                <p class="switchLable">Retro</p>
+                <p class="switchLable">${language.navbar.retro}</p>
                   <div class="styleSwitch">
                     <div class="highlightPc">
                     </div>
@@ -88,7 +88,7 @@ export default function createNavBar(){
                     <div class="newPcIcon">
                       </div>
                     </div>
-                  <p class="switchLable">Modern</p>
+                  <p class="switchLable">${language.navbar.modern}</p>
                 </li>
               ${localStorage.getItem("username") == undefined ? `` : `<li><a class="nav-link active" data-link href="/account/" >${language.navbar.accountMenu}</a></li>`}
               ${localStorage.getItem("username") == undefined ? `` : `<li><div class="nav-link active logoutBtn" data-link href="/account/" >${language.navbar.logout}</div></li>`}

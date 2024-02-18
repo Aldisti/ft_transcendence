@@ -5,6 +5,9 @@ import * as create from "/viewScripts/chat/createChatItem.js"
 import * as API from "/API/APICall.js";
 import * as notificationView from "/viewScripts/notification/notificationViewRouter.js";
 import Router from "/router/mainRouterFunc.js"
+import allLanguage from "/language/language.js"
+
+let language = allLanguage[localStorage.getItem("language")];
 
 function removeNotification(body){
     let parsedNotification = JSON.parse(localStorage.getItem("notification"));
@@ -98,10 +101,10 @@ function infoNotification(notification){
 function friendNotification(obj){
     let sender = obj.body.sender;
     let config = {
-        title: "Friend Request",
-        deny: "Deny friend request",
-        accept: "accept friend request",
-        body: `${sender} sent a friendship request`,
+        title: language.notification.friendTitle,
+        accept: language.notification.enterTournament,
+        deny: language.notification.rejectTournament,
+        body: `${sender} ${language.notification.friendBody}`,
         token: obj.body.token,
         fullBody: obj.body
     }
@@ -145,10 +148,10 @@ function matchReqCallback(config, notificationElement){
 function tournamentReq(notification){
     let config = {
         notification: notification,
-        title: "Tournament",
-        accept: "enter Tournament Match",
-        deny: "reject",
-        body: "incoming Tournament match...",
+        title: language.notification.tournamentTitle,
+        accept: language.notification.enterTournament,
+        deny: language.notification.rejectTournament,
+        body: language.notification.tournamentBody,
         permanent: true
     }
     NOTIFICATION.choice(config, tournamentCallback)
@@ -157,10 +160,10 @@ function tournamentReq(notification){
 function matchReqNotification(notification){
     let config = {
         notification: notification,
-        title: "Match Request",
-        accept: "Accept",
-        deny: "reject",
-        body: `${notification.opponent} sent you a match Request!`,
+        title: language.notification.matchTitle,
+        accept: language.notification.enterTournament,
+        deny: language.notification.rejectTournament,
+        body: `${notification.opponent} ${language.notification.matchReqBody}`,
         permanent: true
     }
     NOTIFICATION.choice(config, matchReqCallback)

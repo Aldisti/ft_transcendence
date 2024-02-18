@@ -44,16 +44,16 @@ export default class extends Aview{
                 </div>
                 <div id="gameAdvice">
                     <ul>
-                        <li>W: Go Up</li>
-                        <li>D: Go down</li>
-                        <li>P: Start The Game!</li>
-                        <li>If you leave the window or refresh the page you will automatically loose!</li>
+                        <li>${this.language.pong2d.advices[0]}</li>
+                        <li>${this.language.pong2d.advices[1]}</li>
+                        <li>${this.language.pong2d.advices[2]}</li>
+                        <li>${this.language.pong2d.advices[3]}</li>
                     </ul>
                     <h5 class="gameStart">
-                        You need to press P to start the game
+                        ${this.language.pong2d.gameStart}
                     </h5>
                     <h5 class="gameWait">
-                        Waiting other player starting the game
+                        ${this.language.pong2d.gameWait}
                     </h5>
                 </div>
             </div>
@@ -75,12 +75,12 @@ export default class extends Aview{
                             </div>
                         </div>
                         <div class="gameOverlayWin">
-                            <h2>You have Win</h2>
-                            <a href="/games/pong2d/" data-link>Play Again!</a>
+                            <h2>${this.language.pong2d.win}</h2>
+                            <a href="/games/pong2d/" data-link>${this.language.pong2d.playAgain}</a>
                         </div>
                         <div class="gameOverlayLoose">
-                            <h2>You have Lost</h2>
-                            <a href="/games/pong2d/" data-link>Play Again!</a>
+                            <h2>${this.language.pong2d.lost}</h2>
+                            <a href="/games/pong2d/" data-link>${this.language.pong2d.playAgain}</a>
                         </div>
                         <canvas id="myCanv"></canvas>
                     </div>
@@ -89,7 +89,7 @@ export default class extends Aview{
                 </div>
                 <div class="mobileControl">
                     <div class="mobile up">⬆</div>
-                    <div class="mobile start">Start</div>
+                    <div class="mobile start">${this.language.pong2d.start}</div>
                     <div class="mobile down">⬇</div>
                 </div>
             </div>
@@ -106,7 +106,7 @@ export default class extends Aview{
                         </div>
                     </div>
                     <div class="info">
-                    <h3>Choose Pill Style</h3>
+                    <h3>${this.language.pong2d.pillStyle}</h3>
                     <div class="nextPill">
                         >
                     </div>
@@ -118,7 +118,7 @@ export default class extends Aview{
                         </div>
                     </div>
                     <div class="info">
-                    <h3>Choose Ground Style</h3>
+                    <h3>${this.language.pong2d.groundStyle}</h3>
                         <div class="nextGround">
                             >
                         </div>
@@ -130,7 +130,7 @@ export default class extends Aview{
                         </div>
                     </div>
                     <div class="info">
-                    <h3>Choose Ball Style</h3>
+                    <h3>${this.language.pong2d.ballStyle}</h3>
                     <div class="nextBall">
                         >
                     </div>
@@ -139,10 +139,10 @@ export default class extends Aview{
             </div>
             <div class="btnContainer">
                 <div class="btnWindow">
-                    <h1>Pong Queue</h1>
+                    <h1>${this.language.pong2d.pongQueue}</h1>
                     <canvas id="waitCanv" style="display: none;"></canvas>
                     <div id="startQueque">
-                        Enter !
+                        ${this.language.pong2d.enterQueue}
                     </div>
                 </div>
             </div>
@@ -153,7 +153,7 @@ export default class extends Aview{
     startQueueBtn(token){
         document.querySelector("#startQueque").innerHTML = `
         <div>
-            Searching opponent...
+            ${this.language.pong2d.searchingOpp}
         </div>
 
         <button class="stopSearching">X</button> 
@@ -183,7 +183,7 @@ export default class extends Aview{
             document.querySelector("#waitCanv").style.display= "flex";
             document.querySelector("#startQueque").style.justifyContent = "space-between";
 
-            if (document.querySelector("#startQueque").innerHTML.trim() != `Enter !`)
+            if (document.querySelector("#startQueque").innerHTML.trim() != this.language.pong2d.enterQueue)
                 this.restoreQueueBtn()
             else
                 this.startQueueBtn(params.get("token") ?? undefined)
