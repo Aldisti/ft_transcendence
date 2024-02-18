@@ -211,7 +211,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 
     async def state_update(self, event):
-        logger.warning(f"LOG: user {self.player} update")
+        #logger.warning(f"LOG: user {self.player} update")
         await self.send(
             text_data=json.dumps(
                 {
@@ -246,7 +246,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 
     async def receive(self, text_data):
-        logger.warning(f"LOG: user {self.player} received")
+        #logger.warning(f"LOG: user {self.player} received")
         text_data_json = json.loads(text_data)
         message_type = text_data_json.get("type", "")
         update_lock = self.games[self.game_id]["update_lock"]

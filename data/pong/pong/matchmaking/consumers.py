@@ -4,6 +4,7 @@ from channels.generic.websocket import WebsocketConsumer
 from asgiref.sync import async_to_sync
 
 from users.views import generate_ticket
+from users.models import PongUser
 
 from logging import getLogger
 from secrets import token_urlsafe
@@ -85,7 +86,7 @@ class MatchConsumer(WebsocketConsumer):
             self.close(code=42)
             return
 
-        if self.pong_user.username in MatchConsumer.users.values():
+        if self.pong_user.username in self.users.values():
             logger.warning(f"{self.pong_user.username} already connected")
             self.close(code=42)
             return
@@ -96,7 +97,7 @@ class MatchConsumer(WebsocketConsumer):
             f"{self.match_token}_group", self.channel_name
         )
 
-        other_user = MatchConsumer.users.setdefault(self.match_token, self.pong_user.username)
+        other_user = self.users.setdefault(self.match_token, self.pong_user.username)
 
         if other_user == self.pong_user.username:
             return
@@ -115,8 +116,8 @@ class MatchConsumer(WebsocketConsumer):
         if close_code == 42:
             return
 
-        if MatchConsumer.users.get(self.match_token, "") != "":
-            del MatchConsumer.users[self.match_token]
+        if self.users.get(self.match_token, "") != "":
+            del self.users[self.match_token]
 
         async_to_sync(self.channel_layer.group_discard)(
             f"{self.match_token}_group", self.channel_name
