@@ -58,6 +58,7 @@ export const socket = {
     NOTIFICATION_SOCKET_TICKET: `${protocol}://${ip}:${port}/auth/ticket/ntf/`,
     CHAT_SOCKET_TICKET: `${protocol}://${ip}:${port}/auth/ticket/chat/`,
     GET_QUEQUE_TICKET: `${protocol}://${ip}:${port}/auth/ticket/matchmaking/`,
+    GET_CHAT_HISTORY: `${protocol}://${ip}:${port}/chat/messages/`,
 }
 
 export const userAction = {

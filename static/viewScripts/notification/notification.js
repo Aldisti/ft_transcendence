@@ -78,20 +78,19 @@ let oldStyleCss = `
     padding: 15px;
     width: 10%;
     height: 30%;
-    background-color: white;
-    color: black;
+    color: white;
     display: flex;
     justify-content: center;
     align-items: center;
     top: 5px;
     right: 5px;
     box-shadow: 7px 7px black;
-    background-color: white;
+    background-color: var(--retro-blue);
     border: 2px solid black;}
 
 .notificationContainer{
     margin: 20px;
-    background-color: var(--bs-dark);
+    background-color: var(--retro-red);
     color: white;
     width: 40svw;
     height: fit-content;
@@ -134,9 +133,18 @@ let oldStyleCss = `
     height: 100%;
     width: 45%;
     box-shadow: 7px 7px black;
-    border: 2px solid black;    border: none;
+    border: 4px solid black;
     font-size: x-small;
+    color: white;
 }
+
+.notificationAccept{
+    background-color: var(--retro-green)
+}
+.notificationDeny{
+    background-color: var(--retro-sky-blue)
+}
+
 @media screen and (max-width: 900px){
     .notificationContainer{
         width: 90svw;

@@ -1081,7 +1081,7 @@ export async function getTournamentInfo(recursionProtection, tournamentId){
         return (parsed);
     }
     if (res.status == 401 && recursionProtection)
-        return await refreshAndRetry(getTournamentInfo, 0);
+        return await refreshAndRetry(getTournamentInfo, 0, tournamentId);
     return ([])
 }
 
@@ -1164,5 +1164,21 @@ export async function rejectMatchReq(recursionProtection, token){
     return (false)
 }
 
+export async function getChatHistory(recursionProtection){
+    const res = await fetch(URL.socket.GET_CHAT_HISTORY, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        credentials: "include",
+    });
+    if (res.ok){
+        let parsed = await res.json();
+        return (parsed);
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(getChatHistory, 0);
+    return ({})
+}
 
 //end of Dummy call

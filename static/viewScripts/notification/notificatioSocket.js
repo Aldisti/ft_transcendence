@@ -10,7 +10,7 @@ function removeNotification(body){
     let parsedNotification = JSON.parse(localStorage.getItem("notification"));
 
     parsedNotification.forEach((element, i) => {
-        if (element.body == body)
+        if (element.body.token == body.token)
             parsedNotification.splice(i, 1);
     });
     localStorage.setItem("notification", JSON.stringify(parsedNotification));
@@ -177,11 +177,11 @@ function alertNotification(notification){
     else{
         NOTIFICATION.simple({title: "Alert", body: notification.body})
         document.querySelector(".matchReq h3").innerHTML = "Invite";
+        document.body.removeChild(document.querySelector("#matchReqOverlay"));
     }
 }
 
 function notificationRouter(notification){
-    console.log(notification)
     if (notification.type == "info")
         infoNotification(notification);
     // else if (notification.type == "ban")
@@ -225,7 +225,6 @@ export function start(){
             else
                 updateNotification(parsed);
 
-        
             //since the retrieved obj contain an array of notification this will loop trought it and decide what to do based on type
             for (let i = 0; i < parsed.length; i++)
                 notificationRouter(parsed[i]);

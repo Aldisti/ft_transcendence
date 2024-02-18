@@ -35,7 +35,11 @@ function sendSocketMessage(e){
 //first check if the user is logged then make the connection to the chat socket and set up a listener
 export function start(){
     if ((socket !== null && socket.readyState !== WebSocket.CLOSED) || localStorage.getItem("username") == null)
-        return ;
+    return ;
+    API.getChatHistory(1).then(res=>{
+        console.log(res)
+        localStorage.setItem("chat", JSON.stringify(res))
+    })
     //retrieve from the server a ticket used to perform secure connection to the socket
     API.getTicket(1, URL.socket.CHAT_SOCKET_TICKET).then(res=>{
 

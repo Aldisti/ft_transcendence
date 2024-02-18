@@ -152,7 +152,5 @@ export function notificationRouter(notification){
     //     handleFriendNotification(notification);
     else if (notification.type == "friend_req")
         friendNotification(notification);
-    else if (notification.type == "match_req"){
-        console.log(notification, "ciao")
-    }
+
 }
