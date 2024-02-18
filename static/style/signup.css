@@ -1,20 +1,25 @@
 .signupForm {
-    background-image: url("/imgs/register.png");
-    background-size: cover;
-    background-repeat: no-repeat;
+    background-color: var(--retro-sky-blue);
     color: black;
-    width: 65svw;
-    min-height: 60svh;
+    width: 60svw;
     height: fit-content;
+    min-height: 60svh;
     display: flex;
     justify-content: space-between;
     flex-direction: column;
     align-items: center;
     gap: 10px;
-    box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+    box-shadow: 6px 6px black; border: 4px solid black;
     padding: 20px;
     box-shadow: 15px 15px black;
-    border: 2px solid black;
+}
+
+.account {
+    border-radius: 10px !important;
+}
+
+.profilePictureUrl {
+    border-radius: 10px !important;
 }
 
 h2,
@@ -24,11 +29,6 @@ h3 {
 
 .fileSelector {
     border: none !important;
-}
-
-.signupForm h1 {
-    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-    color: white;
 }
 
 .base {
@@ -52,9 +52,8 @@ h3 {
     justify-content: center;
     align-items: center;
     color: white;
-    border: 2px solid black;
-    box-shadow: 7px 7px black;
-    font-size: 18px;
+    border: 4px solid black;
+    font-size: small;
     font-weight: bolder;
     text-decoration: none;
 }
@@ -64,9 +63,8 @@ h3 {
 }
 
 .btnColor-green {
-    background-color: var(--bs-success);
+    background-color: var(--retro-green);
     color: white;
-    font-size: 20px;
 }
 
 .retroShade {
@@ -92,9 +90,9 @@ h3 {
     flex-direction: column;
     justify-content: space-around;
     align-items: flex-start;
-    box-shadow: 7px 7px black;
-    background-color: white;
-    border: 2px solid black;
+    background-color: var(--retro-orange);
+    color: white;
+    box-shadow: 6px 6px black; border: 4px solid black;
     padding: 5px;
     transition: 0.3s;
     margin: 10px;
@@ -104,7 +102,7 @@ h3 {
 .confirmPasswordSwitch {
     width: 6%;
     height: 6svh;
-    border: 2px solid black;
+    border: 4px solid black;
     padding: 5px;
     background-color: white;
     display: flex;
@@ -146,11 +144,18 @@ h3 {
     margin: 0;
 }
 
+.loginLink {
+    height: fit-content;
+    font-size: larger;
+    color: white;
+    padding: 10px;
+}
+
 .errors {
     width: 90%;
-    background-color: var(--bs-danger);
-    box-shadow: 7px 7px black;
-    border: 2px solid black;
+    background-color: var(--retro-red);
+    border: 4px solid black;
+    color: white;
     display: flex;
     align-items: center;
     justify-content: start;
@@ -164,10 +169,10 @@ h3 {
 
 .line input {
     width: 100%;
-    height: 6svh;
+    height: 4.5svh;
     border: none;
     font-size: 20px;
-    border: 2px solid black;
+    border: 4px solid black;
     outline: none;
 }
 
@@ -178,14 +183,14 @@ h3 {
 
 .linebtn {
     width: 90%;
-    height: 7vh;
+    height: 6vh;
     display: flex;
-    border: 2px solid black;
-    box-shadow: 7px 7px black;
     align-items: center;
     justify-content: space-between;
-    background-color: white;
-    padding: 12px;
+    background-color: var(--retro-brown);
+    color: white;
+    box-shadow: 6px 6px black; border: 4px solid black;
+    padding: 5px;
 }
 
 .red {
@@ -276,6 +281,9 @@ h3 {
     border-style: solid;
     border-color: #555 transparent transparent transparent;
 }
+#title{
+    color: white;
+}
 
 
 /* Show the tooltip text when you mouse over the tooltip container */
@@ -290,10 +298,14 @@ h3 {
         width: 90svw;
     }
     .line {
-        width: 98%;
+        width: 100%;
+    }
+    #title{
+        width: 100%;
+        color: white;
     }
     .linebtn {
-        width: 95%;
+        width: 100%;
     }
     .retroBtn {
         font-size: 10px;

@@ -7,23 +7,15 @@
     padding: 20px;
 }
 
-h1{
-    font-size: larger;
-}
-
 .firendRequestSection, .infoSection{
-    background-position: center;
-    background-repeat: repeat;
     width: 35%;
     height: 100%;
     display: flex;
     flex-direction: column;
-    background-color: var(--bs-warning);
+    background-color: var(--retro-red);
     padding: 20px;
     gap: 20px;
-    border: 3px solid black;
-box-shadow: 15px 15px black;
-
+    box-shadow: 6px 6px black; border: 4px solid black;
 }
 
 .title{
@@ -34,9 +26,12 @@ box-shadow: 15px 15px black;
     justify-content: center;
     align-items: center;
     color: white;
-    background-color: var(--bs-success);
-    box-shadow: 10px 10px black;
-    border: 3px solid black;
+    background-color: var(--retro-sky-blue);
+    box-shadow: 6px 6px black; border: 4px solid black;
+    & h1{
+        font-size: medium;
+    }
+
 }
 
 .friendRequestContainer, .infoContainer{
@@ -55,9 +50,8 @@ box-shadow: 15px 15px black;
     width: 100%;
     height: 30%;
     background-color: white;
-box-shadow: 10px 10px black;
+box-shadow: 6px 6px black; border: 4px solid black;
     padding: 20px;
-    border: 3px solid black;
 }
 
 .simpleCardContainer{
@@ -86,7 +80,7 @@ box-shadow: 10px 10px black;
     justify-content: center;
     background-color: var(--bs-danger);
     color: white;
-box-shadow: 3px 3px black;
+box-shadow: 3px 3px black; border: 4px solid black;
 }
 
 .simpleCardBody{
@@ -116,6 +110,7 @@ box-shadow: 3px 3px black;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    font-size: xx-small;
 }
 
 .choiceCardBody{
@@ -123,23 +118,18 @@ box-shadow: 3px 3px black;
 }
 
 .choiceCardDeny{
-    background-color: var(--bs-danger);
+    background-color: var(--retro-red);
     border: none;
-box-shadow: 3px 3px black;
-border: 2px solid black;
-font-size: small;
+box-shadow: 6px 6px black; border: 4px solid black;
     color: white;
     height: 100%;
     width: 40%;
 }
 
 .choiceCardAccept{
-    background-color: var(--bs-primary);
+    background-color: var(--retro-green);
     border: none;
-box-shadow: 3px 3px black;
-border: 2px solid black;
-font-size: small;
-
+box-shadow: 6px 6px black; border: 4px solid black;
     color: white;
     height: 100%;
     width: 40%;
@@ -153,25 +143,13 @@ font-size: small;
     .firendRequestSection, .infoSection{
         width: 100%;
         height: 80svh;
-        padding: 5px;
     }
     .choiceCardContainer, .simpleCardContainer{
         height: 50%;
     }
     .choiceCardBtns{
         height: 35%;
-        padding: 0px;
-        font-size: 1px;
-    }
-
-    .choiceCardBody{
-        font-size: xx-small;
-    }
-    .title{
-        font-size: xx-small;
-        box-shadow: none;
-    }
-    .choiceCardDeny, .choiceCardAccept{
-        width: 45%;
+        padding: 5px;
+        font-size: x-small;
     }
 }

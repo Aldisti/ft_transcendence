@@ -126,6 +126,8 @@ function checkMessage(game, msg){
         game.opponent.initPlayer(msg.player_pos == "left" ? "right" : "left");
     }
     else if (msg.message == "Game is finished"){
+        document.removeEventListener("keyup", game.upHandler)
+        document.removeEventListener("keydown", game.downHandler)
         localStorage.setItem("stop", "true")
         game.gameOst.pause();
         game.activeUser.sound.pause();

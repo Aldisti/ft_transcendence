@@ -149,16 +149,14 @@
 
 @keyframes pulse {
     0%{
-        background-color: white;
-        color: black;
+        background-color: var(--bs-warning);
+
     }
     50%{
         background-color: var(--bs-success);
-        color: white;
     }
     100%{
-        background-color: white;
-        color: black;
+        background-color: var(--bs-warning);
     }
 } 
 
