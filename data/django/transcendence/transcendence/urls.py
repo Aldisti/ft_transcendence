@@ -26,6 +26,7 @@ urlpatterns = [
     path('tokens/', include('email_manager.urls')),
     path('friends/', include('friends.urls')),
     path('pong/', include('pong.urls')),
+    path('chat/', include('chat.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     'friends',
     'multiplayer_test',
     'pong',
+    'chat',
     # tmp for testing reasons
     'corsheaders',
 ]
@@ -297,6 +298,7 @@ MS_URLS = {
     "FRIENDS_DELETE_REQ": f"http://{CHAT_HOST}:{CHAT_PORT}/friends/request/delete/",
     "FRIENDS_ALL": f"http://{CHAT_HOST}:{CHAT_PORT}/friends/all/",
     "FRIENDS_CHECK": f"http://{CHAT_HOST}:{CHAT_PORT}/friends/",
+    "MESSAGES_GET": f"http://{CHAT_HOST}:{CHAT_PORT}/chat/messages/",
     # notification urls
     "NTF_REGISTER": f"http://{NTF_HOST}:{NTF_PORT}/user/register/",
     "NTF_TICKET": f"http://{NTF_HOST}:{NTF_PORT}/user/ticket/",

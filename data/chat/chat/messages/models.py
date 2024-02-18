@@ -62,7 +62,7 @@ class Message(models.Model):
     chat = models.ForeignKey(
         Chat,
         on_delete=models.CASCADE,
-        related_name="+",
+        related_name="message",
         db_column="chat_id",
     )
 
