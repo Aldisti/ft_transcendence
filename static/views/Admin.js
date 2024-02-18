@@ -25,13 +25,13 @@ export default class extends Aview{
             </div>
             <div class="bottomLine">
                 <button username=${userData.username} class="ban">
-                    Ban User
+                    ${this.language.admin.undoBan}
                 </button>
                 <button username=${userData.username} class="makeModerator">
-                    Make Moderator
+                    ${this.language.admin.makeModerator}
                 </button>
                 <button username=${userData.username} class="delete">
-                    Delete User
+                    ${this.language.admin.deleteUser}
                 </button>
             </div>
         </div>
@@ -50,13 +50,13 @@ export default class extends Aview{
             </div>
             <div class="bottomLine">
                 <button username=${userData.username} class="ban">
-                    Ban User
+                    ${this.language.admin.banUser}
                 </button>
                 <button username=${userData.username} class="removeModerator">
-                    Remove Moderator
+                    ${this.language.admin.deleteModerator}
                 </button>
                 <button username=${userData.username} class="delete">
-                    Delete User
+                    ${this.language.admin.deleteUser}
                 </button>
             </div>
         </div>
@@ -75,10 +75,10 @@ export default class extends Aview{
             </div>
             <div class="bottomLine">
                 <button username=${userData.username} class="undoBan">
-                    Undo Ban
+                    ${this.language.admin.undoBan}
                 </button>
                 <button username=${userData.username} class="delete">
-                    Delete User
+                    ${this.language.admin.deleteUser}
                 </button>
             </div>
         </div>
@@ -92,7 +92,7 @@ export default class extends Aview{
             <div class="base">
                 <div class="manageUsers">
                     <div class="sectionTitle">
-                        <h1>Manage Users</h1>
+                        <h1>${this.language.admin.manageUsers}</h1>
                         <div class="searchComponent">
                             <input type="text"><button class="adminSearchUser">search</button><button class="restore">X</button>
                         </div>
@@ -103,7 +103,7 @@ export default class extends Aview{
                 </div>
                 <div class="manageUsers">
                     <div class="sectionTitle">
-                        <h1>Manage Moderator</h1>
+                        <h1>${this.language.admin.manageModerators}</h1>
                         <div class="searchComponent">
                             <input type="text"><button class="adminSearchUser">search</button><button class="restore">X</button>
                         </div>
@@ -114,7 +114,7 @@ export default class extends Aview{
                 </div>           
                 <div class="manageUsers">
                     <div class="sectionTitle">
-                        <h1>Manage Banned Users</h1>
+                        <h1>${this.language.admin.manageBannedUsers}</h1>
                         <div class="searchComponent">
                             <input type="text"><button class="adminSearchUser">search</button><button class="restore">X</button>
                         </div>
@@ -135,14 +135,14 @@ export default class extends Aview{
         this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpeg")
         let role = JSON.parse(window.decode64(localStorage.getItem("jwt"))).role;
 
-        if (role != "A" && role != "M")
-        {
-            history.pushState(null, null, "/");
-            Router();
-        }
-        else if (role == "M"){
-            document.querySelectorAll(".manageUsers")[1].style.display = "none"
-        }
+        // if (role != "A" && role != "M")
+        // {
+        //     history.pushState(null, null, "/");
+        //     Router();
+        // }
+        // else if (role == "M"){
+        //     document.querySelectorAll(".manageUsers")[1].style.display = "none"
+        // }
 
         let manageUser = document.querySelectorAll(".usersContainer")[0];
         manageUser.addEventListener("scroll", HANDLERS.handleUsersScroll.bind(null, this, manageUser));

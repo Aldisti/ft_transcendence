@@ -7,35 +7,35 @@
     padding: 20px;
 }
 
+h1{
+    font-size: medium ;
+    color: white;
+}
 
+button{
+    font-size: xx-small !important;
+}
 
 .manageUsers{
     width: 30%;
-    height: 100%;
+    height: 80%;
     padding: 20px;
+    background-color: var(--retro-sky-blue);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
     gap: 40px;
-    background-color: var(--bs-warning);
-    background-position: center;
-    border: 4px solid black;
-
-    h1{
-        font-size: x-large;
-    }
+    box-shadow: 6px 6px black; border: 4px solid black;
 }
 
 .sectionTitle{
-    background-color: white;
+    background-color: var(--retro-sky-blue);
     width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     padding: 10px;
-    border: 4px solid black;
-    box-shadow: 4px 4px black;
 }
 
 @keyframes wrongInput {
@@ -79,7 +79,6 @@
     overflow: scroll;
     justify-content: flex-start;
     align-items: flex-start;
-    padding: 10px;
 }
 
 .animateWrongInput{
@@ -91,9 +90,8 @@
     background-color: var(--bs-success);
     color: white;
     border: none;
-    font-size: xx-small;
     width: 20%;
-box-shadow: 4px 4px black;
+	box-shadow: 6px 6px black; border: 4px solid black;
 }
 
 .restore{
@@ -101,7 +99,7 @@ box-shadow: 4px 4px black;
     color: white;
     border: none;
     background-color: var(--bs-danger);
-box-shadow: 5px 5px black;
+	box-shadow: 6px 6px black; border: 4px solid black;
 }
 
 .searchComponent input {
@@ -109,8 +107,7 @@ box-shadow: 5px 5px black;
     border: none;
     outline: none;
     padding: 5px;
-    border: 2px solid black;
-box-shadow: 3px 3px black;
+	box-shadow: 6px 6px black; border: 4px solid black;
 
 }
 
@@ -123,14 +120,13 @@ box-shadow: 3px 3px black;
 
 .adminUserLine{
     width: 100%;
-    height: 25%;
+    height: 30%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    background-color: white;
-    border: 4px solid black;
-    box-shadow: 5px 5px black;
+    background-color: var(--retro-blue);
+    box-shadow: 6px 6px black; border: 4px solid black;
 }
 
 .upperLine, .bottomLine{
@@ -140,10 +136,6 @@ box-shadow: 3px 3px black;
     justify-content: space-between;
     align-items: center;
     padding: 10px;
-
-    h3{
-        margin: 0;
-    }
 }
 
 .photo{
@@ -157,50 +149,42 @@ box-shadow: 3px 3px black;
     height: 100%;
     object-fit: cover;
     object-position: center;
-    border: 3px solid black;
-    box-shadow: 5px 5px black;
-
+    border: 4px solid black;
 }
 
-/* .upperLine h3{
+.upperLine h3{
     color: white;
-} */
+}
 
 .bottomLine button{
     width: 30%;
     height: 90%;
     border: none;
     color: white;
-    font-size: xx-small;
-box-shadow: 5px 5px black;
+    font-size: smaller;
+	box-shadow: 6px 6px black; border: 4px solid black;
 
 }
 
 .delete{
     background-color: var(--bs-danger);
-    border: 3px solid black !important;
 }
 
 .moderator{
     background-color: var(--bs-primary);
-    border: 3px solid black !important;
 }
 
 .ban{
     background-color: var(--bs-warning);
-    border: 3px solid black !important;
 }
 .makeModerator{
     background-color: var(--bs-success);
-    border: 3px solid black !important;
 }
 
 .undoBan{
     background-color: var(--bs-success);
-    border: 3px solid black !important;
 }
 
 .removeModerator{
     background-color: var(--bs-warning);
-    border: 3px solid black !important;
 }

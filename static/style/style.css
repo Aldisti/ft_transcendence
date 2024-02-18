@@ -227,6 +227,9 @@ body {
     flex-direction: column;
     align-items: flex-start;
     justify-content: space-between;
+    background-color: var(--retro-blue);
+    box-shadow: 4px 4px black;
+    border: 4px solid black;
 }
 
 .chatUserMenuLine{
@@ -236,13 +239,14 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
-
+    box-shadow: 4px 4px black;
+    border: 4px solid black;
 }
 
 .chatUserMenuLine h3{
     width: 100%;
     text-align: center;
+    font-size: smaller;
     margin: 0;
 }
 
@@ -567,7 +571,16 @@ body {
     background-color: rgb(255, 183, 3, 0.7);
     transition: 0.2s ease-in !important;
     z-index: 20;
-    box-shadow: 6px 6px black; border: 4px solid black;
+    border: 2px solid black;
+}
+
+select{
+    background-color: var(--bsdark);
+    color: var(--white);
+    border: none;
+    min-width: 20%;
+    padding: 0;
+    margin: 0;
 }
 
 .highlightMoon{
@@ -613,7 +626,7 @@ body {
     background-color: rgb(25,135,84, 0.5);
     transition: 0.2s ease-in !important;
     z-index: 20;
-    box-shadow: 6px 6px black; border: 4px solid black;
+    border: 2px solid black;
 }
 .highlightModernPc{
     transform: translateY(-50%) translateX(120%);

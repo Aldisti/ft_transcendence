@@ -175,7 +175,15 @@ let language = {
 			statisticTitle: "Statistics"
 		},
 		admin: {
-			removeUser: "Do you really want to delete "
+			undoBan: "Undo Ban",
+			banUser: "Ban User",
+			makeModerator: "Make Moderator",
+			deleteModerator: "Remove Moderator",
+			deleteUser: "Delete User",
+			removeUser: "Do you really want to delete ",
+			manageUsers: "Manage Users",
+			manageModerators: "Manage Moderators",
+			manageBannedUsers: "Manage Banned Users",
 		}
 
 	},
