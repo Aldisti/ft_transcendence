@@ -38,7 +38,7 @@ export default class User{
             this.needToStart = true;
             this.scoreDisplay = document.querySelector("#currentUserDisplayMobile h2")
 
-            document.querySelector("#opponentDisplayMobile h4").innerHTML = this.displayName == undefined ? this.name : this.displayName;
+            document.querySelector("#currentUserDisplayMobile h4").innerHTML = this.displayName == undefined ? this.name : this.displayName;
         }
         else{
             this.position = "left"
@@ -46,7 +46,7 @@ export default class User{
             this.needToStart = false;
             this.scoreDisplay = document.querySelector("#opponentDisplayMobile h2");
 
-            document.querySelector("#currentDisplayMobile h4").innerHTML = this.displayName == undefined ? this.name : this.displayName;
+            document.querySelector("#opponentDisplayMobile h4").innerHTML = this.displayName == undefined ? this.name : this.displayName;
         }
         if (this.position == "right" && this.loggedUser == this.name){
             document.querySelector(".gameStart").style.display = "flex"
