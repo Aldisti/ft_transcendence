@@ -1,7 +1,7 @@
 FROM debian:bookworm
 
 RUN apt update && apt upgrade -y
-RUN apt install cron vim procps postgresql-client -qy
+RUN apt install cron curl vim procps postgresql-client -qy
 
 COPY ./conf/crontab /var/spool/cron/crontabs/root
 COPY ./tools/query.sh /usr/local/bin/query.sh

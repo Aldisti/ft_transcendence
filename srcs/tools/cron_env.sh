@@ -16,8 +16,9 @@ VARS="DB_NAME DB_USER DB_PASSWORD DB_HOST DB_PORT"
 
 update_cron_env()
 {
-	rm "$ENV_FILE"
-	touch "$ENV_FILE"
+	if ! [ -f "$ENV_FILE" ]; then
+		touch "$ENV_FILE"
+	fi
 	for project in $PROJECTS; do
 		for var in $VARS; do
 			echo ${project}_$(grep "$var" ${PROJECTS_PATH[$project]}/.env) >> $ENV_FILE

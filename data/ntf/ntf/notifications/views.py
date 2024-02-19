@@ -25,6 +25,40 @@ def group_ntf(request):
     return Response({"message": "Group notification sent"}, status=200)
 
 
+# url: /notification/tournament_req/
+@api_view(['POST'])
+def tournament_req_ntf(request):
+    logger.warning("TOURNAMENT REQ NTF")
+    data = request.data
+    try:
+        requested = UserWebsockets.objects.get(pk=data.get("requested", ""))
+    except UserWebsockets.DoesNotExist:
+        return Response({"message": "User not found"}, status=404)
+    body = data.get("body", "")
+    if body == "":
+        return Response({"message": "Invalid body"}, status=400)
+    Notification.objects.send_tournament_req(requested, json.dumps(body))
+    return Response({"message": "Tournament request notification sent"}, status=200)
+
+
+# url: /notification/match_req/
+@api_view(['POST'])
+def match_req_ntf(request):
+    data = request.data
+    try:
+        sender = UserWebsockets.objects.get(pk=data.get("sender", ""))
+        requested = UserWebsockets.objects.get(pk=data.get("requested", ""))
+    except UserWebsockets.DoesNotExist:
+        return Response({"message": "User not found"}, status=404)
+    if sender == requested:
+        return Response({"message": "Invalid users"}, status=400)
+    token = data.get("token", "")
+    if token == "":
+        return Response({"message": "Invalid token"}, status=400)
+    Notification.objects.send_match_req(sender, requested, token)
+    return Response({"message": "Match request notification sent"}, status=200)
+
+
 # url: /notification/friends_req/
 @api_view(['POST'])
 def friends_req_ntf(request):

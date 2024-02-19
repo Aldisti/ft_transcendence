@@ -118,7 +118,7 @@ class EnvFile:
         key1="value1"
         key2="value2"
         """
-        return "\n".join([f"{key}=\"{value}\"" for key, value in json.items()])
+        return "".join([f"{key}=\"{value}\"\n" for key, value in json.items()])
 
     @staticmethod
     def add_prefix_to_json(prefix: str, json: dict[str, str]) -> dict[str, str]:
@@ -152,7 +152,7 @@ class EnvFile:
             file.write(self.json_to_str(self.new_vars))
 
     def __update_env(self) -> None:
-        if (len(self.env_vars) == len(self.def_vars)
+        if (len(self.env_vars) >= len(self.def_vars)
             and not any(set(map(lambda value: value == '', self.env_vars.values())))):
             self.new_vars = self.env_vars
             return
@@ -168,7 +168,6 @@ class EnvFile:
     def __create_db_env(self) -> None:
         if self.db_path is None:
             return
-        print(self.name, self.new_vars, self.env_vars, self.def_vars, sep='\n\n')
         if self.new_vars == {}:
             raise Exception()
         json = {}

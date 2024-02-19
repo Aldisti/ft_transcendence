@@ -95,9 +95,22 @@ services:
       - ./pong/.env
     environment:
       - SERVER_FRONTEND_IP=${SERVER_FRONTEND_IP}
+
+      # rabbitMq vars
+      - RABBIT_PORT=5672
+      - RABBIT_HOST=rabbit_mq
+      - EXCHANGE=${EXCHANGE}
+      - NTF_ROUTING_KEY=${NTF_ROUTING_KEY}
+      - EMAIL_ROUTING_KEY=${EMAIL_ROUTING_KEY}
+      - VHOST_NTF=${VHOST_NTF}
+      - RABBIT_HEARTBEAT=${RABBIT_HEARTBEAT}
+      - RABBIT_BC_TIMEOUT=${RABBIT_BC_TIMEOUT}
+
     networks:
       - django-net
       - pongdb-net
+      - redis-net
+      - rabbit-net
     depends_on:
       pongdb:
         condition: service_healthy
@@ -280,6 +293,15 @@ services:
     networks:
       - authdb-net
 
+  redis:
+    container_name: redis
+    build:
+      context: ./redis
+    image: trinity/redis
+    restart: always
+    networks:
+      - redis-net
+
 
   chatdb:
     container_name: chatdb
@@ -437,6 +459,9 @@ networks:
 
   rabbit-net:
     name: "rabbit-net"
+
+  redis-net:
+    name: "redis-net"
 
   authdb-net:
     name: "authdb-net"

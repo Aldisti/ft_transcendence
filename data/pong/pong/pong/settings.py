@@ -34,14 +34,6 @@ ALLOWED_HOSTS = ["*"]
 
 ASGI_APPLICATION = "pong.asgi.application"
 
-# Channels layer
-
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer"
-    }
-}
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -55,6 +47,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'channels',
     'game',
+    'tournaments',
     'users',
     'matchmaking',
     'corsheaders',
@@ -72,6 +65,17 @@ MIDDLEWARE = [
     'pong.middlewares.MyMiddleware',
     'django.middleware.common.CommonMiddleware',
 ]
+
+# Channels layer
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis", 6379)],
+        },
+    },
+}
 
 # Django REST Framework
 
@@ -161,7 +165,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
@@ -170,9 +173,9 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Europe/Rome'
 TZ = timezone(TIME_ZONE)
 
-USE_I18N = True
+USE_I18N = False
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -193,3 +196,18 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = []
 APPEND_SLASH = False
 
+# rabbitMq
+
+RABBIT = {
+    "host": environ['RABBIT_HOST'],
+    "port": int(environ['RABBIT_PORT']),
+    "heartbeat": int(environ['RABBIT_HEARTBEAT']),
+    "bc_timeout": int(environ['RABBIT_BC_TIMEOUT']),
+    "exchange": environ['EXCHANGE'],
+    "R_KEYS": {
+        "ntf": environ['NTF_ROUTING_KEY'],
+    },
+    "VHOSTS": {
+        "ntf": environ['VHOST_NTF']
+    },
+}

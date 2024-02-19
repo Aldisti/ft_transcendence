@@ -34,6 +34,7 @@ SECRET_KEY = 'django-insecure-&1ve_f1=v5e9=n$(u=@dfjxh)a93!&#39qi9f2atxuqn%mafyj
 # SECURE_SSL_REDIRECT = True
 # SESSION_COOKIE_SECURE = True
 # CSRF_COOKIE_SECURE = True
+PROTOCOL = "http"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -73,6 +74,7 @@ INSTALLED_APPS = [
     'friends',
     'multiplayer_test',
     'pong',
+    'chat',
     # tmp for testing reasons
     'corsheaders',
 ]
@@ -213,9 +215,9 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Europe/Rome'
 TZ = timezone(TIME_ZONE)
 
-USE_I18N = True
+USE_I18N = False
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -266,6 +268,7 @@ MAX_SIZE = 1_000_000
 ALLOWED_EXT = ["jpg", "jpeg", "png", "gif"]
 ALLOWED_TYPES = ["jpeg", "png", "gif"]
 FILE_CATEGORY = "image"
+MAX_NAME_LEN = 60
 
 # messages
 
@@ -297,6 +300,7 @@ MS_URLS = {
     "FRIENDS_DELETE_REQ": f"http://{CHAT_HOST}:{CHAT_PORT}/friends/request/delete/",
     "FRIENDS_ALL": f"http://{CHAT_HOST}:{CHAT_PORT}/friends/all/",
     "FRIENDS_CHECK": f"http://{CHAT_HOST}:{CHAT_PORT}/friends/",
+    "MESSAGES_GET": f"http://{CHAT_HOST}:{CHAT_PORT}/chat/messages/",
     # notification urls
     "NTF_REGISTER": f"http://{NTF_HOST}:{NTF_PORT}/user/register/",
     "NTF_TICKET": f"http://{NTF_HOST}:{NTF_PORT}/user/ticket/",
@@ -345,8 +349,20 @@ MS_URLS = {
     },
     # emails
     # TODO: use variables instead of localhost and 4200
-    "CLIENT_RESET_PAGE": f"http://localhost:4200/password/reset/",
-    "CLIENT_LOGIN_PAGE": f"http://localhost:4200/login/",
+    "CLIENT_RESET_PAGE": f"http://{SERVER_FRONTEND_IP}:4200/password/reset/",
+    "CLIENT_LOGIN_PAGE": f"http://{SERVER_FRONTEND_IP}:4200/login/",
+    "TOURNAMENT_LIST": f"http://{PONG_HOST}:{PONG_PORT}/tournaments/",
+    "TOURNAMENT_CREATE": f"http://{PONG_HOST}:{PONG_PORT}/tournaments/create/",
+    "TOURNAMENT_RETRIEVE":f"http://{PONG_HOST}:{PONG_PORT}/tournaments/<pk>/",
+    "TOURNAMENT_REGISTER":f"http://{PONG_HOST}:{PONG_PORT}/tournaments/register/",
+    "TOURNAMENT_UNREGISTER":f"http://{PONG_HOST}:{PONG_PORT}/tournaments/unregister/",
+    "TOURNAMENT_GET_SCHEMA":f"http://{PONG_HOST}:{PONG_PORT}/tournaments/schema/<pk>/",
+    "TOURNAMENT_GET_MATCHES":f"http://{PONG_HOST}:{PONG_PORT}/tournaments/matches/",
+    "GAME_GET_MATCHES":f"http://{PONG_HOST}:{PONG_PORT}/game/matches/",
+    "SEND_MATCH_REQ":f"http://{PONG_HOST}:{PONG_PORT}/game/match/",
+    "DELETE_MATCH_REQ":f"http://{PONG_HOST}:{PONG_PORT}/game/match/delete/",
+    "ACCEPT_MATCH_REQ":f"http://{PONG_HOST}:{PONG_PORT}/game/match/accept/",
+    "REJECT_MATCH_REQ":f"http://{PONG_HOST}:{PONG_PORT}/game/match/reject/",
 }
 
 # rabbit config

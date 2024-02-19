@@ -8,6 +8,11 @@ from users.models import UserWebsockets, WebsocketTicket
 from users.serializers import UserWebsocketsSerializer
 from notifications.models import Notification
 
+import logging
+
+
+logger = logging.warning(__name__)
+
 
 class CreateUser(generics.CreateAPIView):
     queryset = UserWebsockets.objects.all()

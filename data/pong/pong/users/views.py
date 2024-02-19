@@ -30,3 +30,17 @@ def generate_ticket(username_1, username_2):
     ticket = pong_user_1.ticket
     PongUser.objects.update_ticket(pong_user_2, ticket)
     return ticket
+
+
+def generate_ticket_user(pong_user_1, pong_user_2):
+    pong_user_1 = PongUser.objects.generate_ticket(pong_user_1)
+    ticket = pong_user_1.ticket
+    PongUser.objects.update_ticket(pong_user_2, ticket)
+    return ticket
+
+
+def generate_tournament_ticket_user(pong_user_1, pong_user_2):
+    pong_user_1 = PongUser.objects.generate_tournament_ticket(pong_user_1)
+    ticket = pong_user_1.tournament_ticket
+    PongUser.objects.update_tournament_ticket(pong_user_2, ticket)
+    return ticket
