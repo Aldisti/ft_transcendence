@@ -6,14 +6,14 @@ let language = allLanguage[localStorage.getItem("language")];
 
 export let emailError = `
     <ul style="margin: 0;">
-        <li>${language.emailSuggest[0]}</li>
-        <li>${language.emailSuggest[1]}</li>
-        <li>${language.emailSuggest[2]}</li>
+        <li>${language.update.emailSuggest[0]}</li>
+        <li>${language.update.emailSuggest[1]}</li>
+        <li>${language.update.emailSuggest[2]}</li>
     </ul>
 `
 export let qrError = `
     <ul style="margin: 0;">
-        <li>${language.qrSuggest[0]}</li>
+        <li>${language.update.qrSuggest[0]}</li>
     </ul>
 `
 
