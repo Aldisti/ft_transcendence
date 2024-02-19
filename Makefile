@@ -6,6 +6,7 @@ DJANGO_IMG = ./srcs/django
 POSTGRES_IMG = ./srcs/postgres
 
 $(NAME): init build
+	@#gnome-terminal -- docker compose -f $(COMPOSE) --env-file $(ENV_FILE) up
 	@docker compose -f $(COMPOSE) --env-file $(ENV_FILE) up
 
 build:
@@ -50,6 +51,9 @@ fclean: clean
 	@docker volume rm -f django postgres pong pongdb auth authdb chat chatdb ntf ntfdb 2> /dev/null
 	@rm -rf ./data/postgres ./data/pongdb ./data/authdb ./data/chatdb ./data/ntfdb 2> /dev/null
 
+clean_env:
+	@rm -f ./srcs/.env ./srcs/*/.env ./srcs/postgres/.env*
+
 re: fclean all
 
-.PHONY: all init clean fclean re $(NAME)
+.PHONY: all init clean fclean clean_env re $(NAME)

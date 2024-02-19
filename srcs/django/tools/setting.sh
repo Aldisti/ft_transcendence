@@ -1,5 +1,7 @@
 #!/bin/bash
 
+bash
+
 if ! test -d images
 then
 	mkdir images

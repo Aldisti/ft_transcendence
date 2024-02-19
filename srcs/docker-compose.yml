@@ -12,25 +12,22 @@ services:
       - "8000-8020:8000-8020"
     volumes:
       - django:/home/$USERNAME/develop
-#    healthcheck:
-#      test: curl -sf http://localhost:8000/auth/retrieve/public-key/ -o /dev/null
-#      retries: 3
-#      interval: 5m
-#      start_period: 10s
-#      start_interval: 5s
+    env_file:
+      - ./transcendence/.env
     environment:
-      - PROJECT_NAME=${PROJECT_NAME}
-      - DB_USER=${DB_USER}
-      - DB_NAME=${DB_NAME}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
+      - SERVER_FRONTEND_IP=${SERVER_FRONTEND_IP}
       - EMAIL_HOST=${EMAIL_HOST}
+      - EMAIL_PORT=${EMAIL_PORT}
       - EMAIL_HOST_USER=${EMAIL_HOST_USER}
       - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
-      - SERVER_FRONTEND_IP=${SERVER_FRONTEND_IP}
-
-      # microservices vars
+      - RABBIT_HOST=${RABBIT_HOST}
+      - RABBIT_PORT=${RABBIT_PORT}
+      - EXCHANGE=${EXCHANGE}
+      - NTF_ROUTING_KEY=${NTF_ROUTING_KEY}
+      - EMAIL_ROUTING_KEY=${EMAIL_ROUTING_KEY}
+      - VHOST_NTF=${VHOST_NTF}
+      - RABBIT_HEARTBEAT=${RABBIT_HEARTBEAT}
+      - RABBIT_BC_TIMEOUT=${RABBIT_BC_TIMEOUT}
       - CHAT_HOST=chat
       - CHAT_PORT=8000
       - NTF_HOST=ntf
@@ -39,16 +36,12 @@ services:
       - PONG_PORT=8000
       - AUTH_HOST=auth
       - AUTH_PORT=8000
-
-      # rabbitMq vars
-      - RABBIT_PORT=5672
-      - RABBIT_HOST=rabbit_mq
-      - EXCHANGE=${EXCHANGE}
-      - NTF_ROUTING_KEY=${NTF_ROUTING_KEY}
-      - EMAIL_ROUTING_KEY=${EMAIL_ROUTING_KEY}
-      - VHOST_NTF=${VHOST_NTF}
-      - RABBIT_HEARTBEAT=${RABBIT_HEARTBEAT}
-      - RABBIT_BC_TIMEOUT=${RABBIT_BC_TIMEOUT}
+    healthcheck:
+      test: curl -sf http://localhost:8000/auth/retrieve/public-key/ -o /dev/null
+      retries: 3
+      interval: 5m
+      start_period: 10s
+      start_interval: 5s
     networks:
       - django-net
       - postgres-net
@@ -71,32 +64,20 @@ services:
       test: curl -sf http://localhost:8000/auth/retrieve/public-key/ -o /dev/null
       retries: 3
       interval: 5m
-      start_period: 10s
+      start_period: 15s
       start_interval: 5s
-    ports:
-      - "6969:8000"
     volumes:
       - auth:/home/${USERNAME}/develop
+    env_file:
+      - ./auth/.env
     environment:
-      - PROJECT_NAME=${AUTH_APP_NAME}
-      - DB_USER=${AUTH_DB_USER}
-      - DB_NAME=${AUTH_DB_NAME}
-      - DB_PASSWORD=${AUTH_DB_PASSWORD}
-      - DB_HOST=${AUTH_DB_HOST}
-      - DB_PORT=${AUTH_DB_PORT}
-      - INTRA_ID=${INTRA_ID}
-      - INTRA_SECRET=${INTRA_SECRET}
-      - GOOGLE_ID=${GOOGLE_ID}
-      - GOOGLE_SECRET=${GOOGLE_SECRET}
-      - RSA_PRIVATE_KEY_PATH=${RSA_PRIVATE_KEY_PATH}
-      - RSA_PUBLIC_KEY_PATH=${RSA_PUBLIC_KEY_PATH}
+      - SERVER_FRONTEND_IP=${SERVER_FRONTEND_IP}
     networks:
       - django-net
       - authdb-net
     depends_on:
       authdb:
         condition: service_healthy
-        restart: true
 
 
   pong:
@@ -110,13 +91,9 @@ services:
       - "7000-7020:8000-8020"
     volumes:
       - pong:/home/$USERNAME/develop
+    env_file:
+      - ./pong/.env
     environment:
-      - PROJECT_NAME=${PONGAPP_NAME}
-      - DB_USER=${PONGDB_USER}
-      - DB_NAME=${PONGDB_NAME}
-      - DB_PASSWORD=${PONGDB_PASSWORD}
-      - DB_HOST=${PONGDB_HOST}
-      - DB_PORT=${PONGDB_PORT}
       - SERVER_FRONTEND_IP=${SERVER_FRONTEND_IP}
     networks:
       - django-net
@@ -140,18 +117,12 @@ services:
       - "9001:8000"
     volumes:
       - chat:/home/$USERNAME/develop
+    env_file:
+      - ./chat/.env
     environment:
-      - PROJECT_NAME=${CHATAPP_NAME}
-      - DB_USER=${CHATDB_USER}
-      - DB_NAME=${CHATDB_NAME}
-      - DB_PASSWORD=${CHATDB_PASSWORD}
-      - DB_HOST=${CHATDB_HOST}
-      - DB_PORT=${CHATDB_PORT}
       - SERVER_FRONTEND_IP=${SERVER_FRONTEND_IP}
-
-      # rabbitMq vars
-      - RABBIT_PORT=5672
-      - RABBIT_HOST=rabbit_mq
+      - RABBIT_HOST=${RABBIT_HOST}
+      - RABBIT_PORT=${RABBIT_PORT}
       - EXCHANGE=${EXCHANGE}
       - NTF_ROUTING_KEY=${NTF_ROUTING_KEY}
       - VHOST_NTF=${VHOST_NTF}
@@ -177,13 +148,9 @@ services:
       - "9000:8000"
     volumes:
       - ntf:/home/$USERNAME/develop
+    env_file:
+      - ./ntf/.env
     environment:
-      - PROJECT_NAME=${NTFAPP_NAME}
-      - DB_USER=${NTFDB_USER}
-      - DB_NAME=${NTFDB_NAME}
-      - DB_PASSWORD=${NTFDB_PASSWORD}
-      - DB_HOST=${NTFDB_HOST}
-      - DB_PORT=${NTFDB_PORT}
       - SERVER_FRONTEND_IP=${SERVER_FRONTEND_IP}
     networks:
       - django-net
@@ -201,6 +168,7 @@ services:
     restart: always
     networks:
       - postgres-net
+      - django-net
     depends_on:
       postgres:
         condition: service_healthy
@@ -213,13 +181,14 @@ services:
     image: trinity/ntf_listener
     restart: always
     environment:
-      - RABBIT_PORT=5672
-      - RABBIT_HOST=rabbit_mq
+      - SERVER_FRONTEND_IP=${SERVER_FRONTEND_IP}
+      - RABBIT_HOST=${RABBIT_HOST}
+      - RABBIT_PORT=${RABBIT_PORT}
       - EXCHANGE=${EXCHANGE}
       - NTF_ROUTING_KEY=${NTF_ROUTING_KEY}
-      - THREAD=${THREAD}
-      - QUEUE_NAME=${NTF_QUEUE}
       - VHOST=${VHOST_NTF}
+      - QUEUE_NAME=${NTF_QUEUE}
+      - THREAD=${THREAD}
     networks:
       - rabbit-net
       - django-net
@@ -235,8 +204,9 @@ services:
     image: trinity/email_listener
     restart: always
     environment:
-      - RABBIT_PORT=5672
-      - RABBIT_HOST=rabbit_mq
+      - SERVER_FRONTEND_IP=${SERVER_FRONTEND_IP}
+      - RABBIT_HOST=${RABBIT_HOST}
+      - RABBIT_PORT=${RABBIT_PORT}
       - EXCHANGE=${EXCHANGE}
       - EMAIL_ROUTING_KEY=${EMAIL_ROUTING_KEY}
       - THREAD=${THREAD}
@@ -276,19 +246,16 @@ services:
     container_name: postgres
     image: trinity/postgres
     restart: always
-    expose:
-      - "$DB_PORT"
     volumes:
       - postgres:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "pg_isready", "-p$DB_PORT", "-h127.0.0.1", "-d$DB_NAME", "-U$DB_USER"]
+      test: "pg_isready -p$$POSTGRES_PORT -d$$POSTGRES_DB -U$$POSTGRES_USER"
       retries: 10
       interval: 2s
       start_interval: 3s
+    env_file:
+      - ./postgres/.env_django
     environment:
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_DB=${DB_NAME}
       - PGDATA=${PGDATA}
     networks:
       - postgres-net
@@ -302,14 +269,13 @@ services:
     volumes:
       - authdb:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "pg_isready", "-p$AUTH_DB_PORT", "-h127.0.0.1", "-d$AUTH_DB_NAME", "-U$AUTH_DB_USER"]
+      test: "pg_isready -p$$POSTGRES_PORT -d$$POSTGRES_DB -U$$POSTGRES_USER"
       retries: 3
       interval: 2s
       start_interval: 3s
+    env_file:
+      - ./postgres/.env_auth
     environment:
-      - POSTGRES_PASSWORD=${AUTH_DB_PASSWORD}
-      - POSTGRES_USER=${AUTH_DB_USER}
-      - POSTGRES_DB=${AUTH_DB_NAME}
       - PGDATA=${PGDATA}
     networks:
       - authdb-net
@@ -319,19 +285,16 @@ services:
     container_name: chatdb
     image: trinity/postgres
     restart: always
-    expose:
-      - "$CHATDB_PORT"
     volumes:
       - chatdb:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "pg_isready", "-p$CHATDB_PORT", "-h127.0.0.1", "-d$CHATDB_NAME", "-U$CHATDB_USER"]
+      test: "pg_isready -p$$POSTGRES_PORT -d$$POSTGRES_DB -U$$POSTGRES_USER"
       retries: 10
       interval: 5s
       start_interval: 3s
+    env_file:
+      - ./postgres/.env_chat
     environment:
-      - POSTGRES_PASSWORD=${CHATDB_PASSWORD}
-      - POSTGRES_USER=${CHATDB_USER}
-      - POSTGRES_DB=${CHATDB_NAME}
       - PGDATA=${PGDATA}
     networks:
       - chatdb-net
@@ -341,19 +304,16 @@ services:
     container_name: ntfdb
     image: trinity/postgres
     restart: always
-    expose:
-      - "$NTFDB_PORT"
     volumes:
       - ntfdb:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "pg_isready", "-p$NTFDB_PORT", "-h127.0.0.1", "-d$NTFDB_NAME", "-U$NTFDB_USER"]
+      test: "pg_isready -p$$POSTGRES_PORT -d$$POSTGRES_DB -U$$POSTGRES_USER"
       retries: 10
       interval: 5s
       start_interval: 3s
+    env_file:
+      - ./postgres/.env_ntf
     environment:
-      - POSTGRES_PASSWORD=${NTFDB_PASSWORD}
-      - POSTGRES_USER=${NTFDB_USER}
-      - POSTGRES_DB=${NTFDB_NAME}
       - PGDATA=${PGDATA}
     networks:
       - ntfdb-net
@@ -363,19 +323,16 @@ services:
     container_name: pongdb
     image: trinity/postgres
     restart: always
-    expose:
-      - "$PONGDB_PORT"
     volumes:
       - pongdb:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "pg_isready", "-p$PONGDB_PORT", "-h127.0.0.1", "-d$PONGDB_NAME", "-U$PONGDB_USER"]
+      test: "pg_isready -p$$POSTGRES_PORT -d$$POSTGRES_DB -U$$POSTGRES_USER"
       retries: 10
       interval: 2s
       start_interval: 3s
+    env_file:
+      - ./postgres/.env_pong
     environment:
-      - POSTGRES_PASSWORD=${PONGDB_PASSWORD}
-      - POSTGRES_USER=${PONGDB_USER}
-      - POSTGRES_DB=${PONGDB_NAME}
       - PGDATA=${PGDATA}
     networks:
       - pongdb-net
@@ -412,7 +369,7 @@ volumes:
     driver_opts:
       type: "none"
       o: "bind"
-      device: "$PWD/data/$AUTH_APP_NAME"
+      device: "$PWD/data/authentication"
 
   ntf:
     name: "ntf"
