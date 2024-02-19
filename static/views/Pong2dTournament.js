@@ -75,6 +75,16 @@ export default class extends Aview{page
                             <label for="maxPartecipants">${this.language.tournament.newTournament.tDisplayName}</label>
                             <input placeholder="${this.language.tournament.normalLimit}" required id="displayName" name="tDisplayName" type="text">
                         </div>
+                        <div class="specialLine">
+                            <div class="halfInputLine">
+                                <label for="maxPartecipants">${this.language.tournament.newTournament.tDate}</label>
+                                <input placeholder="${this.language.tournament.normalLimit}" required id="date" name="tDate" type="date">
+                            </div>
+                            <div class="halfInputLine">
+                                <label for="maxPartecipants">${this.language.tournament.newTournament.tTime}</label>
+                                <input placeholder="${this.language.tournament.normalLimit}" required id="time" name="tTime" type="time">
+                            </div>
+                        </div>
                         <div class="inputLine">
                             <label for="tournamentDescription">${this.language.tournament.newTournament.tDescription}</label>
                             <textarea placeholder="${this.language.tournament.bigLimit}" required maxlength="500" name="tDescription" id="tournamentDescription" type="text"></textarea>

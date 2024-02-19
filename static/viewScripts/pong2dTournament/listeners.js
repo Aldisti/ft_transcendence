@@ -87,6 +87,20 @@ export function exposeNewTournamentForm(){
     }
 }
 
+function validateDateTime(dateTimeString){
+    // Parse the input datetime string into a Date object
+    const inputDateTime = new Date(dateTimeString);
+
+    // Get the current datetime
+    const currentDateTime = new Date();
+
+    // Calculate the time difference in milliseconds between input and current datetime
+    const timeDifference = inputDateTime.getTime() - currentDateTime.getTime();
+
+    // Check if the time difference is at least one hour (in milliseconds)
+    return timeDifference >= 60 * 60 * 1000;
+}
+
 /**
  * The function handles the creation of a tournament by validating form data, creating an object with
  * the data, and making an API call to create the tournament.
@@ -105,14 +119,26 @@ export function handleTournamentCreation(dupThis, e){
     }
     e.preventDefault()
     let form = new FormData(document.querySelector(".newTournament form"));
+    console.log(form)
+    let dateTime = form.get("tDate") + "T" + form.get("tTime");
     let flag = true;
     let obj = {};
 
     form.forEach((value, key)=>{
-        obj[key] = helpFunction.fieldValidate(value, key, dupThis);
-        if (obj[key] == null)
-            flag = false;
+        if (key != "tTime" && key != "tDate"){
+            obj[key] = helpFunction.fieldValidate(value, key, dupThis);
+            if (obj[key] == null)
+                flag = false;
+        }
     })
+    console.log(dateTime, validateDateTime(dateTime))
+    if (validateDateTime(dateTime)){
+        obj["tDateTime"] = dateTime;
+    }
+    else{
+        flag = false;
+        alert("date and time must be later that one hour from now...")
+    }
     if (!flag)
         return
     API.createTournament(1, obj).then(res=>{

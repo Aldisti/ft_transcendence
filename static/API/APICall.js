@@ -1026,7 +1026,8 @@ export async function createTournament(recursionProtection, form){
             title: form.tName,
             display_name: form.tDisplayName,
             description: form.tDescription,
-            participants: form.tPartecipants
+            participants: form.tPartecipants,
+            start_date: form.tDateTime,
         }),
         credentials: "include",
 

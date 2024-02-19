@@ -90,7 +90,9 @@ let language = {
 				tDate: "Tournament Date:",
 				tPartecipants: "Max Partecipants:",
 				tCreate: "Create!",
-				tDisplayName: "Display Name"
+				tDisplayName: "Display Name",
+				tDate: "Start Date",
+				tTime: "Start Time",
 			},
 			tournamentCard: {
 				dateLabel: "Starting Date: ",
