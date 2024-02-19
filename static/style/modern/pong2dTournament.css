@@ -252,6 +252,10 @@ select{
     gap: 20px;
     background-color: white;
 
+    & select{
+        height: 100%;
+    }
+
     & .titleLeft{
         width: 50%;
         height: 100%;
@@ -298,8 +302,8 @@ select{
     & input{
         border: none;
         outline: none;
-        width: 100%;
-        height: 50%;
+        width: 70%;
+        height: 100%;
         padding: 4px;
         box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
     }
@@ -561,39 +565,91 @@ select{
 
 }
 
+.inputAndSelect{
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+}
 
 
 @media screen and (max-width: 900px) {
 
+    h5, label, input{
+        font-size: smaller;
+    }
+
+    .inputAndSelect{
+        width: 100%;
+    }
+
+    .base{
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 10px;
+        overflow: scroll;
+        scroll-behavior: smooth;
+        justify-content: flex-start;
+    }
+
     .tournamentManager{
         width: 100%;
-        height: 92svh;
+        height: fit-content;
         flex-direction: column-reverse;
-        overflow: scroll;
         justify-content: flex-start;  
+        align-items: flex-start;
+        overflow: visible;
         gap: 20px;
     }
 
     .allTournaments{
         width: 100%;
         height: 80svh;
+        margin: 0;
     }
     .newTournament{
         width: 100%;
+        height: 60svh;
         position: relative;
         left: 0;
 
         height: 50svh;
     }
     .displayBodyAndSubbmit{
-        position: relative;
-        left: 0;
-        width: 100%;
-        height: 30svh;
-        flex-shrink: 0;
+        display: none;
     }
     .displayNameAndSubmit{
         width: 100%;
         height: 100%;
+    }
+    .tournamentsTitle{
+        flex-direction: column;
+        justify-content: center;
+        height: 20%;
+        & .titleLeft{
+            width: 100%;
+        }
+        & .titleRight{
+            align-items: center;
+            width: 100%;
+        }
+        & .showNewTournamentForm{
+            display: none;
+        }
+        & .tournamentSearchBar{
+            height: 100%;
+            padding-left: 0;
+        }
+        select{
+            height: 100%;
+        }
+    }
+    .tournamentBody{
+        overflow: scroll;
+    }
+    .bottomLine{
+        & button{
+            font-size: 6px;
+        }
     }
 }

@@ -720,5 +720,16 @@
         background-color: white;
         box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
     }
+
+    .allTournaments, .matchManager{
+        width: 100svw;
+        padding: 3px;
+    }
+    .historyDate{
+        gap: 10px;
+    }
+    .matchDetails{
+        font-size: 6px !important;
+    }
     
 }

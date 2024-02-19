@@ -711,5 +711,14 @@ box-shadow: 6px 6px black; border: 4px solid black;
         background-color: white;
 box-shadow: 6px 6px black; border: 4px solid black;
     }
-    
+    .allTournaments, .matchManager{
+        width: 100svw;
+        padding: 3px;
+    }
+    .historyDate{
+        gap: 10px;
+    }
+    .matchDetails{
+        font-size: 6px !important;
+    }
 }

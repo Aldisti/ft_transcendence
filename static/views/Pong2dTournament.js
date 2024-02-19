@@ -108,15 +108,17 @@ export default class extends Aview{page
                     <div class="tournamentsTitle">
                         <div class="titleLeft">
                             <h3>${this.language.tournament.title}</h3>
-                            <input>
+                            <div class="inputAndSelect">
+                                <input>
+                                <select>
+                                    <option>all</option>
+                                    <option>4</option>
+                                    <option>8</option>
+                                    <option>16</option>
+                                </select>
                             </div>
-                            <select>
-                                <option>all</option>
-                                <option>4</option>
-                                <option>8</option>
-                                <option>16</option>
-                            </select>
-                        <div class="titleRight">
+                            </div>
+                            <div class="titleRight">
                             <div class="tournamentSearchBar">
                                 <button class="importantSubmit search">${this.language.tournament.searchBtn}</button><button class="restoreBtn">X</button>
                             </div>

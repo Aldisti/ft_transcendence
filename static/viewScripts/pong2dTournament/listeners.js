@@ -2,6 +2,20 @@ import * as API from"/API/APICall.js"
 import * as helpFunction from "/viewScripts/pong2dTournament/listenersHelperFunctions.js"
 import Router from "/router/mainRouterFunc.js"
 
+function handleTournamentSubScriptionMobile(dupThis, id){
+    let input = prompt("Enter Display Name");
+
+    if (/^[A-Za-z0-9!?*@$~_-]{5,32}$/.test(input)){
+        API.tournamentSubmit(1, input, id).then(res=>{
+            if (!res)
+                alert(dupThis.language.tournament.tournamentSubmitError);
+            Router();
+        })
+    }
+    else
+        alert("Bad Input");
+}
+
 /**
  * The function handles the subscription and unsubscription of a user to a tournament, displaying a
  * confirmation message and updating the UI accordingly.
@@ -19,6 +33,10 @@ export function handleTournamentSubscription(dupThis, e){
     let tournamentId = e.target.getAttribute("tournamentId");
 
     if (e.target.classList.contains("subscribe")){
+        if (window.innerWidth < 900){
+            handleTournamentSubScriptionMobile(dupThis, e.target.getAttribute("tournamentId"))
+            return ;
+        }
         document.querySelector(".newTournament").classList.remove("showCard")
         if (!e.target.classList.contains("bodyOpened")){
             helpFunction.movementHandler("open", card);
@@ -30,10 +48,12 @@ export function handleTournamentSubscription(dupThis, e){
         e.target.classList.toggle("bodyOpened");
     }
     if (e.target.classList.contains("unSubscribe")){
-        helpFunction.resetBtnClass(e.target);
-        helpFunction.movementHandler("close", card);
+        if (window.innerWidth >= 900){
+            helpFunction.resetBtnClass(e.target);
+            helpFunction.movementHandler("close", card);
+        }
         setTimeout(() => {
-            if (confirm("Do You really want to unsubscribe dupThis event?")){
+            if (confirm("Do You really want to unsubscribe this event?")){
                 API.unsubscribeTournament(1, e.target.getAttribute("tournamentId")).then(res=>{
                     if (res)
                         alert(dupThis.language.tournament.tournamentUnSubscribed);
@@ -51,6 +71,11 @@ export function handleTournamentSubscription(dupThis, e){
  */
 export function exposeNewTournamentForm(){
     let card = document.querySelector(".newTournament");
+
+    if (window.innerWidth < 900){
+        alert("Only available in DESKTOP mode");
+        return ;
+    }
 
     document.querySelector(".displayBodyAndSubbmit").classList.remove("showCard");
     helpFunction.resetBtnClass();

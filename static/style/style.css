@@ -15,7 +15,6 @@
 * {
     box-sizing: border-box;
     font-family: 'Press Start 2P', sans-serif;
-    font-size: 15px;
     font-weight: 500;
     scrollbar-width: none;
     transition: 0.3s, background-color 0s;

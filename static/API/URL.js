@@ -1,4 +1,4 @@
-let ip = "localhost";
+let ip = "192.168.1.32";
 let port = "8000";
 let protocol = "http";
 let pongPort = "7000";

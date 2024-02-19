@@ -104,6 +104,10 @@ export function handleTournamentHistory(dupThis, e){
     let card = document.querySelector(".matchInfoContainer");
 
     if (e.target.classList.contains("matchDetails")){
+        if (window.innerWidth < 900){
+            alert("Tournaments Are visible only in DESKTOP view...");
+            return ;
+        }
         if (!e.target.classList.contains("bodyOpened")){
             helpFunction.movementHandler("open", card);
             document.querySelector(".drawMatch").innerHTML = "";
