@@ -1,4 +1,6 @@
 from django.conf import settings
+from django.core import management
+from django.utils import timezone
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -77,6 +79,34 @@ class CreateTournament(CreateAPIView):
         tour = Tournament.objects.get(pk=response.data["id"])
         response.data["subscribed"] = tour.get_subscribed()
         return response
+
+
+#@api_view(["GET"])
+def check_tournaments(request):
+    tournaments = Tournament.objects.filter(start_date__lte=timezone.now(), started=False)
+    for tournament in tournaments:
+        if tournament.is_full():
+            # start tournament
+            Tournament.objects.start_tournament(tournament)
+            logger.warning("STARTING TOURNAMENT {tournament.name}")
+            thread = threading.Thread(target=tournament_loop, kwargs={"tournament": tournament})
+            thread.start()
+
+        else:
+            # send a message to subscribed users that the tournament will be deleted
+            logger.warning("DELETING TOURNAMENT {tournament.name}")
+            participants = tournament.participant.all()
+            games = []
+            for participant in participants:
+                body = {"receiver": participant.player_id, "body": f"Tournament: {tournament.name} has been deleted"}
+                NotificationProducer().publish(method="info_ntf", body=json.dumps(body))
+                if participant.game_id not in games:
+                    games.append(participant.game)
+            # TODO: delete all games
+            for game in games:
+                game.delete()
+            tournament.delete()
+    return Response(status=200)
 
 
 @api_view(["GET"])
@@ -194,11 +224,6 @@ def register_tournament(request):
     display_name = request.data.get("display_name", "player")
     participant_tournament = ParticipantTournament.objects.create(1, player, tournament, game, display_name=display_name)
     ParticipantTournament.objects.update_column(participant_tournament, num_participants + 1)
-
-    if (num_participants + 1) == tournament.participants_num:
-        logger.warning("STARTING THREAD")
-        thread = threading.Thread(target=tournament_loop, kwargs={"tournament": tournament})
-        thread.start()
 
     return Response(TournamentSerializer(tournament).data, status=200)
 

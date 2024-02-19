@@ -48,12 +48,19 @@ class ParticipantTournamentManager(models.Manager):
 
 
 class TournamentManager(models.Manager):
-    def create(self, name: str, description: str, participants_num: int, **kwargs):
+    def create(self, name: str, description: str, participants_num: int, start_date, **kwargs):
         tournament = self.model(
             name=name,
             description=description,
             participants_num=participants_num,
+            start_date=start_date,
         )
+        tournament.full_clean()
+        tournament.save()
+        return tournament
+
+    def start_tournament(self, tournament):
+        tournament.started = True
         tournament.full_clean()
         tournament.save()
         return tournament

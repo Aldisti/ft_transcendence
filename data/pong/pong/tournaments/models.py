@@ -1,7 +1,7 @@
 from django.db import models
 from django.core import validators
 
-from tournaments.validators import ParticipantsValidator
+from tournaments.validators import ParticipantsValidator, StartDateValidator
 from tournaments.managers import TournamentManager, ParticipantTournamentManager, StatsTournamentManager
 
 from users.models import PongUser, Game
@@ -39,6 +39,18 @@ class Tournament(models.Model):
     finished = models.BooleanField(
         db_column="finished",
         default=False
+    )
+
+    started = models.BooleanField(
+        db_column="started",
+        default=False
+    )
+
+    start_date = models.DateTimeField(
+        db_column="start_date",
+        validators=[StartDateValidator("invalid start date")],
+        blank=True,
+        null=True,
     )
 
     # TODO: create TournamentManager

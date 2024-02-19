@@ -23,6 +23,11 @@ def image_validator(file) -> bool:
     if file.size >= settings.MAX_SIZE:
         raise ValidationError("Invalid file size")
 
+    # length name check
+    logger.warning(f"file.name: {file.name}")
+    if len(file.name) >= settings.MAX_NAME_LEN:
+        raise ValidationError("Invalid file size")
+
     # ext check
     logger.warning(f"file.name: {file.name}")
     try:

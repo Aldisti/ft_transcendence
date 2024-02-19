@@ -34,10 +34,11 @@ class TournamentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tournament
-        fields = ["id", "title", "description", "participants", "subscribed", "finished", "registered"]
+        fields = ["id", "title", "description", "participants", "subscribed", "finished", "registered", "start_date"]
         extra_kwargs = {
             "id": {"read_only": True},
             "finished": {"read_only": True},
+            "registered": {"read_only": True},
         }
 
     def create(self, validated_data):

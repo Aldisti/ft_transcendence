@@ -267,6 +267,7 @@ MAX_SIZE = 1_000_000
 ALLOWED_EXT = ["jpg", "jpeg", "png", "gif"]
 ALLOWED_TYPES = ["jpeg", "png", "gif"]
 FILE_CATEGORY = "image"
+MAX_NAME_LEN = 60
 
 # messages
 
