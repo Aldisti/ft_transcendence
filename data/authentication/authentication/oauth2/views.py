@@ -99,9 +99,13 @@ def v2_intra_link(request) -> Response:
     email = api_response.json()['email']
     del api_response
     try:
-        IntraUser.objects.create(user=user, email=email)
+        user = IntraUser.objects.create(user=user, email=email).user
+    except ValidationError:
+        return Response(data={'message': 'intra account already linked to another user'}, status=400)
     except ValueError as e:
         return Response(data={'message': str(e)}, status=404)
+    if user.email == email:
+        User.objects.update_verified(user, True)
     return Response(status=200)
 
 
@@ -143,14 +147,10 @@ class GoogleLink(APIView):
         request_body = settings.OAUTH2['GOOGLE_REQUEST_BODY'].copy()
         request_body['code'] = request.data.get('code')
         if request.data.get('state') != request.COOKIES.get('google_state'):
-            response = Response(data={'message': 'csrf suspected'}, status=403)
-            response.set_cookie(key='google_state', value='deleted', max_age=0)
-            return response
+            return Response(data={'message': 'csrf suspected'}, status=403)
         user: User = request.user
         if user.has_google():
-            response = Response(data={'message': 'user already linked'}, status=400)
-            response.set_cookie(key='google_state', value='deleted', max_age=0)
-            return response
+            return Response(data={'message': 'user already linked'}, status=400)
         api_response = requests.post(settings.OAUTH2['GOOGLE']['TOKEN'], data=request_body)
         if api_response.status_code != 200:
             return Response(data={
@@ -159,15 +159,15 @@ class GoogleLink(APIView):
             }, status=status.HTTP_503_SERVICE_UNAVAILABLE)
         payload = decode(api_response.json()['id_token'], options={"verify_signature": False})
         try:
-            user_intra = GoogleUser.objects.create(user=user, email=payload['email'])
+            user = GoogleUser.objects.create(user=user, email=payload['email']).user
+        except ValidationError:
+            return Response(data={'message': 'google account already linked to another user'}, status=400)
         except Exception as e:
             logger.warning(f"\nexception: {str(e)}\n")
-            response = Response(data={'message': 'server error'}, status=500)
-            response.set_cookie(key='google_state', value='deleted', max_age=0)
-            return response
-        response = Response(status=200)
-        response.set_cookie('google_state', 'deleted', max_age=0)
-        return response
+            return Response(data={'message': 'server error'}, status=500)
+        if user.email == payload['email']:
+            User.objects.update_verified(user, True)
+        return Response(status=200)
 
     def delete(self, request) -> Response:
         user: User = request.user

@@ -27,7 +27,7 @@ init:
 all: $(NAME)
 
 migrations:
-	@sudo ./srcs/tools/clean_migrations.sh
+	@./srcs/tools/clean_migrations.sh
 
 clean:
 	@if [ -f $(COMPOSE) ]; then \

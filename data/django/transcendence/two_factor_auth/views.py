@@ -122,6 +122,8 @@ def get_email_code(request) -> Response:
     data = request.data
     if 'token' not in data:
         data['token'] = request.query_params.get('token', '')
+    if data.get('token', '') == '':
+        return Response(data={'message': 'missing token'}, status=400)
     api_response = get_request(
         settings.MS_URLS['AUTH']['TFA_EMAIL'],
         headers=request.api_headers,

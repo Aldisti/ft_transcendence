@@ -30,14 +30,10 @@ class UserInfoSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
 
-    new_password = serializers.CharField(max_length=128, required=False, write_only=True)
-
-
     class Meta:
         model = User
-        fields = ["username", "email", "password", "new_password"]
+        fields = ["username", "email"]
         extra_kwargs = {
-            "password": {"write_only": True, "required": False},
             "username": {"validators": [RegexValidator("^[A-Za-z0-9!?*$~_-]{5,32}$")]},
             "email": {"required": False, "validators": [EmailValidator()]},
         }
@@ -46,22 +42,17 @@ class UserSerializer(serializers.ModelSerializer):
 class RegisterUserSerializer(serializers.Serializer):
     username = serializers.CharField(validators=[RegexValidator("^[A-Za-z0-9!?*$~_-]{5,32}$")])
     email = serializers.EmailField(required=False, validators=[EmailValidator()])
-    password = serializers.CharField(max_length=128, required=False, write_only=True)
-    new_password = serializers.CharField(max_length=128, required=False, write_only=True)
     user_info = UserInfoSerializer(required=False)
 
 
 class CompleteUserSerializer(serializers.ModelSerializer):
     user_info = UserInfoSerializer(required=False)
-    new_password = serializers.CharField(max_length=128, required=False, write_only=True)
     banned = serializers.BooleanField(required=False)
-
 
     class Meta:
         model = User
-        fields = ["username", "email", "password", "new_password", "role", "banned", "user_info"]
+        fields = ["username", "email", "role", "banned", "user_info"]
         extra_kwargs = {
-            "password": {"write_only": True, "required": False},
             "username": {"validators": [RegexValidator("^[A-Za-z0-9!?*$~_-]{5,32}$")]},
             "email": {"required": False, "validators": [EmailValidator()]},
             "role": {"write_only": True, "required": False},
@@ -78,12 +69,6 @@ class CompleteUserSerializer(serializers.ModelSerializer):
         validated_data.pop("user_info", {})
         user = User.objects.get(pk=validated_data.get("username"))
         updated_user = User.objects.update_user_email(user, **validated_data)
-        return updated_user
-
-    def update_password(self, validated_data):
-        validated_data.pop("user_info", {})
-        user = User.objects.get(pk=validated_data.get("username"))
-        updated_user = User.objects.update_user_password(user, **validated_data)
         return updated_user
 
     def update_user_info(self, validated_data):

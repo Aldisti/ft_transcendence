@@ -19,14 +19,12 @@ class ModelUserTests(TestCase):
         cls.super_email = "admin@gmail.com"
         cls.new_email = "giovanni2@gmail.com"
         cls.invalid_email = "giovannigmail.com"
-        cls.password = "prova"
-        cls.new_password = "password"
         cls.invalid_role = "dafds"
         cls.role = "M"
-        user = User.objects.create_user("gpanico", "giovanni@gmail.com", "prova")
+        user = User.objects.create_user("gpanico", "giovanni@gmail.com")
         user.user_info = UserInfo.objects.create(user)
         cls.user = user
-        superuser = User.objects.create_superuser("admin", "admin@gmail.com", "prova")
+        superuser = User.objects.create_superuser("admin", "admin@gmail.com")
         superuser.user_info = UserInfo.objects.create(superuser)
         cls.superuser = superuser
 
@@ -36,49 +34,18 @@ class ModelUserTests(TestCase):
         self.assertEqual(self.user.role, Roles.USER)
 
     def test_email_update(self):
-        # not passing password to update function
-        with self.assertRaises(ValueError):
-            User.objects.update_user_email(self.user, email=self.new_email)
         # not passing email to update function
         with self.assertRaises(ValueError):
-            User.objects.update_user_email(self.user, password=self.password)
+            User.objects.update_user_email(self.user)
         # passing the same email to update function
         with self.assertRaises(ValueError):
-            User.objects.update_user_email(self.user, password=self.password, email=self.email)
+            User.objects.update_user_email(self.user, email=self.email)
         # passing invalid email to update function
         with self.assertRaises(ValidationError):
-            User.objects.update_user_email(self.user, password=self.password, email=self.invalid_email)
-        # passing invalid password to update function
-        with self.assertRaises(ValueError):
-            User.objects.update_user_email(self.user, password=self.new_password, email=self.new_email)
+            User.objects.update_user_email(self.user, email=self.invalid_email)
         # passing new email to update function
-        self.user = User.objects.update_user_email(self.user, password=self.password, email=self.new_email)
+        self.user = User.objects.update_user_email(self.user, email=self.new_email)
         self.assertEqual(self.user.email, self.new_email)
-
-    def test_password_update(self):
-        # not passing old password to update function
-        with self.assertRaises(ValueError):
-            User.objects.update_user_password(self.user, new_password=self.new_password)
-        # not passing new password to update function
-        with self.assertRaises(ValueError):
-            User.objects.update_user_password(self.user, password=self.password)
-        # passing the old password as new password to update function
-        with self.assertRaises(ValueError):
-            User.objects.update_user_password(self.user, password=self.password, new_password=self.password)
-        # passing invalid old password to update function
-        with self.assertRaises(ValueError):
-            User.objects.update_user_password(self.user, password=self.new_password, new_password=self.new_password)
-        # passing new password to update function
-        self.user = User.objects.update_user_password(self.user, password=self.password, new_password=self.new_password)
-        self.assertTrue(self.user.check_password(self.new_password))
-
-    def test_password_reset(self):
-        # passing blank new password to reset function
-        with self.assertRaises(ValueError):
-            User.objects.update_user_password(self.user, password="")
-        # passing new password to reset function
-        self.user = User.objects.reset_user_password(self.user, password=self.new_password)
-        self.assertTrue(self.user.check_password(self.new_password))
 
     def test_role_update(self):
         # passing invalid role

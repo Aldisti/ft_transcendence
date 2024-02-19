@@ -1,6 +1,5 @@
 from django.db import models
 from django.core import validators
-from django.core.files import File
 from django.core.files.storage import default_storage
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.dispatch import receiver
@@ -19,6 +18,8 @@ logger = logging.getLogger(__name__)
 
 
 class User(AbstractBaseUser):
+    password = None
+    last_login = None
     username = models.CharField(
         db_column="username",
         max_length=32,

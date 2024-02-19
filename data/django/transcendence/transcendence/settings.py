@@ -288,7 +288,6 @@ NTF_PORT = environ['NTF_PORT']
 
 AUTH_HOST = environ['AUTH_HOST']
 AUTH_PORT = environ['AUTH_PORT']
-
 MS_URLS = {
     # chat urls
     "CHAT_REGISTER": f"http://{CHAT_HOST}:{CHAT_PORT}/user/register/",
@@ -318,9 +317,9 @@ MS_URLS = {
         "INFO": f"http://{AUTH_HOST}:{AUTH_PORT}/users/info/<pk>/",
         "UPDATE_EMAIL": f"http://{AUTH_HOST}:{AUTH_PORT}/users/update/email/",
         "UPDATE_PASSWORD": f"http://{AUTH_HOST}:{AUTH_PORT}/users/update/password/",
-        "UPDATE_VERIFIED": f"http://{AUTH_HOST}:{AUTH_PORT}/users/update/verified/",
         "UPDATE_ACTIVE": f"http://{AUTH_HOST}:{AUTH_PORT}/users/update/active/",
         "UPDATE_ROLE": f"http://{AUTH_HOST}:{AUTH_PORT}/users/update/role/",
+        "VERIFY_EMAIL": f"http://{AUTH_HOST}:{AUTH_PORT}/users/verify/email/",
         # authorization app
         "LOGIN": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/login/",
         "REFRESH": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/refresh/",
@@ -331,6 +330,7 @@ MS_URLS = {
         "EMAIL_DETAILS": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/email/details/",
         "RETRIEVE_PUBKEY": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/retrieve/public-key/",
         # oauth2 app
+        "OAUTH2_LINKED": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/linked/",
         "INTRA_URL": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/intra/v2/url/",
         "INTRA_LINK": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/intra/v2/link/",
         "INTRA_LOGIN": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/intra/v2/login/",
@@ -339,7 +339,6 @@ MS_URLS = {
         "GOOGLE_LINK": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/google/v2/link/",
         "GOOGLE_LOGIN": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/google/v2/login/",
         "GOOGLE_UNLINK": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/google/unlink/",
-        "OAUTH2_LINKED": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/linked/",
         # 2fa app
         "TFA_MANAGE": f"http://{AUTH_HOST}:{AUTH_PORT}/2fa/manage/",
         "TFA_LOGIN": f"http://{AUTH_HOST}:{AUTH_PORT}/2fa/validate/login/",
@@ -364,6 +363,7 @@ MS_URLS = {
     "ACCEPT_MATCH_REQ":f"http://{PONG_HOST}:{PONG_PORT}/game/match/accept/",
     "REJECT_MATCH_REQ":f"http://{PONG_HOST}:{PONG_PORT}/game/match/reject/",
 }
+
 
 # rabbit config
 

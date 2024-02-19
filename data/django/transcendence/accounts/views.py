@@ -72,7 +72,7 @@ def registration(request):
     user_serializer.is_valid(raise_exception=True)
     username = user_serializer.validated_data.get("username")
     email = user_serializer.validated_data.get("email")
-    password = user_serializer.validated_data.get("password")
+    password = request.data.get('password')
     data = {'username': username}
 
     # TODO: implement delete when something goes wrong
@@ -157,17 +157,6 @@ def update_password(request):
     """
     Request: {"password": <password>, "new_password"}
     """
-    user = request.user
-    data = request.data
-    data["username"] = user.username
-    user_serializer = CompleteUserSerializer(data=request.data)
-    if not user_serializer.is_valid():
-        return Response(status=400)
-    try:
-        user = user_serializer.update_password(user_serializer.validated_data)
-    except ValueError as e:
-        return Response({"message": "invalid password"}, status=400)
-    # auth server
     api_response = patch_request(
         settings.MS_URLS['AUTH']['UPDATE_PASSWORD'],
         headers=request.api_headers,

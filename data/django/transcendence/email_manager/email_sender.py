@@ -18,7 +18,7 @@ def send_password_reset_email(username: str, email: str, token: str) -> None:
             f"Click the following link to reset your password:")
     template = loader.get_template("email.html")
     context = {
-        "title": "Registration",
+        "title": "Password recovery",
         "body": body,
         "link": settings.MS_URLS['CLIENT_RESET_PAGE'] + f"?token={token}",
         "company": "Trinity",
@@ -35,13 +35,13 @@ def send_verify_email(username: str, email: str, token: str) -> None:
             f"In order to complete the registration process click the following link:")
     template = loader.get_template("email.html")
     context = {
-        "title": "Password recovery",
+        "title": "Registration",
         "body": body,
         "link": settings.MS_URLS['CLIENT_LOGIN_PAGE'] + f"?token={token}",
         "company": "Trinity",
     }
     email_message = template.render(context)
-    body = {"subject": "Verify email", "receiver_mail": email, "text": "", "html": email_message}
+    body = {"subject": "Registration", "receiver_mail": email, "text": "", "html": email_message}
     EmailProducer().publish(json.dumps(body))
 
 

@@ -29,6 +29,7 @@ def register_user(request) -> Response:
     """
     Request: {"username": <username>, "email": <email>, "password": <password>}
     """
+    logger.warning(f"\n{request.data}\n")
     request.data.pop('role', '')
     user_serializer = UserSerializer(data=request.data)
     user_serializer.is_valid(raise_exception=True)

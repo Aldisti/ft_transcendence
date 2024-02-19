@@ -81,7 +81,7 @@ def validate_login(request) -> Response:
         user_tfa = UserTFA.objects.get(url_token=url_token)
     except UserTFA.DoesNotExist:
         return Response(data={'message': 'user not found'}, status=404)
-    if user_tfa.user.user_tokens.is_resetting_password():
+    if user_tfa.user.has_password_token():
         return Response(data={'message': 'user is trying to reset password'}, status=403)
     user_tfa = UserTFA.objects.delete_url_token(user_tfa)
     if not user_tfa.verify_otp_code(code):
@@ -162,7 +162,7 @@ def get_email_code(request) -> Response:
         user_tfa = request.user.user_tfa
     else:
         try:
-            user_tfa = UserTFA.objects.get(url_token=request.data.get('url_token'))
+            user_tfa = UserTFA.objects.get(url_token=request.data['token'])
         except UserTFA.DoesNotExist:
             return Response(data={'message': 'user not found'}, status=404)
     if not user_tfa.active and not user_tfa.is_activating():
