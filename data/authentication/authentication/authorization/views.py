@@ -7,28 +7,33 @@ from rest_framework.decorators import APIView, api_view, permission_classes, thr
 from rest_framework.response import Response
 
 from rest_framework_simplejwt.exceptions import TokenError
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken, Token
 
-from .models import Token
+from two_factor_auth.models import UserTFA
+from .models import JwtBlackList, PasswordResetToken, EmailVerificationToken
 from .serializers import TokenPairSerializer
 
 from authentication.throttles import HighLoadThrottle, MediumLoadThrottle, LowLoadThrottle
-from authentication.permissions import IsActualUser, IsAdmin
 
 from users.models import User
 from users.serializers import UserSerializer
 
-from datetime import datetime
-import requests
+from datetime import datetime, timedelta
 import logging
 
 logger = logging.getLogger(__name__)
 
 
+def get_exp(token: Token) -> timedelta:
+    return datetime.fromtimestamp(token['exp'], tz=settings.TZ) - datetime.now(tz=settings.TZ)
+
+
 @api_view(['POST'])
 @permission_classes([])
-@throttle_classes([HighLoadThrottle])
 def login(request) -> Response:
+    """
+    body: {'username': <username>, 'password': <password>}
+    """
     error_response = Response(data={
         'message': 'invalid username or password'
     }, status=400)
@@ -40,39 +45,31 @@ def login(request) -> Response:
         return error_response
     if not user.check_password(user_serializer.validated_data['password']):
         return error_response
-    # TODO: turn on this check in production
-    # if not user.verified:
-    #     return Response(data={'message': 'user not verified yet'}, status=400)
     if not user.active:
-        return Response(data={'message': "user isn't active"}, status=400)
-    # TODO: check for password reset token
-    # UserTokens.objects.clear_password_token(user.user_tokens)
+        return Response(data={'message': "user is not active"}, status=400)
+    if user.has_password_token():
+        user.password_token.delete()
     if user.has_tfa():
-        # TODO: generate tfa token making a GET request
+        user_tfa = UserTFA.objects.generate_url_token(user.user_tfa)
         return Response(data={
-            'token': '',
-            'type': '',
+            'token': user_tfa.url_token,
+            'type': user_tfa.otp_type,
         }, status=200)
     user = User.objects.update_last_login(user)
     refresh_token = TokenPairSerializer.get_token(user)
-    exp = datetime.fromtimestamp(refresh_token['exp'], tz=settings.TZ) - datetime.now(tz=settings.TZ)
-    response = Response(data={
-        'access_token': str(refresh_token.access_token)
+    return Response(data={
+        'access_token': str(refresh_token.access_token),
+        'refresh_token': str(refresh_token),
+        'exp': get_exp(refresh_token).seconds,
     }, status=200)
-    response.set_cookie(
-        key='refresh_token',
-        value=str(refresh_token),
-        max_age=exp.seconds,
-        secure=False,
-        httponly=True,
-        samesite=None,
-    )
-    return response
 
 
 @api_view(['POST'])
-@throttle_classes([MediumLoadThrottle])
 def logout(request) -> Response:
+    """
+    headers: 'Authorization: Bearer <access_token>'
+    cookies: 'refresh_token=<refresh_token>'
+    """
     error_response = Response(data={'message': 'invalid token'}, status=400)
     error_response.set_cookie(key="refresh_token", value="deleted", max_age=0)
     try:
@@ -81,50 +78,41 @@ def logout(request) -> Response:
         return error_response
     exp = datetime.fromtimestamp(refresh_token['exp'], tz=settings.TZ)
     try:
-        Token.objects.create(token=refresh_token['csrf'], exp=exp)
+        JwtBlackList.objects.create(token=refresh_token['csrf'], exp=exp)
     except ValidationError or ValueError:
         return error_response
-    if request.path.strip('/').split('/')[-1] == 'all':
+    if 'all' in request.path:
         User.objects.update_last_logout(request.user)
-    response = Response(status=200)
-    response.set_cookie(key="refresh_token", value="deleted", max_age=0)
-    return response
+    return Response(status=200)
 
 
 @api_view(['POST'])
 @permission_classes([])
-@throttle_classes([MediumLoadThrottle])
 def refresh(request) -> Response:
-    error_response = Response(status=403)
-    error_response.set_cookie('refresh_token', 'deleted', max_age=0)
-    if request.user.is_authenticated:
-        error_response.data = {'message': 'cannot refresh with valid access token'}
-        return error_response
+    """
+    cookies: 'refresh_token=<refresh_token>'
+    """
     if 'refresh_token' not in request.COOKIES:
-        return error_response
+        return Response(data={'message': 'missing refresh token'}, status=403)
     try:
         refresh_token = RefreshToken(request.COOKIES.get('refresh_token'))
         try:
-            if Token.objects.filter(token=refresh_token['csrf']).exists():
+            if JwtBlackList.objects.filter(token=refresh_token['csrf']).exists():
                 raise TokenError()
-        except KeyError:
-            logger.warning(f"\n\ntoken received: {str(refresh_token)}\n\n")
-            return Response(status=500)
+        except KeyError as e:
+            logger.warning(f"\n{str(e)}\ntoken received: {str(refresh_token)}\n\n")
+            return Response(status=status.HTTP_418_IM_A_TEAPOT)
     except TokenError:
-        error_response.data = {'message': 'invalid refresh token'}
-        return error_response
+        return Response(data={'message': 'invalid refresh token'}, status=403)
     try:
         user = User.objects.get(username=refresh_token['username'])
     except User.DoesNotExist:
-        error_response.data = {'message': 'user not found'}
-        error_response.status_code = 404
-        return error_response
+        return Response(data={'message': 'user not found'}, status=404)
     if not user.active:
-        error_response.data = {'message': "user is not active"}
-        return error_response
-    token_exp = datetime.fromtimestamp(refresh_token['exp'], tz=settings.TZ)
-    if user.last_logout > user.last_login and user.last_logout > token_exp:
-        return error_response
+        return Response(data={'message': "user is not active"}, status=403)
+    token_iat = datetime.fromtimestamp(refresh_token['iat'], tz=settings.TZ) + timedelta(seconds=15)
+    if user.last_logout > user.last_login and user.last_logout > token_iat:
+        return Response(data={'message': "invalid refresh token"}, status=403)
     return Response(data={'access_token': str(refresh_token.access_token)}, status=200)
 
 
@@ -133,3 +121,55 @@ def refresh(request) -> Response:
 @throttle_classes([LowLoadThrottle])
 def retrieve_pubkey(request) -> Response:
     return Response(data={'public_key': settings.SIMPLE_JWT['VERIFYING_KEY']}, status=200)
+
+
+@api_view(['POST'])
+@permission_classes([])
+def password_recovery(request) -> Response:
+    """
+    body: {'username': <username>}
+    """
+    username = request.data.get('username', '')
+    if username == '':
+        return Response(data={'message': 'missing username'}, status=400)
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return Response(data={'message': 'user not found'}, status=404)
+    if user.has_password_token():
+        user.password_token.delete()
+    token = PasswordResetToken.objects.create(user=user)
+    if user.has_tfa():
+        user_tfa = UserTFA.objects.generate_url_token(user.user_tfa)
+        return Response(
+            data={'token': user_tfa.url_token, 'type': user_tfa.otp_type},
+            status=200
+        )
+    return Response(data=token.to_data(), status=200)
+
+
+@api_view(['POST'])
+@permission_classes([])
+def password_reset(request) -> Response:
+    """
+    body: {'token': <token>', 'password': <password>}
+    """
+    token = request.data.get('token', '')
+    if token == '':
+        return Response(data={'message': 'missing token'}, status=400)
+    try:
+        user = PasswordResetToken.objects.get(token=token).user
+    except PasswordResetToken.DoesNotExist:
+        return Response(data={'message': 'invalid token'}, status=400)
+    user.password_token.delete()
+    password = request.data.get('password', '')
+    try:
+        User.objects.reset_password(user, password)
+    except ValueError as e:
+        return Response(data={'message': str(e)}, status=400)
+    return Response(status=200)
+
+
+@api_view(['GET'])
+def get_verification_details(request) -> Response:
+    return Response(data=request.user.email_token.to_data(), status=200)

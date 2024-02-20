@@ -1,32 +1,34 @@
+from datetime import datetime
+
 from django.core.exceptions import ValidationError
-from django.shortcuts import render
-from django.core.mail import send_mail
 from django.conf import settings
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.generics import RetrieveDestroyAPIView, ListAPIView
-from rest_framework.exceptions import APIException
 from rest_framework import filters
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from accounts.paginations import MyPageNumberPagination
 from accounts.serializers import CompleteUserSerializer, UploadImageSerializer, UserInfoSerializer
 from accounts.models import User, UserInfo, UserGame
-from accounts.validators import image_validator
 
-from email_manager.email_sender import send_verification_email
+from email_manager.email_sender import send_verify_email
 
-from authentication.permissions import IsActualUser, IsAdmin, IsModerator, IsUser
+from transcendence.permissions import IsAdmin, IsModerator, IsUser
 
 from requests import post as post_request
 from requests import delete as delete_request
+from requests import patch as patch_request
 
 import logging
-
 import pika
 import os
 
+from transcendence.decorators import get_func_credentials
+
 logger = logging.getLogger(__name__)
+
 
 @api_view(['GET'])
 @permission_classes([])
@@ -43,9 +45,9 @@ def test(request):
     routing_key = os.environ['NTF_ROUTING_KEY']
     message = "NOTIFICATION"
     channel.basic_publish(exchange=os.environ['EXCHANGE'], routing_key=routing_key, body=message)
-    #logger.warning("sent")
-    #channel.close()
-    
+    # logger.warning("sent")
+    # channel.close()
+
     return Response(status=200)
 
 
@@ -70,7 +72,7 @@ def registration(request):
     user_serializer.is_valid(raise_exception=True)
     username = user_serializer.validated_data.get("username")
     email = user_serializer.validated_data.get("email")
-    password = user_serializer.validated_data.get("password")
+    password = request.data.get('password')
     data = {'username': username}
 
     # TODO: implement delete when something goes wrong
@@ -99,8 +101,8 @@ def registration(request):
         api_response = delete_request(chat_url, json=data)
         return Response(data={'message': 'Something strange happened, contact devs'}, status=503)
 
-
-    api_response = post_request(settings.MS_URLS['AUTH_REGISTER'], json={'username': username, 'email': email, 'password': password})
+    api_response = post_request(settings.MS_URLS['AUTH_REGISTER'],
+                                json={'username': username, 'email': email, 'password': password})
     if api_response.status_code >= 300:
         # delete from ntf db
         ntf_url = settings.MS_URLS['NTF_DELETE'].replace("<pk>", username)
@@ -112,22 +114,32 @@ def registration(request):
         pong_url = settings.MS_URLS['PONG_DELETE'].replace("<pk>", username)
         api_response = delete_request(pong_url, json=data)
         return Response(data={'message': 'Something strange happened, contact devs'}, status=503)
-
     # create user instance on main database
     # TODO: validation error protection
     user = user_serializer.create(user_serializer.validated_data)
     # TODO: reduce time of registration
-    send_verification_email(user=user)
+    # send_verification_email(user=user)
+    send_verify_email(**api_response.json())
     serializer_response = CompleteUserSerializer(user)
     return Response(serializer_response.data, status=201)
 
 
 @api_view(['PATCH'])
 @permission_classes([IsAdmin])
+@get_func_credentials
 def change_role(request):
     """
     Request: {"username": <username>, "role": <[U, M]>}
     """
+    # auth server
+    api_response = patch_request(
+        settings.MS_URLS['AUTH']['UPDATE_ROLE'],
+        headers=request.api_headers,
+        json=request.data,
+    )
+    if api_response.status_code != 200:
+        return Response(data=api_response.json(), status=api_response.status_code)
+
     user_serializer = CompleteUserSerializer(data=request.data)
     if not user_serializer.is_valid():
         return Response(status=400)
@@ -135,41 +147,56 @@ def change_role(request):
     return Response({"username": user.username, "new_role": user.role}, status=200)
 
 
-# TODO: the update password endpoint makes two database researches 
+# TODO: the update password endpoint makes two database researches
+
 
 @api_view(['PATCH'])
 @permission_classes([IsUser])
+@get_func_credentials
 def update_password(request):
     """
     Request: {"password": <password>, "new_password"}
     """
-    user = request.user
-    data = request.data
-    data["username"] = user.username
-    user_serializer = CompleteUserSerializer(data=request.data)
-    if not user_serializer.is_valid():
-        return Response(status=400)
-    try:
-        user = user_serializer.update_password(user_serializer.validated_data)
-    except ValueError as e:
-        return Response({"message": "invalid password"}, status=400)
-    return Response({"message": "password updated"}, status=200)
+    api_response = patch_request(
+        settings.MS_URLS['AUTH']['UPDATE_PASSWORD'],
+        headers=request.api_headers,
+        json=request.data
+    )
+    if api_response.status_code != 200:
+        return Response(data=api_response.json(), status=api_response.status_code)
+    data = api_response.json()
+    response = Response(status=200)
+    response.set_cookie(
+        key='refresh_token',
+        value=data.pop('refresh_token'),
+        max_age=data.pop('exp'),
+        secure=False,
+        httponly=True,
+        samesite=None,
+    )
+    response.data = data
+    return response
 
 
 @api_view(['PATCH'])
 @permission_classes([IsModerator])
+@get_func_credentials
 def change_active(request):
     """
     Request: {"username": <username>, "banned": <[True, False]>}
     """
-    user_serializer = CompleteUserSerializer(data=request.data)
-    if not user_serializer.is_valid():
-        return Response(status=400)
-    user = user_serializer.update_active(user_serializer.validated_data)
-    return Response({"username": user.username, "banned": not user.active}, status=200)
+    api_response = patch_request(
+        settings.MS_URLS['AUTH']['UPDATE_ACTIVE'],
+        headers=request.api_headers,
+        json=request.data,
+    )
+    if api_response.status_code != 200:
+        return Response(data=api_response.json(), status=api_response.status_code)
+    return Response(status=200)
+
 
 @api_view(['PUT'])
-#@permission_classes([IsUser])
+# @permission_classes([IsUser])
 def update_user_info(request):
     """
     Request: {"first_name": <first_name>, etc...}
@@ -183,13 +210,13 @@ def update_user_info(request):
 
 
 class RetrieveDestroyUser(RetrieveDestroyAPIView):
-    #permission_classes = [IsActualUser|IsAdmin]
+    # permission_classes = [IsActualUser|IsAdmin]
     permission_classes = []
     queryset = User.objects.all()
     serializer_class = CompleteUserSerializer
     lookup_field = "username"
 
-    def destroy(request, *args, **kwargs):
+    def destroy(self, request, *args, **kwargs):
         logger.warning("MY DESTROY")
         logger.warning(f"KWARGS: {kwargs}")
         username = kwargs.get("username", "")
@@ -204,6 +231,10 @@ class RetrieveDestroyUser(RetrieveDestroyAPIView):
             # delete from pong db
             pong_url = settings.MS_URLS['PONG_DELETE'].replace("<pk>", username)
             api_response = delete_request(pong_url, json=data)
+            # delete from auth db
+            headers = {'Authorization': request.headers.get('Authorization', '')}
+            auth_url = settings.MS_URLS['AUTH']['DELETE'].replace("<pk>", username)
+            api_response = delete_request(auth_url, headers=headers, json=request.data)
         return super().destroy(request, *args, **kwargs)
 
 

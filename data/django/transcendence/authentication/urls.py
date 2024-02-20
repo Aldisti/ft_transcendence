@@ -4,8 +4,8 @@ from authentication import views
 
 
 urlpatterns = [
-    path('login/', views.LoginView.as_view(), name='login'),
-    path('refresh/', views.RefreshView.as_view(), name='refresh'),
+    path('login/', views.login, name='login'),
+    path('refresh/', views.refresh, name='refresh'),
     path('logout/', include([
         path('', views.logout, name='logout'),
         path('all/', views.logout, name='logout_all'),
@@ -18,5 +18,8 @@ urlpatterns = [
     path('retrieve/', include([
         path('public-key/', views.retrieve_pubkey, name='api-retrieve-public-key')
     ])),
+    path('recovery/', views.password_recovery, name='api-recovery-password'),
+    path('password/', views.password_reset, name='api-password-reset'),
+    path('email/', views.email_token_validation, name='api-email-verification'),
     # path('test/', views.test),
 ]

@@ -1,32 +1,35 @@
 FROM python:3.12.0
 
-RUN apt update && apt upgrade -y 
-RUN apt install vim -y
-RUN apt install gettext -y
+ARG USERNAME
+ARG UID
+ARG GID
 
-RUN pip install django \
+RUN apt update && apt upgrade -y
+RUN apt install vim curl -y
+
+RUN pip install -U \
+	django \
 	djangorestframework \
-	djangorestframework-simplejwt
+	djangorestframework-simplejwt \
+	psycopg \
+	requests \
+	django-cors-headers \
+	httpie \
+	pyotp \
+	pyjwt[crypto] \
+	channels[daphne] \
+	pika
 
-# postgres connection
-RUN pip install psycopg
-# for testing reasons
-RUN pip install httpie
-RUN pip install django-cors-headers
-# for two factor authentication
-RUN pip install pyotp
-# for jwts
-RUN pip install pyjwt && pip install pyjwt[crypto]
-# for asgi server and channels
-RUN pip install -U channels["daphne"]
-# for rabbitMq
-RUN pip install pika
+RUN addgroup --gid $GID $USERNAME
+RUN adduser --uid $UID --gid $GID $USERNAME
 
+USER $USERNAME
 
-RUN mkdir /etc/develop
+RUN mkdir -p /home/$USERNAME/develop
 
-COPY ./tools/setting.sh /etc/setting.sh
-COPY ./conf/rsa /etc/.rsa
+WORKDIR /home/$USERNAME/develop
 
-ENTRYPOINT ["/bin/bash", "/etc/setting.sh"]
+COPY ./tools/setting.sh ../setting.sh
+
+ENTRYPOINT ["/bin/bash", "../setting.sh"]
 

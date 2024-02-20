@@ -1,6 +1,5 @@
 from django.db import models
 from django.core import validators
-from django.core.files import File
 from django.core.files.storage import default_storage
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.dispatch import receiver
@@ -9,7 +8,7 @@ from accounts.utils import Roles
 from accounts.validators import validate_birthdate
 from accounts.managers import (UserManager,
                                UserInfoManager,
-							   UserGameManager)
+                               UserGameManager)
 
 import logging
 
@@ -18,9 +17,9 @@ from requests import get as get_request
 logger = logging.getLogger(__name__)
 
 
-# Create your models here.
-
 class User(AbstractBaseUser):
+    password = None
+    last_login = None
     username = models.CharField(
         db_column="username",
         max_length=32,
@@ -38,25 +37,6 @@ class User(AbstractBaseUser):
         max_length=1,
         choices=Roles.ROLES_CHOICES,
         default=Roles.USER,
-    )
-    active = models.BooleanField(
-        db_column="active",
-        db_comment="False when user is banned",
-        default=True,
-    )
-    verified = models.BooleanField(
-        db_column="verified",
-        db_comment="True when email is verified",
-        default=False,
-    )
-    linked = models.BooleanField(
-        db_column="linked",
-        db_comment="True when oauth2 is active",
-        default=False,
-    )
-    last_logout = models.DateTimeField(
-        db_column="last_logout",
-        db_comment="the datetime of the last logout from all devices",
     )
 
     USERNAME_FIELD = "username"

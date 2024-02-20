@@ -90,8 +90,7 @@ class UserManager(BaseUserManager):
         user.save()
         return user
 
-    def reset_password(self, user, **kwargs):
-        new_password = kwargs.get('password', '')
+    def reset_password(self, user, new_password: str):
         if new_password == "" or user.check_password(new_password):
             raise ValueError("invalid new password")
         user.set_password(new_password)
@@ -198,7 +197,13 @@ class User(AbstractBaseUser):
             return False
 
     def has_tfa(self) -> bool:
-        return self.user_tfa.active
+        return hasattr(self, 'user_tfa') and self.user_tfa.active
+
+    def has_password_token(self) -> bool:
+        return hasattr(self, 'password_token')
+
+    def has_email_token(self) -> bool:
+        return hasattr(self, 'email_token')
 
     def __str__(self) -> str:
         return f"{self.username} ({self.last_login} - {self.last_logout})"

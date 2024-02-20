@@ -13,22 +13,10 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 from os import environ
 from pytz import timezone
-from requests import get
+from requests import get, exceptions
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-
-def get_public_key() -> str:
-    try:
-        api_response = get("http://django:8000/auth/retrieve/public-key/")
-    except ConnectionError:
-        exit(69)
-    if api_response.status_code == 200:
-        return api_response.json().get("public_key", '')
-    else:
-        exit(69)
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -100,6 +88,16 @@ REST_FRAMEWORK = {
 
 # Django SimpleJWT
 # https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html
+
+
+def get_public_key() -> str:
+    try:
+        api_response = get("http://auth:8000/auth/retrieve/public-key/")
+    except exceptions.ConnectionError:
+        exit(21)
+    if api_response.status_code != 200:
+        exit(22)
+    return api_response.json().get("public_key", '')
 
 
 SIMPLE_JWT = {

@@ -13,63 +13,31 @@ logger = logging.getLogger(__name__)
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, username: str, email: str, password: str, **kwargs):
+    def create_user(self, username: str, email: str, **kwargs):
         if not email:
             raise ValueError("Missing email")
         email = self.normalize_email(email)
-        # TODO: timezone thing
-        kwargs.setdefault('last_logout', datetime.datetime.now(tz=settings.TZ))
         if kwargs.get("role") != Roles.ADMIN:
             kwargs.pop("role", "")
-            kwargs["verified"] = False
         user = self.model(username=username, email=email, **kwargs)
-        user.set_password(password)
         user.full_clean()
         user.save()
         return user
 
-    def create_superuser(self, username: str, email: str, password: str, **kwargs):
-        kwargs.setdefault("active", True)
-        kwargs.setdefault("verified", True)
+    def create_superuser(self, username: str, email: str, **kwargs):
+        kwargs.setdefault("", True)
         kwargs.setdefault("role", Roles.ADMIN)
 
-        if not kwargs.get("active"):
-            raise ValueError("active must be true")
-        if not kwargs.get("verified"):
-            raise ValueError("verified must be true")
         if not kwargs.get("role") == Roles.ADMIN:
             raise ValueError("admin must have admin role")
-        user = self.create_user(username, email, password, **kwargs)
+        user = self.create_user(username, email, **kwargs)
         return user
 
     def update_user_email(self, user, **kwargs):
         email = kwargs.get("email", user.email)
-        password = kwargs.get("password", "")
-        if not user.check_password(password):
-            raise ValueError("invalid password")
         if email == user.email:
             raise ValueError("invalid email")
         user.email = email
-        user.full_clean()
-        user.save()
-        return user
-
-    def update_user_password(self, user, **kwargs):
-        password = kwargs.get("password", "")
-        new_password = kwargs.get("new_password", password)
-        if not user.check_password(password):
-            raise ValueError("invalid password")
-        if new_password == password:
-            raise ValueError("invalid new password")
-        user.set_password(new_password)
-        user.full_clean()
-        user.save()
-        return user
-
-    def reset_user_password(self, user, password: str):
-        if password == "":
-            raise ValueError("invalid new password")
-        user.set_password(password)
         user.full_clean()
         user.save()
         return user
@@ -82,36 +50,8 @@ class UserManager(BaseUserManager):
         user.save()
         return user
 
-    def update_user_active(self, user, banned: bool):
-        if user.role != Roles.USER:
-            raise ValueError("Cannot ban/unban mod or admin")
-        user.active = not banned
-        user.full_clean()
-        user.save()
-        return user
-
-    def update_user_verified(self, user, verified: bool):
-        if user.role == Roles.ADMIN:
-            raise ValueError("Cannot change admin's verification")
-        user.verified = verified
-        user.full_clean()
-        user.save()
-        return user
-
-    def update_user_linked(self, user, linked: bool):
-        user.linked = linked
-        user.full_clean()
-        user.save()
-        return user
-
     def update_last_login(self, user):
         user.last_login = datetime.datetime.now(tz=settings.TZ)
-        user.full_clean()
-        user.save()
-        return user
-
-    def update_last_logout(self, user):
-        user.logout = datetime.datetime.now(tz=settings.TZ)
         user.full_clean()
         user.save()
         return user

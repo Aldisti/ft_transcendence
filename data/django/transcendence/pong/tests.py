@@ -8,9 +8,9 @@ from accounts.models import User, UserGame
 class LobbyTests(TestCase):
     @classmethod
     def setUpTestData(cls) -> None:
-        user = User.objects.create_user('user1', 'user1@localhost', 'password')
+        user = User.objects.create_user('user1', 'user1@localhost')
         user_game = UserGame.objects.create(user, display_name="display_user")
-        users = [User.objects.create_user(f"guest{i}", f"guest{i}@localhost", f"password{i}") for i in range(8)]
+        users = [User.objects.create_user(f"guest{i}", f"guest{i}@localhost") for i in range(8)]
         guests = [UserGame.objects.create(user) for user in users]
         cls.user = user
         cls.user_game = user_game
@@ -53,9 +53,9 @@ class LobbyTests(TestCase):
 class MatchTests(TestCase):
     @classmethod
     def setUpTestData(cls) -> None:
-        user = User.objects.create_user('user1', 'user1@localhost', 'password')
+        user = User.objects.create_user('user1', 'user1@localhost')
         user_game = UserGame.objects.create(user, display_name="display_user")
-        users = [User.objects.create_user(f"guest{i}", f"guest{i}@localhost", f"password{i}") for i in range(8)]
+        users = [User.objects.create_user(f"guest{i}", f"guest{i}@localhost") for i in range(8)]
         guests = [UserGame.objects.create(user) for user in users]
         cls.user = user
         cls.user_game = user_game

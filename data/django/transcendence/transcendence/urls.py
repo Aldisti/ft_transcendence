@@ -18,12 +18,12 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+
 urlpatterns = [
     path('', include('accounts.urls')),
     path('auth/', include('authentication.urls')),
     path('oauth2/', include('oauth2.urls')),
     path('2fa/', include('two_factor_auth.urls')),
-    path('tokens/', include('email_manager.urls')),
     path('friends/', include('friends.urls')),
     path('pong/', include('pong.urls')),
     path('chat/', include('chat.urls')),

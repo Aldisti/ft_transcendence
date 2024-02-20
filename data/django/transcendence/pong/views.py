@@ -4,7 +4,7 @@ from django.conf import settings
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
-from authentication.permissions import IsUser
+from transcendence.permissions import IsUser
 
 from base64 import b64decode
 from json import loads

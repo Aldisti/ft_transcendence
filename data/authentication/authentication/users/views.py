@@ -1,3 +1,5 @@
+from time import sleep
+
 from django.core.exceptions import ValidationError
 from django.conf import settings
 from rest_framework import status
@@ -5,6 +7,10 @@ from rest_framework import status
 from rest_framework.decorators import APIView, api_view, permission_classes, throttle_classes
 from rest_framework.response import Response
 
+from authorization.models import EmailVerificationToken
+from authorization.serializers import TokenPairSerializer
+from authorization.views import get_exp
+from two_factor_auth.models import UserTFA
 from .models import User
 from .serializers import UserSerializer
 
@@ -23,11 +29,12 @@ def register_user(request) -> Response:
     """
     Request: {"username": <username>, "email": <email>, "password": <password>}
     """
+    logger.warning(f"\n{request.data}\n")
     request.data.pop('role', '')
     user_serializer = UserSerializer(data=request.data)
     user_serializer.is_valid(raise_exception=True)
     try:
-        User.objects.create_user(**user_serializer.validated_data)
+        user = User.objects.create_user(**user_serializer.validated_data)
     except ValidationError as e:
         if "already exists" in str(e):
             return Response(data={"message": "username or email already in use"}, status=400)
@@ -36,18 +43,19 @@ def register_user(request) -> Response:
         return Response(data={"message": str(e)}, status=400)
     except TypeError as e:
         return Response(data={"message": str(e)}, status=400)
-    return Response(data=user_serializer.validated_data, status=status.HTTP_201_CREATED)
+    UserTFA.objects.create(user=user)
+    email_token = EmailVerificationToken.objects.create(user=user)
+    return Response(data=email_token.to_data(), status=201)
+    # return Response(data=user_serializer.validated_data, status=status.HTTP_201_CREATED)
 
 
 @api_view(['DELETE'])
-# @permission_classes([IsActualUser | IsAdmin])
-@permission_classes([])
+@permission_classes([IsActualUser | IsAdmin])
 @throttle_classes([LowLoadThrottle])
-def delete_user(request) -> Response:
+def delete_user(request, username: str) -> Response:
     """
-    Query params: {"username": <username>}
+    url param: <username>
     """
-    username = request.query_params.get('username', '')
     if username == '':
         return Response(data={'message': 'username is required'}, status=400)
     try:
@@ -61,9 +69,9 @@ def delete_user(request) -> Response:
 @api_view(['PATCH'])
 @permission_classes([IsAdmin])
 @throttle_classes([LowLoadThrottle])
-def change_role(request) -> Response:
+def update_role(request) -> Response:
     """
-    Request: {"username": <username>, "role": <[U, M]>}
+    body: {"username": <username>, "role": <[U, M]>}
     """
     username = request.data.get('username', '')
     role = request.data.get('role', '')
@@ -84,20 +92,26 @@ def change_role(request) -> Response:
 @throttle_classes([MediumLoadThrottle])
 def update_password(request) -> Response:
     """
-    Request: {"password": <password>, "new_password": <new_password>}
+    body: {"password": <password>, "new_password": <new_password>}
     """
     try:
-        User.objects.update_password(request.user, **request.data)
+        user = User.objects.update_password(request.user, **request.data)
     except ValueError as e:
         return Response(data={'message': str(e)}, status=400)
-    return Response(status=200)
+    user = User.objects.update_last_logout(user)
+    refresh_token = TokenPairSerializer.get_token(user)
+    return Response(data={
+        'access_token': str(refresh_token.access_token),
+        'refresh_token': str(refresh_token),
+        'exp': get_exp(refresh_token).seconds,
+    }, status=200)
 
 
 @api_view(['PATCH'])
 @throttle_classes([HighLoadThrottle])
 def update_username(request) -> Response:
     """
-    Request: {"username": <username>, "password": <password>}
+    body: {"username": <username>, "password": <password>}
     """
     try:
         User.objects.update_username(request.user, **request.data)
@@ -110,7 +124,7 @@ def update_username(request) -> Response:
 @throttle_classes([MediumLoadThrottle])
 def update_email(request) -> Response:
     """
-    Request: {"email": <email>, "password": <password>}
+    body: {"email": <email>, "password": <password>}
     """
     try:
         User.objects.update_email(request.user, **request.data)
@@ -120,19 +134,11 @@ def update_email(request) -> Response:
 
 
 @api_view(['PATCH'])
-@throttle_classes([MediumLoadThrottle])
-def update_verified(request) -> Response:
-    # TODO: well, the function's name says everything
-    # maybe a token or more are needed
-    pass
-
-
-@api_view(['PATCH'])
 @permission_classes([IsModerator])
 @throttle_classes([MediumLoadThrottle])
-def change_active(request) -> Response:
+def update_active(request) -> Response:
     """
-    Request: {"username": <username>, "banned": <[True, False]>}
+    body: {"username": <username>, "banned": <[True, False]>}
     """
     username = request.data.get('username', '')
     if username == '':
@@ -145,6 +151,24 @@ def change_active(request) -> Response:
         User.objects.update_active(user, request.data['banned'])
     except ValueError as e:
         return Response(data={'message': str(e)}, status=400)
+    return Response(status=200)
+
+
+@api_view(['POST'])
+@permission_classes([])
+def verify_email(request) -> Response:
+    """
+    body: {'token': <token>}
+    """
+    token = request.data.get('token', '')
+    if token == '':
+        return Response(data={'message': 'missing token'}, status=400)
+    try:
+        email_token = EmailVerificationToken.objects.get(token=token)
+    except EmailVerificationToken.DoesNotExist:
+        return Response(data={'message': 'invalid token'}, status=400)
+    User.objects.update_verified(email_token.user, True)
+    email_token.delete()
     return Response(status=200)
 
 
@@ -164,7 +188,7 @@ def get_user(request, username: str) -> Response:
 #     username = request.user.username
 #     data = {'username': username}
 #     logger.warning("#" * 50)
-#     api_response = post_request(MATCHMAKING_TOKEN, json=data)
+#     api_response = post_request(MATCHMAKING_TOKEN, data=data)
 #     logger.warning("#" * 50)
 #     if api_response.status_code != 200:
 #         logger.warning(f"status code: {api_response.status_code}")

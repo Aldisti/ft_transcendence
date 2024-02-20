@@ -1,29 +1,4 @@
-FROM python:3.12.0
+FROM trinity/django:latest
 
-RUN apt update && apt upgrade -y 
-RUN apt install vim -y
-RUN apt install gettext -y
-
-RUN pip install django \
-	djangorestframework \
-	djangorestframework-simplejwt
-
-# postgres connection
-RUN pip install psycopg \
-	requests
-# for testing reasons
-RUN pip install django-cors-headers
-# for asgi server and channels
-RUN pip install -U channels["daphne"]
-# for redis
 RUN pip install channels-redis
-# for rabbitMq
-RUN pip install pika
-
-
-RUN mkdir /etc/develop
-
-COPY ./tools/setting.sh /etc/setting.sh
-
-ENTRYPOINT ["/bin/bash", "/etc/setting.sh"]
 

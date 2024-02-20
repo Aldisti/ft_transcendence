@@ -28,3 +28,7 @@ class MediumLoadThrottle(UserRateThrottle):
 
 class LowLoadThrottle(UserRateThrottle):
     scope = 'low_load'
+
+
+class EmailThrottle(UserRateThrottle):
+    scope = 'email'

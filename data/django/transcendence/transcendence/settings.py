@@ -16,6 +16,10 @@ from os import environ, path
 from datetime import timedelta
 from pytz import timezone
 
+from requests import get as get_request
+from requests.exceptions import ConnectionError as ConnectionErrorRequest
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -96,12 +100,12 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": [
-        "authentication.permissions.IsUser",
+        "transcendence.permissions.IsUser",
     ],
     "DEFAULT_THROTTLE_CLASSES": [
         "rest_framework.throttling.ScopedRateThrottle",
-        "authentication.throttles.AnonAuthThrottle",
-        "authentication.throttles.UserAuthThrottle",
+        "transcendence.throttles.AnonAuthThrottle",
+        "transcendence.throttles.UserAuthThrottle",
     ],
     "DEFAULT_THROTTLE_RATES": {
         "auth": "30/minute",
@@ -115,32 +119,29 @@ REST_FRAMEWORK = {
 # Django SimpleJWT
 # https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html
 
-RSA_PRIVATE_KEY_PATH = environ['RSA_PRIVATE_KEY_PATH']
-RSA_PUBLIC_KEY_PATH = environ['RSA_PUBLIC_KEY_PATH']
+
+def get_pubkey() -> str:
+    try:
+        api_response = get_request('http://auth:8000/auth/retrieve/public-key/')
+    except ConnectionErrorRequest:
+        exit(21)
+    if api_response.status_code != 200:
+        exit(22)
+    return api_response.json()['public_key']
+
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 
     "ALGORITHM": "RS256",
-    "SIGNING_KEY": open(RSA_PRIVATE_KEY_PATH, 'r').read() if path.isfile(RSA_PRIVATE_KEY_PATH) else None,
-    "VERIFYING_KEY": open(RSA_PUBLIC_KEY_PATH, 'r').read() if path.isfile(RSA_PUBLIC_KEY_PATH) else None,
+    "SIGNING_KEY": "",
+    "VERIFYING_KEY": get_pubkey(),
     "AUDIENCE": "transcendence",
     "ISSUER": "transcendence.auth",
 
-    "AUTH_HEADER_TYPES": ("Bearer",),
-    "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
     "USER_ID_FIELD": "username",
     "USER_ID_CLAIM": "username",
-    "USER_AUTHENTICATION_RULE": "rest_framework_simplejwt.authentication.default_user_authentication_rule",
-
-    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
-    "TOKEN_TYPE_CLAIM": "token_type",
-    "TOKEN_USER_CLASS": "rest_framework_simplejwt.models.TokenUser",
-
-    "TOKEN_OBTAIN_SERIALIZER": "authentication.serializers.MyTokenObtainPairSerializer",
-    "TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSerializer",
-    "TOKEN_VERIFY_SERIALIZER": "rest_framework_simplejwt.serializers.TokenVerifySerializer",
 }
 
 
@@ -214,15 +215,15 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Europe/Rome'
 TZ = timezone(TIME_ZONE)
 
-USE_I18N = True
+USE_I18N = False
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_ROOT = "/etc/develop/static/"
+STATIC_ROOT = "./static/"
 STATIC_URL = "static/"
 DEFAULT_USER_IMAGE = "default.jpeg"
 
@@ -253,7 +254,7 @@ EMAIL_HOST_PASSWORD = environ['EMAIL_HOST_PASSWORD']
 
 # storage
 
-MEDIA_ROOT = "/etc/develop/images/"
+MEDIA_ROOT = "./images/"
 MEDIA_URL = "/media/"
 FILE_UPLOAD_PERMISSIONS = 0o644
 
@@ -287,7 +288,6 @@ NTF_PORT = environ['NTF_PORT']
 
 AUTH_HOST = environ['AUTH_HOST']
 AUTH_PORT = environ['AUTH_PORT']
-
 MS_URLS = {
     # chat urls
     "CHAT_REGISTER": f"http://{CHAT_HOST}:{CHAT_PORT}/user/register/",
@@ -307,6 +307,49 @@ MS_URLS = {
     # pong urls
     "PONG_REGISTER": f"http://{PONG_HOST}:{PONG_PORT}/user/register/",
     "PONG_DELETE": f"http://{PONG_HOST}:{PONG_PORT}/user/<pk>/delete/",
+    "MATCHMAKING_TOKEN": f"http://{PONG_HOST}:{PONG_PORT}/matchmaking/token/",
+    # auth urls
+    "AUTH_REGISTER": f"http://{AUTH_HOST}:{AUTH_PORT}/users/register/",
+    "AUTH": {
+        # users app
+        "REGISTER": f"http://{AUTH_HOST}:{AUTH_PORT}/users/register/",
+        "DELETE": f"http://{AUTH_HOST}:{AUTH_PORT}/users/delete/<pk>/",
+        "INFO": f"http://{AUTH_HOST}:{AUTH_PORT}/users/info/<pk>/",
+        "UPDATE_EMAIL": f"http://{AUTH_HOST}:{AUTH_PORT}/users/update/email/",
+        "UPDATE_PASSWORD": f"http://{AUTH_HOST}:{AUTH_PORT}/users/update/password/",
+        "UPDATE_ACTIVE": f"http://{AUTH_HOST}:{AUTH_PORT}/users/update/active/",
+        "UPDATE_ROLE": f"http://{AUTH_HOST}:{AUTH_PORT}/users/update/role/",
+        "VERIFY_EMAIL": f"http://{AUTH_HOST}:{AUTH_PORT}/users/verify/email/",
+        # authorization app
+        "LOGIN": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/login/",
+        "REFRESH": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/refresh/",
+        "LOGOUT": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/logout/",
+        "LOGOUT_ALL": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/logout/all/",
+        "PASSWORD_RECOVERY": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/password/recovery/",
+        "PASSWORD_RESET": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/password/reset/",
+        "EMAIL_DETAILS": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/email/details/",
+        "RETRIEVE_PUBKEY": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/retrieve/public-key/",
+        # oauth2 app
+        "OAUTH2_LINKED": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/linked/",
+        "INTRA_URL": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/intra/v2/url/",
+        "INTRA_LINK": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/intra/v2/link/",
+        "INTRA_LOGIN": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/intra/v2/login/",
+        "INTRA_UNLINK": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/intra/unlink/",
+        "GOOGLE_URL": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/google/v2/url/",
+        "GOOGLE_LINK": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/google/v2/link/",
+        "GOOGLE_LOGIN": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/google/v2/login/",
+        "GOOGLE_UNLINK": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/google/unlink/",
+        # 2fa app
+        "TFA_MANAGE": f"http://{AUTH_HOST}:{AUTH_PORT}/2fa/manage/",
+        "TFA_LOGIN": f"http://{AUTH_HOST}:{AUTH_PORT}/2fa/validate/login/",
+        "TFA_ACTIVATE": f"http://{AUTH_HOST}:{AUTH_PORT}/2fa/validate/activate/",
+        "TFA_RECOVER": f"http://{AUTH_HOST}:{AUTH_PORT}/2fa/validate/recover/",
+        "TFA_EMAIL": f"http://{AUTH_HOST}:{AUTH_PORT}/2fa/otp/",
+    },
+    # emails
+    # TODO: use variables instead of localhost and 4200
+    "CLIENT_RESET_PAGE": f"http://{SERVER_FRONTEND_IP}:4200/password/reset/",
+    "CLIENT_LOGIN_PAGE": f"http://{SERVER_FRONTEND_IP}:4200/login/",
     "TOURNAMENT_LIST": f"http://{PONG_HOST}:{PONG_PORT}/tournaments/",
     "TOURNAMENT_CREATE": f"http://{PONG_HOST}:{PONG_PORT}/tournaments/create/",
     "TOURNAMENT_RETRIEVE":f"http://{PONG_HOST}:{PONG_PORT}/tournaments/<pk>/",
@@ -319,9 +362,8 @@ MS_URLS = {
     "DELETE_MATCH_REQ":f"http://{PONG_HOST}:{PONG_PORT}/game/match/delete/",
     "ACCEPT_MATCH_REQ":f"http://{PONG_HOST}:{PONG_PORT}/game/match/accept/",
     "REJECT_MATCH_REQ":f"http://{PONG_HOST}:{PONG_PORT}/game/match/reject/",
-	# auth urls
-	"AUTH_REGISTER": f"http://{AUTH_HOST}:{AUTH_PORT}/users/register/",
 }
+
 
 # rabbit config
 

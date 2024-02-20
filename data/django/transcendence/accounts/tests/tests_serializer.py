@@ -14,7 +14,6 @@ class UserSerializerTests(TestCase):
         cls.data = {
             "username": "tester",
             "email": "test@gmail.com",
-            "password": "password",
         }
         cls.invalid_usernames = ["", "abc", "abcde#", "abcde'", "abcde\"", "abcde" * 7]
         cls.invalid_emails = [
@@ -49,16 +48,13 @@ class UserSerializerTests(TestCase):
 
     # passing a valid User object
     def test_user_serializer_valid_user(self):
-        user = User(username=self.data["username"],
-                    email=self.data["email"],
-                    password=self.data["password"],
-                    last_logout=datetime.now(tz=settings.TZ))
+        user = User(
+            username=self.data["username"],
+            email=self.data["email"],
+        )
         user.full_clean()
         serializer = UserSerializer(user)
         data = self.data
-        data["active"] = True
-        data["verified"] = False
-        data["linked"] = False
         for key, value in serializer.data.items():
             self.assertEqual(value, data[key])
 
@@ -121,7 +117,6 @@ class CompleteUserSerializerTests(TestCase):
         self.user_data = {
             "username": "tester",
             "email": "test@email.com",
-            "password": "password",
             "role": Roles.USER,
         }
         today = date.today()
@@ -152,7 +147,6 @@ class CompleteUserSerializerTests(TestCase):
     def test_complete_user_serializer_with_only_required_fields(self):
         data = self.user_data
         del data["email"]
-        del data["password"]
         serializer = CompleteUserSerializer(data=data)
         self.assertTrue(serializer.is_valid())
         self.assertEqual(serializer.errors, {})
@@ -211,10 +205,6 @@ class CompleteUserSerializerTests(TestCase):
             with self.assertRaises(TypeError):
                 serializer.create(data)
         data = self.user_data
-        data["new_password"] = "new_password"
-        with self.assertRaises(TypeError):
-            serializer.create(data)
-        data = self.user_data
         data["banned"] = True
         with self.assertRaises(TypeError):
             serializer.create(data)
@@ -229,26 +219,6 @@ class CompleteUserSerializerTests(TestCase):
         self.assertNotEqual(new_user.email, old_user.email)
         user = User.objects.get(pk=old_user.username)
         self.assertEqual(user, new_user)
-
-    def test_complete_user_serializer_valid_update_password_method(self):
-        old_user = User.objects.create_user(**self.user_data)
-        serializer = CompleteUserSerializer()
-        data = self.data
-        data["new_password"] = "new_password"
-        new_user = serializer.update_password(data)
-        self.assertNotEqual(new_user.password, old_user.password)
-        user = User.objects.get(pk=new_user.username)
-        self.assertEqual(new_user, user)
-
-    def test_complete_user_serializer_invalid_update_password_method(self):
-        old_user = User.objects.create_user(**self.user_data)
-        serializer = CompleteUserSerializer()
-        data = self.data
-        with self.assertRaises(ValueError):
-            serializer.update_password(data)
-        data["new_password"] = self.user_data["password"]
-        with self.assertRaises(ValueError):
-            serializer.update_password(data)
 
     def test_complete_user_serializer_valid_update_role_method(self):
         old_user = User.objects.create_user(**self.user_data)
@@ -269,25 +239,6 @@ class CompleteUserSerializerTests(TestCase):
             data["role"] = invalid_role
             with self.assertRaises(ValueError):
                 serializer.update_role(data)
-
-    def test_complete_user_serializer_valid_update_active_method(self):
-        old_user = User.objects.create_user(**self.user_data)
-        serializer = CompleteUserSerializer()
-        data = self.data
-        data["banned"] = True
-        new_user = serializer.update_active(data)
-        self.assertNotEqual(new_user.active, old_user.active)
-        user = User.objects.get(pk=new_user.username)
-        self.assertEqual(new_user, user)
-
-    def test_complete_user_serializer_invalid_update_active_method(self):
-        old_user = User.objects.create_user(**self.user_data)
-        serializer = CompleteUserSerializer()
-        data = self.data
-        data["role"] = Roles.MOD
-        new_user = serializer.update_role(data)
-        with self.assertRaises(ValueError):
-            serializer.update_active( {"username": new_user.username, "banned": True} )
 
     def test_complete_user_serializer_role_security_method(self):
         data = self.data

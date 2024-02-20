@@ -34,6 +34,7 @@ class UserTFAManager(models.Manager):
 
     def activate(self, user_tfa, otp_type: str):
         user_tfa.otp_type = otp_type
+        user_tfa.otp_token = random_base32()
         user_tfa.full_clean()
         user_tfa.save()
         return user_tfa
@@ -43,14 +44,6 @@ class UserTFAManager(models.Manager):
         user_tfa.url_token = ""
         user_tfa.otp_type = TFATypes.NONE
         user_tfa.active = False
-        user_tfa.full_clean()
-        user_tfa.save()
-        return user_tfa
-
-    def generate_otp_token(self, user_tfa):
-        if user_tfa.otp_token != "":
-            raise ValueError('OTP token already generated')
-        user_tfa.otp_token = random_base32()
         user_tfa.full_clean()
         user_tfa.save()
         return user_tfa
@@ -67,8 +60,8 @@ class UserTFAManager(models.Manager):
         user_tfa.save()
         return user_tfa
 
-    def update_active(self, user_tfa, status: bool):
-        user_tfa.status = status
+    def update_active(self, user_tfa):
+        user_tfa.active = True
         user_tfa.full_clean()
         user_tfa.save()
         return user_tfa
@@ -90,13 +83,12 @@ class OtpCodeManager(models.Manager):
         self.filter(user_tfa=user_tfa).delete()
 
     def validate_code(self, user_tfa, code: str) -> bool:
-        codes = user_tfa.codes.filter(code=code)
-        if len(codes) == 1:
-            codes[0].delete()
-            return True
-        elif len(codes) > 1:
-            logger.warning(f"got double code for {user_tfa.user.username}")
-        return False
+        try:
+            otp_code = user_tfa.codes.get(code=code)
+        except user_tfa.codes.DoesNotExist:
+            return False
+        otp_code.delete()
+        return True
 
 
 class UserTFA(models.Model):
@@ -135,6 +127,7 @@ class UserTFA(models.Model):
         db_column='type',
         choices=TFATypes.CHOICES,
         default=TFATypes.NONE,
+        blank=True,
     )
     active = models.BooleanField(
         db_column='active',
@@ -150,7 +143,7 @@ class UserTFA(models.Model):
         return self.otp_type == TFATypes.EMAIL
 
     def is_activating(self) -> bool:
-        return self.otp_type != TFATypes.NONE and self.otp_token != ""
+        return self.otp_token != "" and not self.active
 
     def verify_otp_code(self, code: str) -> bool:
         otp_time = datetime.now(tz=settings.TZ)
@@ -159,22 +152,29 @@ class UserTFA(models.Model):
                     .verify(
                 code,
                 for_time=otp_time,
-                valid_window=settings.TFA['EMAIL_VALID_WINDOW']
+                valid_window=settings.TFA['EMAIL_WINDOW']
             ))
         elif self.is_software():
             return TOTP(self.otp_token).verify(
                 code,
                 for_time=otp_time,
-                valid_window=settings.TFA['SOFTWARE_VALID_WINDOW'],
+                valid_window=settings.TFA['SOFTWARE_WINDOW'],
             )
         return False
+
+    def get_code(self) -> str:
+        if self.is_email():
+            return TOTP(self.otp_token, interval=settings.TFA['EMAIL_INTERVAL']).now()
+        elif self.is_software():
+            return TOTP(self.otp_token).now()
+        return ''
 
     def to_data(self) -> dict:
         return {'is_active': self.active, 'type': self.otp_type}
 
     def get_uri(self) -> str:
         if self.otp_token == '' or self.is_email():
-            return ''
+            return None
         return totp.TOTP(self.otp_token).provisioning_uri(name=self.user.email, issuer_name='Transcendence')
 
     def __str__(self):
