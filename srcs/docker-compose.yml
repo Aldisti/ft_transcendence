@@ -40,7 +40,7 @@ services:
       test: curl -sf http://localhost:8000/auth/retrieve/public-key/ -o /dev/null
       retries: 3
       interval: 5m
-      start_period: 10s
+      start_period: 60s
       start_interval: 5s
     networks:
       - django-net
@@ -64,7 +64,7 @@ services:
       test: curl -sf http://localhost:8000/auth/retrieve/public-key/ -o /dev/null
       retries: 3
       interval: 5m
-      start_period: 15s
+      start_period: 60s
       start_interval: 5s
     volumes:
       - auth:/home/${USERNAME}/develop
@@ -183,7 +183,7 @@ services:
       - postgres-net
       - django-net
     depends_on:
-      postgres:
+      django:
         condition: service_healthy
 
 
@@ -250,9 +250,10 @@ services:
       - rabbit-net
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
-      retries: 10
-      interval: 10s
-      start_interval: 20s
+      retries: 3
+      interval: 5m
+      start_period: 30s
+      start_interval: 30s
 
 
   postgres:
@@ -263,9 +264,10 @@ services:
       - postgres:/var/lib/postgresql/data
     healthcheck:
       test: "pg_isready -p$$POSTGRES_PORT -d$$POSTGRES_DB -U$$POSTGRES_USER"
-      retries: 10
-      interval: 2s
-      start_interval: 3s
+      retries: 3
+      interval: 5m
+      start_period: 60s
+      start_interval: 5s
     env_file:
       - ./postgres/.env_django
     environment:
@@ -284,8 +286,9 @@ services:
     healthcheck:
       test: "pg_isready -p$$POSTGRES_PORT -d$$POSTGRES_DB -U$$POSTGRES_USER"
       retries: 3
-      interval: 2s
-      start_interval: 3s
+      interval: 5m
+      start_period: 60s
+      start_interval: 5s
     env_file:
       - ./postgres/.env_auth
     environment:
@@ -311,9 +314,10 @@ services:
       - chatdb:/var/lib/postgresql/data
     healthcheck:
       test: "pg_isready -p$$POSTGRES_PORT -d$$POSTGRES_DB -U$$POSTGRES_USER"
-      retries: 10
-      interval: 5s
-      start_interval: 3s
+      retries: 3
+      interval: 5m
+      start_period: 60s
+      start_interval: 5s
     env_file:
       - ./postgres/.env_chat
     environment:
@@ -330,9 +334,10 @@ services:
       - ntfdb:/var/lib/postgresql/data
     healthcheck:
       test: "pg_isready -p$$POSTGRES_PORT -d$$POSTGRES_DB -U$$POSTGRES_USER"
-      retries: 10
-      interval: 5s
-      start_interval: 3s
+      retries: 3
+      interval: 5m
+      start_period: 60s
+      start_interval: 5s
     env_file:
       - ./postgres/.env_ntf
     environment:
@@ -349,9 +354,10 @@ services:
       - pongdb:/var/lib/postgresql/data
     healthcheck:
       test: "pg_isready -p$$POSTGRES_PORT -d$$POSTGRES_DB -U$$POSTGRES_USER"
-      retries: 10
-      interval: 2s
-      start_interval: 3s
+      retries: 3
+      interval: 5m
+      start_period: 60s
+      start_interval: 5s
     env_file:
       - ./postgres/.env_pong
     environment:
