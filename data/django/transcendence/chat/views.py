@@ -3,7 +3,7 @@ from rest_framework.response import Response
 
 from django.conf import settings
 
-from authentication.permissions import IsUser
+from transcendence.permissions import IsUser
 
 from accounts.models import User
 
