@@ -1,4 +1,4 @@
-let ip = "192.168.1.32";
+let ip = "localhost";
 let port = "8000";
 let protocol = "http";
 let pongPort = "7000";
@@ -69,7 +69,7 @@ export const userAction = {
     REGISTER: `${protocol}://${ip}:${port}/register/`,
     UPDATE_INFO: `${protocol}://${ip}:${port}/users/info/update/`,
     UPDATE_PHOTO: `${protocol}://${ip}:${port}/users/image/upload/`,
-    UPDATE_EMAIL: `${protocol}://${ip}:${port}/register`,
+    UPDATE_EMAIL: `${protocol}://${ip}:${port}/users/email/update/`,
     UPDATE_PASSWORD: `${protocol}://${ip}:${port}/users/password/update/`,
 
     TEST: `${protocol}://${ip}:${port}/users`

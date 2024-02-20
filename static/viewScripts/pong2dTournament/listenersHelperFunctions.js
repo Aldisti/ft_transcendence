@@ -40,7 +40,7 @@ export function fieldValidate(val, key, dupThis){
             document.getElementsByName(key)[0].style.backgroundColor = "var(--bs-danger)";
             return (null);
         }
-    }
+    } 
     document.getElementsByName(key)[0].style.backgroundColor = "white";
     if (genericRegex.test(val))
         return (val);

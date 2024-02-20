@@ -115,7 +115,8 @@ let language = {
 			enterUsername: "Enter Username: ",
 			getEmail: "Send Email",
 			insertTfaCode: "Insert Code: ",
-			bannedLogin: "Your account is currently BANNED!"
+			bannedLogin: "Your account is currently BANNED!",
+			forgotPassword: "Forgot Password?"
 		},
 		register: {
 			register: "Register [1/3]",

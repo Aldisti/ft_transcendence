@@ -199,7 +199,8 @@ export default class extends Aview{
     }
 
 	setup(){
-        this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpeg")
+        this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpeg");
+        document.querySelector(".chatContainer").style.zIndex = "-1";
         let params = new URLSearchParams(window.location.search)
 
         if (params.size > 1){
@@ -230,6 +231,7 @@ export default class extends Aview{
     }
 
     destroy(){
+        document.querySelector(".chatContainer").style.zIndex = "10000000000";
         if (socket != 0){
             socket.close();
         }

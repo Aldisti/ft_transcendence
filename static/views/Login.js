@@ -68,7 +68,7 @@ export default class extends Aview {
                 	</div>
                     <div class="extra">
                         <a class="retroShade registerLink" href="/register/" data-link>${this.language.login.register}</a>
-                        <span class="recovery" href="#">Password Dimenticata?</span>
+                        <span class="recovery" href="#">${this.language.login.forgotPassword}</span>
                     </div>
             	</div>
    		    </div>
