@@ -193,16 +193,16 @@ def get_user(request, username: str) -> Response:
     return Response(data=user_serializer.data, status=200)
 
 
-class ListUser(ListAPIView):
-    queryset = User.objects.all()
-    serializer_class = CompleteUserSerializer
-    pagination_class = MyPageNumberPagination
-    permission_classes = [IsModerator]
-    throttles_classes = [MediumLoadThrottle]
-    filter_backends = [MyFilterBackend, filters.OrderingFilter]
-    search_fields = ["username", "email", "participants"]
-    ordering_filters = ["username", "email"]
-    ordering = ["username"]
+#class ListUser(ListAPIView):
+#    queryset = User.objects.all()
+#    serializer_class = CompleteUserSerializer
+#    pagination_class = MyPageNumberPagination
+#    permission_classes = [IsModerator]
+#    throttles_classes = [MediumLoadThrottle]
+#    filter_backends = [MyFilterBackend, filters.OrderingFilter]
+#    search_fields = ["username", "email", "participants"]
+#    ordering_filters = ["username", "email"]
+#    ordering = ["username"]
 
 # @api_view(['GET'])
 # def get_queue_ticket(request) -> Response:
