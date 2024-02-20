@@ -31,10 +31,12 @@ import threading
 
 logger = logging.getLogger(__name__)
 
+
 class MyPageNumberPagination(pagination.PageNumberPagination):
     page_size = 10
     page_size_query_param = 'size'
     max_page_size = 10
+
 
 class ListTournament(ListAPIView):
     queryset = Tournament.objects.all()
@@ -81,7 +83,7 @@ class CreateTournament(CreateAPIView):
         return response
 
 
-#@api_view(["GET"])
+@api_view(["GET"])
 def check_tournaments(request):
     tournaments = Tournament.objects.filter(start_date__lte=timezone.now(), started=False)
     for tournament in tournaments:

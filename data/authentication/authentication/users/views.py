@@ -2,8 +2,11 @@ from time import sleep
 
 from django.core.exceptions import ValidationError
 from django.conf import settings
-from rest_framework import status
 
+from rest_framework import status
+from rest_framework import pagination
+
+from rest_framework.generics import ListAPIView 
 from rest_framework.decorators import APIView, api_view, permission_classes, throttle_classes
 from rest_framework.response import Response
 
@@ -19,7 +22,14 @@ from authentication.permissions import IsActualUser, IsAdmin, IsModerator
 
 import logging
 
+
 logger = logging.getLogger(__name__)
+
+
+class MyPageNumberPagination(pagination.PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'size'
+    max_page_size = 10
 
 
 @api_view(['POST'])
@@ -182,6 +192,17 @@ def get_user(request, username: str) -> Response:
     user_serializer = UserSerializer(user)
     return Response(data=user_serializer.data, status=200)
 
+
+class ListUser(ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = CompleteUserSerializer
+    pagination_class = MyPageNumberPagination
+    permission_classes = [IsModerator]
+    throttles_classes = [MediumLoadThrottle]
+    filter_backends = [MyFilterBackend, filters.OrderingFilter]
+    search_fields = ["username", "email", "participants"]
+    ordering_filters = ["username", "email"]
+    ordering = ["username"]
 
 # @api_view(['GET'])
 # def get_queue_ticket(request) -> Response:
