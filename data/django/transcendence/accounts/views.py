@@ -201,7 +201,6 @@ def update_user_info(request):
     """
     Request: {"first_name": <first_name>, etc...}
     """
-
     user_info_serializer = UserInfoSerializer(data=request.data)
     user_info_serializer.is_valid(raise_exception=True)
     user_info = request.user.user_info
@@ -273,4 +272,22 @@ def change_display_name(request) -> Response:
         UserGame.objects.update_display_name(request.user.user_game, display_name)
     except ValidationError:
         return Response({'message': 'invalid name'}, status=400)
+    return Response(status=200)
+
+
+@api_view(['PATCH'])
+@get_func_credentials
+def update_email(request) -> Response:
+    email = request.data.get("email", "")
+    password = request.data.get("password", "")
+    if email == '' or password == '':
+        return Response(data={'message': 'missing email or password'}, status=400)
+    api_response = patch_request(
+        settings.MS_URLS['AUTH']['UPDATE_EMAIL'],
+        headers=request.api_headers,
+        data=request.data,
+    )
+    if api_response.status_code != 200:
+        return Response(data=api_response.json(), status=api_response.status_code)
+    User.objects.update_user_email(request.user)
     return Response(status=200)

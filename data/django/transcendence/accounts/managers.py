@@ -50,12 +50,6 @@ class UserManager(BaseUserManager):
         user.save()
         return user
 
-    def update_last_login(self, user):
-        user.last_login = datetime.datetime.now(tz=settings.TZ)
-        user.full_clean()
-        user.save()
-        return user
-
     def is_already_registered(self, username="", email="") -> True:
         if self.get_queryset().filter(pk=username):
             return True

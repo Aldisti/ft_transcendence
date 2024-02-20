@@ -46,7 +46,6 @@ def register_user(request) -> Response:
     UserTFA.objects.create(user=user)
     email_token = EmailVerificationToken.objects.create(user=user)
     return Response(data=email_token.to_data(), status=201)
-    # return Response(data=user_serializer.validated_data, status=status.HTTP_201_CREATED)
 
 
 @api_view(['DELETE'])
@@ -127,9 +126,10 @@ def update_email(request) -> Response:
     body: {"email": <email>, "password": <password>}
     """
     try:
-        User.objects.update_email(request.user, **request.data)
+        user = User.objects.update_email(request.user, **request.data)
     except ValueError as e:
         return Response(data={'error': str(e)}, status=400)
+    UserTFA.objects.deactivate(user.user_tfa)
     return Response(status=200)
 
 
@@ -181,18 +181,3 @@ def get_user(request, username: str) -> Response:
         return Response(data={'message': 'user not found'}, status=404)
     user_serializer = UserSerializer(user)
     return Response(data=user_serializer.data, status=200)
-
-
-# @api_view(['GET'])
-# def get_queue_ticket(request) -> Response:
-#     username = request.user.username
-#     data = {'username': username}
-#     logger.warning("#" * 50)
-#     api_response = post_request(MATCHMAKING_TOKEN, data=data)
-#     logger.warning("#" * 50)
-#     if api_response.status_code != 200:
-#         logger.warning(f"status code: {api_response.status_code}")
-#         logger.warning(f"json: {api_response.json()}")
-#         return Response(data={'message': f'api: {api_response.status_code}'}, status=503)
-#     logger.warning(f"\n\n\n\n\nDJANGO API RESPONSE: {api_response.json()}")
-#     return Response(data=api_response.json(), status=200)

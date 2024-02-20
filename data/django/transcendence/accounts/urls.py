@@ -15,6 +15,7 @@ urlpatterns = [
         path('ban/', views.change_active, name="api-change-active"),
         path('<username>/', views.RetrieveDestroyUser.as_view(), name="user-retrieve-destroy"),
         path('game/update/', views.change_display_name, name="api-change-display-name"),
+        path('email/update/', views.update_email, name="api-update-email"),
     ])),
 ]
 

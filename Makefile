@@ -29,10 +29,12 @@ all: $(NAME)
 migrations:
 	@./srcs/tools/clean_migrations.sh
 
-clean:
+down:
 	@if [ -f $(COMPOSE) ]; then \
 	docker compose -f $(COMPOSE) down; \
 	fi
+
+clean: down
 	@docker rmi -f \
 		trinity/transcendence \
 		trinity/pong \
