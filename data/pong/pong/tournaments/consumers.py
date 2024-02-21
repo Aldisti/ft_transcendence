@@ -380,7 +380,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         left_score = ball.scores[0]
         right_score = ball.scores[1]
         data = {
-            "time": round(60 - time),
+            "time": round(self.GAME_TIME - time),
             "score":{
                 "left": left_score,
                 "right": right_score,

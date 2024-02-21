@@ -175,13 +175,41 @@ def get_results(request):
 
 
 @api_view(["GET"])
-def get_scores(request):
+def get_all_results(request):
+    player = request.pong_user
+    if player is None:
+        return Response({"message": "User not found"}, status=404)
+
+    tournament = request.query_params.get("tournament", "")
+
+    if tournament == "true":
+        participants = ParticipantTournament.objects.filter(player=player)
+    else:
+        participants = Participant.objects.filter(player=player)
+
+    scores = {}
+    for result in Results.RESULTS_LIST:
+        scores[result] = 0
+    for participant in participants:
+        stats = getattr(participant, "stats", None)
+        result = getattr(stats, "result", None)
+        if result is None:
+            scores[Results.LOSE] += 1
+        scores[result] += 1
+    return Response(scores, status=200) 
+
+
+@api_view(["GET"])
+def get_stats(request):
     player = request.pong_user
     if player is None:
         return Response({"message": "User not found"}, status=404)
 
     participants = Participant.objects.select_related("game").filter(player=player)
     games = [participant.game for participant in participants]
+    total_victories = 0
+    total_loses = 0
+    total_draws = 0
     total_score = 0
     total_taken = 0
     for game in games:
@@ -189,13 +217,25 @@ def get_scores(request):
         opponent = game.participant.exclude(player_id=player.username).first()
         stats = getattr(participant, "stats", None)
         score = getattr(stats, "score", 0)
+        result = getattr(stats, "result", Results.LOSE)
         opponent_stats = getattr(opponent, "stats", None)
         opponent_score = getattr(opponent_stats, "score", 0)
         total_score += score
         total_taken += opponent_score
+        if result == Results.WIN:
+            total_victories += 1
+        if result == Results.DRAW:
+            total_draws += 1
+        else:
+            total_loses += 1
+    pong_mastery = ((total_score / len(games) / 3) * 0.125)
+    pong_mastery += ((1 - total_taken / len(games) / 3) * 0.125) 
+    pong_mastery += ((total_victories / len(games)) * 0.25) 
+    pong_mastery += ((1 - total_loses / len(games)) * 0.25) 
+    pong_mastery += ((1 - total_draws / len(games)) * 0.25) 
     body = {
         "avg_score": total_score / len(games),
         "avg_taken": total_taken / len(games),
-        "num_games": len(games),
+        "P.M.": pong_mastery,
     }
     return Response(body, status=200)

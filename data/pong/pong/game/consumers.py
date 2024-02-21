@@ -167,9 +167,13 @@ class PongConsumer(AsyncWebsocketConsumer):
         async with update_lock:
             ball = self.games[self.game_id]["ball"]
             score = ball.scores[0] if self.pos == "left" else ball.scores[1]
+            other_score = ball.scores[0] if self.pos != "left" else ball.scores[1]
             if self.games[self.game_id]["end"]:
                 # save stats in database
-                result = Results.WIN if score == self.WINNING else Results.LOSE
+                if score == other_score:
+                    result = Results.DRAW
+                else:
+                    result = Results.WIN if score > other_score else Results.LOSE
                 await self.create_stats(score, result)
             elif close_code in self.CLOSE_CODES and self.games[self.game_id]["connected"]:
                 self.games[self.game_id]["connected"] = False
@@ -284,10 +288,13 @@ class PongConsumer(AsyncWebsocketConsumer):
         )
 
         # game loop
-        while max(ball.scores) < self.WINNING and self.games[self.game_id]["connected"]:
+        start_time = time.time()
+        current_time = time.time() - start_time
+        while max(ball.scores) < self.WINNING and self.games[self.game_id]["connected"] and current_time < self.GAME_TIME:
             async with update_lock:
                 self.game.update()
-                data = self.raw_to_json(ball, paddle_left, paddle_right)
+                current_time = time.time() - start_time
+                data = self.raw_to_json(ball, paddle_left, paddle_right, current_time)
             await self.channel_layer.group_send(
                 self.ticket,
                 {
@@ -295,6 +302,7 @@ class PongConsumer(AsyncWebsocketConsumer):
                 }
             )
             await asyncio.sleep(0.03)
+            current_time = time.time() - start_time
 
         # ending conditions
         if self.games[self.game_id]["connected"]:
@@ -318,7 +326,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         stats = Stats.objects.create(participant, score, result)
         return stats
 
-    def raw_to_json(self, ball: Ball, paddle_left: Paddle, paddle_right: Paddle) -> dict:
+    def raw_to_json(self, ball: Ball, paddle_left: Paddle, paddle_right: Paddle, time: float) -> dict:
         x = ball.pos_x - ball.collider.radius
         y = ball.pos_y - ball.collider.radius
         vel_x = ball.vel_x / 60
@@ -332,6 +340,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         left_score = ball.scores[0]
         right_score = ball.scores[1]
         data = {
+            "time": round(self.GAME_TIME - time),
             "score":{
                 "left": left_score,
                 "right": right_score,
