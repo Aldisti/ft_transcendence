@@ -71,6 +71,6 @@ class ChatConsumer(WebsocketConsumer):
         for friend in friends:
             for channel in friend.get_channels():
                 async_to_sync(self.channel_layer.group_send)(
-                    channels.channel_name,
+                    channel.channel_name,
                     {"type": "chat.message", "text": json.dumps(message)}
                 )
