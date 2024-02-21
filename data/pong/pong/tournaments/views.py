@@ -335,7 +335,7 @@ def check_stats(user_1: ParticipantTournament, user_2: ParticipantTournament) ->
 def delete_tournament_tickets(participants):
     for participant in participants:
         PongUser.objects.delete_tournament_ticket(participant.player)
-        logger.warning(f"PARTICIPANT: {participant.player_id}, TOKEN: {participant.tournament_token}")
+        logger.warning(f"PARTICIPANT: {participant.player_id}, TOKEN: {participant.player.tournament_ticket}")
 
 
 def delete_participant_from_list(participant_to_del, participants):
