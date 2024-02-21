@@ -1,4 +1,4 @@
 FROM trinity/django:latest
 
-RUN pip install names
+RUN pip install names pillow
 

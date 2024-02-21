@@ -15,6 +15,9 @@ services:
     env_file:
       - ./transcendence/.env
     environment:
+      - ADMIN_USERNAME=${ADMIN_USERNAME}
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - USERNAME=${USERNAME}
       - SERVER_FRONTEND_IP=${SERVER_FRONTEND_IP}
       - EMAIL_HOST=${EMAIL_HOST}
       - EMAIL_PORT=${EMAIL_PORT}
@@ -71,6 +74,10 @@ services:
     env_file:
       - ./auth/.env
     environment:
+      - ADMIN_USERNAME=${ADMIN_USERNAME}
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - USERNAME=${USERNAME}
       - SERVER_FRONTEND_IP=${SERVER_FRONTEND_IP}
     networks:
       - django-net
@@ -94,6 +101,8 @@ services:
     env_file:
       - ./pong/.env
     environment:
+      - ADMIN_USERNAME=${ADMIN_USERNAME}
+      - USERNAME=${USERNAME}
       - SERVER_FRONTEND_IP=${SERVER_FRONTEND_IP}
 
       # rabbitMq vars
@@ -133,6 +142,8 @@ services:
     env_file:
       - ./chat/.env
     environment:
+      - ADMIN_USERNAME=${ADMIN_USERNAME}
+      - USERNAME=${USERNAME}
       - SERVER_FRONTEND_IP=${SERVER_FRONTEND_IP}
       - RABBIT_HOST=${RABBIT_HOST}
       - RABBIT_PORT=${RABBIT_PORT}
@@ -164,6 +175,8 @@ services:
     env_file:
       - ./ntf/.env
     environment:
+      - ADMIN_USERNAME=${ADMIN_USERNAME}
+      - USERNAME=${USERNAME}
       - SERVER_FRONTEND_IP=${SERVER_FRONTEND_IP}
     networks:
       - django-net

@@ -85,6 +85,10 @@ APP_ENV: dict[str, dict[str, str]] = {
         'EMAIL_HOST_PASSWORD': 'awmvotojcdvmdwge',
         'EMAIL_QUEUE': 'email_queue',
         'EMAIL_ROUTING_KEY': 'email',
+		# admin
+		'ADMIN_USERNAME': os.environ['USERNAME'],
+		'ADMIN_EMAIL': f"{os.environ['USERNAME']}@localhost",
+		'ADMIN_PASSWORD': 'password',
     }
 }
 
@@ -152,7 +156,7 @@ class EnvFile:
             file.write(self.json_to_str(self.new_vars))
 
     def __update_env(self) -> None:
-        if (len(self.env_vars) >= len(self.def_vars)
+        if (list(self.def_vars.keys()) in list(self.env_vars.keys())
             and not any(set(map(lambda value: value == '', self.env_vars.values())))):
             self.new_vars = self.env_vars
             return

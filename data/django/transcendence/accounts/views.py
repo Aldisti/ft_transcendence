@@ -34,21 +34,23 @@ logger = logging.getLogger(__name__)
 def create_user(data) -> tuple[User, dict[str, str]] | tuple[None, None]:
     register_urls = settings.REGISTER_URLS
     delete_urls = settings.DELETE_URLS
-    password = data.pop('password')
     user_serializer = CompleteUserSerializer(data=data)
     user_serializer.is_valid(raise_exception=True)
     api_response = None
     for i, url in enumerate(register_urls):
         if 'auth' in url:
-            data['password'] = password
-        api_response = post_request(url, data=data)
+            api_response = post_request(url, data=data)
+        else:
+            api_response = post_request(url, data={'username': data['username']})
         if api_response.status_code < 300:
             continue
+        logger.warning(f"Error: {api_response.json()}")
         while i > 0:
             i -= 1
             delete_request(delete_urls[i].replace('<pk>', data['username']))
         return None, None
     user = user_serializer.create(user_serializer.validated_data)
+    logger.warning(f"user: {CompleteUserSerializer(user).data}")
     return user, api_response.json()
 
 
@@ -191,6 +193,7 @@ class RetrieveDestroyUser(RetrieveDestroyAPIView):
     lookup_field = "username"
 
     def destroy(self, request, *args, **kwargs):
+        # TODO: do not allow admin deletion
         logger.warning("MY DESTROY")
         logger.warning(f"KWARGS: {kwargs}")
         username = kwargs.get("username", "")

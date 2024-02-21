@@ -25,7 +25,6 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, username: str, email: str, **kwargs):
-        kwargs.setdefault("", True)
         kwargs.setdefault("role", Roles.ADMIN)
 
         if not kwargs.get("role") == Roles.ADMIN:
