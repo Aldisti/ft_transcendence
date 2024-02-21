@@ -4,7 +4,7 @@ from channels.generic.websocket import WebsocketConsumer
 
 from asgiref.sync import async_to_sync
 
-from users.models import ChatChannel
+from users.models import ChatChannel, UserWebsockets
 
 from messages.models import Message
 from messages.builders import MessageBuilder
@@ -37,6 +37,7 @@ class ChatConsumer(WebsocketConsumer):
 
     def disconnect(self, close_code):
         user = self.scope["user"]
+        user = UserWebsockets.objects.get(pk=user.username)
 
         # send status to all friends
         if user.get_channels().count() == 1:
