@@ -188,13 +188,13 @@ def get_all_friends(request):
         return Response({"message": "User not found"}, status=404)
     friends_list = FriendsList.objects.get_all_friends(user)
     friends = get_users_from_friends(friends=friends_list, common_friend=user)
-    friends_serialized = []
+    friends_serializer = []
     for friend in friends:
-        friend_serialized = {}
-        friend_serialized["username"] = friend.username
-        friend_serialized["status"] = "disconnected"
+        friend_serializer = {}
+        friend_serializer["username"] = friend.username
+        friend_serializer["status"] = "disconnected"
         if friend.get_channels().count() == 0:
-            friend_serialized["status"] = "connected"
+            friend_serializer["status"] = "connected"
         friends_serializer.append(friend_serializer)
             
     return Response({"friends": friends_serializer}, status=200)
