@@ -37,6 +37,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         self.ticket = self.scope["token"]
         self.participant = self.scope["participant"]
         logger.warning(f"LOG: TOKEN: {self.ticket}")
+        logger.warning(f"LOG: TOKEN TYPE: {type(self.ticket)}")
         if self.ticket is None or self.participant is None:
             await self.close(code=3011)
 
