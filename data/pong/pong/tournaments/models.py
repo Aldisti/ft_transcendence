@@ -120,6 +120,11 @@ class ParticipantTournament(models.Model):
         default="",
     )
 
+    winner = models.BooleanField(
+        db_column="winner",
+        default=False,
+    )
+
     # TODO: create ParticipantTournamentManager
     objects = ParticipantTournamentManager()
 
