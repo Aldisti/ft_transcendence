@@ -31,15 +31,17 @@ class ChatConsumer(WebsocketConsumer):
         self.accept()
 
         # send status to all friends
-        message = {"type": "connected", "body": user.username}
-        self.send_status(user, message)
+        if user.get_channels().count() == 1:
+            message = {"type": "connected", "body": user.username}
+            self.send_status(user, message)
 
     def disconnect(self, close_code):
         user = self.scope["user"]
 
         # send status to all friends
-        message = {"type": "disconnected", "body": user.username}
-        self.send_status(user, message)
+        if user.get_channels().count() == 1:
+            message = {"type": "disconnected", "body": user.username}
+            self.send_status(user, message)
 
         # remove websocket from global group
         async_to_sync(self.channel_layer.group_discard)(settings.G_GROUP, self.channel_name)
@@ -65,10 +67,9 @@ class ChatConsumer(WebsocketConsumer):
         friends_list = FriendsList.objects.get_all_friends(user)
         friends = get_users_from_friends(friends=friends_list, common_friend=user)
 
-        if user.get_channels().count() == 1:
-            for friend in friends:
-                for channel in friend.get_channels():
-                    async_to_sync(channel_layer.group_send)(
-                        channels.channel_name,
-                        {"type": "chat.message", "text": json.dumps(message)}
-                    )
+        for friend in friends:
+            for channel in friend.get_channels():
+                async_to_sync(self.channel_layer.group_send)(
+                    channels.channel_name,
+                    {"type": "chat.message", "text": json.dumps(message)}
+                )
