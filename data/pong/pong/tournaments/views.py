@@ -272,7 +272,7 @@ def tournament_loop(tournament):
         #logger.warning(f"PARTICIPANTS IN THREAD {participants}")
 
     logger.warning(f"LEVEL: {level}")
-    winner = ParticipantTournament.objects.filter(level=level + 1)
+    winner = ParticipantTournament.objects.filter(level=level + 1, tournament_id=tournament.id)
     logger.warning(f"WINNER: {winner}")
     if winner:
         ParticipantTournament.objects.update_winner(winner.first(), True)
