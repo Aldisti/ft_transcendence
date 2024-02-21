@@ -25,6 +25,9 @@ class UserWebsockets(models.Model):
             return True
         return False
 
+    def get_channels(self):
+        return self.chat_channels.all()
+
     def __str__(self):
         return f"username: {self.username}"
 

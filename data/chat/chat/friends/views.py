@@ -187,6 +187,14 @@ def get_all_friends(request):
     except UserWebsockets.DoesNotExist:
         return Response({"message": "User not found"}, status=404)
     friends_list = FriendsList.objects.get_all_friends(user)
-    users = get_users_from_friends(friends=friends_list, common_friend=user)
-    usernames = [user.username for user in users]
-    return Response({"friends": usernames}, status=200)
+    friends = get_users_from_friends(friends=friends_list, common_friend=user)
+    friends_serialized = []
+    for friend in friends:
+        friend_serialized = {}
+        friend_serialized["username"] = friend.username
+        friend_serialized["status"] = "disconnected"
+        if friend.get_channels().count() == 0:
+            friend_serialized["status"] = "connected"
+        friends_serializer.append(friend_serializer)
+            
+    return Response({"friends": friends_serializer}, status=200)
