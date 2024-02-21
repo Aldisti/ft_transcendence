@@ -6,10 +6,14 @@ from rest_framework.response import Response
 from pong.producers import NotificationProducer
 
 from users.models import PongUser, Game, Participant
+from users.utils import Results
 
 from game.serializers import serialize_game_matches
 
+from tournaments.models import ParticipantTournament
+
 from operator import attrgetter
+from datetime import datetime, date, timedelta
 
 import json
 import logging
@@ -136,3 +140,59 @@ def reject_match_request(request):
 
     # responde back to user
     return Response({"message": "Match request rejected"}, status=200)
+
+
+@api_view(["GET"])
+def get_results(request):
+    player = request.pong_user
+    if player is None:
+        return Response({"message": "User not found"}, status=404)
+
+    tournament = request.query_params.get("tournament", "")
+    origin = datetime.combine(date.today(), datetime.min.time()) - timedelta(days=4)
+
+    if tournament == "true":
+        participants = ParticipantTournament.objects.filter(player=player, game__created__gte=origin)
+    else:
+        participants = Participant.objects.filter(player=player, game__created__gte=origin)
+
+    daily_scores = {}
+    for _ in range(5):
+        end = origin + timedelta(days=1)
+        daily_participants = participants.filter(game__created__gte=origin, game__created__lt=end)
+        scores = {}
+        for result in Results.RESULTS_LIST:
+            scores[result] = 0
+        for participant in daily_participants:
+            stats = getattr(participant, "stats", None)
+            result = getattr(stats, "result", None)
+            if result is None:
+                continue
+            scores[result] += 1
+        daily_scores[f"{origin.date()}"] = scores
+        origin = end
+    return Response(daily_scores, status=200) 
+
+
+#@api_view(["GET"])
+#def get_scores(request):
+#    player = request.pong_user
+#    if player is None:
+#        return Response({"message": "User not found"}, status=404)
+#
+#    participants = Participant.select_related("game").filter(player=player)
+#    games = [participant.game for participant in participants]
+#    opponents = [game.participant.exclude(player_id=player.username).first() for game in games]
+#    total_score = 0
+#    total_taken = 0
+#    for game in games:
+#        participant = game.participant.get(player_id=player.username)
+#        opponent = game.participant.exclude(player_id=player.username).first()
+#        stats = getattr(participant, "stats", None)
+#        score = getattr(stats, "score", 0)
+#        opponent_stats = getattr(opponent, "stats", None)
+#        opponent_score = getattr(opponent_score, "score", 0)
+#        total_score += score
+#        total_taken += opponent_score2024-02-17"getattr
+        
+

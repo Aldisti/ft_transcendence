@@ -320,6 +320,7 @@ MS_URLS = {
         "UPDATE_ACTIVE": f"http://{AUTH_HOST}:{AUTH_PORT}/users/update/active/",
         "UPDATE_ROLE": f"http://{AUTH_HOST}:{AUTH_PORT}/users/update/role/",
         "VERIFY_EMAIL": f"http://{AUTH_HOST}:{AUTH_PORT}/users/verify/email/",
+        "LIST_USERS": f"http://{AUTH_HOST}:{AUTH_PORT}/users/",
         # authorization app
         "LOGIN": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/login/",
         "REFRESH": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/refresh/",
@@ -358,6 +359,7 @@ MS_URLS = {
     "TOURNAMENT_GET_SCHEMA":f"http://{PONG_HOST}:{PONG_PORT}/tournaments/schema/<pk>/",
     "TOURNAMENT_GET_MATCHES":f"http://{PONG_HOST}:{PONG_PORT}/tournaments/matches/",
     "GAME_GET_MATCHES":f"http://{PONG_HOST}:{PONG_PORT}/game/matches/",
+    "GAME_GET_RESULTS":f"http://{PONG_HOST}:{PONG_PORT}/game/results/",
     "SEND_MATCH_REQ":f"http://{PONG_HOST}:{PONG_PORT}/game/match/",
     "DELETE_MATCH_REQ":f"http://{PONG_HOST}:{PONG_PORT}/game/match/delete/",
     "ACCEPT_MATCH_REQ":f"http://{PONG_HOST}:{PONG_PORT}/game/match/accept/",

@@ -180,3 +180,14 @@ def reject_match_req(request):
     api_response = post_request(url, json=body)
     # TODO: ask adi-stef
     return Response(api_response.json(), status=api_response.status_code)
+
+
+@api_view(['GET'])
+#@permission_classes([IsUser])
+@permission_classes([])
+def get_results(request):
+    query_params = "?" + "&".join([f"{key}={value}" for key, value in request.query_params.items()])
+    url = settings.MS_URLS["GAME_GET_RESULTS"] + query_params
+    api_response = get_request(url)
+    # TODO: ask adi-stef
+    return Response(api_response.json(), status=api_response.status_code)

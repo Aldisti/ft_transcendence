@@ -6,6 +6,7 @@ from pong import views
 urlpatterns = [
     path('matchmaking/', views.matchmaking, name='matchmaking'),
     path('matches/', views.get_matches, name='get_matches'),
+    path('matches/results/', views.get_results, name='get_scores'),
     path('tournaments/', include([
         path('', views.list_tournaments, name='list_tournaments'),
         path('<int:tour_id>/', views.retrieve_tournament, name='retrieve_tournament'),

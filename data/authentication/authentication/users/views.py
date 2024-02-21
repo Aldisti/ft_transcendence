@@ -2,6 +2,7 @@ from time import sleep
 
 from django.core.exceptions import ValidationError
 from django.conf import settings
+from rest_framework import filters
 
 from rest_framework import status
 from rest_framework import pagination
@@ -15,7 +16,8 @@ from authorization.serializers import TokenPairSerializer
 from authorization.views import get_exp
 from two_factor_auth.models import UserTFA
 from .models import User
-from .serializers import UserSerializer
+from .serializers import UserSerializer, ListUserSerializer
+from .filters import MyFilterBackend
 
 from authentication.throttles import LowLoadThrottle, MediumLoadThrottle, HighLoadThrottle
 from authentication.permissions import IsActualUser, IsAdmin, IsModerator
@@ -193,16 +195,16 @@ def get_user(request, username: str) -> Response:
     return Response(data=user_serializer.data, status=200)
 
 
-#class ListUser(ListAPIView):
-#    queryset = User.objects.all()
-#    serializer_class = CompleteUserSerializer
-#    pagination_class = MyPageNumberPagination
-#    permission_classes = [IsModerator]
-#    throttles_classes = [MediumLoadThrottle]
-#    filter_backends = [MyFilterBackend, filters.OrderingFilter]
-#    search_fields = ["username", "email", "participants"]
-#    ordering_filters = ["username", "email"]
-#    ordering = ["username"]
+class ListUser(ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = ListUserSerializer
+    pagination_class = MyPageNumberPagination
+    permission_classes = [IsModerator]
+    throttles_classes = [MediumLoadThrottle]
+    filter_backends = [MyFilterBackend, filters.OrderingFilter]
+    search_fields = ["username", "active", "role"]
+    ordering_filters = ["username"]
+    ordering = ["username"]
 
 # @api_view(['GET'])
 # def get_queue_ticket(request) -> Response:

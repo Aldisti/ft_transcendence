@@ -6,7 +6,8 @@ urlpatterns = [
     path('test/', views.test, name="api-test"),
     path('register/', views.registration, name="api-register"),
     path('users/', include([
-        path('', views.ListUser.as_view(), name="user-list"),
+        path('', views.list_users, name="user-list"),
+        path('info/', views.get_user_info, name="user-info"),
         path('check/', views.check_user, name="api-check"),
         path('image/upload/', views.upload_profile_picture, name="api-upload-picture"),
         path('info/update/', views.update_user_info, name="api-update-info"),
