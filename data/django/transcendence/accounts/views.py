@@ -27,7 +27,29 @@ import os
 
 from transcendence.decorators import get_func_credentials
 
+
 logger = logging.getLogger(__name__)
+
+
+def create_user(data) -> tuple[User, dict[str, str]] | tuple[None, None]:
+    register_urls = settings.REGISTER_URLS
+    delete_urls = settings.DELETE_URLS
+    password = data.pop('password')
+    user_serializer = CompleteUserSerializer(data=data)
+    user_serializer.is_valid(raise_exception=True)
+    api_response = None
+    for i, url in enumerate(register_urls):
+        if 'auth' in url:
+            data['password'] = password
+        api_response = post_request(url, data=data)
+        if api_response.status_code < 300:
+            continue
+        while i > 0:
+            i -= 1
+            delete_request(delete_urls[i].replace('<pk>', data['username']))
+        return None, None
+    user = user_serializer.create(user_serializer.validated_data)
+    return user, api_response.json()
 
 
 @api_view(['GET'])
@@ -47,7 +69,6 @@ def test(request):
     channel.basic_publish(exchange=os.environ['EXCHANGE'], routing_key=routing_key, body=message)
     # logger.warning("sent")
     # channel.close()
-
     return Response(status=200)
 
 
@@ -67,59 +88,13 @@ def upload_profile_picture(request):
 @api_view(['POST'])
 @permission_classes([])
 def registration(request):
-    # TODO: register user on the game app
-    user_serializer = CompleteUserSerializer(data=request.data)
-    user_serializer.is_valid(raise_exception=True)
-    username = user_serializer.validated_data.get("username")
-    email = user_serializer.validated_data.get("email")
-    password = request.data.get('password')
-    data = {'username': username}
-
-    # TODO: implement delete when something goes wrong
-
-    # create user instance on ntf database
-    api_response = post_request(settings.MS_URLS['NTF_REGISTER'], json=data)
-    if api_response.status_code >= 300:
-        return Response(data={'message': 'Something strange happened, contact devs'}, status=503)
-
-    # create user instance on chat database
-    api_response = post_request(settings.MS_URLS['CHAT_REGISTER'], json=data)
-    if api_response.status_code >= 300:
-        # delete from ntf db
-        ntf_url = settings.MS_URLS['NTF_DELETE'].replace("<pk>", username)
-        api_response = delete_request(ntf_url, json=data)
-        return Response(data={'message': 'Something strange happened, contact devs'}, status=503)
-
-    # create user instance on pong database
-    api_response = post_request(settings.MS_URLS['PONG_REGISTER'], json=data)
-    if api_response.status_code >= 300:
-        # delete from ntf db
-        ntf_url = settings.MS_URLS['NTF_DELETE'].replace("<pk>", username)
-        api_response = delete_request(ntf_url, json=data)
-        # delete from chat db
-        chat_url = settings.MS_URLS['CHAT_DELETE'].replace("<pk>", username)
-        api_response = delete_request(chat_url, json=data)
-        return Response(data={'message': 'Something strange happened, contact devs'}, status=503)
-
-    api_response = post_request(settings.MS_URLS['AUTH_REGISTER'],
-                                json={'username': username, 'email': email, 'password': password})
-    if api_response.status_code >= 300:
-        # delete from ntf db
-        ntf_url = settings.MS_URLS['NTF_DELETE'].replace("<pk>", username)
-        api_response = delete_request(ntf_url, json=data)
-        # delete from chat db
-        chat_url = settings.MS_URLS['CHAT_DELETE'].replace("<pk>", username)
-        api_response = delete_request(chat_url, json=data)
-        # delete from pong db
-        pong_url = settings.MS_URLS['PONG_DELETE'].replace("<pk>", username)
-        api_response = delete_request(pong_url, json=data)
-        return Response(data={'message': 'Something strange happened, contact devs'}, status=503)
-    # create user instance on main database
-    # TODO: validation error protection
-    user = user_serializer.create(user_serializer.validated_data)
-    # TODO: reduce time of registration
-    # send_verification_email(user=user)
-    send_verify_email(**api_response.json())
+    try:
+        user, email_info = create_user(request.data)
+    except ValidationError as e:
+        return Response(data={'message': str(e)}, status=400)
+    if user is None or email_info is None:
+        return Response(data={'message': 'something went wrong'}, status=500)
+    send_verify_email(**email_info)
     serializer_response = CompleteUserSerializer(user)
     return Response(serializer_response.data, status=201)
 

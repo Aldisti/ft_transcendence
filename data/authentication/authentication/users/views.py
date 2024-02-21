@@ -24,14 +24,14 @@ logger = logging.getLogger(__name__)
 
 @api_view(['POST'])
 @permission_classes([])
-@throttle_classes([LowLoadThrottle])
 def register_user(request) -> Response:
     """
     Request: {"username": <username>, "email": <email>, "password": <password>}
     """
-    logger.warning(f"\n{request.data}\n")
-    request.data.pop('role', '')
-    user_serializer = UserSerializer(data=request.data)
+    # logger.warning(f"\n{request.data}\n")
+    data = request.data.copy()
+    data.pop('role', '')
+    user_serializer = UserSerializer(data=data)
     user_serializer.is_valid(raise_exception=True)
     try:
         user = User.objects.create_user(**user_serializer.validated_data)

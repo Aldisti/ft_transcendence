@@ -364,6 +364,17 @@ MS_URLS = {
     "REJECT_MATCH_REQ":f"http://{PONG_HOST}:{PONG_PORT}/game/match/reject/",
 }
 
+REGISTER_URLS = [
+        MS_URLS['NTF_REGISTER'],
+        MS_URLS['CHAT_REGISTER'],
+        MS_URLS['PONG_REGISTER'],
+        MS_URLS['AUTH_REGISTER'],
+    ]
+DELETE_URLS = [
+    MS_URLS['NTF_DELETE'],
+    MS_URLS['CHAT_DELETE'],
+    MS_URLS['PONG_DELETE'],
+]
 
 # rabbit config
 
