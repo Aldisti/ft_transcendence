@@ -311,7 +311,7 @@ def check_stats(user_1: ParticipantTournament, user_2: ParticipantTournament) ->
 
     if stats is None:
         # someone didn't connect, check who
-        #logger.warning("STATS NOT FOUND")
+        logger.warning("STATS NOT FOUND")
         if not user_1.entered and not user_2.entered:
             user = None
         else:
@@ -320,14 +320,14 @@ def check_stats(user_1: ParticipantTournament, user_2: ParticipantTournament) ->
             stats = StatsTournament.objects.create(user, 0, Results.WIN)
 
     elif stats.result == Results.DRAW:
-        #logger.warning("DRAW NOBODY WON")
+        logger.warning("DRAW NOBODY WON")
         user = None
 
     else:
         # check who won the game
-        #logger.warning("SOMEONE WON")
+        logger.warning("SOMEONE WON")
         user = user_1 if stats.result == Results.WIN else user_2
-        #logger.warning(f"WINNER: {user.player.username}")
+        logger.warning(f"WINNER: {user.player.username}")
 
     return user
 

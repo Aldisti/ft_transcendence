@@ -174,25 +174,31 @@ def get_results(request):
     return Response(daily_scores, status=200) 
 
 
-#@api_view(["GET"])
-#def get_scores(request):
-#    player = request.pong_user
-#    if player is None:
-#        return Response({"message": "User not found"}, status=404)
-#
-#    participants = Participant.select_related("game").filter(player=player)
-#    games = [participant.game for participant in participants]
-#    opponents = [game.participant.exclude(player_id=player.username).first() for game in games]
-#    total_score = 0
-#    total_taken = 0
-#    for game in games:
-#        participant = game.participant.get(player_id=player.username)
-#        opponent = game.participant.exclude(player_id=player.username).first()
-#        stats = getattr(participant, "stats", None)
-#        score = getattr(stats, "score", 0)
-#        opponent_stats = getattr(opponent, "stats", None)
-#        opponent_score = getattr(opponent_score, "score", 0)
-#        total_score += score
-#        total_taken += opponent_score2024-02-17"getattr
-        
+@api_view(["GET"])
+def get_scores(request):
+    player = request.pong_user
+    if player is None:
+        return Response({"message": "User not found"}, status=404)
+
+    participants = Participant.select_related("game").filter(player=player)
+    games = [participant.game for participant in participants]
+    total_score = 0
+    total_taken = 0
+    for game in games:
+        participant = game.participant.get(player_id=player.username)
+        opponent = game.participant.exclude(player_id=player.username).first()
+        stats = getattr(participant, "stats", None)
+        score = getattr(stats, "score", 0)
+        opponent_stats = getattr(opponent, "stats", None)
+        opponent_score = getattr(opponent_score, "score", 0)
+        total_score += score
+        total_taken += opponent_score
+    body = {
+        "avg_score": total_score / len(games),
+        "avg_taken": total_score / len(games),
+        "num_games": len(games),
+    }
+    return Response(body, status=200)
+
+       
 

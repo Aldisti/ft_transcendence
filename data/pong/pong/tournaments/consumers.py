@@ -37,7 +37,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         self.ticket = self.scope["token"]
         self.participant = self.scope["participant"]
         if self.ticket is None or self.participant is None:
-            await self.close(code=11)
+            await self.close(code=3011)
 
         self.other = False
         self.other_lock = asyncio.Lock()
@@ -137,7 +137,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 text_data=json.dumps({"message": "Apparently you connected to late"})
             )
             # close the connection
-            await self.close(code=41)
+            await self.close(code=3041)
 
         asyncio.create_task(self.check_other())
 
@@ -162,13 +162,13 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 text_data=json.dumps({"message": "The other player doesn't show up"})
             )
             # close the connection
-            await self.close(code=42)
+            await self.close(code=3042)
         logger.warning(f"LOG: the other player has connected")
 
 
     async def disconnect(self, close_code):
         logger.warning(f"LOG: user {self.player} disconnected with code {close_code}")
-        if close_code == 11:
+        if close_code == 3011:
             return
         update_lock = self.games[self.game_id]["update_lock"]
 
@@ -176,10 +176,10 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             self.ticket, self.channel_name
         )
 
-        if close_code == 42:
+        if close_code == 3042:
             return
 
-        elif close_code == 41:
+        elif close_code == 3041:
             await self.update_exited(self.participant)
             return
 

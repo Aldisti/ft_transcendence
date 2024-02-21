@@ -122,7 +122,7 @@ class PongConsumer(AsyncWebsocketConsumer):
                 text_data=json.dumps({"message": "Apparently you connected to late"})
             )
             # close the connection
-            await self.close(code=42)
+            await self.close(code=3042)
 
         asyncio.create_task(self.check_other())
 
@@ -147,7 +147,7 @@ class PongConsumer(AsyncWebsocketConsumer):
                 text_data=json.dumps({"message": "The other player doesn't show up"})
             )
             # close the connection
-            await self.close(code=42)
+            await self.close(code=3042)
         logger.warning(f"LOG: the other player has connected")
 
 
@@ -159,7 +159,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             self.ticket, self.channel_name
         )
 
-        if close_code == 42:
+        if close_code == 3042:
             return
 
         async with update_lock:
