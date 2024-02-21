@@ -180,7 +180,7 @@ def get_scores(request):
     if player is None:
         return Response({"message": "User not found"}, status=404)
 
-    participants = Participant.select_related("game").filter(player=player)
+    participants = Participant.objects.select_related("game").filter(player=player)
     games = [participant.game for participant in participants]
     total_score = 0
     total_taken = 0
@@ -190,15 +190,12 @@ def get_scores(request):
         stats = getattr(participant, "stats", None)
         score = getattr(stats, "score", 0)
         opponent_stats = getattr(opponent, "stats", None)
-        opponent_score = getattr(opponent_score, "score", 0)
+        opponent_score = getattr(opponent_stats, "score", 0)
         total_score += score
         total_taken += opponent_score
     body = {
         "avg_score": total_score / len(games),
-        "avg_taken": total_score / len(games),
+        "avg_taken": total_taken / len(games),
         "num_games": len(games),
     }
     return Response(body, status=200)
-
-       
-
