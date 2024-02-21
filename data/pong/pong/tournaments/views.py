@@ -270,6 +270,9 @@ def tournament_loop(tournament):
                 create_new_participant(tournament, user, level + 1, i + 1)
         #participants = tournament.participant.filter(level=level + 1).order_by("column")
         #logger.warning(f"PARTICIPANTS IN THREAD {participants}")
+        winner = ParticipantTournament.objects.filter(level=level)
+        if winner:
+            ParticipantTournament.objects.update_winner(winner.first(), True)
 
     # end tournament
     Tournament.objects.end_tournament(tournament, level + 1)
