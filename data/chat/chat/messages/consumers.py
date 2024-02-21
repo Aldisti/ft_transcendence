@@ -60,7 +60,7 @@ class ChatConsumer(WebsocketConsumer):
                            .set_msg_body(data.get("body", "")))
         Message.objects.message_controller(message_builder, data.get("receiver"))
 
-    def send_status(user, message):
+    def send_status(self, user, message):
         # send status to all friends
         friends_list = FriendsList.objects.get_all_friends(user)
         friends = get_users_from_friends(friends=friends_list, common_friend=user)

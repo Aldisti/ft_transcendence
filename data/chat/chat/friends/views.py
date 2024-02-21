@@ -192,9 +192,9 @@ def get_all_friends(request):
     for friend in friends:
         friend_serializer = {}
         friend_serializer["username"] = friend.username
-        friend_serializer["status"] = "disconnected"
+        friend_serializer["status"] = "connected"
         if friend.get_channels().count() == 0:
-            friend_serializer["status"] = "connected"
+            friend_serializer["status"] = "disconnected"
         friends_serializer.append(friend_serializer)
             
-    return Response({"friends": friends_serializer}, status=200)
+    return Response(friends_serializer, status=200)
