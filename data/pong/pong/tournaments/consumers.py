@@ -40,6 +40,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         logger.warning(f"LOG: TOKEN TYPE: {type(self.ticket)}")
         if self.ticket is None or self.participant is None:
             await self.close(code=3011)
+            return
 
         self.other = False
         self.other_lock = asyncio.Lock()
@@ -140,6 +141,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             )
             # close the connection
             await self.close(code=3041)
+            return
 
         asyncio.create_task(self.check_other())
 
@@ -165,6 +167,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             )
             # close the connection
             await self.close(code=3042)
+            return
         logger.warning(f"LOG: the other player has connected")
 
 

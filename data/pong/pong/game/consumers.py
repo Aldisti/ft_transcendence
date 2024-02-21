@@ -123,6 +123,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             )
             # close the connection
             await self.close(code=3042)
+            return
 
         asyncio.create_task(self.check_other())
 
@@ -148,6 +149,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             )
             # close the connection
             await self.close(code=3042)
+            return
         logger.warning(f"LOG: the other player has connected")
 
 
