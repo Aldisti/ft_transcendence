@@ -31,10 +31,12 @@ import threading
 
 logger = logging.getLogger(__name__)
 
+
 class MyPageNumberPagination(pagination.PageNumberPagination):
     page_size = 10
     page_size_query_param = 'size'
     max_page_size = 10
+
 
 class ListTournament(ListAPIView):
     queryset = Tournament.objects.all()
@@ -81,7 +83,7 @@ class CreateTournament(CreateAPIView):
         return response
 
 
-#@api_view(["GET"])
+@api_view(["GET"])
 def check_tournaments(request):
     tournaments = Tournament.objects.filter(start_date__lte=timezone.now(), started=False)
     for tournament in tournaments:
@@ -269,6 +271,12 @@ def tournament_loop(tournament):
         #participants = tournament.participant.filter(level=level + 1).order_by("column")
         #logger.warning(f"PARTICIPANTS IN THREAD {participants}")
 
+    logger.warning(f"LEVEL: {level}")
+    winner = ParticipantTournament.objects.filter(level=level + 1, tournament_id=tournament.id)
+    logger.warning(f"WINNER: {winner}")
+    if winner:
+        ParticipantTournament.objects.update_winner(winner.first(), True)
+
     # end tournament
     Tournament.objects.end_tournament(tournament, level + 1)
 
@@ -309,7 +317,7 @@ def check_stats(user_1: ParticipantTournament, user_2: ParticipantTournament) ->
 
     if stats is None:
         # someone didn't connect, check who
-        #logger.warning("STATS NOT FOUND")
+        logger.warning("STATS NOT FOUND")
         if not user_1.entered and not user_2.entered:
             user = None
         else:
@@ -318,14 +326,14 @@ def check_stats(user_1: ParticipantTournament, user_2: ParticipantTournament) ->
             stats = StatsTournament.objects.create(user, 0, Results.WIN)
 
     elif stats.result == Results.DRAW:
-        #logger.warning("DRAW NOBODY WON")
+        logger.warning("DRAW NOBODY WON")
         user = None
 
     else:
         # check who won the game
-        #logger.warning("SOMEONE WON")
+        logger.warning("SOMEONE WON")
         user = user_1 if stats.result == Results.WIN else user_2
-        #logger.warning(f"WINNER: {user.player.username}")
+        logger.warning(f"WINNER: {user.player.username}")
 
     return user
 
@@ -333,6 +341,7 @@ def check_stats(user_1: ParticipantTournament, user_2: ParticipantTournament) ->
 def delete_tournament_tickets(participants):
     for participant in participants:
         PongUser.objects.delete_tournament_ticket(participant.player)
+        logger.warning(f"PARTICIPANT: {participant.player_id}, TOKEN: {participant.player.tournament_ticket}")
 
 
 def delete_participant_from_list(participant_to_del, participants):

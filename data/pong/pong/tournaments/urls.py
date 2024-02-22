@@ -9,5 +9,5 @@ urlpatterns = [
     path('unregister/', views.unregister_tournament, name="api-register-tournament"),
     path('schema/<int:tournament_id>/', views.get_tournament, name="api-get-tournament"),
     path('matches/', views.get_tournament_matches, name="api-get-tournament-matches"),
-    path('check/tournaments/', views.check_tournaments, name="api-check-tournaments"),
+    path('check/', views.check_tournaments, name="api-check-tournaments"),
 ]

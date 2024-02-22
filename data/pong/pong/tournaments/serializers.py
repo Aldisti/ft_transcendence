@@ -69,6 +69,8 @@ class ParticipantTournamentSerializer(serializers.ModelSerializer):
 def serialize_tournament_matches(participants, opponents, games) -> dict:
     data = []
     for participant, opponent, game in zip(participants, opponents, games):
+        if participant.winner:
+            continue
         opponent_stats = getattr(opponent, "stats", None)
         opponent_score = getattr(opponent_stats, "score", 0)
         participant_stats = getattr(participant, "stats", None)

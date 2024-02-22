@@ -4,10 +4,13 @@ from channels.generic.websocket import WebsocketConsumer
 
 from asgiref.sync import async_to_sync
 
-from users.models import ChatChannel
+from users.models import ChatChannel, UserWebsockets
 
 from messages.models import Message
 from messages.builders import MessageBuilder
+
+from friends.models import FriendsList
+from friends.utils import get_users_from_friends
 
 import logging
 
@@ -27,8 +30,20 @@ class ChatConsumer(WebsocketConsumer):
         async_to_sync(self.channel_layer.group_add)(settings.G_GROUP, self.channel_name)
         self.accept()
 
+        # send status to all friends
+        if user.get_channels().count() == 1:
+            message = {"type": "connected", "body": user.username}
+            self.send_status(user, message)
+
     def disconnect(self, close_code):
         user = self.scope["user"]
+        user = UserWebsockets.objects.get(pk=user.username)
+
+        # send status to all friends
+        if user.get_channels().count() == 1:
+            message = {"type": "disconnected", "body": user.username}
+            self.send_status(user, message)
+
         # remove websocket from global group
         async_to_sync(self.channel_layer.group_discard)(settings.G_GROUP, self.channel_name)
         # delete chat_channel from database
@@ -47,3 +62,15 @@ class ChatConsumer(WebsocketConsumer):
                            .set_msg_type(data.get("type", ""))
                            .set_msg_body(data.get("body", "")))
         Message.objects.message_controller(message_builder, data.get("receiver"))
+
+    def send_status(self, user, message):
+        # send status to all friends
+        friends_list = FriendsList.objects.get_all_friends(user)
+        friends = get_users_from_friends(friends=friends_list, common_friend=user)
+
+        for friend in friends:
+            for channel in friend.get_channels():
+                async_to_sync(self.channel_layer.send)(
+                    channel.channel_name,
+                    {"type": "chat.message", "text": json.dumps(message)}
+                )

@@ -6,10 +6,14 @@ from rest_framework.response import Response
 from pong.producers import NotificationProducer
 
 from users.models import PongUser, Game, Participant
+from users.utils import Results
 
 from game.serializers import serialize_game_matches
 
+from tournaments.models import ParticipantTournament
+
 from operator import attrgetter
+from datetime import datetime, date, timedelta
 
 import json
 import logging
@@ -136,3 +140,109 @@ def reject_match_request(request):
 
     # responde back to user
     return Response({"message": "Match request rejected"}, status=200)
+
+
+@api_view(["GET"])
+def get_results(request):
+    player = request.pong_user
+    if player is None:
+        return Response({"message": "User not found"}, status=404)
+
+    tournament = request.query_params.get("tournament", "")
+    origin = datetime.combine(date.today(), datetime.min.time()) - timedelta(days=4)
+
+    if tournament == "true":
+        participants = ParticipantTournament.objects.filter(player=player, game__created__gte=origin)
+    else:
+        participants = Participant.objects.filter(player=player, game__created__gte=origin)
+
+    daily_scores = {}
+    for _ in range(5):
+        end = origin + timedelta(days=1)
+        daily_participants = participants.filter(game__created__gte=origin, game__created__lt=end)
+        scores = {}
+        for result in Results.RESULTS_LIST:
+            scores[result] = 0
+        for participant in daily_participants:
+            stats = getattr(participant, "stats", None)
+            result = getattr(stats, "result", None)
+            winner = getattr(participant, "winner", None)
+            if winner is not None:
+                continue
+            if result is None:
+                continue
+            scores[result] += 1
+        daily_scores[f"{origin.date()}"] = scores
+        origin = end
+    return Response(daily_scores, status=200) 
+
+
+@api_view(["GET"])
+def get_all_results(request):
+    player = request.pong_user
+    if player is None:
+        return Response({"message": "User not found"}, status=404)
+
+    tournament = request.query_params.get("tournament", "")
+
+    if tournament == "true":
+        participants = ParticipantTournament.objects.filter(player=player)
+    else:
+        participants = Participant.objects.filter(player=player)
+
+    scores = {}
+    for result in Results.RESULTS_LIST:
+        scores[result] = 0
+    for participant in participants:
+        stats = getattr(participant, "stats", None)
+        result = getattr(stats, "result", None)
+        winner = getattr(participant, "winner", None)
+        if winner is not None:
+            continue
+        if result is None:
+            scores[Results.LOSE] += 1
+        else:
+            scores[result] += 1
+    return Response(scores, status=200) 
+
+
+@api_view(["GET"])
+def get_stats(request):
+    player = request.pong_user
+    if player is None:
+        return Response({"message": "User not found"}, status=404)
+
+    participants = Participant.objects.select_related("game").filter(player=player)
+    games = [participant.game for participant in participants]
+    total_victories = 0
+    total_loses = 0
+    total_draws = 0
+    total_score = 0
+    total_taken = 0
+    for game in games:
+        participant = game.participant.get(player_id=player.username)
+        opponent = game.participant.exclude(player_id=player.username).first()
+        stats = getattr(participant, "stats", None)
+        score = getattr(stats, "score", 0)
+        result = getattr(stats, "result", Results.LOSE)
+        opponent_stats = getattr(opponent, "stats", None)
+        opponent_score = getattr(opponent_stats, "score", 0)
+        total_score += score
+        total_taken += opponent_score
+        if result == Results.WIN:
+            total_victories += 1
+        if result == Results.DRAW:
+            total_draws += 1
+        else:
+            total_loses += 1
+    pong_mastery = ((total_score / len(games) / 3) * 0.1)
+    pong_mastery += ((1 - total_taken / len(games) / 3) * 0.1) 
+    pong_mastery += ((total_victories / len(games)) * 0.4) 
+    pong_mastery += ((1 - total_loses / len(games)) * 0.3) 
+    pong_mastery += ((1 - total_draws / (len(games) ** 2)) * 0.1) 
+    body = {
+        "avg score": round(total_score / len(games) / 11 * 100),
+        "avg taken": round(total_taken / len(games) / 11 * 100),
+        "P.M.": round(pong_mastery * 100),
+    }
+    return Response(body, status=200)

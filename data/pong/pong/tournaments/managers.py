@@ -47,6 +47,13 @@ class ParticipantTournamentManager(models.Manager):
         return participant_tournament
 
 
+    def update_winner(self, participant_tournament, winner: bool, **kwargs):
+        participant_tournament.winner = winner
+        participant_tournament.full_clean()
+        participant_tournament.save()
+        return participant_tournament
+
+
 class TournamentManager(models.Manager):
     def create(self, name: str, description: str, participants_num: int, start_date, **kwargs):
         tournament = self.model(

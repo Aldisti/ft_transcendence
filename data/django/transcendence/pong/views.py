@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.conf import settings
 
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, throttle_classes
 from rest_framework.response import Response
 
 from transcendence.permissions import IsUser
@@ -178,5 +178,38 @@ def reject_match_req(request):
     url = settings.MS_URLS['REJECT_MATCH_REQ'] + f"?username={user.username}"
     body = request.data
     api_response = post_request(url, json=body)
+    # TODO: ask adi-stef
+    return Response(api_response.json(), status=api_response.status_code)
+
+
+@api_view(['GET'])
+@permission_classes([IsUser])
+@throttle_classes([])
+def get_results(request):
+    query_params = "?" + "&".join([f"{key}={value}" for key, value in request.query_params.items()])
+    url = settings.MS_URLS["GAME_GET_RESULTS"] + query_params
+    api_response = get_request(url)
+    # TODO: ask adi-stef
+    return Response(api_response.json(), status=api_response.status_code)
+
+
+@api_view(['GET'])
+@permission_classes([IsUser])
+@throttle_classes([])
+def get_all_results(request):
+    query_params = "?" + "&".join([f"{key}={value}" for key, value in request.query_params.items()])
+    url = settings.MS_URLS["GAME_GET_ALL_RESULTS"] + query_params
+    api_response = get_request(url)
+    # TODO: ask adi-stef
+    return Response(api_response.json(), status=api_response.status_code)
+
+
+@api_view(['GET'])
+@permission_classes([IsUser])
+@throttle_classes([])
+def get_stats(request):
+    username = request.query_params.get("username", "")
+    url = settings.MS_URLS["GAME_GET_STATS"] + f"?username={username}"
+    api_response = get_request(url)
     # TODO: ask adi-stef
     return Response(api_response.json(), status=api_response.status_code)

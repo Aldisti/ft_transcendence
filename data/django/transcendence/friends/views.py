@@ -85,7 +85,11 @@ def get_all_friends(request):
     if api_response.status_code != 200:
         return Response(api_response.json(), status=api_response.status_code)
     # TODO: ask adi-stef
-    usernames = api_response.json()['friends']
+    logger.warning(f"REPONSE: {api_response.json()}")
+    usernames = [data["username"] for data in api_response.json()]
     friends = [User.objects.get(pk=username) for username in usernames]
     friends_serializer = FriendsSerializer(friends, many=True, context={"request": request})
-    return Response(friends_serializer.data, status=api_response.status_code)
+    json_response = friends_serializer.data
+    for data, ser_data in zip(api_response.json(), json_response):
+        ser_data["status"] = data["status"]
+    return Response(json_response, status=api_response.status_code)

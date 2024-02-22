@@ -15,4 +15,5 @@ urlpatterns = [
     path('delete/<str:username>/', views.delete_user, name='delete_user'),
     path('info/<str:username>/', views.get_user, name='get_user'),
     path('verify/email/', views.verify_email, name='verify_email'),
+    path('', views.ListUser.as_view(), name='list_user'),
 ]

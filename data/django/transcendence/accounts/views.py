@@ -17,6 +17,7 @@ from email_manager.email_sender import send_verify_email
 
 from transcendence.permissions import IsAdmin, IsModerator, IsUser
 
+from requests import get as get_request
 from requests import post as post_request
 from requests import delete as delete_request
 from requests import patch as patch_request
@@ -124,9 +125,6 @@ def change_role(request):
     return Response({"username": user.username, "new_role": user.role}, status=200)
 
 
-# TODO: the update password endpoint makes two database researches
-
-
 @api_view(['PATCH'])
 @permission_classes([IsUser])
 @get_func_credentials
@@ -215,16 +213,20 @@ class RetrieveDestroyUser(RetrieveDestroyAPIView):
         return super().destroy(request, *args, **kwargs)
 
 
-class ListUser(ListAPIView):
-    queryset = User.objects.all()
-    serializer_class = CompleteUserSerializer
-    pagination_class = MyPageNumberPagination
-    permission_classes = []
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    #filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ["=username", "=email"]
-    ordering_filters = ["username", "email"]
-    ordering = ["username"]
+@api_view(['GET'])
+@permission_classes([IsUser])
+def get_user_info(request):
+    username = request.query_params.get("username", "")
+    try:
+        user = User.objects.get(pk=username)
+    except User.DoesNotExist:
+        return Response({"message": "User not found"}, status=404)
+    serializer = CompleteUserSerializer(user)
+    data = serializer.data
+    picture = data["user_info"]["picture"]
+    host = request.headers.get("Host")
+    data["user_info"]["picture"] = None if picture is None else f"{settings.PROTOCOL}://{host}{picture}"
+    return Response(data, status=200)
 
 
 @api_view(['GET'])
@@ -269,3 +271,34 @@ def update_email(request) -> Response:
         return Response(data=api_response.json(), status=api_response.status_code)
     User.objects.update_user_email(request.user)
     return Response(status=200)
+
+
+@api_view(['GET'])
+@permission_classes([IsModerator])
+@get_func_credentials
+def list_users(request):
+    query_params = "?" + "&".join([f"{key}={value}" for key, value in request.query_params.items()])
+    api_response = get_request(
+        settings.MS_URLS['AUTH']['LIST_USERS'] + query_params,
+        headers=request.api_headers,
+        json=request.data,
+    )
+
+    if api_response.status_code != 200:
+        return Response(data=api_response.json(), status=api_response.status_code)
+
+    data = api_response.json()
+    users_json = data.get("results", [])
+    logger.warning(data)
+    host = request.headers.get("Host", "")
+    for user_json in users_json:
+        try:
+            user = User.objects.get(user_json.get("username", ""))
+            picture_url = f"{settings.PROTOCOL}://{host}{user.get_picture().url}"
+        except User.DoesNotExist:
+            return Response({"message": "Databases desynchronized"}, status=500)
+        except ValueError:
+            picture_url = None
+        user_json.setdefault("picture", picture_url)
+    return Response(data, status=200)
+
