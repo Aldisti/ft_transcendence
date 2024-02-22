@@ -59,6 +59,6 @@ fclean: clean
 clean_env:
 	@rm -f ./srcs/.env ./srcs/*/.env ./srcs/postgres/.env*
 
-re: init fclean all
+re: fclean all
 
 .PHONY: all init down clean fclean clean_env re $(NAME)
