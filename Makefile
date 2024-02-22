@@ -11,12 +11,14 @@ $(NAME): init build
 
 build:
 	@docker build \
-	--build-arg USERNAME=$(USERNAME) \
+	--build-arg USERNAME=$(shell id -nu) \
+	--build-arg GROUPNAME=$(shell id -ng) \
 	--build-arg UID=$(shell id -u) \
 	--build-arg GID=$(shell id -g) \
 	-t trinity/django:latest $(DJANGO_IMG)
 	@docker build \
-	--build-arg USERNAME=$(USERNAME) \
+	--build-arg USERNAME=$(shell id -nu) \
+	--build-arg GROUPNAME=$(shell id -ng) \
 	--build-arg UID=$(shell id -u) \
 	--build-arg GID=$(shell id -g) \
 	-t trinity/postgres:latest $(POSTGRES_IMG)
@@ -51,12 +53,12 @@ clean: down
 
 fclean: clean
 	@docker volume rm -f django postgres pong pongdb auth authdb chat chatdb ntf ntfdb 2> /dev/null
-	@rm -rf ./data/postgres ./data/pongdb ./data/authdb ./data/chatdb ./data/ntfdb 2> /dev/null
+	@rm -rf ./data/postgres ./data/pongdb ./data/authdb ./data/chatdb ./data/ntfdb
 	@rm -rf ./data/django/images
 
 clean_env:
 	@rm -f ./srcs/.env ./srcs/*/.env ./srcs/postgres/.env*
 
-re: fclean all
+re: init fclean all
 
-.PHONY: all init clean fclean clean_env re $(NAME)
+.PHONY: all init down clean fclean clean_env re $(NAME)

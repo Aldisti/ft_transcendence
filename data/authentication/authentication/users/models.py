@@ -184,6 +184,12 @@ class User(AbstractBaseUser):
     class Meta:
         db_table = "user_auth"
 
+    def is_moderator(self) -> bool:
+        return self.role == Roles.MOD
+
+    def is_admin(self) -> bool:
+        return self.role == Roles.ADMIN
+
     def has_intra(self) -> bool:
         try:
             return self.user_intra.email != ''

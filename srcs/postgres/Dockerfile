@@ -1,14 +1,16 @@
 FROM postgres:16-bookworm
 
 ARG USERNAME
+ARG GROUPNAME
 ARG UID
 ARG GID
+ARG PGDATA
 
-RUN addgroup --gid $GID $USERNAME
-RUN adduser --uid $UID --gid $GID --disabled-password $USERNAME
+RUN groupadd -g $GID $GROUPNAME
+RUN useradd -m -u $UID -g $GID $USERNAME
 
-RUN mkdir -p /var/lib/postgresql/data
-RUN chown $UID:$GID /var/lib/postgresql/data
+RUN mkdir -p /var/lib/postgresql/data/pgdata
+RUN chown $UID:$GID /var/lib/postgresql/data/pgdata
 
 USER $USERNAME
 

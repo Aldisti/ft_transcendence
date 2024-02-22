@@ -1,6 +1,7 @@
 FROM python:3.12.0
 
 ARG USERNAME
+ARG GROUPNAME
 ARG UID
 ARG GID
 
@@ -20,8 +21,8 @@ RUN pip install -U \
 	channels[daphne] \
 	pika
 
-RUN addgroup --gid $GID $USERNAME
-RUN adduser --uid $UID --gid $GID $USERNAME
+RUN groupadd -g $GID $GROUPNAME
+RUN useradd -m -u $UID -g $GID $USERNAME
 
 USER $USERNAME
 

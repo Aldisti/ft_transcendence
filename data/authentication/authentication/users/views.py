@@ -159,6 +159,8 @@ def update_active(request) -> Response:
         user = User.objects.get(username=username)
     except User.DoesNotExist:
         return Response(data={'message': 'user not found'}, status=404)
+    if user.is_moderator() and request.user.is_moderator():
+        return Response(data={'message': 'mod cannot ban another mod'}, status=400)
     try:
         User.objects.update_active(user, request.data['banned'])
     except ValueError as e:
