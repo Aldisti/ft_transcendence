@@ -274,8 +274,7 @@ def update_email(request) -> Response:
 
 
 @api_view(['GET'])
-#@permission_classes([IsModerator])
-@permission_classes([])
+@permission_classes([IsModerator])
 @get_func_credentials
 def list_users(request):
     query_params = "?" + "&".join([f"{key}={value}" for key, value in request.query_params.items()])
