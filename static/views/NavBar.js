@@ -14,10 +14,10 @@ export default function createNavBar(){
 
   let language = allLanguage[localStorage.getItem("language")];
   let showAdmin = "U";
-  let roleDescriptor;
   if (localStorage.getItem("token") != null)
     showAdmin = JSON.parse(window.decode64(localStorage.getItem("token").split(".")[1])).role;
 
+  console.log(showAdmin)
   let defaultProfilePicture = "https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg";
   document.querySelector("#navbar").innerHTML = `
       <nav class="navbar navbar-expand-lg navbar-dark bg-dark" >
