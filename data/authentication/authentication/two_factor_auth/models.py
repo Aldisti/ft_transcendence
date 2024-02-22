@@ -189,7 +189,6 @@ class OtpCode(models.Model):
         related_name="codes",
         db_column="user_tfa",
     )
-    # TODO: add hash to code field
     code = models.CharField(
         db_column='code',
         max_length=90,
