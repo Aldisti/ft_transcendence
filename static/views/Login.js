@@ -131,7 +131,6 @@ export default class extends Aview {
                     else if (Object.keys(res).length > 1)
                         handleLogin.Tfa(this, res)
                 }
-                Router();
             })
         })
         this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpeg")

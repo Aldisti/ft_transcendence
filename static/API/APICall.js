@@ -1181,69 +1181,55 @@ export async function getChatHistory(recursionProtection){
     return ({})
 }
 
-export async function getPongMaestry(){
-    // const res = await fetch("http://localhost:7000/game/stats/?username=gpanico2", {
-    //     method: "GET",
+export async function getPongMaestry(recursionProtection, username){
+    const res = await fetch(`${URL.stats.RADAR_CHART}?username=${username}`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        credentials: "include",
+    });
+    if (res.ok){
+        let parsed = await res.json();
+        return parsed;
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(getPongMaestry, 0, username);
+    return ({});
+}
 
-    // });
-    // if (res.ok){
-    //     let parsed = await res.json();
-    //     console.log(parsed)
-    // }
-    return ({
-        "avg_score": 0.6666666666666666,
-        "avg_taken": 0.8333333333333334,
-        "P.M.": 0.4930555555555556
-    })
+export async function getDonutChart(recursionProtection, username, tournament){
+    const res = await fetch(`${URL.stats.PIE_STATS}?username=${username}${tournament}`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        credentials: "include",
+    });
+    if (res.ok){
+        let parsed = await res.json();
+        return parsed;
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(getDonutChart, 0, username, tournament);
+    return ({});
 }
-export async function getVerticalChart(){
-    // const res = await fetch("http://localhost:7000/game/stats/?username=gpanico2", {
-    //     method: "GET",
-    // });
-    // console.log(res)
-    // if (res.ok){
-    //     let parsed = await res.json();
-        return (
-            {
-                "2024-02-17": {
-                    "win": 2,
-                    "lose": 0,
-                    "draw": 0
-                },
-                "2024-02-18": {
-                    "win": 5,
-                    "lose": 0,
-                    "draw": 0
-                },
-                "2024-02-19": {
-                    "win": 1,
-                    "lose": 0,
-                    "draw": 0
-                },
-                "2024-02-20": {
-                    "win": 9,
-                    "lose": 0,
-                    "draw": 0
-                },
-                "2024-02-21": {
-                    "win": 3,
-                    "lose": 2,
-                    "draw": 1
-                }
-            })
-}
-export async function getDonutChart(){
-    // const res = await fetch("http://localhost:7000/game/stats/?username=gpanico2", {
-    //     method: "GET",
-    // });
-    // console.log(res)
-    // if (res.ok){
-    //     let parsed = await res.json();
-        return ({
-            "win": 3,
-            "lose": 2,
-            "draw": 1
-        })
+
+export async function getIstogram(recursionProtection, username){
+    const res = await fetch(`${URL.stats.ISTOGRAM_CHART}?username=${username}`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        credentials: "include",
+    });
+    if (res.ok){
+        let parsed = await res.json();
+        return parsed;
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(getIstogram, 0, username);
+    return ({});
 }
 
 //end of Dummy call

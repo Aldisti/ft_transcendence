@@ -6,6 +6,7 @@ export function intraLoginHandle(){
         API.getIntraUrl("login").then((url) => {
             localStorage.setItem("intraLogin", "true");
             window.location.href = url;
+            Router();
         })
     })
 }

@@ -147,7 +147,8 @@ function checkMessage(game, msg){
         document.removeEventListener("keydown", game.downHandler)
         localStorage.setItem("stop", "true")
         game.gameOst.pause();
-        game.activeUser.sound.pause();
+        if (game.activeUser.sound != 0)
+            game.activeUser.sound.pause();
         if (Number(game.activeUser.scoreDisplay.innerHTML.trim()) > Number(game.opponent.scoreDisplay.innerHTML.trim())){
             document.querySelector(".gameOverlayWin").style.transform = "translate(0)"
             window.playFile("/sound/finalGameWin.mp3")

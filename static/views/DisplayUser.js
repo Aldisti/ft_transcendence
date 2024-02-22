@@ -89,27 +89,27 @@ export default class extends Aview {
                     <h1 class="title">${this.language.displayUser.statisticTitle}</h1>
                     <div class="stats">
                         <div class="chart">
-                            <h3>test</h3>
+                            <div class="canvContainer">
+                                <h3>Ranked</h3>
+                                <canvas id="fourth">
+                            </div>
+                        </div>
+                        <div class="chart">
+                            <div class="canvContainer">
+                                <h3>Tournaments</h3>
+                                <canvas id="second">
+                            </div>
+                        </div>
+                        <div class="chart">
+                            <h3>Win History</h3>
                             <div class="canvContainer">
                                 <canvas id="first">
                             </div>
                         </div>
                         <div class="chart">
                             <div class="canvContainer">
-                                <h3>test</h3>
-                                <canvas id="second">
-                            </div>
-                        </div>
-                        <div class="chart">
-                            <div class="canvContainer">
-                                <h3>test</h3>
+                                <h3>Skills</h3>
                                 <canvas id="third">
-                            </div>
-                        </div>
-                        <div class="chart">
-                            <div class="canvContainer">
-                                <h3>test</h3>
-                                <canvas id="fourth">
                             </div>
                         </div>
                     </div>
@@ -122,9 +122,10 @@ export default class extends Aview {
         let params = new URLSearchParams(window.location.search);
 
         let radarChart = {type: "radar", colors: ["#00afb9", "#f07167", "#2a9d8f"], maxValue: 100};
-        API.getPongMaestry(params.get("username")).then(res=>{
+        API.getPongMaestry(1, params.get("username")).then(res=>{
+            console.log(res)
+
             Object.keys(res).forEach(el=>{
-                res[el] *= 100;
             })
             radarChart.values = res
             chart(document.querySelector("#third"), radarChart, true);
@@ -132,7 +133,9 @@ export default class extends Aview {
 
 
         let donutChartMatch = {type: "donut", colors: ["#00afb9", "#f07167", "#2a9d8f"]};
-        API.getDonutChart(params.get("username")).then(res=>{
+        API.getDonutChart(1, params.get("username"), "&tournament=true").then(res=>{
+            console.log(res)
+
             let valueSum = 0;
             Object.keys(res).forEach(el=>{
                 valueSum += res[el];
@@ -143,7 +146,8 @@ export default class extends Aview {
         })
 
         let verticalChart = {type: "vertical", colors: ["#00afb9", "#f07167", "#2a9d8f"]};
-        API.getVerticalChart(params.get("username")).then(res=>{
+        API.getIstogram(1, params.get("username")).then(res=>{
+            console.log(res)
             let maxValue = 0;
             let obj = {};
             Object.keys(res).forEach(el=>{
@@ -153,12 +157,13 @@ export default class extends Aview {
             })
             verticalChart.maxValue = maxValue;
             verticalChart.values = obj;
-            console.log(verticalChart)
             chart(document.querySelector("#first"), verticalChart, true);
         })
 
-        let donutChartTournament = {type: "pie", colors: ["#00afb9", "#f07167", "#2a9d8f"]};
-        API.getDonutChart(params.get("username")).then(res=>{
+        let donutChartTournament = {type: "donut", colors: ["#00afb9", "#f07167", "#2a9d8f"]};
+        API.getDonutChart(1, params.get("username"), "").then(res=>{
+            console.log(res)
+
             let valueSum = 0;
             Object.keys(res).forEach(el=>{
                 valueSum += res[el];

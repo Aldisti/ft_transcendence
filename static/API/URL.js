@@ -39,6 +39,13 @@ export const auth = {
     VALIDATE_EMAIL: `${protocol}://${ip}:${authPort}/auth/email/`,
 }
 
+export const stats = {
+    PIE_STATS: `${protocol}://${ip}:${port}/pong/matches/results/all/`,
+    RADAR_CHART: `${protocol}://${ip}:${port}/pong/matches/stats/`,
+    ISTOGRAM_CHART: `${protocol}://${ip}:${port}/pong/matches/results/`,
+
+}
+
 export const friendship = {
     SEND_REQUEST: `${protocol}://${ip}:${port}/friends/request/send/`,
     REMOVE_FRIEND: `${protocol}://${ip}:${port}/friends/request/delete/`,

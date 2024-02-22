@@ -7,7 +7,7 @@ export default class User{
         this.score = 0;
         this.opponentScore = 0;
         this.scoreDisplay;
-        this.sound;
+        this.sound = 0;
         this.displayName = displayName ?? undefined;
     }
 
