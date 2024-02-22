@@ -166,6 +166,9 @@ def get_results(request):
         for participant in daily_participants:
             stats = getattr(participant, "stats", None)
             result = getattr(stats, "result", None)
+            winner = getattr(participant, "winner", None)
+            if winner is not None:
+                continue
             if result is None:
                 continue
             scores[result] += 1
@@ -193,6 +196,9 @@ def get_all_results(request):
     for participant in participants:
         stats = getattr(participant, "stats", None)
         result = getattr(stats, "result", None)
+        winner = getattr(participant, "winner", None)
+        if winner is not None:
+            continue
         if result is None:
             scores[Results.LOSE] += 1
         else:
