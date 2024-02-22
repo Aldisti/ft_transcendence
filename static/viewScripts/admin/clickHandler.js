@@ -13,27 +13,37 @@ function removeUser(username, dupThis){
     if (confirm(`${dupThis.language.admin.removeUser}${username}?`)){
         API.removeUser(1, username).then(()=>{
             restoreAll(dupThis);
+        }).catch(e=>{
+            console.log(e)
         })
     }
 }
 function makeUserModerator(username, dupThis){
     API.manageModerator(1, username, "M").then(()=>{
         restoreAll(dupThis);
+    }).catch(e=>{
+        console.log(e)
     })
 }
 function makeModeratorUser(username, dupThis){
     API.manageModerator(1, username, "U").then(()=>{
         restoreAll(dupThis);
+    }).catch(e=>{
+        console.log(e)
     })
 }
 function banUser(username, dupThis){
     API.manageUserBan(1, username, true).then(()=>{
         restoreAll(dupThis);
+    }).catch(e=>{
+        console.log(e)
     })
 }
 function unbanUser(username, dupThis){
     API.manageUserBan(1, username, false).then(()=>{
         restoreAll(dupThis);
+    }).catch(e=>{
+        console.log(e)
     })
 }
 

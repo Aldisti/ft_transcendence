@@ -28,7 +28,7 @@
 
 .manageUsers{
     width: 30%;
-    height: 80%;
+    height: 100%;
     padding: 20px;
     backdrop-filter: blur(10px);
     background-color: rgba(255, 255, 255, 0.3);
@@ -85,7 +85,7 @@
     flex: 1;
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 30px;
     overflow: scroll;
     justify-content: flex-start;
     align-items: flex-start;
@@ -183,7 +183,7 @@
 }
 
 .ban{
-    background-color: var(--bs-warning);
+    background-color: var(--bs-danger);
 }
 .makeModerator{
     background-color: var(--bs-success);

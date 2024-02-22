@@ -102,6 +102,8 @@ export default class extends Aview{
             res.forEach(el=>{
                 document.querySelector(".matchesList").innerHTML += this.getMatchCard(el, username);
             })
+        }).catch(e=>{
+            console.log(e)
         })
 
         document.querySelector(".matchesList").addEventListener("click", listeners.handleTournamentHistory.bind(null, this))

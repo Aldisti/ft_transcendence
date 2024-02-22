@@ -180,6 +180,8 @@ export default class extends Aview{
                     gameObj = startGame(this.ballTexture, this.groundTexture, this.pillTexture, msg);
                 })
             } 
+        }).catch(e=>{
+            console.log(e)
         })
     }
 

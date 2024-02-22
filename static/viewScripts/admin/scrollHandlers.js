@@ -14,19 +14,22 @@ function endAnimation(res, containerNumber){
     }
     return false
 }
-
+let flag = true
 export function handleUsersScroll(dupThis, obj, e){
     let containerNumber = obj.getAttribute("containerNumber");
 
-    if ((obj.scrollHeight - obj.scrollTop - obj.clientHeight) < 2) {
-        console.log("provoooo")
+    if ((obj.scrollHeight - obj.scrollTop - obj.clientHeight) < 10 && flag) {
+        flag = false;
         if (containerNumber == 0){
             API.adminGetUsers(1, ++pageCounter[containerNumber], pageSize).then(res=>{
                 if (endAnimation(res, containerNumber))
                     return ;
                 res.results.forEach(element => {
-                obj.innerHTML += dupThis.createUser({username: element.username, picture: element.picture});
+                    obj.innerHTML += dupThis.createUser({username: element.username, picture: element.picture});
                 })
+                flag = true;
+            }).catch(e=>{
+                console.log(e)
             });
         }
         if (containerNumber == 1){
@@ -36,6 +39,9 @@ export function handleUsersScroll(dupThis, obj, e){
                 res.results.forEach(element => {
                     obj.innerHTML += dupThis.createModerator({username: element.username, picture: element.picture});
                 })
+                flag = true;
+            }).catch(e=>{
+                console.log(e)
             })
         }
         if (containerNumber == 2){
@@ -45,6 +51,9 @@ export function handleUsersScroll(dupThis, obj, e){
                 res.results.forEach(element => {
                     obj.innerHTML += dupThis.createBannedUser({username: element.username, picture: element.picture});
                 })
+                flag = true;
+            }).catch(e=>{
+                console.log(e)
             })
         }
     }
@@ -68,6 +77,8 @@ export function handleUserSearch(dupThis, obj, e){
             obj.innerHTML = dupThis.createModerator({username: element.username, picture: element.picture});
         if (containerNumber == 2)
             obj.innerHTML = dupThis.createBannedUser({username: element.username, picture: element.picture});
+    }).catch(e=>{
+        console.log(e)
     })
 }
 
@@ -81,6 +92,8 @@ export function handleRestore(dupThis, obj, e){
             res.results.forEach(element => {
             obj.innerHTML += dupThis.createUser({username: element.username, picture: element.picture});
             })
+        }).catch(e=>{
+            console.log(e)
         });
     }
     if (containerNumber == 1){
@@ -88,6 +101,8 @@ export function handleRestore(dupThis, obj, e){
             res.results.forEach(element => {
                 obj.innerHTML += dupThis.createModerator({username: element.username, picture: element.picture});
             })
+        }).catch(e=>{
+            console.log(e)
         })
     }
     if (containerNumber == 2){
@@ -95,6 +110,8 @@ export function handleRestore(dupThis, obj, e){
             res.results.forEach(element => {
                 obj.innerHTML += dupThis.createBannedUser({username: element.username, picture: element.picture});
             })
+        }).catch(e=>{
+            console.log(e)
         })
     }
 }

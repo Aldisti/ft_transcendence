@@ -121,6 +121,8 @@ export function handleTournamentHistory(dupThis, e){
                     document.querySelector(".tournamentsSpinner").style.display = "none";
                     document.querySelector(".drawMatch").style.display = "flex";
                     handleCanvas(res);
+                }).catch(e=>{
+                    console.log(e)
                 })
             }, 350);
         }

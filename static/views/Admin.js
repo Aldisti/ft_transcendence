@@ -25,7 +25,7 @@ export default class extends Aview{
             </div>
             <div class="bottomLine">
                 <button username=${userData.username} class="ban">
-                    ${this.language.admin.undoBan}
+                    ${this.language.admin.banUser}
                 </button>
                 <button username=${userData.username} class="makeModerator">
                     ${this.language.admin.makeModerator}
@@ -132,7 +132,6 @@ export default class extends Aview{
      */
     setup(){
         this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpeg")
-        console.log(JSON.parse(window.decode64(localStorage.getItem("token").split(".")[1])))
         let role = JSON.parse(window.decode64(localStorage.getItem("token").split(".")[1])).role;
 
         if (role != "A" && role != "M")
@@ -160,20 +159,25 @@ export default class extends Aview{
         document.querySelectorAll(".manageUsers")[2].querySelector(".restore").addEventListener("click", HANDLERS.handleRestore.bind(null, this, manageBannedUser));
 
         API.adminGetUsers(1, 1, 10).then(res=>{
-            console.log(res)
             res.results.forEach(element => {
                 document.querySelectorAll(".usersContainer")[0].innerHTML += this.createUser({username: element.username, picture: element.picture});
             });
+        }).catch(e=>{
+            console.log(e)
         })
         API.adminGetModerator(1, 1, 10).then(res=>{
             res.results.forEach(element => {
                 manageModerator.innerHTML += this.createModerator({username: element.username, picture: element.picture});
             });
+        }).catch(e=>{
+            console.log(e)
         })
         API.adminGetBannedUsers(1, 1, 10).then(res=>{
             res.results.forEach(element => {
                 manageBannedUser.innerHTML += this.createBannedUser({username: element.username, picture: element.picture});
             });
+        }).catch(e=>{
+            console.log(e)
         })
         setupBtnClickHandler(this);
     }

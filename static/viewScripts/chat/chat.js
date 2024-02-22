@@ -13,11 +13,12 @@ export default function startChatListeners(){
 
     //perfome the call to retrieve the friends list
     API.getFriends(1).then(users=>{
-        console.log(users)
         // create a line for each friend in chat element
         for (let i = 0; i < users.length; i++){
             create.createUser(users[i], users[i].status);
         }
+    }).catch(e=>{
+        console.log(e)
     })
 
     

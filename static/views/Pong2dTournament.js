@@ -184,6 +184,8 @@ export default class extends Aview{page
                 document.querySelector(".tournamentsList").innerHTML += this.getTournamentCard(element);
             });
             this.flag = false;
+        }).catch(e=>{
+            console.log(e)
         })
     }
 

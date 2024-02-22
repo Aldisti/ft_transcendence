@@ -9,9 +9,11 @@ function searchUser(input)
 		    history.pushState(null, null, `/user/?username=${window.escapeHtml(input)}`)
 		    Router()
 	    }
-	  else
-	  	NOTIFICATION.simple({title: "Error", body: `user ${window.escapeHtml(input)} is not registered!`})
-    })
+	    else
+	  	  NOTIFICATION.simple({title: "Error", body: `user ${window.escapeHtml(input)} is not registered!`})
+    }).catch(e=>{
+      console.log(e)
+  })
 }
 
 export default function handleSearchUser(){

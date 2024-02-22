@@ -28,6 +28,8 @@ function validateCodeRecovery(token)
                 history.pushState(null, null, `/password/recovery/?token=${res.token}`);
                 Router();
             }
+        }).catch(e=>{
+            console.log(e)
         });
     }
 }
@@ -61,18 +63,23 @@ export function start()
     API.sendRecoveryEmail(document.querySelector(".data").value).then(res=>{
         if (Object.keys(res).length > 0)
         {
-            //console.log(res)
             document.querySelector("#app").innerHTML = disableTfaPage(res.type);
             if (res.type == "EM")
             {
-                API.getEmailCode(1, res.token);
+                API.getEmailCode(1, res.token).catch(e=>{
+                    console.log(e)
+                });
                 document.querySelector(".resendBtn").addEventListener("click", ()=>{
-                    API.getEmailCode(1, res.token);
+                    API.getEmailCode(1, res.token).catch(e=>{
+                        console.log(e)
+                    });
                 })
             }
             document.querySelector(".sendCode").addEventListener("click", ()=>{
                 validateCodeRecovery(res.token);
             })
         }
+    }).catch(e=>{
+        console.log(e)
     })
 }

@@ -13,7 +13,6 @@ export default class extends Aview{
 		super();
 		this.needListener	= true;
 		this.listenerId		= "signupBtn";
-		//console.log(this)
 		this.errors			= {
 			[tempLan.register.firstName[1]]: {isNotValid: false, text: ""},
 			[tempLan.register.lastName[1]]:  {isNotValid: false, text: ""},
@@ -210,10 +209,10 @@ export default class extends Aview{
 				if (check.flow3Check(this.field, this.errors, document.querySelectorAll(".data")))
 				{
 					this.field.password = sha256(this.field.password);
-					//console.log(this.prepareSignUpObj(this.field))
 					API.register(this.prepareSignUpObj(this.field)).then((newErrors)=>{
 						this.parseErrors(newErrors);
-						//console.log(this.errors);
+					}).catch(e=>{
+						console.log(e)
 					})
 				}
 			}
@@ -221,13 +220,11 @@ export default class extends Aview{
 			//go Back
 			else if (e.target.id == "goFlow2")
 			{
-				//console.log(this.errors)
 				document.querySelector(".base").innerHTML = this.getSecondForm();
 				check.showErrors(document.querySelectorAll(".data"), this.errors)
 			}
 			else if (e.target.id == "goFlow1")
 			{
-				//console.log(this.errors)
 				document.querySelector(".base").innerHTML = this.getHtml();
 				check.showErrors(document.querySelectorAll(".data"), this.errors)
 			}

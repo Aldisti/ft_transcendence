@@ -61,7 +61,9 @@ function blockUi(){
     document.body.appendChild(overlay);
     document.querySelector("#releaseBtn").addEventListener("click", ()=>{
         document.body.removeChild(document.querySelector("#matchReqOverlay"));
-        API.deleteMatchReq(1);
+        API.deleteMatchReq(1).catch(e=>{
+            console.log(e)
+        });
         document.querySelector(".matchReq h3").innerHTML = language.chatElement.restoreChat;
     })
 }
@@ -100,7 +102,9 @@ export function createTitle(){
             })
             document.querySelector(".unfriendUser").addEventListener("click", ()=>{
                 if (confirm("are you sure?")){
-                    API.removeFriend(1, document.querySelector(".chatBox").getAttribute("name"));
+                    API.removeFriend(1, document.querySelector(".chatBox").getAttribute("name")).catch(e=>{
+                        console.log(e)
+                    });
                     Router()
                 }
 
@@ -110,12 +114,16 @@ export function createTitle(){
                 if (document.querySelector(".matchReq h3").innerHTML.trim() == "Invite"){
                     API.sendMatchReq(1, document.querySelector(".chatBox").getAttribute("name")).then(res=>{
                         localStorage.setItem("matchReqToken", res.token);
+                    }).catch(e=>{
+                        console.log(e)
                     })
                     blockUi();
                     document.querySelector(".matchReq h3").innerHTML = language.chatElement.cancelRequest;
                 }
                 //to do switch button to cancel request
             })
+        }).catch(e=>{
+            console.log(e)
         })
     }
     else

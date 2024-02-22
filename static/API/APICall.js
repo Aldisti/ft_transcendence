@@ -88,10 +88,10 @@ export async function convertIntraToken(code, state) {
     });
     if (res.ok) {
         let token = await res.json();
-        localStorage.setItem("linktoken", token.access_token)
+        localStorage.setItem("token", token.access_token)
         localStorage.setItem("username", token.username);
         history.pushState(null, null, "/");
-        Router();
+        // Router();
         return (true);
     }
     return (false);
@@ -109,7 +109,6 @@ export async function linkIntraAccount(recursionProtection, code, state) {
         }),
         credentials: "include",
     });
-    console.log(res)
     if (res.ok) {
         return (true);
     }
@@ -337,7 +336,6 @@ export async function getIntraUrl(parameter) {
 }
 
 export async function uploadImage(recursionProtection, file) {
-    //console.log("hey")
     const form = new FormData();
 
     if (file.files.length > 0) {
@@ -395,7 +393,6 @@ export async function getEmailCode(recursionProtection, token) {
         return await refreshAndRetry(getEmailCode, 0, token);
     if (res.status == 429)
     {
-        //console.log(res.headers)
         let resJson = await res.json();
         let errMsg = resJson.detail.split(" ")
         alert(`You made too many request you will be able to request another code in ${errMsg[errMsg.length - 2]} seconds`)
@@ -422,7 +419,6 @@ export async function validateCode(recursionProtection, code)
     if (res.ok)
     {
         let jsonBody = await res.json();
-        //console.log(jsonBody);
         let body = "";
 
         for (let el of jsonBody.codes)
@@ -455,14 +451,12 @@ export async function validateCodeLogin(recursionProtection, code, token)
     if (res.status == 400)
     {
         let jsonBody = await res.json();
-        //console.log(jsonBody);
         localStorage.setItem("otp_token", jsonBody.token == undefined ? localStorage.getItem("otp_token") : jsonBody.token);
         return ({});
     }
     if (res.ok)
     {
         let jsonBody = await res.json();
-        //console.log(jsonBody);
         return (jsonBody);
     }
     return ({});
@@ -506,7 +500,6 @@ export async function validateRecover(token, code)
     if (res.status == 400)
     {
         let jsonBody = await res.json();
-        //console.log(jsonBody);
         localStorage.setItem("otp_token", jsonBody.token == undefined ? localStorage.getItem("otp_token") : jsonBody.token);
         return ({});
     }
@@ -553,14 +546,12 @@ export async function sendRecoveryEmail(username)
             username: username,
         })
     })
-    //console.log(res)
     try{
         let temp = await res.json();
         return (temp);
     }catch(e){
         return ({})
     }
-    //console.log(temp);
 }
 
 export async function recoveryPassword(data, token)
@@ -624,7 +615,6 @@ export async function linkGoogleAccount(recursionProtection, code, state) {
     });
     if (res.status == 401 && recursionProtection)
         return await refreshAndRetry(linkGoogleAccount, 0, code, state);
-    console.log(res);
 }
 
 export async function googleLogin(recursionProtection, code, state) {
@@ -648,7 +638,6 @@ export async function googleLogin(recursionProtection, code, state) {
         localStorage.setItem("token", jsonBody.access_token)
         localStorage.setItem("username", jsonBody.username)
     }
-    console.log(res);
 }
 
 export async function removeFriend(recursionProtection, username){
@@ -813,10 +802,7 @@ export async function getTicket(recursionProtection, url){
         return (parsed);
     }
     if (res.status == 401 && recursionProtection)
-    {
-        console.log(res.status, recursionProtection)        
         return await refreshAndRetry(getTicket, 0, url);
-    }
     return ({})
 }
 export async function startQueque(recursionProtection){
@@ -832,10 +818,7 @@ export async function startQueque(recursionProtection){
         return (parsed);
     }
     if (res.status == 401 && recursionProtection)
-    {
-        console.log(res.status, recursionProtection)        
         return await refreshAndRetry(startQueque, 0);
-    }
     return ({})
 }
 
@@ -972,7 +955,6 @@ export async function getTournamentsList(recursionProtection, page, size, option
 }
 
 export async function tournamentSubmit(recursionProtection, displayName, id){
-    console.log(displayName)
     const res = await fetch(URL.tournaments.REGISTER, {
         method: "POST",
         headers: {
@@ -1015,7 +997,6 @@ export async function unsubscribeTournament(recursionProtection, tournamentId){
 }
 
 export async function createTournament(recursionProtection, form){
-    console.log(form)
     const res = await fetch(URL.tournaments.CREATE, {
         method: "POST",
         headers: {

@@ -170,7 +170,9 @@ export async function checkChangeEmailForm(fields, errors){
         return (false);
     }
 
-    let res = await API.checkForEmailAvailability(fields[lan.update.email[1]].value);
+    let res = await API.checkForEmailAvailability(fields[lan.update.email[1]].value).catch(e=>{
+        console.log(e);
+    });
     if (res)
     {
         fields[lan.update.email[1]].style.backgroundColor = "#a7c957"

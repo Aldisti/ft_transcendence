@@ -6,7 +6,8 @@ export function intraLoginHandle(){
         API.getIntraUrl("login").then((url) => {
             localStorage.setItem("intraLogin", "true");
             window.location.href = url;
-            Router();
+        }).catch(e=>{
+            console.log(e)
         })
     })
 }
@@ -16,6 +17,8 @@ export function googleLoginHandle(){
         API.getGoogleUrl().then((url) => {
             localStorage.setItem("loginWithGoogle", "true");
             window.location.href = url;
+        }).catch(e=>{
+            console.log(e)
         })
     })
 }

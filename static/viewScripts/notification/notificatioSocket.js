@@ -34,7 +34,9 @@ function choiceCallback(config, notificationElement){
         let currentSearchedUser = document.querySelector(".userAndImage") != undefined ? document.querySelector(".userAndImage h2").innerHTML : null;
 
         //api call is perfomed passing a token as handshake for server
-        API.acceptRequest(1, config.token)
+        API.acceptRequest(1, config.token).catch(e=>{
+            console.log(e)
+        })
         removeNotification(config.fullBody)
         
         //update friend button inner text if the user is looking at it
@@ -48,7 +50,9 @@ function choiceCallback(config, notificationElement){
     //setting up a listener for DENY button
     notificationElement.querySelector(".notificationDeny").addEventListener("click", ()=>{
         //api call is perfomed passing a token as handshake for server
-        API.denyRequest(1, config.token)
+        API.denyRequest(1, config.token).catch(e=>{
+            console.log(e)
+        })
         removeNotification(config.fullBody)
 
         //make the notification disappear
@@ -76,6 +80,8 @@ function infoNotification(notification){
             create.createUser(create.global, "connected");
             for (let i = 0; i < users.length; i++)
                 create.createUser(users[i], users[i].status);
+        }).catch(e=>{
+            console.log(e)
         })
     }
 
@@ -93,6 +99,8 @@ function infoNotification(notification){
             create.createUser(create.global, "connected");
             for (let i = 0; i < users.length; i++)
                 create.createUser(users[i], users[i].status);
+        }).catch(e=>{
+            console.log(e)
         })
     }
 }
@@ -134,13 +142,21 @@ function matchReqCallback(config, notificationElement){
     let token = config.notification.body.token
 
     notificationElement.querySelector(".notificationAccept").addEventListener("click", ()=>{
-        API.acceptMatchReq(1, token);
+        API.acceptMatchReq(1, token).catch(e=>{
+            console.log(e)
+        }).catch(e=>{
+            console.log(e)
+        });
         history.pushState(null, null, `/games/pong2d/match/?token=${token}`);
         Router();
         document.body.removeChild(notificationElement);
     });
     notificationElement.querySelector(".notificationDeny").addEventListener("click", ()=>{
-        API.rejectMatchReq(1, token);
+        API.rejectMatchReq(1, token).catch(e=>{
+            console.log(e)
+        }).catch(e=>{
+            console.log(e)
+        });
         document.body.removeChild(notificationElement);
     });
 }
@@ -232,6 +248,8 @@ export function start(){
             for (let i = 0; i < parsed.length; i++)
                 notificationRouter(parsed[i]);
         })
+    }).catch(e=>{
+        console.log(e)
     })
 }
 

@@ -107,6 +107,8 @@ export default class extends Aview {
                     else
                         alert(this.language.login.emailValidatedError);
                 }, 300);
+            }).catch(e=>{
+                console.log(e)
             })
         }
         //do all the necessary stuff to manage the login with intra if user is already linked
@@ -131,6 +133,8 @@ export default class extends Aview {
                     else if (Object.keys(res).length > 1)
                         handleLogin.Tfa(this, res)
                 }
+            }).catch(e=>{
+                console.log(e)
             })
         })
         this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpeg")

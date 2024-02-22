@@ -7,25 +7,28 @@ function isNumber(value) {
 
 function sendEmailTfaCode() {
     let code = document.querySelector("#emailTfaCode").value;
-    //console.log(code)
     if (code.length == 6 || code.length == 10) {
-        API.validateCode(1, code).then(res => {})
+        API.validateCode(1, code).then(res => {}).catch(e=>{
+            console.log(e);
+        });
     }
 }
 
 function sendAppTfaCode() {
     let code = document.querySelector("#appTfaCode").value;
-    //console.log(code)
     if (code.length == 6 || code.length == 10) {
-        API.validateCode(1, code).then(res => {})
+        API.validateCode(1, code).then(res => {}).catch(e=>{
+            console.log(e);
+        });
     }
 }
 
 function sendAppTfaCodeRemove() {
     let code = document.querySelector("#removeTfaCode").value;
-    //console.log(code)
     if (code.length == 6 || code.length == 10) {
-        API.removeTfa(1, code).then(res => {})
+        API.removeTfa(1, code).then(res => {}).catch(e=>{
+            console.log(e);
+        });
     }
 }
 
@@ -34,13 +37,19 @@ function waitForEmailBtn(dupThis) {
     document.querySelector(".sendCode").addEventListener("click", sendEmailTfaCode)
         //setup listener for EMAIL RESEND button if pressed send otp code via mail
     document.querySelector(".resendBtn").addEventListener("click", () => {
-        API.getEmailCode(1)
+        API.getEmailCode(1).catch(e=>{
+            console.log(e);
+        });
     })
     API.activateTfa(1, "em").then(res => {
         if (Object.keys(res).length == 0)
         //send inserted code to backend to be validated
-            API.getEmailCode(1)
-    })
+            API.getEmailCode(1).catch(e=>{
+                console.log(e);
+            });
+    }).catch(e=>{
+        console.log(e);
+    });
 }
 
 function waitForAppBtn(dupThis) {
@@ -54,7 +63,9 @@ function waitForAppBtn(dupThis) {
             height: window.innerWidth < 900 ? document.querySelector(".qrLine").clientWidth - 50 : 250
         });
         document.querySelector(".sendCode").addEventListener("click", sendAppTfaCode)
-    })
+    }).catch(e=>{
+        console.log(e);
+    });
 }
 
 async function handleIntraLink(dupThis) {
@@ -68,7 +79,9 @@ async function handleIntraLink(dupThis) {
             API.getIntraUrl("link").then(res => {
                 if (res != "")
                     dupThis.intraUrl = res
-            })
+            }).catch(e=>{
+                console.log(e);
+            });
         }
         if (res.google == true)
             localStorage.setItem("googleLinked", "true")
@@ -77,9 +90,13 @@ async function handleIntraLink(dupThis) {
                 //ask to the server the link to connect user's 42 account
             API.getGoogleUrl().then(res => {
                 dupThis.googleUrl = res;
-            })
+            }).catch(e=>{
+                console.log(e);
+            });
         }
-    })
+    }).catch(e=>{
+        console.log(e);
+    });
 }
 
 export function loadPasswordPage(dupThis) {
@@ -100,7 +117,9 @@ export function loadPicturePage(dupThis) {
     API.getUserInfo(localStorage.getItem("username")).then(res => {
         if (res.user_info.picture != null)
             document.querySelector(".updateImgForm").src = res.user_info.picture;
-    })
+    }).catch(e=>{
+        console.log(e);
+    });
 }
 export async function loadSecurityPage(dupThis) {
     localStorage.setItem("selectedForm", "twofa");
@@ -116,7 +135,9 @@ export async function loadSecurityPage(dupThis) {
             document.querySelector(".sendCode").addEventListener("click", sendAppTfaCodeRemove)
             return;
         }
-    })
+    }).catch(e=>{
+        console.log(e);
+    });
 
     //if user not yet enabled TFA display menu to select activation method
     document.querySelector(".formMenu").innerHTML = dupThis.get2faChoice();
@@ -131,17 +152,20 @@ export async function loadSecurityPage(dupThis) {
 export function triggerLogout(dupThis) {
     if (!confirm(dupThis.language.update.confirmLogout))
         return;
-    API.logout(1)
+    API.logout(1).catch(e=>{
+        console.log(e);
+    });
 }
 
 export function triggerIntraLink(dupThis) {
     if (localStorage.getItem("intraLinked") == null && confirm(dupThis.language.update.intraLinkConfirm)) {
         window.location.href = dupThis.intraUrl;
     } else if (localStorage.getItem("intraLinked") != null && confirm(dupThis.language.update.intraUnlinkConfirm)) {
-        //console.log("unlink")
         API.unlinkIntra(1).then(() => {
             document.querySelector(".intra").style.backgroundColor = "var(--bs-warning)"
-        });
+        }).catch(e=>{
+            console.log(e);
+        });;
     }
 }
 
@@ -149,15 +173,17 @@ export function triggerGoogleLink(dupThis) {
     if (localStorage.getItem("googleLinked") == null && confirm(dupThis.language.update.googleLinkConfirm))
         window.location.href = dupThis.googleUrl;
     else if (localStorage.getItem("googleLinked") != null && confirm(dupThis.language.update.googleUnlinkConfirm)) {
-        //console.log("unlink")
         API.unlinkGoogle(1).then(() => {
-            console.log(window)
             history.pushState(null, null, "/account/");
             Router();
-        });
+        }).catch(e=>{
+            console.log(e);
+        });;
     }
 }
 export function triggerLogoutAll(dupThis) {
     if (confirm("Do you really want to logout from all devices?"))
-        API.logoutAll(1)
+        API.logoutAll(1).catch(e=>{
+            console.log(e);
+        });
 }

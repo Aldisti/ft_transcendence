@@ -267,6 +267,8 @@ export default class {
             this.socket.onopen = ()=>{
                 this.socket.addEventListener("message", handleSocketMesssage.bind(null, this))
             }
+        }).catch(e=>{
+            console.log(e)
         })
 
         NOTIFICATION.simple({

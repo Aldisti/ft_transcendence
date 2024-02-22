@@ -26,6 +26,8 @@ export default class extends Aview{
                 API.googleLogin(1, urlParams.get("code"), urlParams.get("state")).then(res=>{
                     localStorage.removeItem("loginWithGoogle");
                     window.goHome();
+                }).catch(e=>{
+                    console.log(e)
                 })
                 return ;
             }
@@ -37,6 +39,8 @@ export default class extends Aview{
                         localStorage.setItem("intraLinked", "true")
                         history.pushState(null, null, "/account/");
                         Router();
+                    }).catch(e=>{
+                        console.log(e)
                     })
                 }
                 else{
@@ -44,6 +48,8 @@ export default class extends Aview{
                         history.pushState(null, null, "/");
                         localStorage.removeItem("intraLogin")
                         Router();
+                    }).catch(e=>{
+                        console.log(e)
                     })
                 }
             }
@@ -53,6 +59,8 @@ export default class extends Aview{
                     localStorage.setItem("googleLinked", "true")
                     history.pushState(null, null, "/account/");
                     Router();
+                }).catch(e=>{
+                    console.log(e)
                 })
             }
         }

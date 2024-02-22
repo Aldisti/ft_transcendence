@@ -73,6 +73,14 @@ export default class User{
             document.querySelector(".gameStart").style.display = "flex"
             document.querySelector(".gameWait").style.display = "none"
         }
+        if (this.loggedUser == this.name){
+            this.scoreDisplay.parentNode.style.backgroundColor = "var(--bs-info)";
+            console.log(this.scoreDisplay.parentNode.getAttribute("id"))
+            if (this.scoreDisplay.parentNode.getAttribute("id") == "opponentDisplay")
+                document.querySelector("#currentUserDisplay").style.backgroundColor = "var(--bs-danger)";
+            else
+            document.querySelector("#opponentDisplay").style.backgroundColor = "var(--bs-danger)";
+        }
     }
 
     initPlayer(pos){

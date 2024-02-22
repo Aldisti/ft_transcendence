@@ -18,7 +18,7 @@ button{
 
 .manageUsers{
     width: 30%;
-    height: 80%;
+    height: 100%;
     padding: 20px;
     background-color: var(--retro-sky-blue);
     display: flex;
@@ -75,7 +75,7 @@ button{
     flex: 1;
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 30px;
     overflow: scroll;
     justify-content: flex-start;
     align-items: flex-start;
@@ -153,6 +153,7 @@ button{
 }
 
 .upperLine h3{
+    font-size: small;
     color: white;
 }
 
@@ -175,7 +176,7 @@ button{
 }
 
 .ban{
-    background-color: var(--bs-warning);
+    background-color: var(--bs-danger);
 }
 .makeModerator{
     background-color: var(--bs-success);

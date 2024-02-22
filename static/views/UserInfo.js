@@ -64,6 +64,8 @@ export default class extends Aview {
                     <button class="submit importantSubmit">${this.language.update.submit}</button>
                 </div>
             `
+        }).catch(e=>{
+            console.log(e)
         })
     }
 
@@ -402,23 +404,30 @@ export default class extends Aview {
                     return;
                 this.errors = res.user_info;
                 controls.checkChangeInfoForm(form, this.errors);
+            }).catch(e=>{
+                console.log(e)
             })
         }
 
         //will perfom check for EMAIL
         if (localStorage.getItem("selectedForm") == "email" && await controls.checkChangeEmailForm(form, this.errors)) {
-            API.updateEmail(prepare.prepareEmailForm(form, this)).then((res) => {})
+            API.updateEmail(prepare.prepareEmailForm(form, this)).then((res) => {}).catch(e=>{
+                console.log(e)
+            })
         }
 
         //will perfom check for PASSWORD
         if (localStorage.getItem("selectedForm") == "password"&& controls.checkChangePasswordForm(form, this.errors)) {
-            //console.log(prepare.preparePasswordForm(form, this))
-            API.updatePassword(1, prepare.preparePasswordForm(form, this), this).then((res) => {});
+            API.updatePassword(1, prepare.preparePasswordForm(form, this), this).then((res) => {}).catch(e=>{
+                console.log(e)
+            });
         }
 
         //will perfom check for PICTURE
         if (localStorage.getItem("selectedForm") == "picture")
-            API.uploadImage(1, form.inpFile)
+            API.uploadImage(1, form.inpFile).catch(e=>{
+                console.log(e)
+            })
     }
 
     changeForm(e, byPass) {
@@ -467,7 +476,6 @@ export default class extends Aview {
     }
 
     highlightFormMenu(formName) {
-        //console.log(formName)
         //first all the button is turned the same
         document.querySelectorAll(".formLink").forEach(el => {
             el.style.backgroundColor = localStorage.getItem("darkMode") == "true" ? "var(--bs-gray)" : "white";

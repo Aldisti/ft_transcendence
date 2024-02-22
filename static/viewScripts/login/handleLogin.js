@@ -15,6 +15,8 @@ function validateLoginCode()
                 history.pushState(null, null, "/");
                 Router();
             }
+        }).catch(e=>{
+            console.log(e)
         })
     }
 }
@@ -30,13 +32,17 @@ export function Tfa(dupThis, res){
     {
         document.querySelector(".loginForm").innerHTML = dupThis.getTfaForm();
         document.querySelector(".resendBtn").addEventListener("click", ()=>{
-            API.getEmailCode(1, res.token)
+            API.getEmailCode(1, res.token).catch(e=>{
+                console.log(e)
+            })
         })
         API.getEmailCode(1, res.token).then(res=>{
             document.querySelector(".sendCode").addEventListener("click", ()=>{
                 if (res.ok)
                     validateLoginCode();
             })
+        }).catch(e=>{
+            console.log(e)
         })
     }
     if (res.type == "SW")

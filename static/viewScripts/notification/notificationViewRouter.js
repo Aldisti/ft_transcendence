@@ -17,7 +17,9 @@ export function removeNotification(body){
 
 export function handleDenyRequest(token, notification){
     //api call is perfomed passing a token as handshake for server
-    API.denyRequest(1, token);
+    API.denyRequest(1, token).catch(e=>{
+        console.log(e)
+    });
     removeNotification(notification);
 }
 
@@ -25,7 +27,9 @@ export function handleAcceptRequest(token, notification){
     let currentSearchedUser = document.querySelector(".userAndImage") != undefined ? document.querySelector(".userAndImage h2").innerHTML : null;
     
     //api call is perfomed passing a token as handshake for server
-    API.acceptRequest(1, token)
+    API.acceptRequest(1, token).catch(e=>{
+        console.log(e)
+    })
     
     removeNotification(notification);
 }

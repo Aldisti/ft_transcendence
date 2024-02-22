@@ -10,7 +10,6 @@ function handleUserLineStatus(type, username){
     let userList = document.querySelectorAll(".userLine");
 
     userList.forEach(el=>{
-        console.log(el.getAttribute("username"))
         if (el.getAttribute("username") == username && type == "disconnected"){
             el.classList.remove("connected");
             el.classList.add("disconnected");
@@ -53,8 +52,9 @@ export function start(){
     if ((socket !== null && socket.readyState !== WebSocket.CLOSED) || localStorage.getItem("username") == null)
     return ;
     API.getChatHistory(1).then(res=>{
-        console.log(res)
         localStorage.setItem("chat", JSON.stringify(res))
+    }).catch(e=>{
+        console.log(e)
     })
     //retrieve from the server a ticket used to perform secure connection to the socket
     API.getTicket(1, URL.socket.CHAT_SOCKET_TICKET).then(res=>{
@@ -67,7 +67,6 @@ export function start(){
             let chatBox = document.querySelector(".chatBox")
             let parsedMessage = JSON.parse(event.data)
 
-            console.log(parsedMessage)
 
             if (parsedMessage.type == "disconnected" || parsedMessage.type == "connected"){
                 handleUserLineStatus(parsedMessage.type, parsedMessage.body);
@@ -100,6 +99,8 @@ export function start(){
         
         //define listener for CAHT SEND button
         document.querySelector(".submitChatInput").addEventListener("click", sendSocketMessage)
+    }).catch(e=>{
+        console.log(e)
     })
 }
 

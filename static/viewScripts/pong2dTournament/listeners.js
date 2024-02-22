@@ -10,6 +10,8 @@ function handleTournamentSubScriptionMobile(dupThis, id){
             if (!res)
                 alert(dupThis.language.tournament.tournamentSubmitError);
             Router();
+        }).catch(e=>{
+            console.log(e)
         })
     }
     else
@@ -60,6 +62,8 @@ export function handleTournamentSubscription(dupThis, e){
                     else
                         alert(dupThis.language.tournament.tournamentUnSubscribedError);
                     Router()
+                }).catch(e=>{
+                    console.log(e)
                 })
             }
         }, 300);
@@ -120,7 +124,6 @@ export function handleTournamentCreation(dupThis, e){
     }
     e.preventDefault()
     let form = new FormData(document.querySelector(".newTournament form"));
-    console.log(form)
     let dateTime = form.get("tDate") + "T" + form.get("tTime");
     let flag = true;
     let obj = {};
@@ -132,7 +135,6 @@ export function handleTournamentCreation(dupThis, e){
                 flag = false;
         }
     })
-    console.log(dateTime, validateDateTime(dateTime))
     if (validateDateTime(dateTime)){
         obj["tDateTime"] = dateTime;
     }
@@ -146,6 +148,8 @@ export function handleTournamentCreation(dupThis, e){
         if (!res)
             alert(dupThis.language.tournament.tournamentCreateError);
         Router();
+    }).catch(e=>{
+        console.log(e)
     })
 }
 
@@ -168,6 +172,8 @@ export function handleTournamentSubscribe (dupThis, e){
             if (!res)
                 alert(dupThis.language.tournament.tournamentSubmitError);
             Router();
+        }).catch(e=>{
+            console.log(e)
         })
     }
     else

@@ -1,6 +1,8 @@
 import Aview from "/views/abstractView.js";
 import * as API from "/API/APICall.js"
 import chart from "/viewScripts/chart.js"
+import Router from "/router/mainRouterFunc.js";
+
 
 export default class extends Aview {
     constructor() {
@@ -14,20 +16,31 @@ export default class extends Aview {
             let username = document.querySelector(".friendRequest").getAttribute("name")
             if (res.is_friend && confirm(`Do you really want to remove ${username} from your friends?`))
             {
-                API.removeFriend(1, username);
+                API.removeFriend(1, username).catch(e=>{
+                    console.log(e)
+                });
                 document.querySelector(".friendRequest").children[0].innerHTML = "Add Friend"
             }
             else if (!res.is_friend && confirm(`Do you really want to add ${username} to your friends?`))
             {
-                API.sendFriendRequest(1, username);
+                API.sendFriendRequest(1, username).catch(e=>{
+                    console.log(e)
+                });
                 document.querySelector(".friendRequest").children[0].innerHTML = dupThis.language.displayUser.userInfo.pending
             }
+        }).catch(e=>{
+            console.log(e)
         })
     }
 
     getUserCard(){
         const urlParams = new URLSearchParams(window.location.search)
         API.getUserInfo(urlParams.get("username")).then(data=>{
+            if (data == undefined){
+                history.pushState(null, null, "/");
+                Router()
+                return ;
+            }
             document.querySelector(".cardBody").innerHTML = `
                 <div class="userAndImage">
                     <div class="imgContainer">
@@ -73,7 +86,11 @@ export default class extends Aview {
                 else
                     this.friendStatus = false;
                 document.querySelector(".friendRequest").addEventListener("click", this.handleFriendRequest.bind(null, this));
+            }).catch(e=>{
+                console.log(e)
             })
+        }).catch(e=>{
+            console.log(e)
         })
     }
     getHtml(){
@@ -130,6 +147,8 @@ export default class extends Aview {
             })
             radarChart.values = res
             chart(document.querySelector("#third"), radarChart, true);
+        }).catch(e=>{
+            console.log(e)
         })
 
 
@@ -144,6 +163,8 @@ export default class extends Aview {
             donutChartMatch.maxValue = valueSum;
             donutChartMatch.values = res;
             chart(document.querySelector("#second"), donutChartMatch, true);
+        }).catch(e=>{
+            console.log(e)
         })
 
         let verticalChart = {type: "vertical", colors: ["#00afb9", "#f07167", "#2a9d8f"]};
@@ -162,6 +183,8 @@ export default class extends Aview {
             verticalChart.maxValue = maxValue;
             verticalChart.values = obj;
             chart(document.querySelector("#first"), verticalChart, true);
+        }).catch(e=>{
+            console.log(e)
         })
 
         let donutChartTournament = {type: "donut", colors: ["#00afb9", "#f07167", "#2a9d8f"]};
@@ -176,6 +199,8 @@ export default class extends Aview {
             donutChartTournament.maxValue = valueSum;
             donutChartTournament.values = res;
             chart(document.querySelector("#fourth"), donutChartTournament, true);
+        }).catch(e=>{
+            console.log(e)
         })
 
         this.getUserCard();

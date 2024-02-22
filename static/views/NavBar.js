@@ -17,7 +17,6 @@ export default function createNavBar(){
   if (localStorage.getItem("token") != null)
     showAdmin = JSON.parse(window.decode64(localStorage.getItem("token").split(".")[1])).role;
 
-  console.log(showAdmin)
   let defaultProfilePicture = "https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg";
   document.querySelector("#navbar").innerHTML = `
       <nav class="navbar navbar-expand-lg navbar-dark bg-dark" >
@@ -107,7 +106,9 @@ export default function createNavBar(){
     document.querySelector(".logoutBtn").addEventListener("click", ()=>{
       if (!confirm(language.update.confirmLogout))
         return;
-      API.logout(1)
+      API.logout(1).catch(e=>{
+        console.log(e)
+      })
     })
   }
 
@@ -134,6 +135,8 @@ export default function createNavBar(){
   API.getUserInfo(localStorage.getItem("username")).then(res=>{
     if (res != undefined && res.user_info.picture != null)
       document.querySelector(".profilePictureUrl").src = res.user_info.picture;
+  }).catch(e=>{
+    console.log(e)
   })
 
   //check for notification and show indicator if needed

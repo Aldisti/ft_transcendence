@@ -1,5 +1,4 @@
 window.switchVisibility = (e)=>{
-    //console.log(e.parentNode.children[2], e.children[0])
     if (e.parentNode.children[0].type == "text")
     {
         e.parentNode.children[0].type = "password"
@@ -29,14 +28,11 @@ window.decode64 = function (base64String) {
 
 window.test = function()
 {
-    //console.log("test")
     const reader = new FileReader();
     let file = document.querySelector("#inpFile").files[0];
     document.querySelector("#labelInpFile").innerHTML = `<img class="fileIcon" src="/imgs/fileIcon.png"><span class="selectFileText">${file.name}</span>`
     reader.onload = function (event){
-        //console.log(event)
         document.querySelector(".updateImgForm").src = event.target.result;
-
     }
     reader.readAsDataURL(file);
 }
