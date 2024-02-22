@@ -294,7 +294,7 @@ def list_users(request):
     host = request.headers.get("Host", "")
     for user_json in users_json:
         try:
-            user = User.objects.get(user_json.get("username", ""))
+            user = User.objects.get(pk=user_json.get("username", ""))
             picture_url = f"{settings.PROTOCOL}://{host}{user.get_picture().url}"
         except User.DoesNotExist:
             return Response({"message": "Databases desynchronized"}, status=500)
