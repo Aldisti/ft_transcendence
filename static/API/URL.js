@@ -12,7 +12,7 @@ export const availabilityCheck = {
 }
 
 export const general = {
-    USER_INFO: `${protocol}://${ip}:${port}/users/`,
+    USER_INFO: `${protocol}://${ip}:${port}/users/info/`,
     GET_USERS: `${protocol}://${ip}:${port}/users/`,
     INTRA_URL: `${protocol}://${ip}:${authPort}/oauth2/intra/url/`,
     CONVERT_INTRA_TOKEN: `${protocol}://${ip}:${authPort}/oauth2/intra/login/`,

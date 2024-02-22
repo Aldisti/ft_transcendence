@@ -6,15 +6,18 @@ import * as API from "/API/APICall.js";
 //first check if the user is logged if so ask the server for the user frinds to build the chat element
 export default function startChatListeners(){
 
+    document.querySelector(".chatSideList").innerHTML = "";
+
     //create the GLOBAL chat for all registered users
-    create.createUser(create.global);
+    create.createUser(create.global, "connected");
 
     //perfome the call to retrieve the friends list
     API.getFriends(1).then(users=>{
-
+        console.log(users)
         // create a line for each friend in chat element
-        for (let i = 0; i < users.length; i++)
-            create.createUser(users[i]);
+        for (let i = 0; i < users.length; i++){
+            create.createUser(users[i], users[i].status);
+        }
     })
 
     

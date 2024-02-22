@@ -96,6 +96,7 @@ export default class extends Aview{
         }
 
         API.getMatchHistory(1, username).then(res=>{
+            console.log(res)
             document.querySelector(".matchesSpinner").style.display = "none"
             document.querySelector(".matchesList").innerHTML = "";
             res.forEach(el=>{

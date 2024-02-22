@@ -311,12 +311,17 @@ select{
         background-color: var(--bs-success);
         width: 50%;
         height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
     & .restoreBtn{
         background-color: var(--bs-danger);
         width: 30%;
         height: 100%;
-
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     & .restoreBtn, .search{
@@ -346,17 +351,46 @@ select{
 }
 
 .tournamentCard{
-    width: 100%;
-    height: 35%;
+    width: 80%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    background: linear-gradient(to left,#7209b7, var(--bs-dark));
+    background-color: var(--bs-dark);
+    /* background: linear-gradient(to right, var(--bs-dark), var(--bs-secondary)); */
     gap: 20px;
-    padding: 10px;
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+    padding: 15px;
+    border-top-left-radius: 0px !important;
+    border-bottom-left-radius: 0px !important;
+    border-left: 5px dotted var(--bs-success);
+    /* box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important; */
 
+}
+
+.startDateContainer{
+    width: 20%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px 0 10px;
+    padding: 10px;
+    background-color: var(--bs-success);
+    color: white;
+    border-right: 5px dotted var(--bs-dark);
+    border-top-right-radius: 0px !important;
+    border-bottom-right-radius: 0px !important;
+    /* box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important; */
+    & h4{
+        width: fit-content;
+    }
+    & .spanLine{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 }
 
 .tournamentCardTitle{
@@ -368,7 +402,7 @@ select{
     align-items: center;
     color: white;
     & h5{
-        width: 70%;
+        width: 50%;
         height: 100%;
         text-align: start;
         margin: 0;
@@ -376,7 +410,7 @@ select{
         align-items: center;
     }
     & .partecipants{
-        width: 30%;
+        width: 25%;
         height: 100%;
         display: flex;
         justify-content: space-evenly;
@@ -385,7 +419,14 @@ select{
         color: white;
         box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
     }
+}
 
+.cardWrap{
+    width: 100%;
+    height: 30%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .tournamentBody{
@@ -394,14 +435,16 @@ select{
     color: white;
     text-justify: justify;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    overflow: scroll;
+    padding: 10px;
+    justify-content: flex-start;
+    align-items: flex-start;
 
 }
 
 .bottomLine{
     width: 100%;
-    height: 60%;
+    height: 70%;
     display: flex;
     justify-content: space-between;
     align-items: center;

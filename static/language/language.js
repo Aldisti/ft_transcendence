@@ -39,6 +39,7 @@ let language = {
 			gameStart: "Press >P< To Start The Match!",
 			gameWait: "Waiting For the Opponent To Start The Match...",
 			playAgain: "Play Again!",
+			draw: "You Drew",
 			lost: "You Lost!",
 			win: "You Won!",
 			start: "start",

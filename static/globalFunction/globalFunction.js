@@ -116,3 +116,13 @@ window.playFileLoop = (soundTrack)=>{
     clip.play();
     return clip;
 }
+
+window.remapValue = (value, inputMin, inputMax, outputMin, outputMax)=>{
+    // First, normalize the value to a range between 0 and 1
+    const normalizedValue = (value - inputMin) / (inputMax - inputMin);
+    
+    // Then, remap the normalized value to the output range
+    const remappedValue = normalizedValue * (outputMax - outputMin) + outputMin;
+    
+    return remappedValue;
+}

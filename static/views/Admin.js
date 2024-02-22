@@ -133,16 +133,17 @@ export default class extends Aview{
      */
     setup(){
         this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpeg")
-        let role = JSON.parse(window.decode64(localStorage.getItem("jwt"))).role;
+        let roleDescriptor = localStorage.getItem("token").split["."][1];
+        let role = JSON.parse(window.decode64(roleDescriptor)).role;
 
-        // if (role != "A" && role != "M")
-        // {
-        //     history.pushState(null, null, "/");
-        //     Router();
-        // }
-        // else if (role == "M"){
-        //     document.querySelectorAll(".manageUsers")[1].style.display = "none"
-        // }
+        if (role != "A" && role != "M")
+        {
+            history.pushState(null, null, "/");
+            Router();
+        }
+        else if (role == "M"){
+            document.querySelectorAll(".manageUsers")[1].style.display = "none"
+        }
 
         let manageUser = document.querySelectorAll(".usersContainer")[0];
         manageUser.addEventListener("scroll", HANDLERS.handleUsersScroll.bind(null, this, manageUser));

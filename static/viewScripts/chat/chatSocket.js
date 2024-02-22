@@ -6,6 +6,22 @@ import startChatListeners from "/viewScripts/chat/chat.js";
 
 let socket = null;
 
+function handleUserLineStatus(type, username){
+    let userList = document.querySelectorAll(".userLine");
+
+    userList.forEach(el=>{
+        console.log(el.getAttribute("username"))
+        if (el.getAttribute("username") == username && type == "disconnected"){
+            el.classList.remove("connected");
+            el.classList.add("disconnected");
+        }
+        else{
+            el.classList.add("connected");
+            el.classList.remove("disconnected");
+        }
+    })
+}
+
 //function called when chat send button pressed it take the input 
 //format as needed and the send the message trough socket
 function sendSocketMessage(e){
@@ -50,6 +66,13 @@ export function start(){
         socket.addEventListener('message', (event) => {
             let chatBox = document.querySelector(".chatBox")
             let parsedMessage = JSON.parse(event.data)
+
+            console.log(parsedMessage)
+
+            if (parsedMessage.type == "disconnected" || parsedMessage.type == "connected"){
+                handleUserLineStatus(parsedMessage.type, parsedMessage.body);
+                return ;
+            }
         
             //if the recived message come from the current user do nothing (used for global chat)
             if (parsedMessage.sender == localStorage.getItem("username"))

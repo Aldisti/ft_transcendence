@@ -306,11 +306,17 @@ input{
         background-color: var(--retro-green);
         width: 50%;
         height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
     & .restoreBtn{
         background-color: var(--retro-red);
         width: 30%;
         height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
 
     }
 
@@ -339,18 +345,57 @@ input{
 
 }
 
-.tournamentCard{
+.cardWrap{
     width: 100%;
-    height: 35%;
+    height: 30%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tournamentCard{
+    width: 80%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    background: var(--retro-sky-blue);
+    background-color: var(--bs-dark);
+    /* background: linear-gradient(to right, var(--bs-dark), var(--bs-secondary)); */
     gap: 20px;
-    padding: 10px;
-    box-shadow: 6px 6px black; border: 4px solid black;
+    padding: 15px;
+    border-top-left-radius: 0px !important;
+    border-bottom-left-radius: 0px !important;
+    border-left: 10px dashed var(--bs-success);
+    /* box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important; */
 
+}
+
+.startDateContainer{
+    width: 20%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px 0 10px;
+    padding: 10px;
+    background-color: var(--bs-success);
+    color: white;
+    border-right: 10px dashed var(--bs-dark);
+    border-top-right-radius: 0px !important;
+    border-bottom-right-radius: 0px !important;
+    /* box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important; */
+    & h4{
+        width: fit-content;
+        font-size: medium;
+    }
+    & .spanLine{
+        font-size: xx-small;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 }
 
 .tournamentCardTitle{
@@ -389,8 +434,9 @@ input{
     color: white;
     text-justify: justify;
     display: flex;
+    overflow: scroll;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
 
 }
 

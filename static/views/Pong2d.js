@@ -31,6 +31,7 @@ export default class extends Aview{
     }
 
     getGameHtml(){
+        document.querySelector(".chatContainer").style.zIndex = "-1";
         return `
         <div class="base">
             <div class="left">
@@ -41,6 +42,9 @@ export default class extends Aview{
                 <div id="currentUserDisplay">
                     <h4 class="user2"></h4>
                     <h2>0</h2>
+                </div>
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
                 </div>
                 <div id="gameAdvice">
                     <ul>
@@ -76,6 +80,10 @@ export default class extends Aview{
                         </div>
                         <div class="gameOverlayWin">
                             <h2>${this.language.pong2d.win}</h2>
+                            <a href="/games/pong2d/" data-link>${this.language.pong2d.playAgain}</a>
+                        </div>
+                        <div class="gameOverlayDraw">
+                            <h2>${this.language.pong2d.draw}</h2>
                             <a href="/games/pong2d/" data-link>${this.language.pong2d.playAgain}</a>
                         </div>
                         <div class="gameOverlayLoose">
@@ -200,7 +208,6 @@ export default class extends Aview{
 
 	setup(){
         this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpeg");
-        document.querySelector(".chatContainer").style.zIndex = "-1";
         let params = new URLSearchParams(window.location.search)
 
         if (params.size > 1){

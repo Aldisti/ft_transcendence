@@ -25,32 +25,43 @@ export default class extends Aview{page
             color = "var(--bs-danger)";
 
         return `
-            <div class="tournamentCard">
-                <div class="tournamentCardTitle">
-                    <h5>${obj.title}</h5>
-                
-                    <div class="partecipants" style="background-color: ${color};">
-                        <span class="actualPartecipants">
-                            ${obj.subscribed != undefined ? obj.subscribed : "0"}
-                        </span>
-                        <span>
-                            /
-                        </span>
-                        <span class="totalPartecipants">
-                            ${obj.participants != undefined ? obj.participants : "0"}
-                        </span>
+            <div class="cardWrap">
+                <div class="startDateContainer">
+                    <div class="spanLine">
+                        <h4>Date</h4>
+                        <span>${obj.start_date.split("T")[0]}</span>
+                    </div>
+                    <div class="spanLine">
+                        <h4>Time</h4>
+                        <span>${obj.start_date.split("T")[1]}</span>
                     </div>
                 </div>
-
-                <div class="bottomLine">
-                    <div class="tournamentBody">
-                        ${obj.description}
+                <div class="tournamentCard">
+                    <div class="tournamentCardTitle">
+                        <h5>${obj.title}</h5>
+                        <div class="partecipants" style="background-color: ${color};">
+                            <span class="actualPartecipants">
+                                ${obj.subscribed != undefined ? obj.subscribed : "0"}
+                            </span>
+                            <span>
+                                /
+                            </span>
+                            <span class="totalPartecipants">
+                                ${obj.participants != undefined ? obj.participants : "0"}
+                            </span>
+                        </div>
                     </div>
-                    ${percentage < 1 ? `
-                        <button tournamentId="${obj.id}" class="subscribeBtn ${obj.registered.includes(localStorage.getItem("username")) ? `unSubscribe` : `subscribe`}" style="background-color: ${obj.registered.includes(localStorage.getItem("username")) ? `var(--bs-danger)` : `var(--bs-success)`}">
-                            ${obj.registered.includes(localStorage.getItem("username")) ? this.language.tournament.tournamentCard.unSubscribe : this.language.tournament.tournamentCard.subScribe}
-                        </button>
-                    ` : ``}
+        
+                    <div class="bottomLine">
+                        <div class="tournamentBody">
+                            ${obj.description}
+                        </div>
+                        ${percentage < 1 ? `
+                            <button tournamentId="${obj.id}" class="subscribeBtn ${obj.registered.includes(localStorage.getItem("username")) ? `unSubscribe` : `subscribe`}" style="background-color: ${obj.registered.includes(localStorage.getItem("username")) ? `var(--bs-danger)` : `var(--bs-success)`}">
+                                ${obj.registered.includes(localStorage.getItem("username")) ? this.language.tournament.tournamentCard.unSubscribe : this.language.tournament.tournamentCard.subScribe}
+                            </button>
+                        ` : ``}
+                    </div>
                 </div>
             </div>
         `

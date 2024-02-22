@@ -119,49 +119,55 @@ export default class extends Aview {
     }
     setup(){
         this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpeg")
+        let params = new URLSearchParams(window.location.search);
+
+        let radarChart = {type: "radar", colors: ["#00afb9", "#f07167", "#2a9d8f"], maxValue: 100};
+        API.getPongMaestry(params.get("username")).then(res=>{
+            Object.keys(res).forEach(el=>{
+                res[el] *= 100;
+            })
+            radarChart.values = res
+            chart(document.querySelector("#third"), radarChart, true);
+        })
+
+
+        let donutChartMatch = {type: "donut", colors: ["#00afb9", "#f07167", "#2a9d8f"]};
+        API.getDonutChart(params.get("username")).then(res=>{
+            let valueSum = 0;
+            Object.keys(res).forEach(el=>{
+                valueSum += res[el];
+            })
+            donutChartMatch.maxValue = valueSum;
+            donutChartMatch.values = res;
+            chart(document.querySelector("#second"), donutChartMatch, true);
+        })
+
+        let verticalChart = {type: "vertical", colors: ["#00afb9", "#f07167", "#2a9d8f"]};
+        API.getVerticalChart(params.get("username")).then(res=>{
+            let maxValue = 0;
+            let obj = {};
+            Object.keys(res).forEach(el=>{
+                if (res[el].win > maxValue)
+                    maxValue = res[el].win;
+                obj[el] = res[el].win;
+            })
+            verticalChart.maxValue = maxValue;
+            verticalChart.values = obj;
+            console.log(verticalChart)
+            chart(document.querySelector("#first"), verticalChart, true);
+        })
+
+        let donutChartTournament = {type: "pie", colors: ["#00afb9", "#f07167", "#2a9d8f"]};
+        API.getDonutChart(params.get("username")).then(res=>{
+            let valueSum = 0;
+            Object.keys(res).forEach(el=>{
+                valueSum += res[el];
+            })
+            donutChartTournament.maxValue = valueSum;
+            donutChartTournament.values = res;
+            chart(document.querySelector("#fourth"), donutChartTournament, true);
+        })
+
         this.getUserCard();
-        let data = {
-                type: "vertical",
-                values: {
-                    val1: 40,
-                    val3: 10,
-                    val4: 50,
-                    val5: 100,
-                    val6: 300,
-                    val7: 250,
-                },
-                colors: ["#00afb9", "#f07167", "#2a9d8f"],
-                maxValue: 400
-            }
-        let data1 = {
-                type: "donut",
-                values: {
-                    val1: 40,
-                    val3: 10,
-                    val4: 50,
-                    val5: 100,
-                    val6: 300,
-                    val7: 250,
-                },
-                colors: ["#00afb9", "#f07167", "#2a9d8f"],
-                maxValue: 400
-            }
-        let data2 = {
-                type: "radar",
-                values: {
-                    val1: 40,
-                    val3: 10,
-                    val4: 50,
-                    val5: 100,
-                    val6: 300,
-                    val7: 250,
-                },
-                colors: ["#00afb9", "#f07167", "#2a9d8f"],
-                maxValue: 400
-            }
-        chart(document.querySelector("#first"), data, true);
-        chart(document.querySelector("#second"), data1, true);
-        chart(document.querySelector("#third"), data2, true);
-        chart(document.querySelector("#fourth"), data, true);
     }
 }

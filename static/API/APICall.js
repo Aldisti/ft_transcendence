@@ -155,18 +155,17 @@ export async function unlinkGoogle(recursionProtection) {
 }
 
 export async function getUserInfo(username) {
-    const res = await fetch(`${URL.general.USER_INFO}?search=${username}`, {
+    const res = await fetch(`${URL.general.USER_INFO}?username=${username}`, {
         method: "GET",
         headers: {
-            // Authorization: `Bearer ${localStorage.getItem("token")}`
+            Authorization: `Bearer ${localStorage.getItem("token")}`
         },
-        // credentials: "include",
     })
     if (res.ok) {
         let jsonBody = await res.json();
-        return (jsonBody.results[0]);
+        return (jsonBody);
     }
-    return ({});
+    return (undefined);
 }
 
 export async function login(data) {
@@ -188,8 +187,8 @@ export async function login(data) {
     if (res.ok) {
         localStorage.setItem("username", data.username);
         let token = await res.json();
-        if (token.access_token != undefined)
-            localStorage.setItem("jwt", token.access_token.split(".")[1])
+        // if (token.access_token != undefined)
+        //     localStorage.setItem("jwt", token.access_token.split(".")[1])
         localStorage.setItem("otp_token", token.token);
         return (token)
     }
@@ -576,7 +575,7 @@ export async function recoveryPassword(data, token)
     })
     if (res.ok)
     {
-        history.pushState(null, null, "/login");
+        history.pushState(null, null, "/login/");
         Router();   
     }
 }
@@ -662,10 +661,10 @@ export async function removeFriend(recursionProtection, username){
     });
     if (res.ok) {
         document.querySelector(".chatSideList").innerHTML = ""; 
-        create.createUser(create.global);
+        create.createUser(create.global, "connected");
         getFriends(1).then(users=>{
             for (let i = 0; i < users.length; i++)
-                create.createUser(users[i]);
+                create.createUser(users[i], users[i].status);
         })
         alert("friend removed")
         return;
@@ -721,10 +720,10 @@ export async function acceptRequest(recursionProtection, token){
     });
     if (res.ok) {
         document.querySelector(".chatSideList").innerHTML = ""; 
-        create.createUser(create.global);
+        create.createUser(create.global, "connected");
         getFriends(1).then(users=>{
             for (let i = 0; i < users.length; i++)
-                create.createUser(users[i]);
+                create.createUser(users[i], users[i].status);
         })
         let parsed = await res.json();
         return (parsed);
@@ -953,7 +952,7 @@ export async function manageModerator(recursionProtection, username, moderatorSt
 //still dummy call need to be implemente with real backEnd
 
 export async function getTournamentsList(recursionProtection, page, size, options){
-    let url = `${URL.tournaments.GET_TOURNAMENTS_LIST}?page=${page}&size=${size}${options.title}${options.participants}`
+    let url = `${URL.tournaments.GET_TOURNAMENTS_LIST}?page=${page}&size=${size}${options.title}${options.participants}&finished=False`
     
     const res = await fetch(url, {
         method: "GET",
@@ -1180,6 +1179,71 @@ export async function getChatHistory(recursionProtection){
     if (res.status == 401 && recursionProtection)
         return await refreshAndRetry(getChatHistory, 0);
     return ({})
+}
+
+export async function getPongMaestry(){
+    // const res = await fetch("http://localhost:7000/game/stats/?username=gpanico2", {
+    //     method: "GET",
+
+    // });
+    // if (res.ok){
+    //     let parsed = await res.json();
+    //     console.log(parsed)
+    // }
+    return ({
+        "avg_score": 0.6666666666666666,
+        "avg_taken": 0.8333333333333334,
+        "P.M.": 0.4930555555555556
+    })
+}
+export async function getVerticalChart(){
+    // const res = await fetch("http://localhost:7000/game/stats/?username=gpanico2", {
+    //     method: "GET",
+    // });
+    // console.log(res)
+    // if (res.ok){
+    //     let parsed = await res.json();
+        return (
+            {
+                "2024-02-17": {
+                    "win": 2,
+                    "lose": 0,
+                    "draw": 0
+                },
+                "2024-02-18": {
+                    "win": 5,
+                    "lose": 0,
+                    "draw": 0
+                },
+                "2024-02-19": {
+                    "win": 1,
+                    "lose": 0,
+                    "draw": 0
+                },
+                "2024-02-20": {
+                    "win": 9,
+                    "lose": 0,
+                    "draw": 0
+                },
+                "2024-02-21": {
+                    "win": 3,
+                    "lose": 2,
+                    "draw": 1
+                }
+            })
+}
+export async function getDonutChart(){
+    // const res = await fetch("http://localhost:7000/game/stats/?username=gpanico2", {
+    //     method: "GET",
+    // });
+    // console.log(res)
+    // if (res.ok){
+    //     let parsed = await res.json();
+        return ({
+            "win": 3,
+            "lose": 2,
+            "draw": 1
+        })
 }
 
 //end of Dummy call

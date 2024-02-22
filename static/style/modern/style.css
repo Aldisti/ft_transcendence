@@ -21,6 +21,13 @@
     transition: 0.3s, background-color 0s;
 }
 
+.connected{
+    background-color: var(--bs-success) !important;
+}
+.disconnected{
+    background-color: var(--bs-danger) !important;
+}
+
 input{
     font-size: 20px !important;
 }

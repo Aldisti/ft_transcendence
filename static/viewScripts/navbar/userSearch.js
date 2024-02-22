@@ -5,11 +5,10 @@ import Router from "/router/mainRouterFunc.js"
 function searchUser(input)
 {
     API.getUserInfo(window.escapeHtml(input)).then(res=>{
-      if (res != undefined)
-	  {
-		history.pushState(null, null, `/user/?username=${window.escapeHtml(input)}`)
-		Router()
-	  }
+      if (res != undefined){
+		    history.pushState(null, null, `/user/?username=${window.escapeHtml(input)}`)
+		    Router()
+	    }
 	  else
 	  	NOTIFICATION.simple({title: "Error", body: `user ${window.escapeHtml(input)} is not registered!`})
     })

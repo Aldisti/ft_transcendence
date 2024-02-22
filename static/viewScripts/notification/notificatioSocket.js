@@ -73,9 +73,9 @@ function infoNotification(notification){
         //update friend list on chat element
         API.getFriends(1).then(users=>{
             document.querySelector(".chatSideList").innerHTML = ""; 
-            create.createUser(create.global);
+            create.createUser(create.global, "connected");
             for (let i = 0; i < users.length; i++)
-                create.createUser(users[i]);
+                create.createUser(users[i], users[i].status);
         })
     }
 
@@ -90,9 +90,9 @@ function infoNotification(notification){
         //update friend list on chat element  
         API.getFriends(1).then(users=>{
             document.querySelector(".chatSideList").innerHTML = "";
-            create.createUser(create.global);
+            create.createUser(create.global, "connected");
             for (let i = 0; i < users.length; i++)
-                create.createUser(users[i]);
+                create.createUser(users[i], users[i].status);
         })
     }
 }

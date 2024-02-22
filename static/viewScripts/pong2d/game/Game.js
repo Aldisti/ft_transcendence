@@ -16,6 +16,23 @@ let downFlag = true;
 let upMsg = true;
 let downMsg = true;
 
+function handleProgressBarColor(bar, time, maxTime){
+    let percentage = window.remapValue(time, 0, maxTime, 0, 100)
+    if (percentage > 60){
+        bar.style.width = String(percentage) + "%";
+    }
+    else if (percentage > 30){
+        bar.style.width = String(percentage) + "%";
+        bar.classList.add("bg-warning");
+        bar.classList.remove("bg-success");
+    }
+    else if (percentage > 0){
+        bar.style.width = String(percentage) + "%";
+        bar.classList.remove("bg-warning");
+        bar.classList.add("bg-danger");
+    }
+}
+
 function handleTouchCommands(game){
 
     //handle the UP and DOWN control when pressing the relative button (MOBILE)
@@ -135,6 +152,10 @@ function checkMessage(game, msg){
             document.querySelector(".gameOverlayWin").style.transform = "translate(0)"
             window.playFile("/sound/finalGameWin.mp3")
         }
+        else if (Number(game.activeUser.scoreDisplay.innerHTML.trim()) == Number(game.opponent.scoreDisplay.innerHTML.trim())){
+            document.querySelector(".gameOverlayDraw").style.transform = "translate(0)"
+            window.playFile("/sound/finalGameWin.mp3")
+        }
         else{
             document.querySelector(".gameOverlayLoose").style.transform = "translate(0)"
             window.playFile("/sound/finalGameOver.mp3")
@@ -176,6 +197,9 @@ function handleSocketMesssage(game, message){
     }
 
     if (msg.objects != undefined){
+        if (game.maxTime == undefined)
+            game.maxTime = msg.objects.time;
+        handleProgressBarColor(document.querySelector(".progress-bar"), msg.objects.time, game.maxTime);
         msg.objects.ball.acc_x = msg.objects.ball.acc_x  * game.canvas.width / ORIGINAL_WIDTH;
         msg.objects.ball.acc_y = msg.objects.ball.acc_y  * game.canvas.height / ORIGINAL_HEIGHT;
 
@@ -202,6 +226,7 @@ function handleSocketMesssage(game, message){
 
 export default class {
     constructor(gameCfg){
+        this.maxTime = undefined;
         this.gameTicket = gameCfg.gameTicket;
         this.previusTime = gameCfg.previousTime;
         this.width = gameCfg.width;
