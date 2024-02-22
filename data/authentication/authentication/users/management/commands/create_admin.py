@@ -1,6 +1,7 @@
 
 from django.core.management.base import BaseCommand
 
+from two_factor_auth.models import UserTFA
 from users.models import User
 
 from hashlib import sha256
@@ -20,4 +21,5 @@ class Command(BaseCommand):
         try:
             User.objects.get(username=username)
         except User.DoesNotExist:
-            User.objects.create_superuser(username, email, password)
+            user = User.objects.create_superuser(username, email, password)
+            UserTFA.objects.create(user)

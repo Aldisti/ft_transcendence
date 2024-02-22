@@ -1,4 +1,4 @@
-
+from django.contrib.auth.hashers import make_password, check_password
 from django.db import models
 from django.conf import settings
 
@@ -68,12 +68,13 @@ class UserTFAManager(models.Manager):
 
 
 class OtpCodeManager(models.Manager):
-    def create(self, user_tfa):
+    def create(self, user_tfa) -> str:
         otp_code = self.model(user_tfa=user_tfa)
         otp_code.generate_code()
         otp_code.full_clean()
+        code = otp_code.code
         otp_code.save()
-        return otp_code
+        return code
 
     def generate_codes(self, user_tfa) -> list:
         self.delete_codes(user_tfa)
@@ -83,12 +84,12 @@ class OtpCodeManager(models.Manager):
         self.filter(user_tfa=user_tfa).delete()
 
     def validate_code(self, user_tfa, code: str) -> bool:
-        try:
-            otp_code = user_tfa.codes.get(code=code)
-        except user_tfa.codes.DoesNotExist:
-            return False
-        otp_code.delete()
-        return True
+        otp_codes = user_tfa.codes.all()
+        for otp_code in otp_codes:
+            if check_password(code, otp_code.code):
+                otp_code.delete()
+                return True
+        return False
 
 
 class UserTFA(models.Model):
@@ -195,6 +196,10 @@ class OtpCode(models.Model):
     )
 
     objects = OtpCodeManager()
+
+    def save(self, *args, **kwargs):
+        self.code = make_password(self.code)
+        super().save(*args, **kwargs)
 
     def generate_code(self):
         self.code = random_base32()[:10]

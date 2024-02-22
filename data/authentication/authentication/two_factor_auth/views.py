@@ -26,9 +26,6 @@ class ManageView(APIView):
     throttle_classes = [LowLoadThrottle]
 
     def get(self, request) -> Response:
-        user = request.user
-        if not user.has_tfa():
-            return Response(data={'is_active': False})
         user_tfa = request.user.user_tfa
         return Response(data=user_tfa.to_data(), status=200)
 
@@ -152,8 +149,7 @@ def validate_activate(request) -> Response:
     user_tfa = UserTFA.objects.delete_url_token(user_tfa)
     if not user_tfa.verify_otp_code(code):
         return Response(data={'message': 'invalid code'}, status=400)
-    otp_codes = OtpCode.objects.generate_codes(user_tfa=user_tfa)
-    codes = [otp_code.code for otp_code in otp_codes]
+    codes = OtpCode.objects.generate_codes(user_tfa=user_tfa)
     UserTFA.objects.update_active(user_tfa)
     return Response(data={'codes': codes}, status=200)
 
