@@ -17,6 +17,7 @@ data/django/transcendence/APIDocs.md
 data/postgres
 data/*db/
 **/image.jpg
+certs
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

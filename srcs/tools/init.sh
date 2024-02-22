@@ -3,6 +3,8 @@
 COMPOSE="./srcs/docker-compose.yml"
 ENV_FILE="./srcs/.env"
 CRON_ENV="./srcs/cron/.env"
+CERT_DIR="./certs"
+CERT_NAME="transcendence"
 
 RESET="\033[0m"
 RED="\033[31;1m"
@@ -13,19 +15,20 @@ PURPLE="\033[35;1m"
 CYAN="\033[36;1m"
 
 declare -A VOLUMES=(
-	["django"]="./data/django"
-	["django_db"]="./data/postgres"
-	["pong"]="./data/pong"
-	["pong_db"]="./data/pongdb"
-	["auth"]="./data/authentication"
-	["auth_db"]="./data/authdb"
-	["chat"]="./data/chat"
-	["chat_db"]="./data/chatdb"
-	["ntf"]="./data/ntf"
-	["ntf_db"]="./data/ntfdb"
+	["django"]="/data/transcendence"
+	["django_db"]="/data/postgres"
+	["pong"]="/data/pong"
+	["pong_db"]="/data/pongdb"
+	["auth"]="/data/authentication"
+	["auth_db"]="/data/authdb"
+	["chat"]="/data/chat"
+	["chat_db"]="/data/chatdb"
+	["ntf"]="/data/ntf"
+	["ntf_db"]="/data/ntfdb"
 )
 
-create_env() {
+create_env()
+{
 	echo -e "${RED_LAMP}WARNING: remove default sensible data${RESET}"
 
 	python3 ./srcs/tools/setup.py
@@ -44,11 +47,13 @@ create_env() {
 	fi
 }
 
-create_volume_dirs() {
+create_volume_dirs()
+{
 	created=0
 	for key in ${!VOLUMES[@]}; do
-		if [ ! -d "${VOLUMES[$key]}" ]; then
-			mkdir -p ${VOLUMES[$key]}
+		local vol_path="$PWD${VOLUMES[$key]}"
+		if [ ! -d "$vol_path" ]; then
+			mkdir -p "$vol_path"
 			echo -e "${CYAN}${key}${RESET} volume created"
 			created=$((created + 1))
 		fi
@@ -58,7 +63,22 @@ create_volume_dirs() {
 	fi
 }
 
+check_certs ()
+{
+	if ! [ -d $CERT_DIR ]; then
+		mkdir $CERT_DIR
+	fi
+	local cert_path="$CERT_DIR/$CERT_NAME"
+	if [ -f $cert_path.key ] && [ -f $cert_path.crt ]; then
+		return 0
+	fi
+	openssl req -x509 -noenc -out "$cert_path.crt" -keyout "$cert_path.key" \
+	-subj "/C=IT/ST=Italy/L=Rome/O=42/OU=Trinity/CN=transcendence/UID=trinity" \
+	> /dev/null 2>&1
+}
+
 create_env
 create_volume_dirs
 $SHELL ./srcs/tools/cron_env.sh
+check_certs
 

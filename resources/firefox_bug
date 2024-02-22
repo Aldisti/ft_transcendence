@@ -1,0 +1,16 @@
+
+If your using Firefox as browser and you want to run this app
+under https you should add the app's certificates to firefox
+accepted CA
+
+- open the top-right menu
+- settings -> privacy&security
+- go down until you see "certificates"
+- click on "view certificates"
+- in the bar on top of the new window go to "authorities"
+- click on "import"
+- select your certificate (.crt)
+- tick the first choice "... identify websites" (tick both if you wanna be sure)
+- click "ok"
+- refresh your page and now your good to go :)
+
