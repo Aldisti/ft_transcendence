@@ -5,6 +5,8 @@ import sha256 from "/scripts/crypto.js"
 import * as oauth2 from "/viewScripts/login/oauth2Handle.js";
 import * as handleLogin from "/viewScripts/login/handleLogin.js";
 import * as triggerRecovery from "/viewScripts/login/recoverPassword.js";
+import Router from "/router/mainRouterFunc.js";
+
 
 export default class extends Aview {
     constructor() {
@@ -129,6 +131,7 @@ export default class extends Aview {
                     else if (Object.keys(res).length > 1)
                         handleLogin.Tfa(this, res)
                 }
+                Router();
             })
         })
         this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpeg")

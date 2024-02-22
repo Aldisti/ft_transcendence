@@ -13,7 +13,6 @@ function validateLoginCode()
             {
                 localStorage.setItem("token", token.access_token)
                 history.pushState(null, null, "/");
-                Router();
             }
         })
     }
@@ -22,7 +21,6 @@ function validateLoginCode()
 export function normal(res){
     localStorage.setItem("token", res.access_token)
     history.pushState(null, null, "/");
-    Router();
 }
 
 export function Tfa(dupThis, res){
