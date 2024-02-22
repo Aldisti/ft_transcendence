@@ -1,13 +1,11 @@
-
-from django.db import models
-from django.contrib.auth.base_user import BaseUserManager
-from django.core.files.storage import default_storage
-from django.core.files.base import File
-from django.conf import settings
-from accounts.utils import Roles
-import datetime
 import logging
 
+from django.contrib.auth.base_user import BaseUserManager
+from django.core.files.base import File
+from django.core.files.storage import default_storage
+from django.db import models
+
+from accounts.utils import Roles
 
 logger = logging.getLogger(__name__)
 

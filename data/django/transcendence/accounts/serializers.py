@@ -1,12 +1,10 @@
-from django.core.validators import RegexValidator, EmailValidator
+import logging
 
+from django.core.validators import RegexValidator, EmailValidator
 from rest_framework import serializers
 
 from accounts.models import User, UserInfo
 from accounts.validators import image_validator
-from django.core.validators import RegexValidator, EmailValidator
-from django.core.files.storage import default_storage
-import logging
 
 logger = logging.getLogger(__name__)
 

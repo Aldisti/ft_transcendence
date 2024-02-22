@@ -19,10 +19,8 @@ from pytz import timezone
 from requests import get as get_request
 from requests.exceptions import ConnectionError as ConnectionErrorRequest
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -40,7 +38,7 @@ PROTOCOL = "http"
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
-#DEFAULT_HOST = "http://localhost:8000"
+# DEFAULT_HOST = "http://localhost:8000"
 
 # Asgi application
 
@@ -58,7 +56,6 @@ CHANNEL_LAYERS = {
 
 INSTALLED_APPS = [
     'daphne',
-    # 'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -96,25 +93,23 @@ MIDDLEWARE = [
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        # "rest_framework_simplejwt.authentication.JWTStatelessUserAuthentication",
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": [
         "transcendence.permissions.IsUser",
     ],
     "DEFAULT_THROTTLE_CLASSES": [
-        "rest_framework.throttling.ScopedRateThrottle",
-        "transcendence.throttles.AnonAuthThrottle",
-        "transcendence.throttles.UserAuthThrottle",
+        "transcendence.throttles.DefaultThrottle",
     ],
     "DEFAULT_THROTTLE_RATES": {
-        "auth": "30/minute",
+        "default": "120/minute",
         "high_load": "10/minute",
         "medium_load": "30/minute",
         "low_load": "60/minute",
         "email": "1/minute",
     }
 }
+
 
 # Django SimpleJWT
 # https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html
@@ -144,7 +139,6 @@ SIMPLE_JWT = {
     "USER_ID_CLAIM": "username",
 }
 
-
 # Logging settings
 # https://docs.djangoproject.com/en/4.2/howto/logging/
 
@@ -152,7 +146,6 @@ SIMPLE_JWT = {
 
 
 ROOT_URLCONF = 'transcendence.urls'
-
 
 TEMPLATES = [
     {
@@ -172,7 +165,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'transcendence.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
@@ -187,25 +179,10 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
-
+AUTH_PASSWORD_VALIDATORS = []
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
@@ -218,7 +195,6 @@ TZ = timezone(TIME_ZONE)
 USE_I18N = False
 
 USE_TZ = False
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
@@ -276,104 +252,114 @@ MAX_MESSAGES = 500
 MAX_MESSAGE_LENGTH = 512
 
 # microservices urls
+CLIENT_PROT = 'http'
 
 CHAT_HOST = environ['CHAT_HOST']
 CHAT_PORT = environ['CHAT_PORT']
+CHAT_PROT = 'http'
 
 PONG_HOST = environ['PONG_HOST']
 PONG_PORT = environ['PONG_PORT']
+PONG_PROT = 'http'
 
 NTF_HOST = environ['NTF_HOST']
 NTF_PORT = environ['NTF_PORT']
+NTF_PROT = 'http'
 
 AUTH_HOST = environ['AUTH_HOST']
 AUTH_PORT = environ['AUTH_PORT']
+AUTH_PROT = 'http'
+
 MS_URLS = {
     # chat urls
-    "CHAT_REGISTER": f"http://{CHAT_HOST}:{CHAT_PORT}/user/register/",
-    "CHAT_TICKET": f"http://{CHAT_HOST}:{CHAT_PORT}/user/ticket/",
-    "CHAT_DELETE": f"http://{CHAT_HOST}:{CHAT_PORT}/user/<pk>/delete/",
-    "FRIENDS_SEND_REQ": f"http://{CHAT_HOST}:{CHAT_PORT}/friends/request/send/",
-    "FRIENDS_ACCEPT_REQ": f"http://{CHAT_HOST}:{CHAT_PORT}/friends/request/accept/",
-    "FRIENDS_REJECT_REQ": f"http://{CHAT_HOST}:{CHAT_PORT}/friends/request/reject/",
-    "FRIENDS_DELETE_REQ": f"http://{CHAT_HOST}:{CHAT_PORT}/friends/request/delete/",
-    "FRIENDS_ALL": f"http://{CHAT_HOST}:{CHAT_PORT}/friends/all/",
-    "FRIENDS_CHECK": f"http://{CHAT_HOST}:{CHAT_PORT}/friends/",
-    "MESSAGES_GET": f"http://{CHAT_HOST}:{CHAT_PORT}/chat/messages/",
+    "CHAT_REGISTER": f"{CHAT_PROT}://{CHAT_HOST}:{CHAT_PORT}/user/register/",
+    "CHAT_TICKET": f"{CHAT_PROT}://{CHAT_HOST}:{CHAT_PORT}/user/ticket/",
+    "CHAT_DELETE": f"{CHAT_PROT}://{CHAT_HOST}:{CHAT_PORT}/user/<pk>/delete/",
+    "FRIENDS_SEND_REQ": f"{CHAT_PROT}://{CHAT_HOST}:{CHAT_PORT}/friends/request/send/",
+    "FRIENDS_ACCEPT_REQ": f"{CHAT_PROT}://{CHAT_HOST}:{CHAT_PORT}/friends/request/accept/",
+    "FRIENDS_REJECT_REQ": f"{CHAT_PROT}://{CHAT_HOST}:{CHAT_PORT}/friends/request/reject/",
+    "FRIENDS_DELETE_REQ": f"{CHAT_PROT}://{CHAT_HOST}:{CHAT_PORT}/friends/request/delete/",
+    "FRIENDS_ALL": f"{CHAT_PROT}://{CHAT_HOST}:{CHAT_PORT}/friends/all/",
+    "FRIENDS_CHECK": f"{CHAT_PROT}://{CHAT_HOST}:{CHAT_PORT}/friends/",
+    "MESSAGES_GET": f"{CHAT_PROT}://{CHAT_HOST}:{CHAT_PORT}/chat/messages/",
     # notification urls
-    "NTF_REGISTER": f"http://{NTF_HOST}:{NTF_PORT}/user/register/",
-    "NTF_TICKET": f"http://{NTF_HOST}:{NTF_PORT}/user/ticket/",
-    "NTF_DELETE": f"http://{NTF_HOST}:{NTF_PORT}/user/<pk>/delete/",
+    "NTF_REGISTER": f"{NTF_PROT}://{NTF_HOST}:{NTF_PORT}/user/register/",
+    "NTF_TICKET": f"{NTF_PROT}://{NTF_HOST}:{NTF_PORT}/user/ticket/",
+    "NTF_DELETE": f"{NTF_PROT}://{NTF_HOST}:{NTF_PORT}/user/<pk>/delete/",
     # pong urls
-    "PONG_REGISTER": f"http://{PONG_HOST}:{PONG_PORT}/user/register/",
-    "PONG_DELETE": f"http://{PONG_HOST}:{PONG_PORT}/user/<pk>/delete/",
-    "MATCHMAKING_TOKEN": f"http://{PONG_HOST}:{PONG_PORT}/matchmaking/token/",
+    "PONG_REGISTER": f"{PONG_PROT}://{PONG_HOST}:{PONG_PORT}/user/register/",
+    "PONG_DELETE": f"{PONG_PROT}://{PONG_HOST}:{PONG_PORT}/user/<pk>/delete/",
+    "MATCHMAKING_TOKEN": f"{PONG_PROT}://{PONG_HOST}:{PONG_PORT}/matchmaking/token/",
+    "TOURNAMENT_LIST": f"{PONG_PROT}://{PONG_HOST}:{PONG_PORT}/tournaments/",
+    "TOURNAMENT_CREATE": f"{PONG_PROT}://{PONG_HOST}:{PONG_PORT}/tournaments/create/",
+    "TOURNAMENT_RETRIEVE": f"{PONG_PROT}://{PONG_HOST}:{PONG_PORT}/tournaments/<pk>/",
+    "TOURNAMENT_REGISTER": f"{PONG_PROT}://{PONG_HOST}:{PONG_PORT}/tournaments/register/",
+    "TOURNAMENT_UNREGISTER": f"{PONG_PROT}://{PONG_HOST}:{PONG_PORT}/tournaments/unregister/",
+    "TOURNAMENT_GET_SCHEMA": f"{PONG_PROT}://{PONG_HOST}:{PONG_PORT}/tournaments/schema/<pk>/",
+    "TOURNAMENT_GET_MATCHES": f"{PONG_PROT}://{PONG_HOST}:{PONG_PORT}/tournaments/matches/",
+    "GAME_GET_MATCHES": f"{PONG_PROT}://{PONG_HOST}:{PONG_PORT}/game/matches/",
+    "GAME_GET_RESULTS": f"{PONG_PROT}://{PONG_HOST}:{PONG_PORT}/game/results/",
+    "GAME_GET_ALL_RESULTS": f"{PONG_PROT}://{PONG_HOST}:{PONG_PORT}/game/results/all/",
+    "GAME_GET_STATS": f"{PONG_PROT}://{PONG_HOST}:{PONG_PORT}/game/stats/",
+    "SEND_MATCH_REQ": f"{PONG_PROT}://{PONG_HOST}:{PONG_PORT}/game/match/",
+    "DELETE_MATCH_REQ": f"{PONG_PROT}://{PONG_HOST}:{PONG_PORT}/game/match/delete/",
+    "ACCEPT_MATCH_REQ": f"{PONG_PROT}://{PONG_HOST}:{PONG_PORT}/game/match/accept/",
+    "REJECT_MATCH_REQ": f"{PONG_PROT}://{PONG_HOST}:{PONG_PORT}/game/match/reject/",
     # auth urls
-    "AUTH_REGISTER": f"http://{AUTH_HOST}:{AUTH_PORT}/users/register/",
+    "AUTH_REGISTER": f"{AUTH_PROT}://{AUTH_HOST}:{AUTH_PORT}/users/register/",
     "AUTH": {
         # users app
-        "REGISTER": f"http://{AUTH_HOST}:{AUTH_PORT}/users/register/",
-        "DELETE": f"http://{AUTH_HOST}:{AUTH_PORT}/users/delete/<pk>/",
-        "INFO": f"http://{AUTH_HOST}:{AUTH_PORT}/users/info/<pk>/",
-        "UPDATE_EMAIL": f"http://{AUTH_HOST}:{AUTH_PORT}/users/update/email/",
-        "UPDATE_PASSWORD": f"http://{AUTH_HOST}:{AUTH_PORT}/users/update/password/",
-        "UPDATE_ACTIVE": f"http://{AUTH_HOST}:{AUTH_PORT}/users/update/active/",
-        "UPDATE_ROLE": f"http://{AUTH_HOST}:{AUTH_PORT}/users/update/role/",
-        "VERIFY_EMAIL": f"http://{AUTH_HOST}:{AUTH_PORT}/users/verify/email/",
-        "LIST_USERS": f"http://{AUTH_HOST}:{AUTH_PORT}/users/",
+        "REGISTER": f"{AUTH_PROT}://{AUTH_HOST}:{AUTH_PORT}/users/register/",
+        "DELETE": f"{AUTH_PROT}://{AUTH_HOST}:{AUTH_PORT}/users/delete/<pk>/",
+        "INFO": f"{AUTH_PROT}://{AUTH_HOST}:{AUTH_PORT}/users/info/<pk>/",
+        "UPDATE_EMAIL": f"{AUTH_PROT}://{AUTH_HOST}:{AUTH_PORT}/users/update/email/",
+        "UPDATE_PASSWORD": f"{AUTH_PROT}://{AUTH_HOST}:{AUTH_PORT}/users/update/password/",
+        "UPDATE_ACTIVE": f"{AUTH_PROT}://{AUTH_HOST}:{AUTH_PORT}/users/update/active/",
+        "UPDATE_ROLE": f"{AUTH_PROT}://{AUTH_HOST}:{AUTH_PORT}/users/update/role/",
+        "VERIFY_EMAIL": f"{AUTH_PROT}://{AUTH_HOST}:{AUTH_PORT}/users/verify/email/",
+        "LIST_USERS": f"{AUTH_PROT}://{AUTH_HOST}:{AUTH_PORT}/users/",
         # authorization app
-        "LOGIN": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/login/",
-        "REFRESH": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/refresh/",
-        "LOGOUT": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/logout/",
-        "LOGOUT_ALL": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/logout/all/",
-        "PASSWORD_RECOVERY": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/password/recovery/",
-        "PASSWORD_RESET": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/password/reset/",
-        "EMAIL_DETAILS": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/email/details/",
-        "RETRIEVE_PUBKEY": f"http://{AUTH_HOST}:{AUTH_PORT}/auth/retrieve/public-key/",
+        "LOGIN": f"{AUTH_PROT}://{AUTH_HOST}:{AUTH_PORT}/auth/login/",
+        "REFRESH": f"{AUTH_PROT}://{AUTH_HOST}:{AUTH_PORT}/auth/refresh/",
+        "LOGOUT": f"{AUTH_PROT}://{AUTH_HOST}:{AUTH_PORT}/auth/logout/",
+        "LOGOUT_ALL": f"{AUTH_PROT}://{AUTH_HOST}:{AUTH_PORT}/auth/logout/all/",
+        "PASSWORD_RECOVERY": f"{AUTH_PROT}://{AUTH_HOST}:{AUTH_PORT}/auth/password/recovery/",
+        "PASSWORD_RESET": f"{AUTH_PROT}://{AUTH_HOST}:{AUTH_PORT}/auth/password/reset/",
+        "EMAIL_DETAILS": f"{AUTH_PROT}://{AUTH_HOST}:{AUTH_PORT}/auth/email/details/",
+        "RETRIEVE_PUBKEY": f"{AUTH_PROT}://{AUTH_HOST}:{AUTH_PORT}/auth/retrieve/public-key/",
         # oauth2 app
-        "OAUTH2_LINKED": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/linked/",
-        "INTRA_URL": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/intra/v2/url/",
-        "INTRA_LINK": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/intra/v2/link/",
-        "INTRA_LOGIN": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/intra/v2/login/",
-        "INTRA_UNLINK": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/intra/unlink/",
-        "GOOGLE_URL": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/google/v2/url/",
-        "GOOGLE_LINK": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/google/v2/link/",
-        "GOOGLE_LOGIN": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/google/v2/login/",
-        "GOOGLE_UNLINK": f"http://{AUTH_HOST}:{AUTH_PORT}/oauth2/google/unlink/",
+        "OAUTH2_LINKED": f"{AUTH_PROT}://{AUTH_HOST}:{AUTH_PORT}/oauth2/linked/",
+        "INTRA_URL": f"{AUTH_PROT}://{AUTH_HOST}:{AUTH_PORT}/oauth2/intra/v2/url/",
+        "INTRA_LINK": f"{AUTH_PROT}://{AUTH_HOST}:{AUTH_PORT}/oauth2/intra/v2/link/",
+        "INTRA_LOGIN": f"{AUTH_PROT}://{AUTH_HOST}:{AUTH_PORT}/oauth2/intra/v2/login/",
+        "INTRA_UNLINK": f"{AUTH_PROT}://{AUTH_HOST}:{AUTH_PORT}/oauth2/intra/unlink/",
+        "GOOGLE_URL": f"{AUTH_PROT}://{AUTH_HOST}:{AUTH_PORT}/oauth2/google/v2/url/",
+        "GOOGLE_LINK": f"{AUTH_PROT}://{AUTH_HOST}:{AUTH_PORT}/oauth2/google/v2/link/",
+        "GOOGLE_LOGIN": f"{AUTH_PROT}://{AUTH_HOST}:{AUTH_PORT}/oauth2/google/v2/login/",
+        "GOOGLE_UNLINK": f"{AUTH_PROT}://{AUTH_HOST}:{AUTH_PORT}/oauth2/google/unlink/",
         # 2fa app
-        "TFA_MANAGE": f"http://{AUTH_HOST}:{AUTH_PORT}/2fa/manage/",
-        "TFA_LOGIN": f"http://{AUTH_HOST}:{AUTH_PORT}/2fa/validate/login/",
-        "TFA_ACTIVATE": f"http://{AUTH_HOST}:{AUTH_PORT}/2fa/validate/activate/",
-        "TFA_RECOVER": f"http://{AUTH_HOST}:{AUTH_PORT}/2fa/validate/recover/",
-        "TFA_EMAIL": f"http://{AUTH_HOST}:{AUTH_PORT}/2fa/otp/",
+        "TFA_MANAGE": f"{AUTH_PROT}://{AUTH_HOST}:{AUTH_PORT}/2fa/manage/",
+        "TFA_LOGIN": f"{AUTH_PROT}://{AUTH_HOST}:{AUTH_PORT}/2fa/validate/login/",
+        "TFA_ACTIVATE": f"{AUTH_PROT}://{AUTH_HOST}:{AUTH_PORT}/2fa/validate/activate/",
+        "TFA_RECOVER": f"{AUTH_PROT}://{AUTH_HOST}:{AUTH_PORT}/2fa/validate/recover/",
+        "TFA_EMAIL": f"{AUTH_PROT}://{AUTH_HOST}:{AUTH_PORT}/2fa/otp/",
     },
     # emails
     # TODO: use variables instead of localhost and 4200
-    "CLIENT_RESET_PAGE": f"http://{SERVER_FRONTEND_IP}:4200/password/reset/",
-    "CLIENT_LOGIN_PAGE": f"http://{SERVER_FRONTEND_IP}:4200/login/",
-    "TOURNAMENT_LIST": f"http://{PONG_HOST}:{PONG_PORT}/tournaments/",
-    "TOURNAMENT_CREATE": f"http://{PONG_HOST}:{PONG_PORT}/tournaments/create/",
-    "TOURNAMENT_RETRIEVE":f"http://{PONG_HOST}:{PONG_PORT}/tournaments/<pk>/",
-    "TOURNAMENT_REGISTER":f"http://{PONG_HOST}:{PONG_PORT}/tournaments/register/",
-    "TOURNAMENT_UNREGISTER":f"http://{PONG_HOST}:{PONG_PORT}/tournaments/unregister/",
-    "TOURNAMENT_GET_SCHEMA":f"http://{PONG_HOST}:{PONG_PORT}/tournaments/schema/<pk>/",
-    "TOURNAMENT_GET_MATCHES":f"http://{PONG_HOST}:{PONG_PORT}/tournaments/matches/",
-    "GAME_GET_MATCHES":f"http://{PONG_HOST}:{PONG_PORT}/game/matches/",
-    "GAME_GET_RESULTS":f"http://{PONG_HOST}:{PONG_PORT}/game/results/",
-    "GAME_GET_ALL_RESULTS":f"http://{PONG_HOST}:{PONG_PORT}/game/results/all/",
-    "GAME_GET_STATS":f"http://{PONG_HOST}:{PONG_PORT}/game/stats/",
-    "SEND_MATCH_REQ":f"http://{PONG_HOST}:{PONG_PORT}/game/match/",
-    "DELETE_MATCH_REQ":f"http://{PONG_HOST}:{PONG_PORT}/game/match/delete/",
-    "ACCEPT_MATCH_REQ":f"http://{PONG_HOST}:{PONG_PORT}/game/match/accept/",
-    "REJECT_MATCH_REQ":f"http://{PONG_HOST}:{PONG_PORT}/game/match/reject/",
+    "CLIENT_RESET_PAGE": f"{CLIENT_PROT}://{SERVER_FRONTEND_IP}:4200/password/reset/",
+    "CLIENT_LOGIN_PAGE": f"{CLIENT_PROT}://{SERVER_FRONTEND_IP}:4200/login/",
 }
 
+# these are the urls used in the registration endpoint
+# here should be present all the microservices registration endpoints
+
 REGISTER_URLS = [
-        MS_URLS['NTF_REGISTER'],
-        MS_URLS['CHAT_REGISTER'],
-        MS_URLS['PONG_REGISTER'],
-        MS_URLS['AUTH_REGISTER'],
-    ]
+    MS_URLS['NTF_REGISTER'],
+    MS_URLS['CHAT_REGISTER'],
+    MS_URLS['PONG_REGISTER'],
+    MS_URLS['AUTH_REGISTER'],
+]
+
 DELETE_URLS = [
     MS_URLS['NTF_DELETE'],
     MS_URLS['CHAT_DELETE'],

@@ -1,4 +1,3 @@
-
 def get_func_credentials(func):
     """
     This decorator is used to set `api_headers` and `api_cookies` in `request`.
@@ -7,6 +6,7 @@ def get_func_credentials(func):
     """
     dec_headers = ['Authorization']
     dec_cookies = ['refresh_token', 'api_token', 'google_state', 'intra_state']
+
     def wrapper(request, *args, **kwargs):
         request.api_headers = {}
         request.api_cookies = {}
@@ -33,6 +33,7 @@ def get_class_credentials(func):
     """
     dec_headers = ['Authorization']
     dec_cookies = ['refresh_token', 'api_token', 'google_state', 'intra_state']
+
     def wrapper(self, request, *args, **kwargs):
         request.api_headers = {}
         request.api_cookies = {}
@@ -49,4 +50,3 @@ def get_class_credentials(func):
         return func(self, request, *args, **kwargs)
 
     return wrapper
-

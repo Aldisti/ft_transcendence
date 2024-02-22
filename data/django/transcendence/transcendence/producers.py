@@ -2,13 +2,14 @@ from django.conf import settings
 
 import pika
 
+
 class NotificationProducer:
     def __init__(self) -> None:
         # params used to create a connection with rabbitMq
         params = pika.ConnectionParameters(
             host=settings.RABBIT['host'],
             port=settings.RABBIT['port'],
-            #virtual_host=settings.RABBIT['VHOSTS']['ntf'],
+            # virtual_host=settings.RABBIT['VHOSTS']['ntf'],
             heartbeat=settings.RABBIT['heartbeat'],
             blocked_connection_timeout=settings.RABBIT['bc_timeout']
         )
@@ -34,7 +35,7 @@ class EmailProducer:
         params = pika.ConnectionParameters(
             host=settings.RABBIT['host'],
             port=settings.RABBIT['port'],
-            #virtual_host=settings.RABBIT['VHOSTS']['ntf'],
+            # virtual_host=settings.RABBIT['VHOSTS']['ntf'],
             heartbeat=settings.RABBIT['heartbeat'],
             blocked_connection_timeout=settings.RABBIT['bc_timeout']
         )

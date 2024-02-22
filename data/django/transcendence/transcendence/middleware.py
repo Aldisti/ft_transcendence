@@ -1,4 +1,3 @@
-
 from channels.sessions import CookieMiddleware
 from channels.middleware import BaseMiddleware
 from channels.auth import UserLazyObject
@@ -34,8 +33,8 @@ class QueryParamMiddleware(BaseMiddleware):
         strings = query_string.split("&")
         query_params = {}
         for string in strings:
-           param = string.split("=")
-           query_params[param[0]] = param[1]
+            param = string.split("=")
+            query_params[param[0]] = param[1]
         return await super().__call__(dict(scope, query_params=query_params), receive, send)
 
 
@@ -49,11 +48,11 @@ class CustomAuthMiddleware(BaseMiddleware):
 
     async def __call__(self, scope, receive, send):
         scope = dict(scope)
-        # check if the scope has cookies set an fill user with a useful placeholder
+        # check if the scope has cookies set a fill user with a useful placeholder
         self.populate_scope(scope)
         # get user from database
         scope["user"] = await get_user(scope["query_params"])
-        #logger.warning(f"user: {scope['user']}")
+        # logger.warning(f"user: {scope['user']}")
         return await super().__call__(scope, receive, send)
 
 

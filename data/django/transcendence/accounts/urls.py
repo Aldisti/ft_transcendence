@@ -2,8 +2,8 @@ from django.urls import path, include
 from rest_framework.urlpatterns import format_suffix_patterns
 from accounts import views
 
+
 urlpatterns = [
-    path('test/', views.test, name="api-test"),
     path('register/', views.registration, name="api-register"),
     path('users/', include([
         path('', views.list_users, name="user-list"),

@@ -1,20 +1,15 @@
 
-from django.conf import settings
-
-from rest_framework.decorators import api_view, permission_classes, throttle_classes
-from rest_framework.response import Response
-from rest_framework_simplejwt.tokens import RefreshToken
-
-from transcendence.throttles import LowLoadThrottle
-
-from requests import delete as delete_request
-from requests import post as post_request
-from requests import get as get_request
-from datetime import datetime
 import logging
 
-from transcendence.decorators import get_func_credentials
+from django.conf import settings
+from requests import delete as delete_request
+from requests import get as get_request
+from requests import post as post_request
+from rest_framework.decorators import api_view, permission_classes, throttle_classes
+from rest_framework.response import Response
 
+from transcendence.decorators import get_func_credentials
+from transcendence.throttles import LowLoadThrottle
 
 logger = logging.getLogger(__name__)
 

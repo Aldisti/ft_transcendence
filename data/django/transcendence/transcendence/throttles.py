@@ -6,16 +6,8 @@ from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 # UserRateThrottle for authenticated users
 # SimpleRateThrottle to make a custom throttle (from zero)
 
-class AnonAuthThrottle(AnonRateThrottle):
-    scope = 'auth'
-
-
-class UserAuthThrottle(UserRateThrottle):
-    scope = 'auth'
-
-
-class AuthThrottle(UserRateThrottle):
-    scope = 'auth'
+class DefaultThrottle(UserRateThrottle):
+    scope = 'default'
 
 
 class HighLoadThrottle(UserRateThrottle):

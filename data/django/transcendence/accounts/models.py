@@ -1,18 +1,16 @@
-from django.db import models
+import logging
+
+from django.contrib.auth.base_user import AbstractBaseUser
 from django.core import validators
 from django.core.files.storage import default_storage
-from django.contrib.auth.base_user import AbstractBaseUser
+from django.db import models
 from django.dispatch import receiver
 
-from accounts.utils import Roles
-from accounts.validators import validate_birthdate
 from accounts.managers import (UserManager,
                                UserInfoManager,
                                UserGameManager)
-
-import logging
-
-from requests import get as get_request
+from accounts.utils import Roles
+from accounts.validators import validate_birthdate
 
 logger = logging.getLogger(__name__)
 
@@ -113,7 +111,8 @@ class UserInfo(models.Model):
             default_storage.delete(instance.user_info.picture.path)
 
     def __str__(self):
-        return f"user: {self.user.username}, first_name: {self.first_name}, last_name: {self.last_name}, joined:{self.date_joined}"
+        return (f"user: {self.user.username}, first_name: {self.first_name}, "
+                f"last_name: {self.last_name}, joined:{self.date_joined}")
 
 
 class UserGame(models.Model):

@@ -17,10 +17,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-# Create your views here.
-
 # TODO: change api methods
-
 @api_view(['GET'])
 @permission_classes([IsUser])
 def make_friends_request(request):
@@ -28,7 +25,6 @@ def make_friends_request(request):
     r_username = request.query_params.get("username", "")
     body = {"username": user.username, "r_username": r_username}
     api_response = post_request(settings.MS_URLS['FRIENDS_SEND_REQ'], json=body)
-    # TODO: ask adi-stef
     return Response(api_response.json(), status=api_response.status_code)
 
 
@@ -39,7 +35,6 @@ def delete_friends(request):
     r_username = request.query_params.get("username", "")
     body = {"username": user.username, "r_username": r_username}
     api_response = post_request(settings.MS_URLS['FRIENDS_DELETE_REQ'], json=body)
-    # TODO: ask adi-stef
     return Response(api_response.json(), status=api_response.status_code)
 
 
@@ -50,7 +45,6 @@ def accept_friends_request(request):
     token = request.query_params.get("token", "")
     body = {"username": user.username, "token": token}
     api_response = post_request(settings.MS_URLS['FRIENDS_ACCEPT_REQ'], json=body)
-    # TODO: ask adi-stef
     return Response(api_response.json(), status=api_response.status_code)
 
 
@@ -61,7 +55,6 @@ def reject_friends_request(request):
     token = request.query_params.get("token", "")
     body = {"username": user.username, "token": token}
     api_response = post_request(settings.MS_URLS['FRIENDS_REJECT_REQ'], json=body)
-    # TODO: ask adi-stef
     return Response(api_response.json(), status=api_response.status_code)
 
 
@@ -72,7 +65,6 @@ def are_friends(request):
     other_username = request.query_params.get("username", "")
     url = f"{settings.MS_URLS['FRIENDS_CHECK']}?username={user.username}&other_username={other_username}"
     api_response = get_request(url)
-    # TODO: ask adi-stef
     return Response(api_response.json(), status=api_response.status_code)
 
 
@@ -84,8 +76,7 @@ def get_all_friends(request):
     api_response = get_request(url)
     if api_response.status_code != 200:
         return Response(api_response.json(), status=api_response.status_code)
-    # TODO: ask adi-stef
-    logger.warning(f"REPONSE: {api_response.json()}")
+    # logger.warning(f"RESPONSE: {api_response.json()}")
     usernames = [data["username"] for data in api_response.json()]
     friends = [User.objects.get(pk=username) for username in usernames]
     friends_serializer = FriendsSerializer(friends, many=True, context={"request": request})

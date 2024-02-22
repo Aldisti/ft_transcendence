@@ -1,23 +1,15 @@
+import logging
 
 from django.conf import settings
-
+from requests import get as get_request
+from requests import post as post_request
 from rest_framework.decorators import api_view, permission_classes, throttle_classes
 from rest_framework.response import Response
 
-from rest_framework_simplejwt.tokens import RefreshToken
-
 from email_manager.email_sender import send_password_reset_email
-
 from transcendence.decorators import get_func_credentials
-
-from transcendence.throttles import LowLoadThrottle, MediumLoadThrottle, EmailThrottle, HighLoadThrottle
 from transcendence.permissions import IsUser
-
-from requests import post as post_request
-from requests import get as get_request
-from datetime import datetime
-import logging
-
+from transcendence.throttles import LowLoadThrottle, MediumLoadThrottle, EmailThrottle, HighLoadThrottle
 
 logger = logging.getLogger(__name__)
 
@@ -101,12 +93,11 @@ def password_reset(request) -> Response:
     return Response(status=200)
 
 
-
 @api_view(['GET'])
 @permission_classes([IsUser])
 def generate_ntf_ticket(request) -> Response:
     user = request.user
-    #websocket_ticket = WebsocketTicket.objects.create(user.user_tokens)
+    # websocket_ticket = WebsocketTicket.objects.create(user.user_tokens)
     data = {"username": user.username}
     api_response = post_request(settings.MS_URLS['NTF_TICKET'], json=data)
     if api_response.status_code >= 300:
@@ -118,7 +109,7 @@ def generate_ntf_ticket(request) -> Response:
 @permission_classes([IsUser])
 def generate_chat_ticket(request) -> Response:
     user = request.user
-    #websocket_ticket = WebsocketTicket.objects.create(user.user_tokens)
+    # websocket_ticket = WebsocketTicket.objects.create(user.user_tokens)
     data = {"username": user.username}
     api_response = post_request(settings.MS_URLS['CHAT_TICKET'], json=data)
     if api_response.status_code >= 300:
@@ -130,14 +121,14 @@ def generate_chat_ticket(request) -> Response:
 def get_queue_ticket(request) -> Response:
     username = request.user.username
     data = {'username': username}
-    #logger.warning("#" * 50)
+    # logger.warning("#" * 50)
     api_response = post_request(settings.MS_URLS['MATCHMAKING_TOKEN'], json=data)
-    #logger.warning("#" * 50)
+    # logger.warning("#" * 50)
     if api_response.status_code != 200:
-        #logger.warning(f"status code: {api_response.status_code}")
-        #logger.warning(f"json: {api_response.json()}")
+        # logger.warning(f"status code: {api_response.status_code}")
+        # logger.warning(f"json: {api_response.json()}")
         return Response(data={'message': f'api: {api_response.status_code}'}, status=503)
-    #logger.warning(f"\n\n\n\n\nDJANGO API RESPONSE: {api_response.json()}")
+    # logger.warning(f"\n\n\n\n\nDJANGO API RESPONSE: {api_response.json()}")
     return Response(data=api_response.json(), status=200)
 
 
@@ -178,10 +169,3 @@ def send_verification_email(request) -> Response:
         return Response(data=api_response.text, status=api_response.status_code)
     send_verification_email(**api_response.json())
     return Response(status=200)
-
-
-# @api_view(['GET', 'POST'])
-# @permission_classes([])
-# def test(request) -> Response:
-#     from os import environ
-#     return Response(data=environ)

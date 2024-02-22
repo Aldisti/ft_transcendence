@@ -1,33 +1,20 @@
-from datetime import datetime
-
-from django.core.exceptions import ValidationError
-from django.conf import settings
-
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.response import Response
-from rest_framework.generics import RetrieveDestroyAPIView, ListAPIView
-from rest_framework import filters
-from rest_framework_simplejwt.tokens import RefreshToken
-
-from accounts.paginations import MyPageNumberPagination
-from accounts.serializers import CompleteUserSerializer, UploadImageSerializer, UserInfoSerializer
-from accounts.models import User, UserInfo, UserGame
-
-from email_manager.email_sender import send_verify_email
-
-from transcendence.permissions import IsAdmin, IsModerator, IsUser
-
-from requests import get as get_request
-from requests import post as post_request
-from requests import delete as delete_request
-from requests import patch as patch_request
-
 import logging
-import pika
-import os
 
+from django.conf import settings
+from django.core.exceptions import ValidationError
+from requests import delete as delete_request
+from requests import get as get_request
+from requests import patch as patch_request
+from requests import post as post_request
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.generics import RetrieveDestroyAPIView
+from rest_framework.response import Response
+
+from accounts.models import User, UserInfo, UserGame
+from accounts.serializers import CompleteUserSerializer, UploadImageSerializer, UserInfoSerializer
+from email_manager.email_sender import send_verify_email
 from transcendence.decorators import get_func_credentials
-
+from transcendence.permissions import IsAdmin, IsModerator, IsUser
 
 logger = logging.getLogger(__name__)
 
@@ -45,7 +32,7 @@ def create_user(data) -> tuple[User, dict[str, str]] | tuple[None, None]:
             api_response = post_request(url, data={'username': data['username']})
         if api_response.status_code < 300:
             continue
-        logger.warning(f"Error: {api_response.json()}")
+        # logger.warning(f"Error: {api_response.json()}")
         while i > 0:
             i -= 1
             delete_request(delete_urls[i].replace('<pk>', data['username']))
@@ -53,26 +40,6 @@ def create_user(data) -> tuple[User, dict[str, str]] | tuple[None, None]:
     user = user_serializer.create(user_serializer.validated_data)
     # logger.warning(f"user: {CompleteUserSerializer(user).data}")
     return user, api_response.json()
-
-
-@api_view(['GET'])
-@permission_classes([])
-def test(request):
-    logger.warning(f"{request.query_params.get('prova')}")
-    if request.query_params.get('prova'):
-        return Response({"message": "setted"}, status=200)
-    else:
-        return Response({"message": "not setted"}, status=200)
-    params = pika.ConnectionParameters(host=os.environ['RABBIT_HOST'], port=int(os.environ['RABBIT_PORT']))
-    connection = pika.BlockingConnection(params)
-    channel = connection.channel()
-
-    routing_key = os.environ['NTF_ROUTING_KEY']
-    message = "NOTIFICATION"
-    channel.basic_publish(exchange=os.environ['EXCHANGE'], routing_key=routing_key, body=message)
-    # logger.warning("sent")
-    # channel.close()
-    return Response(status=200)
 
 
 @api_view(['POST'])
@@ -117,7 +84,7 @@ def change_role(request):
     )
     if api_response.status_code != 200:
         return Response(data=api_response.json(), status=api_response.status_code)
-
+    # main server
     user_serializer = CompleteUserSerializer(data=request.data)
     if not user_serializer.is_valid():
         return Response(status=400)
@@ -191,25 +158,24 @@ class RetrieveDestroyUser(RetrieveDestroyAPIView):
     lookup_field = "username"
 
     def destroy(self, request, *args, **kwargs):
-        # TODO: do not allow admin deletion
-        logger.warning("MY DESTROY")
-        logger.warning(f"KWARGS: {kwargs}")
+        # logger.warning("MY DESTROY")
+        # logger.warning(f"KWARGS: {kwargs}")
         username = kwargs.get("username", "")
         if username != "":
             data = {'username': username}
             # delete from ntf db
             ntf_url = settings.MS_URLS['NTF_DELETE'].replace("<pk>", username)
-            api_response = delete_request(ntf_url, json=data)
+            delete_request(ntf_url, json=data)
             # delete from chat db
             chat_url = settings.MS_URLS['CHAT_DELETE'].replace("<pk>", username)
-            api_response = delete_request(chat_url, json=data)
+            delete_request(chat_url, json=data)
             # delete from pong db
             pong_url = settings.MS_URLS['PONG_DELETE'].replace("<pk>", username)
-            api_response = delete_request(pong_url, json=data)
+            delete_request(pong_url, json=data)
             # delete from auth db
             headers = {'Authorization': request.headers.get('Authorization', '')}
             auth_url = settings.MS_URLS['AUTH']['DELETE'].replace("<pk>", username)
-            api_response = delete_request(auth_url, headers=headers, json=request.data)
+            delete_request(auth_url, headers=headers, json=request.data)
         return super().destroy(request, *args, **kwargs)
 
 
@@ -283,13 +249,12 @@ def list_users(request):
         headers=request.api_headers,
         json=request.data,
     )
-
     if api_response.status_code != 200:
         return Response(data=api_response.json(), status=api_response.status_code)
 
     data = api_response.json()
     users_json = data.get("results", [])
-    logger.warning(data)
+    # logger.warning(data)
     host = request.headers.get("Host", "")
     for user_json in users_json:
         try:
@@ -301,4 +266,3 @@ def list_users(request):
             picture_url = None
         user_json.setdefault("picture", picture_url)
     return Response(data, status=200)
-

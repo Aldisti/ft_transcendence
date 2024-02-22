@@ -1,21 +1,15 @@
+import logging
 
+from django.conf import settings
+from requests import get as get_request
+from requests import post as post_request
+from requests import put as put_request
 from rest_framework.decorators import APIView, api_view, permission_classes, throttle_classes
 from rest_framework.response import Response
 
-from django.conf import settings
-from rest_framework_simplejwt.tokens import RefreshToken
-
 from email_manager.email_sender import send_tfa_code_email
 from transcendence.decorators import get_func_credentials, get_class_credentials
-
 from transcendence.throttles import HighLoadThrottle, MediumLoadThrottle, LowLoadThrottle, EmailThrottle
-
-from requests import post as post_request
-from requests import get as get_request
-from requests import put as put_request
-from datetime import datetime
-import logging
-
 
 logger = logging.getLogger(__name__)
 
@@ -52,7 +46,6 @@ class ManageView(APIView):
         if api_response.status_code != 200:
             return Response(data=api_response.json(), status=api_response.status_code)
         return Response(status=200)
-
 
 
 @api_view(['POST'])

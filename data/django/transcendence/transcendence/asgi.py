@@ -15,7 +15,6 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.security.websocket import AllowedHostsOriginValidator
 
 from multiplayer_test.routing import multiplayer_test_urlpatterns
-from pong.routing import pong_urlpatterns
 from transcendence.middleware import CustomAuthMiddlewareStack
 
 import logging
@@ -29,7 +28,6 @@ django_asgi_app = get_asgi_application()
 # put in one place all the urlpatterns
 websocket_urlpatterns = []
 websocket_urlpatterns.extend(multiplayer_test_urlpatterns)
-websocket_urlpatterns.extend(pong_urlpatterns)
 
 logger.warning(f"websocket_urlpatterns: {websocket_urlpatterns}")
 

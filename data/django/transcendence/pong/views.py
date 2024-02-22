@@ -30,24 +30,24 @@ def matchmaking(request):
     username = loads(b64decode(payload))['username']
     return render(request, 'matchmaking.html', context={'username': username})
 
-    
+
 @api_view(['GET'])
 @permission_classes([IsUser])
 def list_tournaments(request):
     query_params = "?" + "&".join([f"{key}={value}" for key, value in request.query_params.items()])
     url = settings.MS_URLS["TOURNAMENT_LIST"] + query_params
     api_response = get_request(url)
-    # TODO: ask adi-stef
-    #logger.warning(api_response.json()["next"].replace("pong", "localhost"))
+    # logger.warning(api_response.json()["next"].replace("pong", "localhost"))
     return Response(api_response.json(), status=api_response.status_code)
-    
+
+
 @api_view(['GET'])
 @permission_classes([IsUser])
 def retrieve_tournament(request, tour_id):
     url = settings.MS_URLS['TOURNAMENT_RETRIEVE'].replace("<pk>", str(tour_id))
     api_response = get_request(url)
-    # TODO: ask adi-stef
     return Response(api_response.json(), status=api_response.status_code)
+
 
 @api_view(['POST'])
 @permission_classes([IsUser])
@@ -56,8 +56,8 @@ def create_tournament(request):
     url = settings.MS_URLS['TOURNAMENT_CREATE'] + f"?username={user.username}"
     body = request.data
     api_response = post_request(url, json=body)
-    # TODO: ask adi-stef
     return Response(api_response.json(), status=api_response.status_code)
+
 
 @api_view(['POST'])
 @permission_classes([IsUser])
@@ -66,8 +66,8 @@ def register_tournament(request):
     url = settings.MS_URLS['TOURNAMENT_REGISTER'] + f"?username={user.username}"
     body = request.data
     api_response = post_request(url, json=body)
-    # TODO: ask adi-stef
     return Response(api_response.json(), status=api_response.status_code)
+
 
 @api_view(['POST'])
 @permission_classes([IsUser])
@@ -76,17 +76,17 @@ def unregister_tournament(request):
     url = settings.MS_URLS['TOURNAMENT_UNREGISTER'] + f"?username={user.username}"
     body = request.data
     api_response = post_request(url, json=body)
-    # TODO: ask adi-stef
     return Response(api_response.json(), status=api_response.status_code)
+
 
 @api_view(['GET'])
 @permission_classes([IsUser])
 def get_schema_tournament(request, tournament_id):
-    user = request.user
     url = settings.MS_URLS['TOURNAMENT_GET_SCHEMA'].replace("<pk>", str(tournament_id))
     api_response = get_request(url)
-    # TODO: ask adi-stef
-    logger.warning(f"RESPONSE: {api_response.json()}")
+    if api_response.status_code != 200:
+        return Response(data=api_response.json(), status=api_response.status_code)
+    # logger.warning(f"RESPONSE: {api_response.json()}")
     body = api_response.json()
     host = request.headers.get("Host", "")
     for layer in body:
@@ -140,7 +140,6 @@ def send_match_req(request):
     url = settings.MS_URLS['SEND_MATCH_REQ'] + f"?username={user.username}"
     body = request.data
     api_response = post_request(url, json=body)
-    # TODO: ask adi-stef
     return Response(api_response.json(), status=api_response.status_code)
 
 
@@ -150,7 +149,6 @@ def delete_match_req(request):
     user = request.user
     url = settings.MS_URLS['DELETE_MATCH_REQ'] + f"?username={user.username}"
     api_response = delete_request(url)
-    # TODO: ask adi-stef
     return Response(api_response.json(), status=api_response.status_code)
 
 
@@ -164,7 +162,6 @@ def accept_match_req(request):
     url = settings.MS_URLS['ACCEPT_MATCH_REQ'] + f"?username={user.username}"
     body = request.data
     api_response = post_request(url, json=body)
-    # TODO: ask adi-stef
     return Response(api_response.json(), status=api_response.status_code)
 
 
@@ -178,7 +175,6 @@ def reject_match_req(request):
     url = settings.MS_URLS['REJECT_MATCH_REQ'] + f"?username={user.username}"
     body = request.data
     api_response = post_request(url, json=body)
-    # TODO: ask adi-stef
     return Response(api_response.json(), status=api_response.status_code)
 
 
@@ -189,7 +185,6 @@ def get_results(request):
     query_params = "?" + "&".join([f"{key}={value}" for key, value in request.query_params.items()])
     url = settings.MS_URLS["GAME_GET_RESULTS"] + query_params
     api_response = get_request(url)
-    # TODO: ask adi-stef
     return Response(api_response.json(), status=api_response.status_code)
 
 
@@ -200,7 +195,6 @@ def get_all_results(request):
     query_params = "?" + "&".join([f"{key}={value}" for key, value in request.query_params.items()])
     url = settings.MS_URLS["GAME_GET_ALL_RESULTS"] + query_params
     api_response = get_request(url)
-    # TODO: ask adi-stef
     return Response(api_response.json(), status=api_response.status_code)
 
 
@@ -211,5 +205,4 @@ def get_stats(request):
     username = request.query_params.get("username", "")
     url = settings.MS_URLS["GAME_GET_STATS"] + f"?username={username}"
     api_response = get_request(url)
-    # TODO: ask adi-stef
     return Response(api_response.json(), status=api_response.status_code)
