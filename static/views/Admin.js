@@ -86,7 +86,6 @@ export default class extends Aview{
     }   
 
     getHtml(){
-        let role = JSON.parse(window.decode64(localStorage.getItem("jwt"))).role;
 
         return `
             <div class="base">
@@ -133,8 +132,8 @@ export default class extends Aview{
      */
     setup(){
         this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpeg")
-        let roleDescriptor = localStorage.getItem("token").split(".")[1];
-        let role = JSON.parse(window.decode64(roleDescriptor)).role;
+        console.log(JSON.parse(window.decode64(localStorage.getItem("token").split(".")[1])))
+        let role = JSON.parse(window.decode64(localStorage.getItem("token").split(".")[1])).role;
 
         if (role != "A" && role != "M")
         {
@@ -161,18 +160,19 @@ export default class extends Aview{
         document.querySelectorAll(".manageUsers")[2].querySelector(".restore").addEventListener("click", HANDLERS.handleRestore.bind(null, this, manageBannedUser));
 
         API.adminGetUsers(1, 1, 10).then(res=>{
+            console.log(res)
             res.results.forEach(element => {
-                document.querySelectorAll(".usersContainer")[0].innerHTML += this.createUser({username: element.username, picture: element.user_info.picture});
+                document.querySelectorAll(".usersContainer")[0].innerHTML += this.createUser({username: element.username, picture: element.picture});
             });
         })
         API.adminGetModerator(1, 1, 10).then(res=>{
             res.results.forEach(element => {
-                manageModerator.innerHTML += this.createModerator({username: element.username, picture: element.user_info.picture});
+                manageModerator.innerHTML += this.createModerator({username: element.username, picture: element.picture});
             });
         })
         API.adminGetBannedUsers(1, 1, 10).then(res=>{
             res.results.forEach(element => {
-                manageBannedUser.innerHTML += this.createBannedUser({username: element.username, picture: element.user_info.picture});
+                manageBannedUser.innerHTML += this.createBannedUser({username: element.username, picture: element.picture});
             });
         })
         setupBtnClickHandler(this);

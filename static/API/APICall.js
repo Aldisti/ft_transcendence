@@ -840,7 +840,7 @@ export async function startQueque(recursionProtection){
 }
 
 export async function adminGetUsers(recursionProtection, page, size){
-    const res = await fetch(`${URL.general.GET_USERS}?page=${page}&size=${size}`, {
+    const res = await fetch(`${URL.general.GET_USERS}?page=${page}&size=${size}&role=U`, {
         method: "GET",
         headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -856,7 +856,7 @@ export async function adminGetUsers(recursionProtection, page, size){
     return ({})
 }
 export async function adminGetBannedUsers(recursionProtection, page, size){
-    const res = await fetch(`${URL.general.GET_USERS}?search=False&page=${page}&size=${size}`, {
+    const res = await fetch(`${URL.general.GET_USERS}?search=False&page=${page}&size=${size}&active=false`, {
         method: "GET",
         headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -872,7 +872,8 @@ export async function adminGetBannedUsers(recursionProtection, page, size){
     return ({})
 }
 export async function adminGetModerator(recursionProtection, page, size){
-    const res = await fetch(`${URL.general.GET_USERS}?search=M&page=${page}&size=${size}`, {
+    const res = await fetch(`${URL.general.GET_USERS}?search=M&page=${page}&size=${size}&role=M
+    `, {
         method: "GET",
         headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
