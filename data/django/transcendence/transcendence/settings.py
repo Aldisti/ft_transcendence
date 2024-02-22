@@ -360,6 +360,8 @@ MS_URLS = {
     "TOURNAMENT_GET_MATCHES":f"http://{PONG_HOST}:{PONG_PORT}/tournaments/matches/",
     "GAME_GET_MATCHES":f"http://{PONG_HOST}:{PONG_PORT}/game/matches/",
     "GAME_GET_RESULTS":f"http://{PONG_HOST}:{PONG_PORT}/game/results/",
+    "GAME_GET_ALL_RESULTS":f"http://{PONG_HOST}:{PONG_PORT}/game/results/all/",
+    "GAME_GET_STATS":f"http://{PONG_HOST}:{PONG_PORT}/game/stats/",
     "SEND_MATCH_REQ":f"http://{PONG_HOST}:{PONG_PORT}/game/match/",
     "DELETE_MATCH_REQ":f"http://{PONG_HOST}:{PONG_PORT}/game/match/delete/",
     "ACCEPT_MATCH_REQ":f"http://{PONG_HOST}:{PONG_PORT}/game/match/accept/",
