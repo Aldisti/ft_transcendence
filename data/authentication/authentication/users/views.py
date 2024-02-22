@@ -199,6 +199,7 @@ class ListUser(ListAPIView):
     serializer_class = ListUserSerializer
     pagination_class = MyPageNumberPagination
     permission_classes = [IsModerator]
+    #permission_classes = []
     throttles_classes = [MediumLoadThrottle]
     filter_backends = [MyFilterBackend, filters.OrderingFilter]
     search_fields = ["username", "active", "role"]

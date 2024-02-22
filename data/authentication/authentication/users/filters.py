@@ -8,7 +8,12 @@ class MyFilterBackend(filters.BaseFilterBackend):
             value = request.query_params.get(ser_field, "")
             if value == "":
                 continue
-            fields[model_field] = value
+            if value == "true":
+                fields[model_field] = True
+            elif value == "false": 
+                fields[model_field] = False
+            else:
+                fields[model_field] = value
         return queryset.filter(**fields)
 
     def get_map(self, view) -> dict:
