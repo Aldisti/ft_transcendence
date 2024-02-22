@@ -42,8 +42,11 @@ def generate_user_info(i: int, test: bool) -> dict[str, str]:
     }
 
 
-def get_image(username):
-    res = get('https://picsum.photos/400')
+def get_image():
+    try:
+        res = get('https://picsum.photos/400')
+    except:
+        return False
     if res.status_code != 200:
         return False
     buffer = io.BytesIO()
@@ -64,19 +67,19 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         factory = APIRequestFactory()
+        request = factory.post(
+            reverse('api-upload-picture'),
+            {'image': open(IMAGE_NAME, 'rb')},
+        )
         n = 0
         for i in range(options['count']):
             data = generate_user_info(i, options['test'])
             user, b = create_user(data)
             if user is None or b is None:
                 continue
-            if not get_image(data['username']):
+            if not get_image():
                 self.stderr.write(f"image failed")
                 continue
-            request = factory.post(
-                reverse('api-upload-picture'),
-                {'image': open(IMAGE_NAME, 'rb')},
-            )
             force_authenticate(request, user=user)
             upload_profile_picture(request)
             self.stdout.write(f"{data['username']}")

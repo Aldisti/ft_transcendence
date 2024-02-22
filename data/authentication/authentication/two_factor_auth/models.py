@@ -174,7 +174,7 @@ class UserTFA(models.Model):
 
     def get_uri(self) -> str:
         if self.otp_token == '' or self.is_email():
-            return None
+            return ''
         return totp.TOTP(self.otp_token).provisioning_uri(name=self.user.email, issuer_name='Transcendence')
 
     def __str__(self):
@@ -191,7 +191,7 @@ class OtpCode(models.Model):
     # TODO: add hash to code field
     code = models.CharField(
         db_column='code',
-        max_length=10,
+        max_length=90,
     )
 
     objects = OtpCodeManager()

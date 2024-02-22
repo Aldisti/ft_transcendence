@@ -26,6 +26,9 @@ class ManageView(APIView):
     throttle_classes = [LowLoadThrottle]
 
     def get(self, request) -> Response:
+        user = request.user
+        if not user.has_tfa():
+            return Response(data={'is_active': False})
         user_tfa = request.user.user_tfa
         return Response(data=user_tfa.to_data(), status=200)
 

@@ -50,7 +50,7 @@ def create_user(data) -> tuple[User, dict[str, str]] | tuple[None, None]:
             delete_request(delete_urls[i].replace('<pk>', data['username']))
         return None, None
     user = user_serializer.create(user_serializer.validated_data)
-    logger.warning(f"user: {CompleteUserSerializer(user).data}")
+    # logger.warning(f"user: {CompleteUserSerializer(user).data}")
     return user, api_response.json()
 
 
@@ -78,8 +78,8 @@ def test(request):
 @permission_classes([IsUser])
 def upload_profile_picture(request):
     user = request.user
-    logger.warning(f"data: {request.data}")
-    logger.warning(f"FILE: {request.FILES}")
+    # logger.warning(f"data: {request.data}")
+    # logger.warning(f"FILE: {request.FILES}")
     upload_image_serializer = UploadImageSerializer(data=request.data)
     if not upload_image_serializer.is_valid():
         return Response(status=400)
