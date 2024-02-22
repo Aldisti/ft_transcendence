@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.conf import settings
 
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, throttle_classes
 from rest_framework.response import Response
 
 from transcendence.permissions import IsUser
@@ -184,6 +184,7 @@ def reject_match_req(request):
 
 @api_view(['GET'])
 @permission_classes([IsUser])
+@throttle_classes([])
 def get_results(request):
     query_params = "?" + "&".join([f"{key}={value}" for key, value in request.query_params.items()])
     url = settings.MS_URLS["GAME_GET_RESULTS"] + query_params
@@ -194,6 +195,7 @@ def get_results(request):
 
 @api_view(['GET'])
 @permission_classes([IsUser])
+@throttle_classes([])
 def get_all_results(request):
     query_params = "?" + "&".join([f"{key}={value}" for key, value in request.query_params.items()])
     url = settings.MS_URLS["GAME_GET_ALL_RESULTS"] + query_params
@@ -204,6 +206,7 @@ def get_all_results(request):
 
 @api_view(['GET'])
 @permission_classes([IsUser])
+@throttle_classes([])
 def get_stats(request):
     username = request.query_params.get("username", "")
     url = settings.MS_URLS["GAME_GET_STATS"] + f"?username={username}"
