@@ -195,7 +195,8 @@ def get_all_results(request):
         result = getattr(stats, "result", None)
         if result is None:
             scores[Results.LOSE] += 1
-        scores[result] += 1
+        else:
+            scores[result] += 1
     return Response(scores, status=200) 
 
 
