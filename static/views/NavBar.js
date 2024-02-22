@@ -13,9 +13,12 @@ export default function createNavBar(){
 	  localStorage.setItem("language", "en")
 
   let language = allLanguage[localStorage.getItem("language")];
-  let showAdmin = "U"
+  let showAdmin = "U";
+  let roleDescriptor;
+  if (localStorage.getItem("token") != null)
+    roleDescriptor = localStorage.getItem("token").split(".")[1];
   if (localStorage.getItem("jwt") != null){
-    showAdmin = JSON.parse(window.decode64(localStorage.getItem("jwt"))).role
+    showAdmin = JSON.parse(window.decode64(roleDescriptor)).role
   }
   let defaultProfilePicture = "https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg";
   document.querySelector("#navbar").innerHTML = `

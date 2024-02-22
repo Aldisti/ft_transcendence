@@ -133,7 +133,7 @@ export default class extends Aview{
      */
     setup(){
         this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpeg")
-        let roleDescriptor = localStorage.getItem("token").split["."][1];
+        let roleDescriptor = localStorage.getItem("token").split(".")[1];
         let role = JSON.parse(window.decode64(roleDescriptor)).role;
 
         if (role != "A" && role != "M")
