@@ -123,7 +123,8 @@ export default class extends Aview {
 
         let radarChart = {type: "radar", colors: ["#00afb9", "#f07167", "#2a9d8f"], maxValue: 100};
         API.getPongMaestry(1, params.get("username")).then(res=>{
-            console.log(res)
+            if (Object.keys(res).length == 0)
+                return ;
 
             Object.keys(res).forEach(el=>{
             })
@@ -134,8 +135,8 @@ export default class extends Aview {
 
         let donutChartMatch = {type: "donut", colors: ["#00afb9", "#f07167", "#2a9d8f"]};
         API.getDonutChart(1, params.get("username"), "&tournament=true").then(res=>{
-            console.log(res)
-
+            if (Object.keys(res).length == 0)
+                return ;
             let valueSum = 0;
             Object.keys(res).forEach(el=>{
                 valueSum += res[el];
@@ -147,7 +148,8 @@ export default class extends Aview {
 
         let verticalChart = {type: "vertical", colors: ["#00afb9", "#f07167", "#2a9d8f"]};
         API.getIstogram(1, params.get("username")).then(res=>{
-            console.log(res)
+            if (Object.keys(res).length == 0)
+                return ;
             let maxValue = 0;
             let obj = {};
             Object.keys(res).forEach(el=>{
@@ -155,6 +157,8 @@ export default class extends Aview {
                     maxValue = res[el].win;
                 obj[el] = res[el].win;
             })
+            if (maxValue == 0)
+                return
             verticalChart.maxValue = maxValue;
             verticalChart.values = obj;
             chart(document.querySelector("#first"), verticalChart, true);
@@ -162,7 +166,8 @@ export default class extends Aview {
 
         let donutChartTournament = {type: "donut", colors: ["#00afb9", "#f07167", "#2a9d8f"]};
         API.getDonutChart(1, params.get("username"), "").then(res=>{
-            console.log(res)
+            if (Object.keys(res).length == 0)
+                return ;
 
             let valueSum = 0;
             Object.keys(res).forEach(el=>{
