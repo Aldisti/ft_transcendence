@@ -224,8 +224,11 @@ def get_user_info(request):
     serializer = CompleteUserSerializer(user)
     data = serializer.data
     picture = data["user_info"]["picture"]
+    protocol = request.headers.get("X-Forwarded-Proto", "")
+    if protocol == "":
+        protocol = settings.PROTOCOL
     host = request.headers.get("Host")
-    data["user_info"]["picture"] = None if picture is None else f"{settings.PROTOCOL}://{host}{picture}"
+    data["user_info"]["picture"] = None if picture is None else f"{protocol}://{host}{picture}"
     return Response(data, status=200)
 
 
@@ -290,11 +293,14 @@ def list_users(request):
     data = api_response.json()
     users_json = data.get("results", [])
     logger.warning(data)
+    protocol = request.headers.get("X-Forwarded-Proto", "")
+    if protocol == "":
+        protocol = settings.PROTOCOL
     host = request.headers.get("Host", "")
     for user_json in users_json:
         try:
             user = User.objects.get(pk=user_json.get("username", ""))
-            picture_url = f"{settings.PROTOCOL}://{host}{user.get_picture().url}"
+            picture_url = f"{protocol}://{host}{user.get_picture().url}"
         except User.DoesNotExist:
             return Response({"message": "Databases desynchronized"}, status=500)
         except ValueError:

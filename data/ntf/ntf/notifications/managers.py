@@ -28,6 +28,7 @@ class NotificationManager(models.Manager):
     def send_notification(self, notification):
         #logger.warning(f"SENDING NOTIFICATION")
         user_websocket = notification.user
+        logger.warning(f"sending notification to: {user_websocket}")
         ntf_channels = user_websocket.ntf_channels.all()
         channel_layer = layers.get_channel_layer()
         for ntf_channel in ntf_channels:

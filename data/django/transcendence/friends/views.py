@@ -77,7 +77,8 @@ def are_friends(request):
 
 
 @api_view(['GET'])
-@permission_classes([IsUser])
+#@permission_classes([IsUser])
+@permission_classes([])
 def get_all_friends(request):
     user = request.user
     url = f"{settings.MS_URLS['FRIENDS_ALL']}?username={user.username}"
