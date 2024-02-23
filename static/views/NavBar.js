@@ -7,6 +7,7 @@ import Router from "/router/mainRouterFunc.js"
 import * as notificationSocket from "/viewScripts/notification/notificatioSocket.js";
 import * as chatSocket from "/viewScripts/chat/chatSocket.js";
 
+let flag = true;
 
 export default function createNavBar(){
   if (localStorage.getItem("language") == null)
@@ -100,7 +101,8 @@ export default function createNavBar(){
       </nav>
   `
 
-  if (localStorage.getItem("username") != undefined){
+  if (localStorage.getItem("username") != undefined && flag){
+    flag = false;
     chatSocket.start()
     notificationSocket.start();
     document.querySelector(".logoutBtn").addEventListener("click", ()=>{
