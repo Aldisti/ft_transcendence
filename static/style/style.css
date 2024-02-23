@@ -141,6 +141,10 @@ body {
     width: 100svw !important;
 }
 
+.nav-link:hover{
+    cursor: pointer;
+}
+
 .nav-link {
     font-size: 30px;
     color: white !important;

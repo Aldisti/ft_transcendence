@@ -273,14 +273,21 @@ export async function updatePassword(recursionProtection, data, dupThis) {
 
 
 export async function updateEmail(data) {
-    const rest = await fetch(URL.userAction.UPDATE_EMAIL, {
-        method: "POST",
+    const res = await fetch(URL.userAction.UPDATE_EMAIL, {
+        method: "PATCH",
+        credentials: "include",
         headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "application/json"
         },
         body: JSON.stringify(data),
     })
-    return (rest);
+    if (res.ok){
+        return (true);
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(updateEmail, 0, data);
+    return (false);
 }
 
 export async function logout(recursionProtection) {

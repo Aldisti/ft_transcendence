@@ -91,8 +91,8 @@ export default function createNavBar(){
                   <p class="switchLable">${language.navbar.modern}</p>
                 </li>
               ${localStorage.getItem("username") == undefined ? `` : `<li><a class="nav-link active" data-link href="/account/" >${language.navbar.accountMenu}</a></li>`}
-              ${localStorage.getItem("username") == undefined ? `` : `<li><div class="nav-link active logoutBtn" data-link href="/account/" >${language.navbar.logout}</div></li>`}
               ${showAdmin === "A" ? `<li><a class="nav-link active" data-link href="/admin/" >${language.navbar.adminPage}</a></li>` : ``}
+              ${localStorage.getItem("username") == undefined ? `` : `<li><div class="nav-link active logoutBtn" data-link href="/account/" >${language.navbar.logout}</div></li>`}
             </ul>
           </div>
         </div>

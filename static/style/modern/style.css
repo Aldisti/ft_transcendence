@@ -21,6 +21,10 @@
     transition: 0.3s, background-color 0s;
 }
 
+.logoutBtn:hover{
+    cursor: pointer;
+}
+
 .connected{
     background-color: var(--bs-success) !important;
 }
@@ -142,6 +146,10 @@ body {
     width: 100svw !important;
 }
 
+.nav-link:hover{
+    cursor: pointer;
+}
+
 .nav-link {
     font-size: 30px;
     color: white !important;
@@ -164,6 +172,10 @@ body {
     gap: 10px;
     border-radius: 0px !important;
     border: 2px solid white !important;
+}
+
+.logoutBtn:hover{
+    cursor: pointer;
 }
 
 .retroBtn:hover,
