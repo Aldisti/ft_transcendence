@@ -7,17 +7,18 @@ export USERNAME=$(whoami)
 export CERTS_DIR="/home/$USERNAME/certs"
 export DJANGO_SETTINGS_MODULE=${PROJECT_NAME}.settings
 
+cd develop/$PROJECT_NAME
 
-python $PROJECT_NAME/manage.py makemigrations
-python $PROJECT_NAME/manage.py migrate
-python $PROJECT_NAME/manage.py create_admin
+./manage.py makemigrations
+./manage.py migrate
+./manage.py create_admin
 if ! [ $? -eq 0 ]; then
 	echo "\033[31;1;5mCouldn't create admin in $PROJECT_NAME\033[0m"
 fi
 
 
 # development
-python $PROJECT_NAME/manage.py runserver 0.0.0.0:8000
+./manage.py runserver 0.0.0.0:8000
 
 if grep $PROJECT_NAME <<< "$GUNICORN_SERVERS"; then # GUNICORN
 	# https
@@ -34,3 +35,4 @@ else
 	echo "$PROJECT_NAME not in daphne or gunicorn lists"
 	exit 101
 fi
+

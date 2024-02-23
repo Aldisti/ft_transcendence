@@ -29,7 +29,7 @@ USER $USERNAME
 RUN mkdir -p /home/$USERNAME/develop
 RUN mkdir -p /home/$USERNAME/certs
 
-WORKDIR /home/$USERNAME/develop
+WORKDIR /home/$USERNAME
 
 COPY ./tools/setting.sh ../setting.sh
 

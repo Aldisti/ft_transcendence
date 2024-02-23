@@ -12,6 +12,7 @@ services:
       - "8000-8020:8000-8020"
     volumes:
       - django:/home/$USERNAME/develop
+      - rsa:/home/${USERNAME}/rsa
     env_file:
       - ./transcendence/.env
     environment:
@@ -71,6 +72,7 @@ services:
       start_interval: 5s
     volumes:
       - auth:/home/${USERNAME}/develop
+      - rsa:/home/${USERNAME}/rsa
     env_file:
       - ./auth/.env
     environment:
@@ -98,6 +100,7 @@ services:
       - "7000-7020:8000-8020"
     volumes:
       - pong:/home/$USERNAME/develop
+      - rsa:/home/${USERNAME}/rsa
     env_file:
       - ./pong/.env
     environment:
@@ -459,6 +462,22 @@ volumes:
       type: "none"
       o: "bind"
       device: "$PWD/data/ntfdb"
+
+  rsa:
+    name: "rsa"
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "$PWD/rsa"
+
+  certs:
+    name: "rsa"
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "$PWD/certs"
 
 networks:
   django-net:

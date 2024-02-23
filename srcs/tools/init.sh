@@ -5,6 +5,8 @@ ENV_FILE="./srcs/.env"
 CRON_ENV="./srcs/cron/.env"
 CERT_DIR="./certs"
 CERT_NAME="transcendence"
+RSA_DIR="./rsa"
+RSA_NAME="rsa"
 
 RESET="\033[0m"
 RED="\033[31;1m"
@@ -75,10 +77,26 @@ check_certs ()
 	openssl req -x509 -noenc -out "$cert_path.crt" -keyout "$cert_path.key" \
 	-subj "/C=IT/ST=Italy/L=Rome/O=42/OU=Trinity/CN=transcendence/UID=trinity" \
 	> /dev/null 2>&1
+	echo -e "$PURPLE new certs created$RESET"
+}
+
+check_rsa ()
+{
+	if ! [ -d $RSA_DIR ]; then
+		mkdir $RSA_DIR
+	fi
+	if [ -f "$RSA_DIR/$RSA_NAME.pem" ] && [ -f "$RSA_DIR/$RSA_NAME.crt" ]; then
+		return 0
+	fi
+	openssl genrsa -out "$RSA_DIR/$RSA_NAME.pem" 2048
+	openssl rsa -in "$RSA_DIR/$RSA_NAME.pem" -pubout -out "$RSA_DIR/$RSA_NAME.crt" \
+	> /dev/null 2>&1
+	echo -e "$PURPLE new rsa pair created$RESET"
 }
 
 create_env
 create_volume_dirs
 $SHELL ./srcs/tools/cron_env.sh
 check_certs
+check_rsa
 

@@ -28,8 +28,6 @@ APP_ENV: dict[str, dict[str, str]] = {
         'INTRA_SECRET': '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',
         'GOOGLE_ID': '608692791188-2nkebjcfel5f7n5mlsvmtd1662i6bebl.apps.googleusercontent.com',
         'GOOGLE_SECRET': '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',
-        'RSA_PRIVATE_KEY_PATH': '/var/.rsa/rsa.pem',
-        'RSA_PUBLIC_KEY_PATH': '/var/.rsa/rsa.crt',
     },
     'PONG': {
         'path': './srcs/pong/.env',
