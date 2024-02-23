@@ -101,10 +101,17 @@ export default function createNavBar(){
       </nav>
   `
 
+  if (localStorage.getItem("username") == null){
+    flag = true;
+  }
+
   if (localStorage.getItem("username") != undefined && flag){
     flag = false;
     chatSocket.start()
     notificationSocket.start();
+  }
+
+  if (localStorage.getItem("username") != null){
     document.querySelector(".logoutBtn").addEventListener("click", ()=>{
       if (!confirm(language.update.confirmLogout))
         return;
