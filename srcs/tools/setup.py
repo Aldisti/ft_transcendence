@@ -59,12 +59,28 @@ APP_ENV: dict[str, dict[str, str]] = {
         'DB_HOST': 'ntfdb',
         'DB_PORT': '5432',
     },
+    # 'NGINX': {
+	# 	'path': './srcs/nginx/.env',
+	# },
     'ALL': {
         'path': './srcs/.env',
         # dbs
         'PGDATA': '/var/lib/postgresql/data/pgdata',
-        # general
+        # nginx
         'SERVER_FRONTEND_IP': 'localhost',
+        'FRONT_PORT': '4242',
+		'NGINX_HOST': 'localhost',
+		'DJANGO_HOST': 'django',
+		'DJANGO_PORT': '8000',
+		'AUTH_HOST': 'auth',
+  		'AUTH_PORT': '8000',
+		'PONG_HOST': 'pong',
+		'PONG_PORT': '7000',
+		'CHAT_HOST': 'chat',
+		'CHAT_PORT': '6000',
+		'NTF_HOST': 'ntf',
+  		'NTF_PORT': '9000',
+        # boh
         'EXCHANGE': 'my_exchange',
         # rabbit
         'RABBIT_HOST': 'rabbit_mq',

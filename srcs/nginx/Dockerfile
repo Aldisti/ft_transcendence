@@ -1,12 +1,34 @@
 FROM nginx:1.25.3
 
-ENV NGINX_PORT=8080
-ENV NGINX_HOST="localhost"
-ENV WSGI_PORT=8080
-ENV WSGI_HOST="localhost"
-ENV GAME_PORT=8080
-ENV GAME_HOST="localhost"
-ENV CHAT_PORT=8080
-ENV CHAT_HOST="localhost"
+RUN apt update && apt upgrade -y
+RUN apt install openssl vim -y
 
-RUN mkdir /static
+ARG USERNAME
+ARG GROUPNAME
+ARG UID
+ARG GID
+
+RUN groupadd -g $GID $GROUPNAME
+RUN useradd -m -u $UID -g $GID $USERNAME
+RUN usermod -a -G $GROUPNAME nginx
+
+#RUN chown -R $UID:$GID /var/cache/nginx
+#RUN chown -R $UID:$GID /var/run/
+
+#USER $USERNAME
+
+RUN mkdir -p /home/$USERNAME
+
+WORKDIR /home/$USERNAME/
+
+RUN mkdir -p images/media
+RUN chown -R $UID:$GID images/media
+RUN mkdir /home/$USERNAME/certs \
+		/home/$USERNAME/django \
+		/home/$USERNAME/auth \
+		/home/$USERNAME/pong \
+		/home/$USERNAME/chat \
+		/home/$USERNAME/ntf
+
+CMD ["nginx","-g","daemon off;"]
+

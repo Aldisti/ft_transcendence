@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-wkldsdvnwkl8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 ">
+    <link class="baseStyle" rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="/style/bootstrap.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="/imgs/logo.png">
+    <style>
+      .loaderOverlay{
+        width: 100svw;
+        height: 100%;
+        background-color: var(--bs-dark);
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 20000000000000000000000000;
+        transition: 0.4s !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    </style>
+    <script type="importmap">
+      {
+        "imports": {
+        "three": "/three/three.module.js",
+        "three/addons/": "/three/"
+        }
+      }
+      </script>
+    <title>Transcendence</title>
+</head>
+<body>
+  <div class="loaderOverlay">
+  </div>
+    <div id="navbar">
+
+    </div>
+    <div tabindex="-1" class="chat chatContainer">
+      <div tabindex="-1" class="chat chatSideList">
+
+      </div>
+      <div tabindex="-1" class="chat chatFull">
+        <div class="chatTitle chat">
+
+        </div>
+        <div tabindex="-1" class="chat chatBox">
+        </div>
+        <div tabindex="-1" class="chat chatInput">
+          <textarea maxlength="300"  tabindex="-1" class="chat" name="message" id="chatInputElement" cols="30" rows="1"></textarea>
+          <button tabindex="-1" class="chat submitChatInput importantSubmit">></button>
+        </div>
+      </div>
+    </div>
+    <div id="app">
+    </div>
+      <footer class="py-3 my-4">
+        <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+          <li class="nav-item"><a href="https://github.com/Ukudot" class="nav-link px-2 text-body-secondary">Gpanico</a></li>
+          <li class="nav-item"><a href="https://github.com/Aldisti/" class="nav-link px-2 text-body-secondary">Adi-Stef</a></li>
+          <li class="nav-item"><a href="https://github.com/marcopf" class="nav-link px-2 text-body-secondary">Mpaterno</a></li>
+        </ul>
+        <p class="text-center text-body-secondary">© 2024 Transcendence, Inc</p>
+      </footer>
+    <!-- <footer>
+      <div class="custom-shape-divider-top-1707748811">
+        <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" class="shape-fill"></path>
+            <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" class="shape-fill"></path>
+            <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" class="shape-fill"></path>
+        </svg>
+    </div>
+        <div class="logo-side">
+          <img src="/imgs/logo.png" alt="">
+        </div>
+        <div class="creators">
+            <h1>CREATORS</h1>
+            <h4>Gpanico <a href="https://github.com/ukudot"><img src="/imgs/githubLogo.png" alt=""></a></h4>
+            <h4>Adi-Stef <a href="https://github.com/Aldisti/"><img src="/imgs/githubLogo.png" alt=""></a></h4>
+            <h4>Mpaterno <a href="https://github.com/marcopf"><img src="/imgs/githubLogo.png" alt=""></a></h4>
+        </div>
+        <div class="donate">
+            <h1>Donate!</h1>
+            <h4>buy us a coffe!</h4>
+        </div>
+        <div class="legals">
+            <h1>Legal</h1>
+            <h6>2023 - © TRANSCENDENCE property of transcendence s.p.a. all rights reserved</h6>
+        </div>
+      </div>
+      <div class="custom-shape-divider-bottom-1707748625">
+        <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" class="shape-fill"></path>
+            <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" class="shape-fill"></path>
+            <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" class="shape-fill"></path>
+        </svg>
+    </div>
+    </footer> -->
+    <script>
+      if (localStorage.getItem("language") == null)
+        localStorage.setItem("language", "en");
+      if (localStorage.getItem("style") == null)
+        localStorage.setItem("style", "modern");
+      if (localStorage.getItem("darkMode") == null)
+        localStorage.setItem("darkMode", "false");
+    </script>
+    <script type="module" src="/router/router.js"></script>
+    <script src="/globalFunction/globalFunction.js"></script>
+    <script src="/scripts/bootstrap.bundle.min.js"></script>
+    <script type="module" src="/viewScripts/chat/chat.js"></script>
+    <script type="module" src="/viewScripts/chat/chatSocket.js"></script>
+    <script type="module" src="/viewScripts/notification/notificatioSocket.js"></script>
+    <script src="/viewScripts/touchHandler.js"></script>
+    <script src="/qrCode.js"></script>
+    <script>
+      function getClosestSubmit(){
+        let focusedElement = document.activeElement;
+
+        while (focusedElement != null){
+          focusedElement = focusedElement.parentNode
+          if (focusedElement.querySelector(".importantSubmit") != null)
+            return (focusedElement.querySelector(".importantSubmit"))
+        }
+        return (null);
+      }
+      document.addEventListener("keypress", e=>{
+        if (e.key == "Enter")
+        {
+          let el = document.activeElement.nextElementSibling
+
+          if (el != null && el.tagName == "BUTTON")
+            el.click()
+          else if(document.querySelector(".importantSubmit") != null){
+            getClosestSubmit().click()
+          }
+        }
+      })
+    </script>
+</body>
+</html>

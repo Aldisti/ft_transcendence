@@ -235,7 +235,9 @@ def update_email(request) -> Response:
     )
     if api_response.status_code != 200:
         return Response(data=api_response.json(), status=api_response.status_code)
-    User.objects.update_user_email(request.user)
+    email_info = api_response.json()
+    User.objects.update_user_email(request.user, email=email)
+    send_verify_email(**email_info)
     return Response(status=200)
 
 

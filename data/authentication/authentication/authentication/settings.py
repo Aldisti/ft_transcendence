@@ -106,16 +106,16 @@ REST_FRAMEWORK = {
 # Django SimpleJWT
 # https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html
 
-RSA_PRIVATE_KEY_PATH = environ['RSA_PRIVATE_KEY_PATH']
-RSA_PUBLIC_KEY_PATH = environ['RSA_PUBLIC_KEY_PATH']
+RSA_PRIVATE_KEY_PATH = f"/home/{environ['USERNAME']}/rsa/rsa.pem"
+RSA_PUBLIC_KEY_PATH = f"/home/{environ['USERNAME']}/rsa/rsa.crt"
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),  # TODO: change lifetime to at most 5 minutes
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 
     "ALGORITHM": "RS256",
-    "SIGNING_KEY": open(RSA_PRIVATE_KEY_PATH, 'r').read(),  # if path.isfile(RSA_PRIVATE_KEY_PATH) else '',
-    "VERIFYING_KEY": open(RSA_PUBLIC_KEY_PATH, 'r').read(),  # if path.isfile(RSA_PUBLIC_KEY_PATH) else '',
+    "SIGNING_KEY": open(RSA_PRIVATE_KEY_PATH, 'r').read(),
+    "VERIFYING_KEY": open(RSA_PUBLIC_KEY_PATH, 'r').read(),
     "AUDIENCE": "transcendence",
     "ISSUER": "transcendence.auth",
 

@@ -18,6 +18,7 @@ data/postgres
 data/*db/
 **/image.jpg
 certs
+rsa
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

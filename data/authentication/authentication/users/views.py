@@ -137,12 +137,17 @@ def update_email(request) -> Response:
     """
     body: {"email": <email>, "password": <password>}
     """
+    email = request.data.get('email', '')
+    password = request.data.get('password', '')
     try:
-        user = User.objects.update_email(request.user, **request.data)
+        user = User.objects.update_email(request.user, email=email, password=password)
     except ValueError as e:
         return Response(data={'error': str(e)}, status=400)
     UserTFA.objects.deactivate(user.user_tfa)
-    return Response(status=200)
+    if user.has_email_token():
+        user.email_token.delete()
+    email_token = EmailVerificationToken.objects.create(user=user)
+    return Response(data=email_token.to_data(), status=200)
 
 
 @api_view(['PATCH'])
@@ -195,6 +200,7 @@ def get_user(request, username: str) -> Response:
         return Response(data={'message': 'user not found'}, status=404)
     user_serializer = UserSerializer(user)
     return Response(data=user_serializer.data, status=200)
+
 
 class ListUser(ListAPIView):
     queryset = User.objects.all()

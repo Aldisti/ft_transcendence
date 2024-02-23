@@ -89,20 +89,13 @@ REST_FRAMEWORK = {
 # Django SimpleJWT
 # https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html
 
-
-def get_public_key() -> str:
-    try:
-        api_response = get("http://auth:8000/auth/retrieve/public-key/")
-    except exceptions.ConnectionError:
-        exit(21)
-    if api_response.status_code != 200:
-        exit(22)
-    return api_response.json().get("public_key", '')
-
+RSA_PRIVATE_KEY_PATH = f"/home/{environ['USERNAME']}/rsa/rsa.pem"
+RSA_PUBLIC_KEY_PATH = f"/home/{environ['USERNAME']}/rsa/rsa.crt"
 
 SIMPLE_JWT = {
     "ALGORITHM": "RS256",
-    "VERIFYING_KEY": get_public_key(),
+    "SIGNING_KEY": open(RSA_PRIVATE_KEY_PATH, 'r').read(),
+    "VERIFYING_KEY": open(RSA_PUBLIC_KEY_PATH, 'r').read(),
     "AUDIENCE": "transcendence",
     "ISSUER": "transcendence.auth",
 

@@ -69,10 +69,12 @@ class UserManager(BaseUserManager):
     def update_email(self, user, **kwargs):
         email = kwargs.get('email', '')
         password = kwargs.get('password', '')
-        if (email == '' or password == ''
-                or not user.check_password(password)
-                or email == user.email):
-            raise ValueError('invalid email or password')
+        if email == '' or password == '':
+            raise ValueError('missing email or password')
+        if not user.check_password(password):
+            raise ValueError('invalid password')
+        if email == user.email:
+            raise ValueError('invalid email')
         user.email = email
         user.full_clean()
         user.save()

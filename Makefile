@@ -38,6 +38,7 @@ down:
 
 clean: down
 	@docker rmi -f \
+		trinity/nginx \
 		trinity/transcendence \
 		trinity/pong \
 		trinity/chat \

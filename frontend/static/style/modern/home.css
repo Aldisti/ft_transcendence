@@ -1,0 +1,106 @@
+*:not(#navbar, nav, .navbar, #app, body){
+    border-radius: 8px ;
+}
+
+*{
+    font-family: 'Arial', sans-serif;
+    font-weight: bold;
+}
+
+.account{
+    border-radius: 10px !important;
+}
+
+.profilePictureUrl{
+    border-radius: 10px !important;
+}
+
+.base {
+    width: 100svw;
+    height: 95svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.firstLine,
+.secondLine {
+    display: flex;
+    justify-content: space-between;
+    width: 90%;
+    height: 45%;
+    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 60%;
+    height: 100%;
+    padding: 30px;
+    font-size: 23px !important;
+    text-shadow: none !important;
+    color: white !important;
+}
+
+.text p {
+    text-shadow: none !important;
+    color: white !important;
+    font-size: large;
+}
+
+.retroShade {
+	box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+    transition: 0.2s;
+}
+
+.title {
+    width: 100%;
+    text-align: start;
+    font-size: 40px;
+}
+
+#padle,
+#ground {
+    width: 40% !important;
+    height: 100% !important;
+}
+
+@media screen and (max-width: 900px) {
+    .title {
+        color: white;
+    }
+    .base {
+        height: fit-content;
+    }
+    .text {
+        width: 100%;
+        padding: 15px;
+    }
+    .firstLine,
+    .secondLine {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        background-color: purple;
+        width: 100%;
+        height: 95%;
+    }
+    .secondLine {
+        flex-direction: column-reverse;
+    }
+    .text p {
+        width: 100%;
+        color: white !important;
+    }
+    #padle,
+    #ground {
+        width: 100% !important;
+        height: 30% !important;
+    }
+}

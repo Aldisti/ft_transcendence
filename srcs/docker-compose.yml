@@ -1,6 +1,52 @@
 version: "3.8"
 
 services:
+  nginx:
+    container_name: nginx
+    build:
+      context: ./nginx
+      args:
+        - USERNAME=${USERNAME}
+        - GROUPNAME=${GROUPNAME}
+        - UID=${UID}
+        - GID=${GID}
+#    user: ${UID}:${GID}
+    image: trinity/nginx
+    restart: always
+    ports:
+      - "4242:4242" # front
+      - "6000:6000" # chat
+      - "7000:7000" # pong
+      - "8000:8000" # django
+      - "9000:9000" # ntf
+    volumes:
+      - certs:/home/${USERNAME}/certs
+      - media:/home/${USERNAME}/images/media
+      - nginx_templates:/etc/nginx/templates
+      - frontend:/home/${USERNAME}/frontend
+    environment:
+      - USERNAME=${USERNAME}
+      - FRONT_HOST=${SERVER_FRONTEND_IP}
+      - FRONT_PORT=${FRONT_PORT}
+      - NGINX_PORT=${DJANGO_PORT}
+      - NGINX_HOST=${NGINX_HOST}
+      - DJANGO_HOST=${DJANGO_HOST}
+      - DJANGO_PORT=${DJANGO_PORT}
+      - AUTH_HOST=${AUTH_HOST}
+      - AUTH_PORT=${AUTH_PORT}
+      - PONG_HOST=${PONG_HOST}
+      - PONG_PORT=${PONG_PORT}
+      - CHAT_HOST=${CHAT_HOST}
+      - CHAT_PORT=${CHAT_PORT}
+      - NTF_HOST=${NTF_HOST}
+      - NTF_PORT=${NTF_PORT}
+    networks:
+      - django-net
+      - nginx-net
+    depends_on:
+      - django
+
+
   django:
     container_name: django
     build:
@@ -8,10 +54,11 @@ services:
     user: ${UID}:${GID}
     image: trinity/transcendence
     restart: always
-    ports:
-      - "8000-8020:8000-8020"
+#    ports:
+#      - "8000-8020:8000-8020"
     volumes:
-      - django:/home/$USERNAME/develop
+      - django:/home/${USERNAME}/develop
+      - media:/home/${USERNAME}/media
       - rsa:/home/${USERNAME}/rsa
     env_file:
       - ./transcendence/.env
@@ -19,7 +66,6 @@ services:
       - ADMIN_USERNAME=${ADMIN_USERNAME}
       - ADMIN_EMAIL=${ADMIN_EMAIL}
       - USERNAME=${USERNAME}
-      - SERVER_FRONTEND_IP=${SERVER_FRONTEND_IP}
       - EMAIL_HOST=${EMAIL_HOST}
       - EMAIL_PORT=${EMAIL_PORT}
       - EMAIL_HOST_USER=${EMAIL_HOST_USER}
@@ -32,14 +78,21 @@ services:
       - VHOST_NTF=${VHOST_NTF}
       - RABBIT_HEARTBEAT=${RABBIT_HEARTBEAT}
       - RABBIT_BC_TIMEOUT=${RABBIT_BC_TIMEOUT}
-      - CHAT_HOST=chat
-      - CHAT_PORT=8000
-      - NTF_HOST=ntf
-      - NTF_PORT=8000
-      - PONG_HOST=pong
-      - PONG_PORT=8000
-      - AUTH_HOST=auth
-      - AUTH_PORT=8000
+      # nginx
+      - SERVER_FRONTEND_IP=${SERVER_FRONTEND_IP}
+      - FRONT_PORT=${FRONT_PORT}
+      - NGINX_PORT=${DJANGO_PORT}
+      - NGINX_HOST=${NGINX_HOST}
+      - DJANGO_HOST=${DJANGO_HOST}
+      - DJANGO_PORT=${DJANGO_PORT}
+      - AUTH_HOST=${AUTH_HOST}
+      - AUTH_PORT=${AUTH_PORT}
+      - PONG_HOST=${PONG_HOST}
+      - PONG_PORT=${PONG_PORT}
+      - CHAT_HOST=${CHAT_HOST}
+      - CHAT_PORT=${CHAT_PORT}
+      - NTF_HOST=${NTF_HOST}
+      - NTF_PORT=${NTF_PORT}
     healthcheck:
       test: curl -sf http://localhost:8000/auth/retrieve/public-key/ -o /dev/null
       retries: 3
@@ -52,8 +105,6 @@ services:
       - rabbit-net
     depends_on:
       postgres:
-        condition: service_healthy
-      auth:
         condition: service_healthy
 
 
@@ -96,8 +147,8 @@ services:
     user: ${UID}:${GID}
     image: trinity/pong
     restart: always
-    ports:
-      - "7000-7020:8000-8020"
+#    ports:
+#      - "7000-7020:8000-8020"
     volumes:
       - pong:/home/$USERNAME/develop
       - rsa:/home/${USERNAME}/rsa
@@ -127,8 +178,6 @@ services:
       pongdb:
         condition: service_healthy
         restart: true
-      auth:
-        condition: service_healthy
 
 
   chat:
@@ -138,8 +187,8 @@ services:
     user: ${UID}:${GID}
     image: trinity/chat
     restart: always
-    ports:
-      - "9001:8000"
+#    ports:
+#      - "9001:8000"
     volumes:
       - chat:/home/$USERNAME/develop
     env_file:
@@ -171,8 +220,8 @@ services:
     user: ${UID}:${GID}
     image: trinity/ntf
     restart: always
-    ports:
-      - "9000:8000"
+#    ports:
+#      - "9000:8000"
     volumes:
       - ntf:/home/$USERNAME/develop
     env_file:
@@ -472,14 +521,41 @@ volumes:
       device: "$PWD/rsa"
 
   certs:
-    name: "rsa"
+    name: "certs"
     driver: local
     driver_opts:
       type: "none"
       o: "bind"
       device: "$PWD/certs"
 
+  frontend:
+    name: "frontend"
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "$PWD/frontend"
+
+  media:
+    name: "media"
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "$PWD/media"
+
+  nginx_templates:
+    name: "nginx_templates"
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "$PWD/srcs/nginx/conf"
+
 networks:
+  nginx-net:
+    name: "nginx-net"
+
   django-net:
     name: "django-net"
 

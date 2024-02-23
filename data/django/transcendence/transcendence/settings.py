@@ -40,10 +40,6 @@ DEBUG = True
 ALLOWED_HOSTS = ["*"]
 # DEFAULT_HOST = "http://localhost:8000"
 
-# Asgi application
-
-ASGI_APPLICATION = "transcendence.asgi.application"
-
 # Channels layer
 
 CHANNEL_LAYERS = {
@@ -55,7 +51,6 @@ CHANNEL_LAYERS = {
 # Application definition
 
 INSTALLED_APPS = [
-    'daphne',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -69,10 +64,8 @@ INSTALLED_APPS = [
     'two_factor_auth',
     'channels',
     'friends',
-    'multiplayer_test',
     'pong',
     'chat',
-    # tmp for testing reasons
     'corsheaders',
 ]
 
@@ -84,7 +77,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # tmp for testing reasons
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
 ]
@@ -114,24 +106,16 @@ REST_FRAMEWORK = {
 # Django SimpleJWT
 # https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html
 
-
-def get_pubkey() -> str:
-    try:
-        api_response = get_request('http://auth:8000/auth/retrieve/public-key/')
-    except ConnectionErrorRequest:
-        exit(21)
-    if api_response.status_code != 200:
-        exit(22)
-    return api_response.json()['public_key']
-
+RSA_PRIVATE_KEY_PATH = f"/home/{environ['USERNAME']}/rsa/rsa.pem"
+RSA_PUBLIC_KEY_PATH = f"/home/{environ['USERNAME']}/rsa/rsa.crt"
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 
     "ALGORITHM": "RS256",
-    "SIGNING_KEY": "",
-    "VERIFYING_KEY": get_pubkey(),
+    "SIGNING_KEY": open(RSA_PRIVATE_KEY_PATH, 'r').read(),
+    "VERIFYING_KEY": open(RSA_PUBLIC_KEY_PATH, 'r').read(),
     "AUDIENCE": "transcendence",
     "ISSUER": "transcendence.auth",
 
@@ -230,7 +214,7 @@ EMAIL_HOST_PASSWORD = environ['EMAIL_HOST_PASSWORD']
 
 # storage
 
-MEDIA_ROOT = f"/home/{environ['USERNAME']}/develop/images/"
+MEDIA_ROOT = f"/home/{environ['USERNAME']}/media/"
 MEDIA_URL = "media/"
 FILE_UPLOAD_PERMISSIONS = 0o644
 
@@ -255,19 +239,19 @@ MAX_MESSAGE_LENGTH = 512
 CLIENT_PROT = 'http'
 
 CHAT_HOST = environ['CHAT_HOST']
-CHAT_PORT = environ['CHAT_PORT']
+CHAT_PORT = 8000
 CHAT_PROT = 'http'
 
 PONG_HOST = environ['PONG_HOST']
-PONG_PORT = environ['PONG_PORT']
+PONG_PORT = 8000
 PONG_PROT = 'http'
 
 NTF_HOST = environ['NTF_HOST']
-NTF_PORT = environ['NTF_PORT']
+NTF_PORT = 8000
 NTF_PROT = 'http'
 
 AUTH_HOST = environ['AUTH_HOST']
-AUTH_PORT = environ['AUTH_PORT']
+AUTH_PORT = 8000
 AUTH_PROT = 'http'
 
 MS_URLS = {
