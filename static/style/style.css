@@ -356,7 +356,7 @@ body {
     justify-content: center;
     align-items: center;
     color: white;
-
+    font-size: x-small;
 }
 
 .chatUserPict {
@@ -454,6 +454,10 @@ body {
     border-bottom: 4px solid black;
     border-bottom-left-radius: 0 !important;
     border-bottom-right-radius: 0 !important;
+    & h2{
+        font-size: medium;
+    }
+
 }
 
 .chatTitle {
