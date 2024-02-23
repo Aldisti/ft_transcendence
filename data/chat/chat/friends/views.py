@@ -82,7 +82,7 @@ def make_friends_request(request):
         NotificationProducer().publish(method="friends_request_ntf", body=json.dumps(body))
         return Response({"message": "The request has been sent"}, status=200)
     elif friends.token == "":
-        return Response({"message": "You're already a friend of this user"}, status=400)
+        return Response({"message": "You and {requested.username} are already friends"}, status=400)
     elif friends.sender == user.username:
         return Response({"message": "You're already sent a request to this user"}, status=400)
     # if the friends request is sent to someone that previously
@@ -107,7 +107,7 @@ def delete_friends(request):
         return response
     friends = FriendsList.objects.get_friends(user, ex_friend)
     if friends is None:
-        return Response({"message": "You're not a friend of this user"}, status=400)
+        return Response({"message": "You're not friend with this user"}, status=400)
     if friends.token != "":
         friends.delete()
         return Response({"message": "Friends request deleted"}, status=200)
@@ -115,9 +115,9 @@ def delete_friends(request):
     delete_chat_entities(friends)
     friends.delete()
     # send notification to the ex friend
-    body = {"receiver": ex_friend.username, "body": f"{user.username} is no more your friend"}
+    body = {"receiver": ex_friend.username, "body": f"{user.username} is no longer your friend"}
     NotificationProducer().publish(method="info_ntf", body=json.dumps(body))
-    return Response({"message": f"You and {ex_friend.username} are no more friends"}, status=200)
+    return Response({"message": f"You and {ex_friend.username} are no longer friends"}, status=200)
 
 
 # TODO: the following endpoints have the same incipit, try to reduce code
