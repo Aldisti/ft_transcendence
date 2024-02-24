@@ -74,6 +74,8 @@ APP_ENV: dict[str, dict[str, str]] = {
         'RABBIT_HEARTBEAT': '20',
         'RABBIT_BC_TIMEOUT': '10',
         'THREAD': '5',
+        'RABBITMQ_DEFAULT_USER': 'gpanico',
+        'RABBITMQ_DEFAULT_PASS': 'password',
         # ntf
         'NTF_ROUTING_KEY': 'notification',
         'NTF_QUEUE': 'ntf_queue',

@@ -385,6 +385,8 @@ DELETE_URLS = [
 RABBIT = {
     "host": environ['RABBIT_HOST'],
     "port": int(environ['RABBIT_PORT']),
+    "user": environ['RABBITMQ_DEFAULT_USER'],
+    "pass": environ['RABBITMQ_DEFAULT_PASS'],
     "heartbeat": int(environ['RABBIT_HEARTBEAT']),
     "bc_timeout": int(environ['RABBIT_BC_TIMEOUT']),
     "exchange": environ['EXCHANGE'],

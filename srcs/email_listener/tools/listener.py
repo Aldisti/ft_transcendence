@@ -14,6 +14,8 @@ logger = logging.getLogger(__name__)
 
 RABBIT_HOST = os.environ['RABBIT_HOST']
 RABBIT_PORT = int(os.environ['RABBIT_PORT'])
+RABBIT_USER = os.environ['RABBITMQ_DEFAULT_USER']
+RABBIT_PASS = os.environ['RABBITMQ_DEFAULT_PASS']
 VHOST = os.environ['VHOST']
 EXCHANGE = os.environ['EXCHANGE']
 EMAIL_ROUTING_KEY = os.environ['EMAIL_ROUTING_KEY']
@@ -28,7 +30,8 @@ SENDER_MAIL = os.environ['EMAIL_HOST_USER']
 class MyThread(threading.Thread):
     def __init__(self, *args, **kwargs):
         super().__init__(group=None, *args, **kwargs)
-        params = pika.ConnectionParameters(host=RABBIT_HOST, port=RABBIT_PORT)
+        credentials = pika.PlainCredentials(RABBIT_USER, RABBIT_PASS)
+        params = pika.ConnectionParameters(host=RABBIT_HOST, port=RABBIT_PORT, credentials=credentials)
         connection = pika.BlockingConnection(params)
         self.channel = connection.channel()
         self.channel.exchange_declare(exchange=EXCHANGE, exchange_type='direct')
