@@ -106,14 +106,14 @@ export default class extends Aview {
                     <h1 class="title">${this.language.displayUser.statisticTitle}</h1>
                     <div class="stats">
                         <div class="chart">
+                        <h3>Ranked</h3>
                             <div class="canvContainer">
-                                <h3>Ranked</h3>
                                 <canvas id="fourth">
                             </div>
                         </div>
                         <div class="chart">
+                        <h3>Tournaments</h3>
                             <div class="canvContainer">
-                                <h3>Tournaments</h3>
                                 <canvas id="second">
                             </div>
                         </div>
@@ -140,11 +140,17 @@ export default class extends Aview {
 
         let radarChart = {type: "radar", colors: ["#00afb9", "#f07167", "#2a9d8f"], maxValue: 100};
         API.getPongMaestry(1, params.get("username")).then(res=>{
+            let flag = true;
             if (Object.keys(res).length == 0)
                 return ;
 
             Object.keys(res).forEach(el=>{
+                if (rel[el] != 0)
+                    flag = false;
             })
+            if (flag){
+                
+            }
             radarChart.values = res
             chart(document.querySelector("#third"), radarChart, true);
         }).catch(e=>{

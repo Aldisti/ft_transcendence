@@ -92,6 +92,7 @@ export default function createNavBar(){
                   <p class="switchLable">${language.navbar.modern}</p>
                 </li>
               ${localStorage.getItem("username") == undefined ? `` : `<li><a class="nav-link active" data-link href="/account/" >${language.navbar.accountMenu}</a></li>`}
+              ${localStorage.getItem("username") == undefined ? `` : `<li><a class="nav-link active" data-link href="/user/?username=${localStorage.getItem("username")}" >${language.navbar.profile}</a></li>`}
               ${showAdmin === "A" ? `<li><a class="nav-link active" data-link href="/admin/" >${language.navbar.adminPage}</a></li>` : ``}
               ${localStorage.getItem("username") == undefined ? `` : `<li><div class="nav-link active logoutBtn" data-link href="/account/" >${language.navbar.logout}</div></li>`}
             </ul>
@@ -110,11 +111,8 @@ export default function createNavBar(){
     chatSocket.start()
     notificationSocket.start();
   }
-
-  if (localStorage.getItem("username") != null){
+  if (document.querySelector(".logoutBtn") != null){
     document.querySelector(".logoutBtn").addEventListener("click", ()=>{
-      if (!confirm(language.update.confirmLogout))
-        return;
       API.logout(1).catch(e=>{
         console.log(e)
       })
