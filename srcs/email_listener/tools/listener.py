@@ -75,25 +75,28 @@ class MyThread(threading.Thread):
         with smtplib.SMTP_SSL(EMAIL_HOST, EMAIL_PORT, context=context) as server:
             server.login(SENDER_MAIL, EMAIL_PASSWORD)
             server.sendmail(SENDER_MAIL, receiver_mail, message.as_string())
+        ch.basic_ack(delivery_tag=method.delivery_tag)
 
     def run(self):
-        logger.warning("Created listener")
-        self.channel.start_consuming()
+        try:
+            logger.warning("Created listener")
+            self.channel.start_consuming()
+        except:
+            return
 
 def my_main():
-    threads = []
-    for n in  range(THREAD):
-        threads.append(MyThread(name=f"thread_{n + 1}"))
+    while True:
+        threads = []
+        for n in  range(THREAD):
+            threads.append(MyThread(name=f"thread_{n + 1}"))
 
-    for thread in threads:
-        thread.start()
-    logger.warning("start")
+        for thread in threads:
+            thread.start()
+        logger.warning("all threads started")
+        for thread in threads:
+            thread.join()
+        logger.warning("all threads terminated")
+
 
 if __name__=="__main__":
-    print(RABBIT_HOST)
-    print(RABBIT_PORT)
-    print(EXCHANGE)
-    print(EMAIL_ROUTING_KEY)
-    print(THREAD)
-    print(QUEUE_NAME)
     my_main()

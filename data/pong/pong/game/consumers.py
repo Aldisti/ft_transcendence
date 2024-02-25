@@ -27,6 +27,7 @@ class PongConsumer(AsyncWebsocketConsumer):
     games = {}
     tickets = {}
     expired_tickets = []
+    connected_users = []
 
 
     async def connect(self):
@@ -36,6 +37,12 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.other_lock = asyncio.Lock()
 
         self.player = self.scope["user"]
+
+        async with self.start_lock:
+            if self.player.username in self.connected_users:
+                await self.close(code=3021)
+            self.connected_users.append(self.player.username)
+
         self.pos = "left"
         self.ticket = self.scope["token"]
         logger.warning(f"LOG: user {self.player}")
@@ -155,6 +162,16 @@ class PongConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, close_code):
         logger.warning(f"LOG: user {self.player} disconnected with code {close_code}")
+        logger.warning(f"LOG: STILL CONNECTED: {self.connected_users}")
+        logger.warning(f"LOG: CLOSE CODE: {close_code}")
+
+
+        if close_code == 3021:
+            return
+
+        async with self.start_lock:
+            self.connected_users.remove(self.player.username)
+
         update_lock = self.games[self.game_id]["update_lock"]
 
         await self.channel_layer.group_discard(
