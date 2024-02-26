@@ -144,9 +144,9 @@ OAUTH2 = {
         "PORT": 6969,
     },
     "CLIENT": {
-        "PROTOCOL": "http",
-        "HOST": "localhost",
-        "PORT": 4200,
+        "PROTOCOL": "https",
+        "HOST": environ.get('SERVER_FRONTEND_IP'),
+        "PORT": 4242,
     },
     "INTRA": {
         "ID": environ['INTRA_ID'],

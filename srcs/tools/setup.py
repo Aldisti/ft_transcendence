@@ -25,7 +25,7 @@ APP_ENV: dict[str, dict[str, str]] = {
         'DB_HOST': 'authdb',
         'DB_PORT': '5432',
         'INTRA_ID': 'u-s4t2ud-eff0cd3d5bfca5625c1acb7d97431e26ec2965c19596f83a6e2428d0870432d0',
-        'INTRA_SECRET': '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',
+        'INTRA_SECRET': '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',
         'GOOGLE_ID': '608692791188-2nkebjcfel5f7n5mlsvmtd1662i6bebl.apps.googleusercontent.com',
         'GOOGLE_SECRET': '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',
     },
