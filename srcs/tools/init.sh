@@ -47,6 +47,12 @@ create_env()
 	if ! grep -q 'GROUPNAME' "$ENV_FILE"; then
 		echo "GROUPNAME=\"$(id -ng)\"" >> "$ENV_FILE"
 	fi
+	# deploy mode
+	if grep -q 'deploy' "$ENV_FILE"; then
+		sed -i s_/^DEPLOY=.*/DEPLOY=\"$1\"/ "$ENV_FILE"
+	else
+		echo "DEPLOY=\"$1\"" >> "$ENV_FILE"
+	fi
 }
 
 create_volume_dirs()
@@ -94,7 +100,7 @@ check_rsa ()
 	echo -e "$PURPLE new rsa pair created$RESET"
 }
 
-create_env
+create_env 1
 create_volume_dirs
 $SHELL ./srcs/tools/cron_env.sh
 check_certs

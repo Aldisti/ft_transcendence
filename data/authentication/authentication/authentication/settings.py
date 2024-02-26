@@ -110,7 +110,7 @@ RSA_PRIVATE_KEY_PATH = f"/home/{environ['USERNAME']}/rsa/rsa.pem"
 RSA_PUBLIC_KEY_PATH = f"/home/{environ['USERNAME']}/rsa/rsa.crt"
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),  # TODO: change lifetime to at most 5 minutes
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=2),  # TODO: change lifetime to at most 5 minutes
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 
     "ALGORITHM": "RS256",

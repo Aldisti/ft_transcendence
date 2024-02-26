@@ -382,6 +382,14 @@ export async function activateTfa(recursionProtection, type) {
         let resJson = await res.json();
         return (resJson);
     }
+    if (res.status == 400)
+    {
+        let resJson = await res.json();
+
+        if (resJson.message == "user's email not verified")
+            alert("You need to verify your email!");
+        Router();
+    }
     return ({})
 }
 

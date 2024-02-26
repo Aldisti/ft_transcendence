@@ -20,6 +20,7 @@ let language = {
 			retro: "Retro",
 			light: "Light",
 			dark: "Dark",
+			profile: "Profile"
 		},
 		notification: {
 			friendSection: "Friend Request",

@@ -143,11 +143,14 @@ def update_email(request) -> Response:
         user = User.objects.update_email(request.user, email=email, password=password)
     except ValueError as e:
         return Response(data={'error': str(e)}, status=400)
-    UserTFA.objects.deactivate(user.user_tfa)
+    if not user.has_tfa() or user.user_tfa.is_email():
+        UserTFA.objects.deactivate(user.user_tfa)
     if user.has_email_token():
         user.email_token.delete()
-    email_token = EmailVerificationToken.objects.create(user=user)
-    return Response(data=email_token.to_data(), status=200)
+    if not user.verified:
+        email_token = EmailVerificationToken.objects.create(user=user)
+        return Response(data=email_token.to_data(), status=200)
+    return Response(status=204)
 
 
 @api_view(['PATCH'])

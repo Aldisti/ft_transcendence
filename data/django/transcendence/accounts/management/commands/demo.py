@@ -67,10 +67,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         factory = APIRequestFactory()
-        request = factory.post(
-            reverse('api-upload-picture'),
-            {'image': open(IMAGE_NAME, 'rb')},
-        )
         n = 0
         for i in range(options['count']):
             data = generate_user_info(i, options['test'])
@@ -80,6 +76,10 @@ class Command(BaseCommand):
             if not get_image():
                 self.stderr.write(f"image failed")
                 continue
+            request = factory.post(
+                reverse('api-upload-picture'),
+                {'image': open(IMAGE_NAME, 'rb')},
+            )
             force_authenticate(request, user=user)
             upload_profile_picture(request)
             self.stdout.write(f"{data['username']}")

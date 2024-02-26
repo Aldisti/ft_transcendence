@@ -17,10 +17,10 @@ if ! [ $? -eq 0 ]; then
 fi
 
 
-# development
-#./manage.py runserver 0.0.0.0:8000
-
-if grep $PROJECT_NAME <<< "$GUNICORN_SERVERS"; then # GUNICORN
+if [ $DEPLOY -eq 0 ]; then
+	# development
+	./manage.py runserver 0.0.0.0:8000
+elif grep $PROJECT_NAME <<< "$GUNICORN_SERVERS"; then # GUNICORN
 	# https
 	# gunicorn -w 4 -b 0.0.0.0 -p 8000 --keyfile $CERTS_DIR/transcendence.key --certfile $CERTS_DIR/transcendence.crt ${PROJECT_NAME}.wsgi:application
 

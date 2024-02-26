@@ -76,6 +76,8 @@ class UserManager(BaseUserManager):
         if email == user.email:
             raise ValueError('invalid email')
         user.email = email
+        if user.role != Roles.ADMIN:
+            user.verified = False
         user.full_clean()
         user.save()
         return user
