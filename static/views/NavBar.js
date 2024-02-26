@@ -139,12 +139,14 @@ export default function createNavBar(){
 
   document.querySelector(".searchBtn").addEventListener("click", handleSearchUser);  
 
-  API.getUserInfo(1, localStorage.getItem("username")).then(res=>{
-    if (res != undefined && res.user_info.picture != null)
-      document.querySelector(".profilePictureUrl").src = res.user_info.picture;
-  }).catch(e=>{
-    console.log(e)
-  })
+  if (localStorage.getItem("username") != null){
+    API.getUserInfo(1, localStorage.getItem("username")).then(res=>{
+      if (res != undefined && res.user_info.picture != null)
+        document.querySelector(".profilePictureUrl").src = res.user_info.picture;
+    }).catch(e=>{
+      console.log(e)
+    })
+  }
 
   //check for notification and show indicator if needed
 
