@@ -175,7 +175,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         logger.warning(f"LOG: user {self.player} disconnected with code {close_code}")
         if close_code == 3011:
             return
-        update_lock = self.games[self.game_id]["update_lock"]
 
         await self.channel_layer.group_discard(
             self.ticket, self.channel_name
@@ -188,6 +187,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             await self.update_exited(self.participant)
             return
 
+        update_lock = self.games[self.game_id]["update_lock"]
         async with update_lock:
             ball = self.games[self.game_id]["ball"]
             score = ball.scores[0] if self.pos == "left" else ball.scores[1]
