@@ -1,6 +1,6 @@
 let ip = "localhost";
 let port = "8000";
-let protocol = "http";
+let protocol = "https";
 let pongPort = "7000";
 let chatSocketPort = "9001"
 let notificationSocketPort = "9000"
