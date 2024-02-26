@@ -1,9 +1,10 @@
 let ip = "localhost";
 let port = "8000";
-let protocol = "https";
+let protocol = "http";
 let pongPort = "7000";
 let chatSocketPort = "9001"
 let notificationSocketPort = "9000"
+let authPort = "8000"
 
 export const availabilityCheck = {
     USERNAME: `${protocol}://${ip}:${port}/users/check/`,
@@ -13,10 +14,10 @@ export const availabilityCheck = {
 export const general = {
     USER_INFO: `${protocol}://${ip}:${port}/users/info/`,
     GET_USERS: `${protocol}://${ip}:${port}/users/`,
-    INTRA_URL: `${protocol}://${ip}:${port}/oauth2/intra/url/`,
-    CONVERT_INTRA_TOKEN: `${protocol}://${ip}:${port}/oauth2/intra/login/`,
-    LINK_INTRA_TOKEN_ACCOUNT: `${protocol}://${ip}:${port}/oauth2/intra/link/`,
-    UNLINK_INTRA_TOKEN_ACCOUNT: `${protocol}://${ip}:${port}/oauth2/intra/unlink/`,
+    INTRA_URL: `${protocol}://${ip}:${authPort}/oauth2/intra/url/`,
+    CONVERT_INTRA_TOKEN: `${protocol}://${ip}:${authPort}/oauth2/intra/login/`,
+    LINK_INTRA_TOKEN_ACCOUNT: `${protocol}://${ip}:${authPort}/oauth2/intra/link/`,
+    UNLINK_INTRA_TOKEN_ACCOUNT: `${protocol}://${ip}:${authPort}/oauth2/intra/unlink/`,
 }
 
 export const auth = {
@@ -29,13 +30,13 @@ export const auth = {
     REMOVE_TFA: `${protocol}://${ip}:${port}/2fa/manage/`,
     SEND_RECOVERY_CODE: `${protocol}://${ip}:${port}/auth/recovery/`,
     UPDATE_PASSWORD: `${protocol}://${ip}:${port}/auth/password/`,
-    INTRA_STATUS: `${protocol}://${ip}:${port}/oauth2/linked/`,
+    INTRA_STATUS: `${protocol}://${ip}:${authPort}/oauth2/linked/`,
 
-    GET_GOOGLE_URL: `${protocol}://${ip}:${port}/oauth2/google/v2/url/`,
-    UNLINK_GOOGLE_ACCOUNT: `${protocol}://${ip}:${port}/oauth2/google/unlink/`,
-    LINK_GOOGLE_ACCOUNT: `${protocol}://${ip}:${port}/oauth2/google/v2/link/`,
-    LOGIN_WITH_GOOGLE: `${protocol}://${ip}:${port}/oauth2/google/v2/login/`,
-    VALIDATE_EMAIL: `${protocol}://${ip}:${port}/auth/email/`,
+    GET_GOOGLE_URL: `${protocol}://${ip}:${authPort}/oauth2/google/v2/url/`,
+    UNLINK_GOOGLE_ACCOUNT: `${protocol}://${ip}:${authPort}/oauth2/google/unlink/`,
+    LINK_GOOGLE_ACCOUNT: `${protocol}://${ip}:${authPort}/oauth2/google/v2/link/`,
+    LOGIN_WITH_GOOGLE: `${protocol}://${ip}:${authPort}/oauth2/google/v2/login/`,
+    VALIDATE_EMAIL: `${protocol}://${ip}:${authPort}/auth/email/`,
 }
 
 export const stats = {
@@ -68,10 +69,10 @@ export const socket = {
 }
 
 export const userAction = {
-    REFRESH_TOKEN: `${protocol}://${ip}:${port}/auth/refresh/`,
-    LOGIN: `${protocol}://${ip}:${port}/auth/login/`,
-    LOGOUT: `${protocol}://${ip}:${port}/auth/logout/`,
-    LOGOUT_ALL: `${protocol}://${ip}:${port}/auth/logout/all/`,
+    REFRESH_TOKEN: `${protocol}://${ip}:${authPort}/auth/refresh/`,
+    LOGIN: `${protocol}://${ip}:${authPort}/auth/login/`,
+    LOGOUT: `${protocol}://${ip}:${authPort}/auth/logout/`,
+    LOGOUT_ALL: `${protocol}://${ip}:${authPort}/auth/logout/all/`,
     REGISTER: `${protocol}://${ip}:${port}/register/`,
     UPDATE_INFO: `${protocol}://${ip}:${port}/users/info/update/`,
     UPDATE_PHOTO: `${protocol}://${ip}:${port}/users/image/upload/`,

@@ -63,7 +63,7 @@ export function handleUserSearch(dupThis, obj, e){
     let input = e.target.parentNode.childNodes[1];
     let containerNumber = obj.getAttribute("containerNumber");
 
-    API.getUserInfo(input.value).then(element=>{
+    API.getUserInfo(1, input.value).then(element=>{
         if (element == undefined){
             input.classList.add("animateWrongInput");
             setTimeout(() => {

@@ -153,7 +153,7 @@ export async function unlinkGoogle(recursionProtection) {
     return (false);
 }
 
-export async function getUserInfo(username) {
+export async function getUserInfo(recursionProtection, username) {
     const res = await fetch(`${URL.general.USER_INFO}?username=${username}`, {
         method: "GET",
         headers: {
@@ -163,6 +163,9 @@ export async function getUserInfo(username) {
     if (res.ok) {
         let jsonBody = await res.json();
         return (jsonBody);
+    }
+    if (res.status == 401 && recursionProtection) {
+        return await refreshAndRetry(getUserInfo, 0, username);
     }
     return (undefined);
 }

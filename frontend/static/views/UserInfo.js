@@ -23,7 +23,7 @@ export default class extends Aview {
     }
 
     async getGeneralForm() {
-        API.getUserInfo(localStorage.getItem("username")).then(res => {
+        API.getUserInfo(1, localStorage.getItem("username")).then(res => {
             res = res.user_info
             document.querySelector(".formMenu").innerHTML = `
                 <div class="formContainer">
