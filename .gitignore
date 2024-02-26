@@ -19,6 +19,7 @@ data/*db/
 **/image.jpg
 certs
 rsa
+media
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
