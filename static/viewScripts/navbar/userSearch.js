@@ -4,7 +4,7 @@ import Router from "/router/mainRouterFunc.js"
 
 function searchUser(input)
 {
-    API.getUserInfo(window.escapeHtml(input)).then(res=>{
+    API.getUserInfo(1, window.escapeHtml(input)).then(res=>{
       if (res != undefined){
 		    history.pushState(null, null, `/user/?username=${window.escapeHtml(input)}`)
 		    Router()

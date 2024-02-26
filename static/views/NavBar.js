@@ -139,7 +139,7 @@ export default function createNavBar(){
 
   document.querySelector(".searchBtn").addEventListener("click", handleSearchUser);  
 
-  API.getUserInfo(localStorage.getItem("username")).then(res=>{
+  API.getUserInfo(1, localStorage.getItem("username")).then(res=>{
     if (res != undefined && res.user_info.picture != null)
       document.querySelector(".profilePictureUrl").src = res.user_info.picture;
   }).catch(e=>{

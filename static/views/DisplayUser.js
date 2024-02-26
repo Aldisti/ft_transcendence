@@ -35,7 +35,7 @@ export default class extends Aview {
 
     getUserCard(){
         const urlParams = new URLSearchParams(window.location.search)
-        API.getUserInfo(urlParams.get("username")).then(data=>{
+        API.getUserInfo(1, urlParams.get("username")).then(data=>{
             if (data == undefined){
                 history.pushState(null, null, "/");
                 Router()

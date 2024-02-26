@@ -72,7 +72,7 @@ function blockUi(){
 export function createTitle(){
     if (document.querySelector(".chatBox").getAttribute("name") != "global")
     {
-        API.getUserInfo(document.querySelector(".chatBox").getAttribute("name")).then(res=>{
+        API.getUserInfo(1, document.querySelector(".chatBox").getAttribute("name")).then(res=>{
             let userLine = `
                 <div tabindex="-1" class="chat chatTitleLine">
                     <div tabindex="-1" class="imgTitle chat">
