@@ -112,9 +112,9 @@ def update_password(request):
         key='refresh_token',
         value=data.pop('refresh_token'),
         max_age=data.pop('exp'),
-        secure=False,
+        secure=True,
         httponly=True,
-        samesite=None,
+        samesite='Lax',
     )
     response.data = data
     return response

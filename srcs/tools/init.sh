@@ -34,6 +34,9 @@ create_env()
 	echo -e "${RED_LAMP}WARNING: remove default sensible data${RESET}"
 
 	python3 ./srcs/tools/setup.py
+	if ! [ $? -eq 0 ];then
+		return $?
+	fi
 
 	if ! grep -q 'UID' "$ENV_FILE"; then
 		echo "UID=\"$(id -u)\"" >> "$ENV_FILE"
@@ -101,8 +104,16 @@ check_rsa ()
 }
 
 create_env 1
+if ! [ $? -eq 0 ]; then
+	echo -e "$RED create_env failed with code: $?"
+	exit 1
+fi
 create_volume_dirs
 $SHELL ./srcs/tools/cron_env.sh
+if ! [ $? -eq 0 ]; then
+	echo -e "$RED cron_env failed with code: $?"
+	exit 1
+fi
 check_certs
 check_rsa
 
