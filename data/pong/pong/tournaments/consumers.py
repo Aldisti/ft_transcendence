@@ -35,6 +35,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
         logger.warning(f"LOG: someone connected")
+        self.game_id = False
         self.player = self.scope["user"]
         self.ticket = self.scope["token"]
         self.participant = self.scope["participant"]
@@ -290,6 +291,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         #logger.warning(f"LOG: user {self.player} received")
+        if self.game_id is None:
+            return
         text_data_json = json.loads(text_data)
         message_type = text_data_json.get("type", "")
         update_lock = self.games[self.game_id]["update_lock"]
