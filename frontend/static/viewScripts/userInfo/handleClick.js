@@ -1,5 +1,5 @@
 function collectData(dupThis) {
-    let values = document.querySelectorAll(".inputData");
+    let values = document.querySelectorAll(".formMenu .inputData");
     let form = {};
     dupThis.errors = {};
 

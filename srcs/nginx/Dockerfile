@@ -1,25 +1,34 @@
 FROM nginx:1.25.3
 
-RUN apt-get update && apt-get upgrade \
-	&& apt-get install openssl -y 
+RUN apt update && apt upgrade -y
+RUN apt install openssl vim -y
 
-ENV FRONT_PORT=4242
-ENV FRONT_HOST="transcendence"
-ENV NGINX_PORT=9000
-ENV NGINX_HOST="transcendence"
-ENV PONG_PORT=7000
-ENV PONG_HOST=pong
-ENV TRANSCENDENCE_PORT=8000
-ENV TRANSCENDENCE_HOST=django
+ARG USERNAME
+ARG GROUPNAME
+ARG UID
+ARG GID
 
-RUN mkdir /etc/nginx/certs
-COPY ./certs /etc/nginx/certs
+RUN groupadd -g $GID $GROUPNAME
+RUN useradd -m -u $UID -g $GID $USERNAME
+RUN usermod -a -G $GROUPNAME nginx
 
-RUN mkdir -p /var/www/frontend
-COPY ./frontend /var/www/frontend
+#RUN chown -R $UID:$GID /var/cache/nginx
+#RUN chown -R $UID:$GID /var/run/
 
-RUN mkdir -p /etc/nginx/templates
-COPY ./conf /etc/nginx/templates
+#USER $USERNAME
 
-RUN mkdir -p /var/www/transcendence/static
-RUN mkdir -p /var/www/pong/static
+RUN mkdir -p /home/$USERNAME
+
+WORKDIR /home/$USERNAME/
+
+RUN mkdir -p images/media
+RUN chown -R $UID:$GID images/media
+RUN mkdir /home/$USERNAME/certs \
+		/home/$USERNAME/django \
+		/home/$USERNAME/auth \
+		/home/$USERNAME/pong \
+		/home/$USERNAME/chat \
+		/home/$USERNAME/ntf
+
+CMD ["nginx","-g","daemon off;"]
+

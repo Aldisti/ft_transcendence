@@ -17,8 +17,10 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.security.websocket import AllowedHostsOriginValidator
 
 from game.routing import game_urlpatterns
+from tournaments.routing import tournaments_urlpatterns
 from matchmaking.routing import urlpatterns as queue_urlpatterns
 from game.middlewares import CustomAuthMiddlewareStack
+from tournaments.middlewares import AllAuthMiddlewareStack
 
 import logging
 
@@ -31,11 +33,12 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'pong.settings')
 websocket_urlpatterns = []
 websocket_urlpatterns.extend(game_urlpatterns)
 websocket_urlpatterns.extend(queue_urlpatterns)
+websocket_urlpatterns.extend(tournaments_urlpatterns)
 
-logger.warning(f"websocket_urlpatterns: {websocket_urlpatterns}")
+# logger.warning(f"websocket_urlpatterns: {websocket_urlpatterns}")
 
 application = ProtocolTypeRouter({
         "http": django_asgi_app,
-        "websocket": CustomAuthMiddlewareStack(URLRouter(websocket_urlpatterns)),
+        "websocket": AllAuthMiddlewareStack(URLRouter(websocket_urlpatterns)),
     }
 )

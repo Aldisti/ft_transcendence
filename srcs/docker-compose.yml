@@ -5,142 +5,253 @@ services:
     container_name: nginx
     build:
       context: ./nginx
+      args:
+        - USERNAME=${USERNAME}
+        - GROUPNAME=${GROUPNAME}
+        - UID=${UID}
+        - GID=${GID}
+#    user: ${UID}:${GID}
     image: trinity/nginx
     restart: always
     ports:
-      - "4243:4242"
-      - "7000:7000"
-      - "9000:9000"
-    environment:
-      - FRONT_PORT=${FRONTEND_PORT}
-      - FRONT_HOST="${SERVER_FRONTEND_IP}"
-      - NGINX_PORT=${NGINX_PORT}
-      - NGINX_HOST="transcendence"
-      - PONG_PORT=${PONG_PORT}
-      - PONG_HOST=pong
-      - WSGI_TRANSCENDENCE_PORT=8000
-      - WSGI_TRANSCENDENCE_HOST=gunicorn
-      - ASGI_TRANSCENDENCE_PORT=8000
-      - ASGI_TRANSCENDENCE_HOST=django
+      - "4242:4242" # front
+      - "9001:6000" # chat
+      - "7000:7000" # pong
+      - "8000:8000" # django
+      - "9000:9000" # ntf
     volumes:
-      - transcendence_static:/var/www/transcendence/static
-      - transcendence_media:/var/www/transcendence/media
-      - pong_static:/var/www/pong/static
-      - nginx_template:/etc/nginx/templates
+      - certs:/home/${USERNAME}/certs
+      - media:/home/${USERNAME}/images/media
+      - nginx_templates:/etc/nginx/templates
+      - frontend:/home/${USERNAME}/frontend
+    environment:
+      - USERNAME=${USERNAME}
+      - FRONT_HOST=${SERVER_FRONTEND_IP}
+      - FRONT_PORT=${FRONT_PORT}
+      - NGINX_PORT=${DJANGO_PORT}
+      - NGINX_HOST=${NGINX_HOST}
+      - DJANGO_HOST=${DJANGO_HOST}
+      - DJANGO_PORT=${DJANGO_PORT}
+      - AUTH_HOST=${AUTH_HOST}
+      - AUTH_PORT=${AUTH_PORT}
+      - PONG_HOST=${PONG_HOST}
+      - PONG_PORT=${PONG_PORT}
+      - CHAT_HOST=${CHAT_HOST}
+      - CHAT_PORT=${CHAT_PORT}
+      - NTF_HOST=${NTF_HOST}
+      - NTF_PORT=${NTF_PORT}
+      - DEPLOY=${DEPLOY}
     networks:
+      - django-net
       - nginx-net
     depends_on:
       - django
-      - pong
 
 
   django:
     container_name: django
     build:
-      context: ./django
-    image: trinity/django
+      context: ./transcendence
+    user: ${UID}:${GID}
+    image: trinity/transcendence
     restart: always
-    expose:
-      - "8000"
-        #volumes:
-        #  - django:/etc/develop
+#    ports:
+#      - "8000-8020:8000-8020"
+    volumes:
+      - django:/home/${USERNAME}/develop
+      - media:/home/${USERNAME}/media
+      - certs:/home/${USERNAME}/certs
+      - rsa:/home/${USERNAME}/rsa
+    env_file:
+      - ./transcendence/.env
     environment:
-      - PROJECT_NAME=${PROJECT_NAME}
-      - DB_USER=${DB_USER}
-      - DB_NAME=${DB_NAME}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
+      - ADMIN_USERNAME=${ADMIN_USERNAME}
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - DEPLOY=${DEPLOY}
+      - USERNAME=${USERNAME}
       - EMAIL_HOST=${EMAIL_HOST}
+      - EMAIL_PORT=${EMAIL_PORT}
       - EMAIL_HOST_USER=${EMAIL_HOST_USER}
       - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
+      - RABBIT_HOST=${RABBIT_HOST}
+      - RABBIT_PORT=${RABBIT_PORT}
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+      - EXCHANGE=${EXCHANGE}
+      - NTF_ROUTING_KEY=${NTF_ROUTING_KEY}
+      - EMAIL_ROUTING_KEY=${EMAIL_ROUTING_KEY}
+      - VHOST_NTF=${VHOST_NTF}
+      - RABBIT_HEARTBEAT=${RABBIT_HEARTBEAT}
+      - RABBIT_BC_TIMEOUT=${RABBIT_BC_TIMEOUT}
+      # nginx
       - SERVER_FRONTEND_IP=${SERVER_FRONTEND_IP}
-    networks:
-      - nginx-net
-      - postgres-net
-    depends_on:
-      postgres:
-        condition: service_healthy
-
-
-  gunicorn:
-    container_name: gunicorn
-    build:
-      context: ./gunicorn
-    image: trinity/gunicorn
-    restart: always
-    expose:
-      - "8000"
-    volumes:
-      - django:/etc/develop
-      - transcendence_static:/etc/develop/static
-      - transcendence_media:/etc/develop/images
-    environment:
-      - PROJECT_NAME=${PROJECT_NAME}
-      - DB_USER=${DB_USER}
-      - DB_NAME=${DB_NAME}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
-      - EMAIL_HOST=${EMAIL_HOST}
-      - EMAIL_HOST_USER=${EMAIL_HOST_USER}
-      - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
-      - SERVER_FRONTEND_IP=${SERVER_FRONTEND_IP}
-    networks:
-      - nginx-net
-      - postgres-net
-    depends_on:
-      postgres:
-        condition: service_healthy
-
-
-  postgres:
-    container_name: postgres
-    build:
-      context: ./postgres
-    image: trinity/postgres
-    restart: always
-    expose:
-      - "$DB_PORT"
-    volumes:
-      - postgres:/var/lib/postgresql/data
+      - FRONT_PORT=${FRONT_PORT}
+      - NGINX_PORT=${DJANGO_PORT}
+      - NGINX_HOST=${NGINX_HOST}
+      - DJANGO_HOST=${DJANGO_HOST}
+      - DJANGO_PORT=${DJANGO_PORT}
+      - AUTH_HOST=${AUTH_HOST}
+      - AUTH_PORT=${AUTH_PORT}
+      - PONG_HOST=${PONG_HOST}
+      - PONG_PORT=${PONG_PORT}
+      - CHAT_HOST=${CHAT_HOST}
+      - CHAT_PORT=${CHAT_PORT}
+      - NTF_HOST=${NTF_HOST}
+      - NTF_PORT=${NTF_PORT}
     healthcheck:
-      test: ["CMD", "pg_isready", "-p$DB_PORT", "-h127.0.0.1", "-d$DB_NAME", "-U$DB_USER"]
-      retries: 10
-      interval: 5s
-      #      start_interval: 3s
-    environment:
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_DB=${DB_NAME}
-      - PGDATA=${PGDATA}
+      test: curl -ksf https://localhost:8000/auth/retrieve/public-key/ -o /dev/null
+      retries: 3
+      interval: 5m
+      start_period: 60s
+      start_interval: 5s
     networks:
+      - django-net
       - postgres-net
+      - rabbit-net
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+
+  auth:
+    container_name: auth
+    build:
+      context: ./auth
+    user: ${UID}:${GID}
+    image: trinity/auth
+    restart: unless-stopped
+    healthcheck:
+      test: curl -ksf https://localhost:8000/auth/retrieve/public-key/ -o /dev/null
+      retries: 3
+      interval: 5m
+      start_period: 60s
+      start_interval: 5s
+    volumes:
+      - auth:/home/${USERNAME}/develop
+      - certs:/home/${USERNAME}/certs
+      - rsa:/home/${USERNAME}/rsa
+    env_file:
+      - ./auth/.env
+    environment:
+      - ADMIN_USERNAME=${ADMIN_USERNAME}
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - USERNAME=${USERNAME}
+      - SERVER_FRONTEND_IP=${SERVER_FRONTEND_IP}
+      - DEPLOY=${DEPLOY}
+    networks:
+      - django-net
+      - authdb-net
+    depends_on:
+      authdb:
+        condition: service_healthy
 
 
   pong:
     container_name: pong
     build:
       context: ./pong
+    user: ${UID}:${GID}
     image: trinity/pong
     restart: always
-    expose:
-      - "7000"
+#    ports:
+#      - "7000-7020:8000-8020"
     volumes:
-      - pong:/etc/develop
-      - pong_static:/static
+      - pong:/home/$USERNAME/develop
+      - certs:/home/${USERNAME}/certs
+      - rsa:/home/${USERNAME}/rsa
+    env_file:
+      - ./pong/.env
     environment:
-      - PROJECT_NAME=${PONGAPP_NAME}
-      - DB_USER=${PONGDB_USER}
-      - DB_NAME=${PONGDB_NAME}
-      - DB_PASSWORD=${PONGDB_PASSWORD}
-      - DB_HOST=${PONGDB_HOST}
-      - DB_PORT=${PONGDB_PORT}
+      - ADMIN_USERNAME=${ADMIN_USERNAME}
+      - USERNAME=${USERNAME}
+      - SERVER_FRONTEND_IP=${SERVER_FRONTEND_IP}
+      - DEPLOY=${DEPLOY}
+
+      # rabbitMq vars
+      - RABBIT_PORT=5672
+      - RABBIT_HOST=rabbit_mq
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+      - EXCHANGE=${EXCHANGE}
+      - NTF_ROUTING_KEY=${NTF_ROUTING_KEY}
+      - EMAIL_ROUTING_KEY=${EMAIL_ROUTING_KEY}
+      - VHOST_NTF=${VHOST_NTF}
+      - RABBIT_HEARTBEAT=${RABBIT_HEARTBEAT}
+      - RABBIT_BC_TIMEOUT=${RABBIT_BC_TIMEOUT}
+
     networks:
-      - nginx-net
+      - django-net
       - pongdb-net
+      - redis-net
+      - rabbit-net
     depends_on:
       pongdb:
+        condition: service_healthy
+        restart: true
+
+
+  chat:
+    container_name: chat
+    build:
+      context: ./chat
+    user: ${UID}:${GID}
+    image: trinity/chat
+    restart: always
+#    ports:
+#      - "9001:8000"
+    volumes:
+      - chat:/home/$USERNAME/develop
+      - certs:/home/${USERNAME}/certs
+    env_file:
+      - ./chat/.env
+    environment:
+      - ADMIN_USERNAME=${ADMIN_USERNAME}
+      - DEPLOY=${DEPLOY}
+      - USERNAME=${USERNAME}
+      - SERVER_FRONTEND_IP=${SERVER_FRONTEND_IP}
+      - RABBIT_HOST=${RABBIT_HOST}
+      - RABBIT_PORT=${RABBIT_PORT}
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+      - EXCHANGE=${EXCHANGE}
+      - NTF_ROUTING_KEY=${NTF_ROUTING_KEY}
+      - VHOST_NTF=${VHOST_NTF}
+      - RABBIT_HEARTBEAT=${RABBIT_HEARTBEAT}
+      - RABBIT_BC_TIMEOUT=${RABBIT_BC_TIMEOUT}
+    networks:
+      - django-net
+      - chatdb-net
+      - rabbit-net
+    depends_on:
+      chatdb:
+        condition: service_healthy
+
+
+  ntf:
+    container_name: ntf
+    build:
+      context: ./ntf
+    user: ${UID}:${GID}
+    image: trinity/ntf
+    restart: always
+#    ports:
+#      - "9000:8000"
+    volumes:
+      - ntf:/home/$USERNAME/develop
+      - certs:/home/${USERNAME}/certs
+    env_file:
+      - ./ntf/.env
+    environment:
+      - ADMIN_USERNAME=${ADMIN_USERNAME}
+      - USERNAME=${USERNAME}
+      - SERVER_FRONTEND_IP=${SERVER_FRONTEND_IP}
+      - DEPLOY=${DEPLOY}
+    networks:
+      - django-net
+      - ntfdb-net
+    depends_on:
+      ntfdb:
         condition: service_healthy
 
 
@@ -152,113 +263,342 @@ services:
     restart: always
     networks:
       - postgres-net
+      - django-net
     depends_on:
-      postgres:
+      django:
         condition: service_healthy
+
+
+  ntf_listener:
+    container_name: ntf_listener
+    build:
+      context: ./ntf_listener
+    image: trinity/ntf_listener
+    restart: always
+    environment:
+      - SERVER_FRONTEND_IP=${SERVER_FRONTEND_IP}
+      - RABBIT_HOST=${RABBIT_HOST}
+      - RABBIT_PORT=${RABBIT_PORT}
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+      - EXCHANGE=${EXCHANGE}
+      - NTF_ROUTING_KEY=${NTF_ROUTING_KEY}
+      - VHOST=${VHOST_NTF}
+      - QUEUE_NAME=${NTF_QUEUE}
+      - THREAD=${THREAD}
+    networks:
+      - rabbit-net
+      - django-net
+    depends_on:
+      rabbit_mq:
+        condition: service_healthy
+
+
+  email_listener:
+    container_name: email_listener
+    build:
+      context: ./email_listener
+    image: trinity/email_listener
+    restart: always
+    environment:
+      - SERVER_FRONTEND_IP=${SERVER_FRONTEND_IP}
+      - RABBIT_HOST=${RABBIT_HOST}
+      - RABBIT_PORT=${RABBIT_PORT}
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+      - EXCHANGE=${EXCHANGE}
+      - EMAIL_ROUTING_KEY=${EMAIL_ROUTING_KEY}
+      - THREAD=${THREAD}
+      - QUEUE_NAME=${EMAIL_QUEUE}
+      - VHOST=${VHOST_NTF}
+      - EMAIL_PORT=${EMAIL_PORT}
+      - EMAIL_HOST=${EMAIL_HOST}
+      - EMAIL_HOST_USER=${EMAIL_HOST_USER}
+      - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
+    networks:
+      - rabbit-net
+      - django-net
+    depends_on:
+      rabbit_mq:
+        condition: service_healthy
+
+
+  rabbit_mq:
+    container_name: rabbit_mq
+    build:
+      context: ./rabbit_mq
+    image: trinity/rabbit_mq
+    restart: always
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+    ports:
+      - "5672:5672"
+    networks:
+      - rabbit-net
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      retries: 3
+      interval: 5m
+      start_period: 30s
+      start_interval: 30s
+
+
+  postgres:
+    container_name: postgres
+    image: trinity/postgres
+    restart: always
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: "pg_isready -p$$POSTGRES_PORT -d$$POSTGRES_DB -U$$POSTGRES_USER"
+      retries: 3
+      interval: 5m
+      start_period: 60s
+      start_interval: 5s
+    env_file:
+      - ./postgres/.env_django
+    environment:
+      - PGDATA=${PGDATA}
+    networks:
+      - postgres-net
+
+
+  authdb:
+    container_name: authdb
+    image: trinity/postgres
+    user: ${UID}:${GID}
+    restart: always
+    volumes:
+      - authdb:/var/lib/postgresql/data
+    healthcheck:
+      test: "pg_isready -p$$POSTGRES_PORT -d$$POSTGRES_DB -U$$POSTGRES_USER"
+      retries: 3
+      interval: 5m
+      start_period: 60s
+      start_interval: 5s
+    env_file:
+      - ./postgres/.env_auth
+    environment:
+      - PGDATA=${PGDATA}
+    networks:
+      - authdb-net
+
+  redis:
+    container_name: redis
+    build:
+      context: ./redis
+    image: trinity/redis
+    restart: always
+    networks:
+      - redis-net
+
+
+  chatdb:
+    container_name: chatdb
+    image: trinity/postgres
+    restart: always
+    volumes:
+      - chatdb:/var/lib/postgresql/data
+    healthcheck:
+      test: "pg_isready -p$$POSTGRES_PORT -d$$POSTGRES_DB -U$$POSTGRES_USER"
+      retries: 3
+      interval: 5m
+      start_period: 60s
+      start_interval: 5s
+    env_file:
+      - ./postgres/.env_chat
+    environment:
+      - PGDATA=${PGDATA}
+    networks:
+      - chatdb-net
+
+
+  ntfdb:
+    container_name: ntfdb
+    image: trinity/postgres
+    restart: always
+    volumes:
+      - ntfdb:/var/lib/postgresql/data
+    healthcheck:
+      test: "pg_isready -p$$POSTGRES_PORT -d$$POSTGRES_DB -U$$POSTGRES_USER"
+      retries: 3
+      interval: 5m
+      start_period: 60s
+      start_interval: 5s
+    env_file:
+      - ./postgres/.env_ntf
+    environment:
+      - PGDATA=${PGDATA}
+    networks:
+      - ntfdb-net
 
 
   pongdb:
     container_name: pongdb
-    build:
-      context: ./pongdb
-    image: trinity/pongdb
+    image: trinity/postgres
     restart: always
-    expose:
-      - "$PONGDB_PORT"
     volumes:
       - pongdb:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "pg_isready", "-p$PONGDB_PORT", "-h127.0.0.1", "-d$PONGDB_NAME", "-U$PONGDB_USER"]
-      retries: 10
-      interval: 5s
-      #      start_interval: 3s
+      test: "pg_isready -p$$POSTGRES_PORT -d$$POSTGRES_DB -U$$POSTGRES_USER"
+      retries: 3
+      interval: 5m
+      start_period: 60s
+      start_interval: 5s
+    env_file:
+      - ./postgres/.env_pong
     environment:
-      - POSTGRES_PASSWORD=${PONGDB_PASSWORD}
-      - POSTGRES_USER=${PONGDB_USER}
-      - POSTGRES_DB=${PONGDB_NAME}
       - PGDATA=${PGDATA}
     networks:
       - pongdb-net
 
 
 volumes:
-  frontend:
-    name: "frontend"
-    #    driver: local
-    #    driver_opts:
-    #      type: "none"
-    #      o: "bind"
-    #      device: "$PWD/frontend"
-  transcendence_static:
-    name: "transcendence_static"
-    #    driver: local
-    #    driver_opts:
-    #      type: "none"
-    #      o: "bind"
-    #      device: "$PWD/static/transcendence_static"
-  transcendence_media:
-    name: "transcendence_media"
-    #    driver: local
-    #    driver_opts:
-    #      type: "none"
-    #      o: "bind"
-    #      device: "$PWD/media/"
-  pong_static:
-    name: "pong_static"
-    #    driver: local
-    #    driver_opts:
-    #      type: "none"
-    #      o: "bind"
-    #      device: "$PWD/static/pong_static"
-  nginx_template:
-    name: "nginx_template"
-    #    driver: local
-    #    driver_opts:
-    #      type: "none"
-    #      o: "bind"
-    #      device: "$PWD/srcs/nginx/conf"
-  ssl_certs:
-    name: "ssl_certs"
-    #    driver: local
-    #    driver_opts:
-    #      type: "none"
-    #      o: "bind"
-    #      device: "$PWD/certs"
   django:
     name: "django"
-    #    driver: local
-    #    driver_opts:
-    #      type: "none"
-    #      o: "bind"
-    #      device: "$PWD/data/django"
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "$PWD/data/django"
+
   pong:
     name: "pong"
-    #    driver: local
-    #    driver_opts:
-    #      type: "none"
-    #      o: "bind"
-    #      device: "$PWD/data/pong"
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "$PWD/data/pong"
+
+  chat:
+    name: "chat"
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "$PWD/data/chat"
+
+  auth:
+    name: "auth"
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "$PWD/data/authentication"
+
+  ntf:
+    name: "ntf"
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "$PWD/data/ntf"
+
   postgres:
     name: "postgres"
-    #    driver: local
-    #    driver_opts:
-    #      type: "none"
-    #      o: "bind"
-    #      device: "$PWD/data/postgres"
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "$PWD/data/postgres"
+
   pongdb:
     name: "pongdb"
-    #    driver: local
-    #    driver_opts:
-    #      type: "none"
-    #      o: "bind"
-    #      device: "$PWD/data/pongdb"
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "$PWD/data/pongdb"
+
+  chatdb:
+    name: "chatdb"
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "$PWD/data/chatdb"
+
+  authdb:
+    name: "authdb"
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "$PWD/data/authdb"
+
+  ntfdb:
+    name: "ntfdb"
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "$PWD/data/ntfdb"
+
+  rsa:
+    name: "rsa"
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "$PWD/rsa"
+
+  certs:
+    name: "certs"
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "$PWD/certs"
+
+  frontend:
+    name: "frontend"
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "$PWD/frontend"
+
+  media:
+    name: "media"
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "$PWD/media"
+
+  nginx_templates:
+    name: "nginx_templates"
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "$PWD/srcs/nginx/conf"
 
 networks:
   nginx-net:
     name: "nginx-net"
+
+  django-net:
+    name: "django-net"
 
   postgres-net:
     name: "postgres-net"
 
   pongdb-net:
     name: "pongdb-net"
+
+  chatdb-net:
+    name: "chatdb-net"
+
+  ntfdb-net:
+    name: "ntfdb-net"
+
+  rabbit-net:
+    name: "rabbit-net"
+
+  redis-net:
+    name: "redis-net"
+
+  authdb-net:
+    name: "authdb-net"

@@ -4,7 +4,7 @@ import * as check from "/viewScripts/register/checks.js"
 import sha256 from "/scripts/crypto.js"
 import allLanguage from "/language/language.js"
 
-let tempLan = allLanguage[localStorage.getItem("language")]
+let tempLan = allLanguage[localStorage.getItem("language") == null ? "en" : localStorage.getItem("language")]
 
 //username, password, email, first_name, last_name, birthdate, picture
 
@@ -13,7 +13,6 @@ export default class extends Aview{
 		super();
 		this.needListener	= true;
 		this.listenerId		= "signupBtn";
-		//console.log(this)
 		this.errors			= {
 			[tempLan.register.firstName[1]]: {isNotValid: false, text: ""},
 			[tempLan.register.lastName[1]]:  {isNotValid: false, text: ""},
@@ -68,7 +67,7 @@ export default class extends Aview{
 				</div>
 				<div class="linebtn">
 					<a class="retroShade loginLink" href="/login/" data-link>${this.language.register.login}</a>
-					<button id="flow2" class="signupBtn retroShade retroBtn btnColor-green">${this.language.register.next}</button>
+					<button id="flow2" class="signupBtn importantSubmit retroShade retroBtn btnColor-green">${this.language.register.next}</button>
 				</div>
 			</div>
 	   </div>
@@ -76,7 +75,6 @@ export default class extends Aview{
     }
 	getThirdForm(){
 		return `
-		<div class="base">
 			<div class="signupForm">
 				<h1 id="title">${this.language.register.thirdRegister}</h1>
 				<div class="line">
@@ -109,15 +107,13 @@ export default class extends Aview{
 				<div class="linebtn">
 					<a class="retroShade loginLink" href="/login/" data-link>${this.language.register.login}</a>
 					<button id="goFlow2" class="signupBtn retroShade retroBtn btnColor-green">${this.language.register.goBack}</button>
-					<button id="submit" class="signupBtn retroShade retroBtn btnColor-green">${this.language.register.submit}</button>
+					<button id="submit" class="signupBtn importantSubmit retroShade retroBtn btnColor-green">${this.language.register.submit}</button>
 				</div>
 			</div>
-	   </div>
     	`
 	}
 	getSecondForm(){
 		return `
-		<div class="base">
 			<div class="signupForm">
 				<h1 id="title">${this.language.register.secondRegister}</h1>
 				<div class="line">
@@ -143,10 +139,9 @@ export default class extends Aview{
 				<div class="linebtn">
 					<a class="retroShade loginLink" href="/login/" data-link>${this.language.register.login}</a>
 					<button id="goFlow1" class="signupBtn retroShade retroBtn btnColor-green">${this.language.register.goBack}</button>
-					<button id="flow3" class="signupBtn retroShade retroBtn btnColor-green">${this.language.register.next}</button>
+					<button id="flow3" class="signupBtn importantSubmit retroShade retroBtn btnColor-green">${this.language.register.next}</button>
 				</div>
 			</div>
-		</div>
 		`
 	}
 
@@ -184,7 +179,7 @@ export default class extends Aview{
 	}
 	setup(){
 		check.showErrors(document.querySelectorAll(".data"), this.errors)
-		document.addEventListener("click", (e)=>{
+		document.querySelector(".base").addEventListener("click", (e)=>{
 			//go Next
 			if (e.target.id == "flow2")
 			{
@@ -192,7 +187,7 @@ export default class extends Aview{
 				check.flow1Check(this.field, this.errors, document.querySelectorAll(".data")).then((res)=>{
 					if (res)
 					{
-						document.querySelector("#app").innerHTML = this.getSecondForm();
+						document.querySelector(".base").innerHTML = this.getSecondForm();
 						check.showErrors(document.querySelectorAll(".data"), this.errors)	
 					}
 				})
@@ -203,7 +198,7 @@ export default class extends Aview{
 				check.flow2Check(this.field, this.errors, document.querySelectorAll(".data")).then(res=>{
 					if (res)
 					{
-						document.querySelector("#app").innerHTML = this.getThirdForm();
+						document.querySelector(".base").innerHTML = this.getThirdForm();
 						check.setupSwitchListener();
 					}
 				})
@@ -214,10 +209,10 @@ export default class extends Aview{
 				if (check.flow3Check(this.field, this.errors, document.querySelectorAll(".data")))
 				{
 					this.field.password = sha256(this.field.password);
-					//console.log(this.prepareSignUpObj(this.field))
 					API.register(this.prepareSignUpObj(this.field)).then((newErrors)=>{
 						this.parseErrors(newErrors);
-						//console.log(this.errors);
+					}).catch(e=>{
+						console.log(e)
 					})
 				}
 			}
@@ -225,18 +220,16 @@ export default class extends Aview{
 			//go Back
 			else if (e.target.id == "goFlow2")
 			{
-				//console.log(this.errors)
-				document.querySelector("#app").innerHTML = this.getSecondForm();
+				document.querySelector(".base").innerHTML = this.getSecondForm();
 				check.showErrors(document.querySelectorAll(".data"), this.errors)
 			}
 			else if (e.target.id == "goFlow1")
 			{
-				//console.log(this.errors)
-				document.querySelector("#app").innerHTML = this.getHtml();
+				document.querySelector(".base").innerHTML = this.getHtml();
 				check.showErrors(document.querySelectorAll(".data"), this.errors)
 			}
 		})
-        this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpg");
+        this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpeg");
 	}
 	close()
     {
@@ -245,4 +238,8 @@ export default class extends Aview{
             pair[0].parentNode.replaceChild(pair[1], pair[0]);
         }
     }
+
+	destroy(){
+
+	}
 }

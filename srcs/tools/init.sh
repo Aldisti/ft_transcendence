@@ -1,141 +1,122 @@
 #!/bin/bash
 
-COMPOSE_TMP="./srcs/docker-compose.yml.tmp"
 COMPOSE="./srcs/docker-compose.yml"
-DJANGO_VOL="./data/django"
-PONG_VOL="./data/pong"
-PG_VOL="./data/postgres"
-PONGDB_VOL="./data/pongdb"
 ENV_FILE="./srcs/.env"
-POSTGRES_ENV="./srcs/cron/.env"
-PONG_STATIC="./static/pong_static"
-TRANSCENDENCE_STATIC="./static/transcendence_static"
-TRANSCENDENCE_MEDIA="./media/transcendence_media"
-CERTS="./certs"
+CRON_ENV="./srcs/cron/.env"
+CERT_DIR="./certs"
+CERT_NAME="transcendence"
+RSA_DIR="./rsa"
+RSA_NAME="rsa"
 
-ENV_VARS=("PROJECT_NAME" "DB_NAME" \
-	"DB_USER" "DB_PASSWORD" \
-	"DB_HOST" "DB_PORT" "PGDATA" \
-	"EMAIL_HOST" "EMAIL_HOST_USER" "EMAIL_HOST_PASSWORD" \
-	"PONGAPP_NAME" "PONGDB_NAME" \
-	"PONGDB_USER" "PONGDB_PASSWORD" \
-	"PONGDB_HOST" "PONGDB_PORT" "SERVER_FRONTEND_IP" \ 
-	"FRONTEND_PORT" "PONG_PORT" "NGINX_PORT")
+RESET="\033[0m"
+RED="\033[31;1m"
+RED_LAMP="\033[31;1;5m"
+GREEN="\033[32;1m"
+BLUE="\033[34;1m"
+PURPLE="\033[35;1m"
+CYAN="\033[36;1m"
 
+declare -A VOLUMES=(
+	["django"]="/data/transcendence"
+	["django_db"]="/data/postgres"
+	["pong"]="/data/pong"
+	["pong_db"]="/data/pongdb"
+	["auth"]="/data/authentication"
+	["auth_db"]="/data/authdb"
+	["chat"]="/data/chat"
+	["chat_db"]="/data/chatdb"
+	["ntf"]="/data/ntf"
+	["ntf_db"]="/data/ntfdb"
+	["media"]="/media"
+)
 
-create_env() {
-	# default values for some env vars
-	PROJECT_NAME="transcendence"
-	DB_NAME="$PROJECT_NAME"
-	DB_HOST="postgres"
-	DB_PORT="5432"
-	PGDATA="/var/lib/postgresql/data/pgdata"
-	EMAIL_HOST="smtp.gmail.com"
-	EMAIL_HOST_USER="transcendence.trinity@gmail.com"
-	echo -e "\033[31;1;5mWARNING: remove sensible data from init.sh\033[0m"
-	echo -e "\033[31;1;5mWARNING: check the existence of certs and frontend\033[0m"
-	echo -e "\033[31;1;5mWARNING: implement env var for ports in docker compose\033[0m"
-	echo -e "\033[31;1;5mWARNING: specify version of each python package used\033[0m"
-	echo -e "\033[31;1;5mWARNING: resolve database concurrency issue (move chat to another server)\033[0m"
-	echo -e "\033[31;1;5mWARNING: change volume path so they don't overlap\033[0m"
-	echo -e "\033[31;1;5mWARNING: tune the throttle\033[0m"
-	EMAIL_HOST_PASSWORD="awmvotojcdvmdwge"
-	PONGAPP_NAME="pong"
-	PONGDB_NAME="pong"
-	PONGDB_HOST="pongdb"
-	PONGDB_PORT=5432
-	SERVER_FRONTEND_IP="localhost"
-	FRONTEND_PORT=9000
-	PONG_PORT=7000
-	FRONTEND_PORT=4242
-	NGINX_PORT=9000
+create_env()
+{
+	echo -e "${RED_LAMP}WARNING: remove default sensible data${RESET}"
 
-	k=""
-	for var in ${ENV_VARS[@]}; do
-		tmp="$(grep $var= $ENV_FILE | cut -d '=' -f2-)"
-		if [ -z "$tmp" ]; then
-			if [ -z "${!var}" ]; then
-				echo -n "*"
-			else
-				echo -n " "
-			fi
-			if grep -q "PASSWORD" <<< "$var"; then
-				read -sp "Insert '$var' value: " value; echo
-			else
-				read -p "Insert '$var' value: " value
-			fi
-			# if the user inserts a value then the variable's value is replaced
-			# else if the user doesn't insert a value
-			# then is checked if the variable has a default value
-			if [ -n "$value" ]; then
-				declare "$var=$value"
-			elif [ -z "$value" ] && [ -z "${!var}" ]; then
-				echo "You have to insert a valid value for '$var'"
-				exit 1
-			fi
-			# if the variable name is present inside the file
-			# then the value will be added after the '='
-			if grep -q "$var" "$ENV_FILE"; then
-				sed -i "s/$var=.*/$var=\"${!var}\"/" "$ENV_FILE"
-			# else a new line containing the variable name followed
-			# by its value is appended to the end of the file
-			else
-				echo "$var=\"${!var}\"" >> "$ENV_FILE"
-			fi
-			k="1"
+	python3 ./srcs/tools/setup.py
+	if ! [ $? -eq 0 ];then
+		return $?
+	fi
+
+	if ! grep -q 'UID' "$ENV_FILE"; then
+		echo "UID=\"$(id -u)\"" >> "$ENV_FILE"
+	fi
+	if ! grep -q 'GID' "$ENV_FILE"; then
+		echo "GID=\"$(id -g)\"" >> "$ENV_FILE"
+	fi
+	if ! grep -q 'USERNAME' "$ENV_FILE"; then
+		echo "USERNAME=\"$(id -nu)\"" >> "$ENV_FILE"
+	fi
+	if ! grep -q 'GROUPNAME' "$ENV_FILE"; then
+		echo "GROUPNAME=\"$(id -ng)\"" >> "$ENV_FILE"
+	fi
+	# deploy mode
+	if grep -q 'deploy' "$ENV_FILE"; then
+		sed -i s_/^DEPLOY=.*/DEPLOY=\"$1\"/ "$ENV_FILE"
+	else
+		echo "DEPLOY=\"$1\"" >> "$ENV_FILE"
+	fi
+	local ip=$(grep 'SERVER_FRONTEND_IP' "$ENV_FILE" | cut -d '=' -f2 | tr '"' ' ' | awk '{print $1}')
+	sed -i "s/^let ip = .*/let ip = \"$ip\"\;/" "./frontend/static/API/URL.js"
+}
+
+create_volume_dirs()
+{
+	created=0
+	for key in ${!VOLUMES[@]}; do
+		local vol_path="$PWD${VOLUMES[$key]}"
+		if [ ! -d "$vol_path" ]; then
+			mkdir -p "$vol_path"
+			echo -e "${CYAN}${key}${RESET} volume created"
+			created=$((created + 1))
 		fi
 	done
-	if [ -n "$k" ]; then
-		echo "'.env' updated"
+	if [ ${created} -eq 0 ]; then
+		echo -e "-> ${BLUE}volumes${RESET} already up-to-date"
 	fi
 }
 
-cron_env() {
-	grep \
-	-e "DB_NAME" \
-	-e "DB_USER" \
-	-e "DB_PASSWORD" \
-	-e "DB_HOST" \
-	-e "DB_PORT" \
-	"$ENV_FILE" > "$POSTGRES_ENV"
+check_certs ()
+{
+	if ! [ -d $CERT_DIR ]; then
+		mkdir $CERT_DIR
+	fi
+	local cert_path="$CERT_DIR/$CERT_NAME"
+	if [ -f $cert_path.key ] && [ -f $cert_path.crt ]; then
+		return 0
+	fi
+	openssl req -x509 -noenc -out "$cert_path.crt" -keyout "$cert_path.key" \
+	-subj "/C=IT/ST=Italy/L=Rome/O=42/OU=Trinity/CN=transcendence/UID=trinity" \
+	> /dev/null 2>&1
+	echo -e "$PURPLE new certs created$RESET"
 }
 
-if ! [ -d $DJANGO_VOL ]; then
-	mkdir -p $DJANGO_VOL
-fi
+check_rsa ()
+{
+	if ! [ -d $RSA_DIR ]; then
+		mkdir $RSA_DIR
+	fi
+	if [ -f "$RSA_DIR/$RSA_NAME.pem" ] && [ -f "$RSA_DIR/$RSA_NAME.crt" ]; then
+		return 0
+	fi
+	openssl genrsa -out "$RSA_DIR/$RSA_NAME.pem" 2048
+	openssl rsa -in "$RSA_DIR/$RSA_NAME.pem" -pubout -out "$RSA_DIR/$RSA_NAME.crt" \
+	> /dev/null 2>&1
+	echo -e "$PURPLE new rsa pair created$RESET"
+}
 
-if ! [ -d $PONG_VOL ]; then
-	mkdir -p $PONG_VOL
+create_env 1
+if ! [ $? -eq 0 ]; then
+	echo -e "$RED create_env failed with code: $?"
+	exit 1
 fi
-
-if ! [ -d $PG_VOL ]; then
-	mkdir -p $PG_VOL
+create_volume_dirs
+$SHELL ./srcs/tools/cron_env.sh
+if ! [ $? -eq 0 ]; then
+	echo -e "$RED cron_env failed with code: $?"
+	exit 1
 fi
-
-if ! [ -d $PONGDB_VOL ]; then
-	mkdir -p $PONGDB_VOL
-fi
-
-if [ ! -f "$ENV_FILE" ]; then
-	touch "$ENV_FILE"
-fi
-
-if [ ! -d "$CERTS" ]; then
-	mkdir "$CERTS"
-fi
-
-if [ ! -d "$PONG_STATIC" ]; then
-	mkdir -p "$PONG_STATIC"
-fi
-
-if [ ! -d "$TRANSCENDENCE_STATIC" ]; then
-	mkdir -p "$TRANSCENDENCE_STATIC"
-fi
-
-if [ ! -d "$TRANSCENDENCE_MEDIA" ]; then
-	mkdir -p "$TRANSCENDENCE_MEDIA"
-fi
-
-create_env
-cron_env
+check_certs
+check_rsa
 

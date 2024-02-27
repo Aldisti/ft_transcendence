@@ -1,100 +1,54 @@
-from uuid import UUID, uuid4
-
-from pyotp import TOTP
-
-from accounts.models import User
-from authentication.models import UserTokens
-from django.core.mail import send_mail
 from django.conf import settings
-from django.urls import reverse
 from django.template import loader
 
-from two_factor_auth.models import UserTFA
+from transcendence.producers import EmailProducer
+
+import json
+import logging
 
 
-def send_verification_email(user: User):
-    # generate token
-    try:
-        user_tokens = UserTokens.objects.get(pk=user.username)
-    except UserTokens.DoesNotExist:
-        user_tokens = UserTokens.objects.create(user)
-    user_tokens = UserTokens.objects.generate_email_token(user_tokens)
-
-    # generate url
-    # url = reverse("api-email_verification") + "?token=" + user_tokens.email_token
-    url = "http://localhost:8000/tokens/email/" + "?token=" + user_tokens.email_token
-
-    # generate message
-    title = "Registration to Transcendence"
-    head = f"Dear {user.username},\n thank you for joining our community.\n"
-    body = head + "In order to complete the registration process click the following link:"
-    company = "Trinity"
-
-    # email_message = generate_email(title, body, url, company)
-    template = loader.get_template('email.html')
-    context = {
-        "title": title,
-        "body": body,
-        "link": url,
-        "company": company,
-    }
-    email_message = template.render(context)
-    # send mail
-    send_mail(
-        subject="Registration",
-        message="",
-        html_message=email_message,
-        from_email=settings.EMAIL_HOST_USER,
-        recipient_list=[user.email]
-    )
+logger = logging.getLogger(__name__)
 
 
-def send_password_email(user: User):
-    # generate token
-    try:
-        user_tokens = UserTokens.objects.get(pk=user.username)
-    except UserTokens.DoesNotExist:
-        user_tokens = UserTokens.objects.create(user)
-    user_tokens = UserTokens.objects.generate_password_token(user_tokens)
-
-    # generate url
-    # url = reverse("api-password_recovery") + "?token=" + user_tokens.password_token
-    # TODO: mettersi d'accordo con Marco sulla pagina per il password recovery
-    # url = "http://localhost:8000/tokens/password/" + "?token=" + user_tokens.password_token
-    url = "http://localhost:4200/password/recovery/" + "?token=" + user_tokens.password_token
-
-    # generate message
-    title = "Password recovery"
-    head = f"Dear {user.username},\napparently you've forgotten your password, ignore this message otherwise.\n"
-    body = head + "Click the following link to reset your password:"
-    company = "Trinity"
-
-    # email_message = generate_email(title, body, url, company)
+def send_password_reset_email(username: str, email: str, token: str) -> None:
+    if username == '' or email == '' or token == '':
+        raise ValueError("missing username, email or token")
+    body = (f"Dear {username},\n"
+            f"apparently you've forgotten your password, ignore this message otherwise.\n"
+            f"Click the following link to reset your password:")
     template = loader.get_template("email.html")
     context = {
-        "title": title,
+        "title": "Password recovery",
         "body": body,
-        "link": url,
-        "company": company,
+        "link": settings.MS_URLS['CLIENT_RESET_PAGE'] + f"?token={token}",
+        "company": "Trinity",
     }
     email_message = template.render(context)
-
-    # send mail
-    send_mail(
-        subject="Password recovery",
-        message="",
-        html_message=email_message,
-        from_email=settings.EMAIL_HOST_USER,
-        recipient_list=[user.email]
-    )
+    body = {"subject": "Password recovery", "receiver_mail": email, "text": "", "html": email_message}
+    EmailProducer().publish(json.dumps(body))
 
 
-def send_tfa_code_email(user_tfa: UserTFA) -> None:
+def send_verify_email(username: str, email: str, token: str) -> None:
+    if username == '' or email == '' or token == '':
+        raise ValueError("missing username, email or token")
+    body = (f"Dear {username},\n thank you for joining our community.\n"
+            f"In order to complete the registration process click the following link:")
+    template = loader.get_template("email.html")
+    context = {
+        "title": "Registration",
+        "body": body,
+        "link": settings.MS_URLS['CLIENT_LOGIN_PAGE'] + f"?token={token}",
+        "company": "Trinity",
+    }
+    email_message = template.render(context)
+    body = {"subject": "Registration", "receiver_mail": email, "text": "", "html": email_message}
+    EmailProducer().publish(json.dumps(body))
+
+
+def send_tfa_code_email(username: str, email: str, code: str) -> None:
     # generate message
     title = "OTP code"
-    head = f"Dear {user_tfa.user.username},\nthis is your otp code\n"
-    body = head + "Please insert it in 5 minutes"
-    code = TOTP(user_tfa.otp_token, interval=180).now()
+    body = f"Dear {username},\nthis is your otp code\nPlease insert it in 5 minutes"
     company = "Trinity"
 
     # email_message = generate_email(title, body, url, company)
@@ -108,10 +62,5 @@ def send_tfa_code_email(user_tfa: UserTFA) -> None:
     email_message = template.render(context)
 
     # send mail
-    send_mail(
-        subject="OTP code",
-        message="",
-        html_message=email_message,
-        from_email=settings.EMAIL_HOST_USER,
-        recipient_list=[user_tfa.user.email]
-    )
+    body = {"subject": "OTP code", "receiver_mail": email, "text": "", "html": email_message}
+    EmailProducer().publish(json.dumps(body))

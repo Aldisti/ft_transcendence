@@ -1,5 +1,6 @@
 import * as API from "/API/APICall.js"
 import language from "/language/language.js"
+import Router from "/router/mainRouterFunc.js"
 
 let lan = language[localStorage.getItem("language")];
 
@@ -135,7 +136,9 @@ async function checkUsername(username, errors)
 
     //first check the username with regex expression the if is ok ask to server to check availability
     if (usernameValidator(username, errors))
-        resUsername  = await API.checkForUsernameAvailability(username);
+        resUsername  = await API.checkForUsernameAvailability(username).catch(e=>{
+            Router();
+        });
     else
         return ;
     if (resUsername && username != "" && usernameValidator(username, errors))
@@ -156,7 +159,9 @@ async function checkEmail(email, errors)
 
     //first check the email with regex expression the if is ok ask to server to check availability
     if (emailValidator(email, errors))
-        resEmail  = await API.checkForEmailAvailability(email);
+        resEmail  = await API.checkForEmailAvailability(email).catch(e=>{
+            Router()
+        });
     else
         return ;
     if (resEmail && email != "" && emailValidator(email, errors))

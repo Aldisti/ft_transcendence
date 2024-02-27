@@ -51672,11 +51672,7 @@ class ShapePath {
 			}
 
 		}
-
-		////console.log("shape", shapes);
-
 		return shapes;
-
 	}
 
 }

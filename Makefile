@@ -2,9 +2,26 @@ NAME = Transcendence
 
 ENV_FILE = ./srcs/.env
 COMPOSE = ./srcs/docker-compose.yml
+DJANGO_IMG = ./srcs/django
+POSTGRES_IMG = ./srcs/postgres
 
-$(NAME): init
+$(NAME): init build
+	@#gnome-terminal -- docker compose -f $(COMPOSE) --env-file $(ENV_FILE) up
 	@docker compose -f $(COMPOSE) --env-file $(ENV_FILE) up
+
+build:
+	@docker build \
+	--build-arg USERNAME=$(shell id -nu) \
+	--build-arg GROUPNAME=$(shell id -ng) \
+	--build-arg UID=$(shell id -u) \
+	--build-arg GID=$(shell id -g) \
+	-t trinity/django:latest $(DJANGO_IMG)
+	@docker build \
+	--build-arg USERNAME=$(shell id -nu) \
+	--build-arg GROUPNAME=$(shell id -ng) \
+	--build-arg UID=$(shell id -u) \
+	--build-arg GID=$(shell id -g) \
+	-t trinity/postgres:latest $(POSTGRES_IMG)
 
 init:
 	@./srcs/tools/init.sh
@@ -12,22 +29,45 @@ init:
 all: $(NAME)
 
 migrations:
-	@sudo ./srcs/tools/clean_migrations.sh
-	@sudo ./srcs/tools/clean_migrations_pong.sh
+	@./srcs/tools/clean_migrations.sh
 
-clean:
+down:
 	@if [ -f $(COMPOSE) ]; then \
 	docker compose -f $(COMPOSE) down; \
 	fi
-	@docker rmi -f trinity/nginx trinity/django trinity/gunicorn \
-		trinity/postgres trinity/pong trinity/pongdb trinity/cron 2> /dev/null
+
+demo:
+	@docker exec -w /home/$(shell id -nu)/develop/transcendence django \
+	./manage.py demo -c 35
+
+test:
+	@docker exec -w /home/$(shell id -nu)/develop/transcendence django \
+	./manage.py demo -c 16 -t
+
+clean: down
+	@docker rmi -f \
+		trinity/nginx \
+		trinity/transcendence \
+		trinity/pong \
+		trinity/chat \
+		trinity/auth \
+		trinity/cron \
+		trinity/ntf_listener \
+		trinity/email_listener \
+		trinity/rabbit_mq \
+		trinity/postgres \
+		trinity/django \
+		trinity/redis \
+		trinity/ntf 2> /dev/null
 
 fclean: clean
-	@docker volume rm -f nginx_template django postgres pong pongdb pong_static \
-		transcendence_static transcendence_media \
-		ssl_certs frontend 2> /dev/null
-	@sudo rm -rf ./static ./data/postgres ./data/pongdb 2> /dev/null
+	@docker volume rm -f django postgres pong pongdb auth authdb chat chatdb ntf ntfdb 2> /dev/null
+	@rm -rf ./data/postgres ./data/pongdb ./data/authdb ./data/chatdb ./data/ntfdb
+	@rm -rf ./data/django/images
+
+clean_env:
+	@rm -f ./srcs/.env ./srcs/*/.env ./srcs/postgres/.env*
 
 re: fclean all
 
-.PHONY: all init clean fclean re $(NAME)
+.PHONY: all init down clean fclean clean_env re $(NAME)

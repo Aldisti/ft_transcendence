@@ -1,0 +1,736 @@
+*:not(#navbar, nav, .navbar, #app, body){
+    border-radius: 8px ;
+}
+
+*{
+    font-family: 'Arial', sans-serif;
+    font-weight: bold;
+}
+
+.account{
+    border-radius: 10px !important;
+}
+
+.profilePictureUrl{
+    border-radius: 10px !important;
+}
+
+.base
+{
+    height: 92svh;
+    width: 100svw;
+    padding: 20px;
+    margin: 0;
+    gap: 30px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+/* .left, .right{
+    width: 15%;
+    height: 80%;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.center{
+    width: 60%;
+    height: 80%;
+    display: flex;
+    padding: 0 20px 0 20px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#usersDisplay{
+    height: fit-content;
+    display: flex;
+    justify-content: space-between;
+    color: white;
+    padding: 10px;
+    margin-bottom: 5svh;
+    margin: 20px;
+}
+
+#startQueque{
+    width: 100%;
+    height: fit-content;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border: none;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+}
+
+.btnContainer{
+    width: 40%;
+    height: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.mobileControl, .display{
+    display: none;
+}
+
+.gameContainer{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.gameContainerPadding{
+    width: 100%;
+    padding: 20px;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+}
+
+.info{
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+
+}
+#opponentDisplay, #currentUserDisplay{
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+    padding: 20px;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+
+}
+#waitCanv
+{
+    border: 4px solid black;
+}
+
+.themeContainer{
+    width: 30%;
+    height: 90%;
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.2);
+    overflow: scroll;
+}
+
+.pillsTheme, .groundTheme, .ballTheme{
+    width: 100%;
+    height: 31%;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 20px;
+    flex-shrink: 0;
+}
+
+.themeDisplay{
+    background-color: var(--bs-dark);
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+    width: 40%;
+    height: 100%;
+    display: flex;
+    justify-content: flex-start;
+    overflow-x: scroll;
+    padding: 20px;
+}
+
+.nextPill, .nextGround, .nextBall{
+    height: 40%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--bs-dark);
+    color: white;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+    font-size: xx-large;
+}
+
+.nextPill:hover{
+    cursor: pointer;
+    box-shadow: none;
+}
+
+.sliderPill{
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+.nextGround:hover{
+    cursor: pointer;
+    box-shadow: none;
+}
+.nextBall:hover{
+    cursor: pointer;
+    box-shadow: none;
+}
+
+.sliderGround{
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+.sliderBall{
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+
+.sliderGround img, .sliderPill img, .sliderBall img{
+    width: 100%;
+    height: 100%;
+    margin-right: 40px;
+    flex-shrink: 0;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+    padding: 10px;
+} */
+
+.matchManager{
+    width: 32svw;
+    height: 84svh;
+    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+}
+
+.allTournaments{
+    width: 30svw;
+    height: 80svh;
+    display: flex;
+    margin-left: 1svw;
+    position: relative;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 10px;
+    gap: 15px;    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+    background-color: white;
+    z-index: 21;
+}
+
+.matchesTitle{
+    display: flex;
+    width: 100%;
+    height: 10%;
+    padding: 0 10px 0 10px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 21;
+    background-color: var(--bs-dark);
+    color: white;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+    & .title{
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    & h3{
+        width: 100%;
+        text-align: center;
+        margin: 0;
+    }
+
+    & .matchSearchBar{
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        width: 100%;
+        gap: 10px;
+        padding-left: 10px;
+        height: 50%;
+    }
+
+    & .showNewTournamentForm{
+        background-color: var(--bs-warning);
+        width: 30%;
+        height: 100%;
+        border: none;
+        outline: none;
+        color: white;
+        font-size: xx-large;
+        box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+    }
+
+    & input{
+        border: none;
+        outline: none;
+        width: 100%;
+        height: 50%;
+        padding: 4px;
+        box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+    }
+    & .search{
+        background-color: var(--bs-success);
+        width: 50%;
+        height: 100%;
+    }
+    & .restoreBtn{
+        background-color: var(--bs-danger);
+        width: 30%;
+        height: 100%;
+
+    }
+
+    & .restoreBtn, .search{
+        border: none;
+        outline: none;
+        box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+        color: white;
+        padding: 5px;
+    }
+
+}
+
+.matchesList{
+    width: 100%;
+    height: 90%;
+    overflow: scroll;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    padding: 10px;
+    position: relative;
+    z-index: 21;
+    background-color: white;
+
+}
+
+.cardWrap{
+    height: 25%;
+    width: 100%;
+    background-color: var(--bs-dark);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    /* background-color: transparent; */
+}
+
+.tournamentCardWrap{
+    background-color: var(--bs-dark);
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+}
+
+.normalMatch{
+    height: 70%;
+}
+
+.tournamentCard{
+    height: 70%;
+}
+
+.matchCard{
+    width: 100%;
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+}
+
+.matchHistoryBottom{
+    width: 100%;
+    height: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    padding: 0 4px 0 4px;
+}
+
+.leftWin{
+    background: linear-gradient(105deg, var(--bs-success) 50%, var(--bs-danger) 50%);
+}
+
+.draw{
+    background-color: var(--bs-warning);
+}
+
+.rightWin{
+    background: linear-gradient(105deg, var(--bs-danger) 50%, var(--bs-success) 50%);
+
+}
+
+.matchBody{
+    width: 60%;
+    height: 100%;
+    color: white;
+    text-justify: justify;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.bottomLine{
+    width: 100%;
+    height: 60%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+
+    & button{
+        width: 30%;
+        height: 60%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: none;
+        outline: none;
+        color: white;
+        box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+
+    }
+}
+
+.popover-container {
+    position: relative;
+    display: inline-block;
+}
+
+.popover-content {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    display: none;
+}
+
+.popover-trigger:hover + .popover-content {
+    display: block;
+}
+
+.matchInfoContainer{
+    width: 60%;
+    height: 95%;
+    position: absolute;
+    left: 1svw;
+    background-color: var(--bs-dark);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    padding: 20px;
+    z-index: 10;
+}
+
+
+.displayNameAndSubmit{
+    width: 80%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to bottom, var(--bs-dark), #f72585);
+    padding: 10px;
+
+    & h3{
+        color: white;
+    }
+
+    & input{
+        border: none;
+        outline: none;
+        height: 20%;
+        width: 100%;
+    }
+
+    & button{
+        border: none;
+        outline: none;
+        width: 100%;
+        height: 30%;
+        background-color: var(--bs-success);
+        color: white;
+        box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+    }
+}
+
+.showCard{
+    transform: translateX(60%);
+}
+
+.topLine{
+    width: 100%;
+    height: 30%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    color: white;
+    background-color: var(--bs-dark);
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+    span, h3{
+        width: 25%;
+        text-align: center;
+        font-size: x-small;
+    }
+}
+
+.botLine{
+    width: 100%;
+    height: 60%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+.spaceAround{
+    justify-content: space-between;
+}
+.spaceBetween{
+    justify-content: space-between;
+}
+
+.tournamentImage{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+.tournamentImageEmpty{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+}
+
+.bracketLine{
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-evenly;
+    gap: 20px;
+}
+
+.tournamentImageWrap{
+    height: 100%;
+    padding: 6px;
+}
+
+.popover{
+    background: #333;
+    color: white;
+    font-weight: 400;
+    padding: 1rem;
+    max-width: 200px;
+    line-height: 1.4;
+    position: absolute;
+    top: 1rem;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+}
+
+.popover-container{
+    width: 50%;
+    height: 100%;
+}
+
+.tournamentImageWrap[winner=true]{
+    width: 100%;
+    background-color: var(--bs-success);
+}
+
+.tournamentImageWrap[winner=false]{
+    width: 100%;
+    background-color: var(--bs-danger);
+}
+
+.crown{
+    position: absolute;
+    top: -20%;
+    left: 35%;
+    width: 25%;
+    height: 25%;
+    object-fit: contain;
+}
+
+.bracket[tournamentWinner=true]{
+    .popover-container{
+        width: 100% !important;
+        height: 100%;
+    }
+}
+
+.bracket{
+    max-width: 30%;
+    max-height: 70%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+}
+
+.scores, .openTournament{
+    height: 100%;
+    width: 25%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    /* background-color: var(--bs-dark); */
+    padding: 5px;
+    & h3{
+        text-decoration: underline;
+        /* background-color: var(--bs-warning);
+        background: linear-gradient(to bottom, transparent, var(--bs-dark)); */
+
+        width: 100%;
+        height: fit-content;
+        text-align: center;
+    }
+}
+
+.tournamentInfo{
+    min-width: 100%;
+    flex-grow: 1;
+    color: var(--bs-dark);
+    display: flex;
+    justify-content: flex-end;
+}
+
+.matchDetails{
+    min-width: 35%;
+    width: fit-content;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.historyDate{
+    color: var(--bs-dark);
+    height: 100%;
+    width: fit-content;
+    color: white;
+    padding: 3px;
+    border-radius: 4px !important;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+}
+
+.matchDetails:hover{
+    cursor: pointer;
+}
+
+
+
+
+@media screen and (max-width: 900px) {
+
+    .themeContainer{
+        width: 100%;
+        height: 70svh;
+    }
+    .themeContainer h3{
+        font-size: smaller;
+    }
+    .base{
+        flex-direction: column;
+        height: fit-content;
+        padding: 20px;
+    }
+
+    .left, .right{
+        display: none;
+    }
+    .center{
+        width: 100%;
+        height: 92svh;
+        justify-content: space-between;
+    }
+
+    .mobileControl{
+        background-color: white;
+        padding: 10px;
+        width: 100%;
+        height: 20%;
+        display: flex;
+        justify-content: space-around;
+    }
+    .display{
+        height: 20%;
+        width: 100%;
+        display: flex;
+        padding: 20px;
+        justify-content: space-between;
+        background-color: white;
+        box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+
+    }
+
+    #opponentDisplay, #currentUserDisplay{
+        width: 45%;
+    }
+    .btnContainer{
+        width: 100%;
+    }
+    .btnWindow{
+        width: 100%;
+        height: 30%;
+        margin-top: 40px;
+    }
+    .mobile{
+        width: 30%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        user-select: none;
+        -webkit-user-select:none;
+        background-color: white;
+        box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+    }
+
+    .allTournaments, .matchManager{
+        width: 100svw;
+        padding: 3px;
+    }
+    .historyDate{
+        gap: 10px;
+    }
+    .matchDetails{
+        font-size: 6px !important;
+    }
+    
+}

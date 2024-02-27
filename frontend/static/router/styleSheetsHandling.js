@@ -11,24 +11,37 @@ export function disableStyleSheet(fRoute)
 	for (let style of document.querySelectorAll(".cssView"))
 	{
 		if (fRoute != 0 && style.href.indexOf(toFind) != -1)
-			style.disabled = true;
+			style.setAttribute("disabled", true);
 	}
 }
 
 export function enableStyleSheet(fRoute)
 {
-	let toFind;
+	let toFindModern;
+	let toFindOld;
 
-	if (localStorage.getItem("style") == "old")
-		toFind = fRoute.style;
-	else
-		toFind = fRoute.modernStyle;
+	toFindOld = fRoute.style;
+	toFindModern = fRoute.modernStyle;
 	for (let style of document.querySelectorAll(".cssView"))
 	{
-		if (fRoute != 0 && style.href.indexOf(toFind) != -1)
+		if (fRoute != 0 && style.href.indexOf(toFindOld) != -1)
 		{
-			style.disabled = false;
+			if (localStorage.getItem("style") == "old"){
+				style.disabled = false;
+			}
+			else{
+				style.disabled = true;
+			}
 		}
+		if (fRoute != 0 && style.href.indexOf(toFindModern) != -1 ){
+			if (localStorage.getItem("style") == "modern"){
+				style.disabled = false;
+			}
+			else{
+				style.disabled = true;
+			}
+		}
+
 	}
 }
 

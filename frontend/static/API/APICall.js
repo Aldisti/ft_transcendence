@@ -2,6 +2,15 @@ import Router from "/router/mainRouterFunc.js"
 import * as create from "/viewScripts/chat/createChatItem.js"
 import * as URL from "/API/URL.js"
 import * as help from "/viewScripts/chat/helpFunction.js"
+import allLanguage from "/language/language.js"
+import * as  notificationSocket from "/viewScripts/notification/notificatioSocket.js";
+import * as  chatSocket from "/viewScripts/chat/chatSocket.js";
+import * as listener from "/viewScripts/chat/handleMovement.js"
+import * as NOTIFICATION from "/viewScripts/notification/notification.js"
+
+
+
+let language = allLanguage[localStorage.getItem("language")]
 
 function cleanLocalStorage() {
     localStorage.removeItem("username");
@@ -11,6 +20,21 @@ function cleanLocalStorage() {
     localStorage.removeItem("isActive");
     localStorage.removeItem("selectedForm");
     localStorage.removeItem("chat");
+    localStorage.removeItem("jwt");
+    localStorage.removeItem("notification");
+    notificationSocket.close();
+    chatSocket.close();
+
+    //defining Listener for general MOUSE HOVER event
+    document.removeEventListener("mousemove", listener.hoverHandle)
+    
+    //defining Listener for user menu MOUSE CLICK event
+    document.querySelector(".chatSideList").removeEventListener("click", listener.clickHandle)
+
+    //defining Listener for input submit MOUSE CLICK event
+    document.querySelector(".submitChatInput").removeEventListener("click", listener.sendSocketMessage)
+
+    document.querySelector(".chatSideList").innerHTML = ""
 }
 
 function getCookie(name) {
@@ -26,7 +50,6 @@ async function refreshAndRetry(retryFunc, ...args) {
         cleanLocalStorage();
         history.pushState(null, null, "/login/");
         Router();
-        window.location.reload();
         return;
     }
     return await retryFunc(...args);
@@ -52,51 +75,51 @@ export async function checkForEmailAvailability(email) {
     return (false)
 }
 
-export async function convertIntraToken() {
-    if (getCookie("api_token") == undefined)
-        return (false);
-
+export async function convertIntraToken(code, state) {
     const res = await fetch(URL.general.CONVERT_INTRA_TOKEN, {
         method: "POST",
         credentials: "include",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            code: code,
+            state: state
+        })
     });
     if (res.ok) {
         let token = await res.json();
         localStorage.setItem("token", token.access_token)
         localStorage.setItem("username", token.username);
-        history.pushState(null, null, "/home");
-        Router();
-        window.location.reload();
+        history.pushState(null, null, "/");
+        // Router();
         return (true);
     }
     return (false);
 }
-export async function convertIntraTokenAccount(recursionProtection) {
-    if (getCookie("api_token") == undefined)
-        return (false);
+export async function linkIntraAccount(recursionProtection, code, state) {
     const res = await fetch(URL.general.LINK_INTRA_TOKEN_ACCOUNT, {
         method: "POST",
         headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json"
         },
+        body: JSON.stringify({
+            code: code,
+            state: state,
+        }),
         credentials: "include",
     });
     if (res.ok) {
-        let token = await res.json();
-        localStorage.setItem("token", token.access_token)
-        localStorage.setItem("username", token.username);
-        history.pushState(null, null, "/home");
-        Router();
-        window.location.reload();
         return (true);
     }
     if (res.status == 401 && recursionProtection)
-        return await refreshAndRetry(convertIntraTokenAccount, 0);
+        return await refreshAndRetry(linkIntraAccount, 0, code, state);
     return (false);
 }
 
 export async function unlinkIntra(recursionProtection) {
-    const res = await fetch(URL.general.LINK_INTRA_TOKEN_ACCOUNT, {
+    const res = await fetch(URL.general.UNLINK_INTRA_TOKEN_ACCOUNT, {
         method: "DELETE",
         headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -131,19 +154,21 @@ export async function unlinkGoogle(recursionProtection) {
     return (false);
 }
 
-export async function getUserInfo(username) {
-    const res = await fetch(`${URL.general.USER_INFO}?search=${username}`, {
+export async function getUserInfo(recursionProtection, username) {
+    const res = await fetch(`${URL.general.USER_INFO}?username=${username}`, {
         method: "GET",
         headers: {
-            // Authorization: `Bearer ${localStorage.getItem("token")}`
+            Authorization: `Bearer ${localStorage.getItem("token")}`
         },
-        // credentials: "include",
     })
     if (res.ok) {
         let jsonBody = await res.json();
-        return (jsonBody.results[0]);
+        return (jsonBody);
     }
-    return ({});
+    if (res.status == 401 && recursionProtection) {
+        return await refreshAndRetry(getUserInfo, 0, username);
+    }
+    return (undefined);
 }
 
 export async function login(data) {
@@ -156,11 +181,17 @@ export async function login(data) {
         body: JSON.stringify(data),
     })
     if (!res.ok) {
+        let body = await res.json();
+
         document.querySelector(".loginError").style.display = "flex";
+        if (body.message == "user isn't active")
+            document.querySelector(".loginError p").innerHTML = language.login.bannedLogin;
     }
     if (res.ok) {
         localStorage.setItem("username", data.username);
         let token = await res.json();
+        // if (token.access_token != undefined)
+        //     localStorage.setItem("jwt", token.access_token.split(".")[1])
         localStorage.setItem("otp_token", token.token);
         return (token)
     }
@@ -168,7 +199,7 @@ export async function login(data) {
 
 export async function refreshToken() {
     const res = await fetch(URL.userAction.REFRESH_TOKEN, {
-        method: "GET",
+        method: "POST",
         credentials: 'include',
     })
     let resCpy = res;
@@ -188,9 +219,7 @@ export async function register(data) {
         body: JSON.stringify(data),
     })
     if (res.status == 201) {
-        //console.log("hey")
-        localStorage.setItem("username", data.username)
-        history.pushState(null, null, "/login");
+        history.pushState(null, null, "/login/");
         Router();
         return ({});
     } else {
@@ -210,7 +239,7 @@ export async function updateInfo(data, recursionProtection) {
         body: JSON.stringify(data),
     })
     if (res.ok) {
-        window.location.reload();
+        Router();
         return ({});
     }
     if (res.status == 401 && recursionProtection)
@@ -239,21 +268,30 @@ export async function updatePassword(recursionProtection, data, dupThis) {
     if (res.status == 400) {
         alert("Old password is not correct...")
     }
-    if (res.ok)
-        window.location.reload()
+    if (res.ok){
+        history.pushState(null, null, "/account/");
+        Router();
+    }
     return (res);
 }
 
 
 export async function updateEmail(data) {
-    const rest = await fetch(URL.userAction.UPDATE_EMAIL, {
-        method: "POST",
+    const res = await fetch(URL.userAction.UPDATE_EMAIL, {
+        method: "PATCH",
+        credentials: "include",
         headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "application/json"
         },
         body: JSON.stringify(data),
     })
-    return (rest);
+    if (res.ok){
+        return (true);
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(updateEmail, 0, data);
+    return (false);
 }
 
 export async function logout(recursionProtection) {
@@ -268,9 +306,8 @@ export async function logout(recursionProtection) {
         return await refreshAndRetry(logout, 0);
     if (res.ok) {
         cleanLocalStorage()
-        history.pushState(null, null, "/home");
+        history.pushState(null, null, "/");
         Router();
-        window.location.reload();
         return;
     }
     alert("Something went wrong retry...");
@@ -289,9 +326,8 @@ export async function logoutAll(recursionProtection) {
         return await refreshAndRetry(logoutAll, 0);
     if (res.ok) {
         cleanLocalStorage()
-        history.pushState(null, null, "/home");
+        history.pushState(null, null, "/");
         Router();
-        window.location.reload();
         return;
     }
     alert("Something went wrong retry...");
@@ -311,7 +347,6 @@ export async function getIntraUrl(parameter) {
 }
 
 export async function uploadImage(recursionProtection, file) {
-    //console.log("hey")
     const form = new FormData();
 
     if (file.files.length > 0) {
@@ -328,7 +363,7 @@ export async function uploadImage(recursionProtection, file) {
     if (res.status == 401 && recursionProtection)
         return await refreshAndRetry(uploadImage, 0, file);
     if (res.ok) {
-        window.location.reload();
+        Router();
     }
 }
 
@@ -351,6 +386,14 @@ export async function activateTfa(recursionProtection, type) {
         let resJson = await res.json();
         return (resJson);
     }
+    if (res.status == 400)
+    {
+        let resJson = await res.json();
+
+        if (resJson.message == "user's email not verified")
+            NOTIFICATION.simple({title: "TFA", body: "You need to verify your email!"});
+        Router();
+    }
     return ({})
 }
 
@@ -369,10 +412,9 @@ export async function getEmailCode(recursionProtection, token) {
         return await refreshAndRetry(getEmailCode, 0, token);
     if (res.status == 429)
     {
-        //console.log(res.headers)
         let resJson = await res.json();
         let errMsg = resJson.detail.split(" ")
-        alert(`You made too many request you will be able to request another code in ${errMsg[errMsg.length - 2]} seconds`)
+        NOTIFICATION.simple({title: "TFA", body:`You made too many request you will be able to request another code in ${errMsg[errMsg.length - 2]} seconds`})
     }
     return (res);
 
@@ -396,7 +438,6 @@ export async function validateCode(recursionProtection, code)
     if (res.ok)
     {
         let jsonBody = await res.json();
-        //console.log(jsonBody);
         let body = "";
 
         for (let el of jsonBody.codes)
@@ -429,14 +470,12 @@ export async function validateCodeLogin(recursionProtection, code, token)
     if (res.status == 400)
     {
         let jsonBody = await res.json();
-        //console.log(jsonBody);
         localStorage.setItem("otp_token", jsonBody.token == undefined ? localStorage.getItem("otp_token") : jsonBody.token);
         return ({});
     }
     if (res.ok)
     {
         let jsonBody = await res.json();
-        //console.log(jsonBody);
         return (jsonBody);
     }
     return ({});
@@ -480,7 +519,6 @@ export async function validateRecover(token, code)
     if (res.status == 400)
     {
         let jsonBody = await res.json();
-        //console.log(jsonBody);
         localStorage.setItem("otp_token", jsonBody.token == undefined ? localStorage.getItem("otp_token") : jsonBody.token);
         return ({});
     }
@@ -508,9 +546,8 @@ export async function removeTfa(recursionProtection, code)
     if (res.ok)
     {
         localStorage.removeItem("is_active");
-        history.pushState(null, null, "/home");
+        history.pushState(null, null, "/account/");
         Router();
-        window.location.reload()
     }
     if (res.status == 401 && recursionProtection)
         return await refreshAndRetry(removeTfa, 0, code);
@@ -528,10 +565,12 @@ export async function sendRecoveryEmail(username)
             username: username,
         })
     })
-    //console.log(res)
-    let temp = await res.json();
-    //console.log(temp);
-    return (temp);
+    try{
+        let temp = await res.json();
+        return (temp);
+    }catch(e){
+        return ({})
+    }
 }
 
 export async function recoveryPassword(data, token)
@@ -546,11 +585,9 @@ export async function recoveryPassword(data, token)
     })
     if (res.ok)
     {
-        history.pushState(null, null, "/login");
-        Router();
-        window.location.reload();    
+        history.pushState(null, null, "/login/");
+        Router();   
     }
-    //console.log(res)
 }
 
 export async function getIntraStatus(recursionProtection){
@@ -597,7 +634,6 @@ export async function linkGoogleAccount(recursionProtection, code, state) {
     });
     if (res.status == 401 && recursionProtection)
         return await refreshAndRetry(linkGoogleAccount, 0, code, state);
-    console.log(res);
 }
 
 export async function googleLogin(recursionProtection, code, state) {
@@ -620,9 +656,7 @@ export async function googleLogin(recursionProtection, code, state) {
 
         localStorage.setItem("token", jsonBody.access_token)
         localStorage.setItem("username", jsonBody.username)
-        // window.location.reload();
     }
-    console.log(res);
 }
 
 export async function removeFriend(recursionProtection, username){
@@ -635,12 +669,11 @@ export async function removeFriend(recursionProtection, username){
     });
     if (res.ok) {
         document.querySelector(".chatSideList").innerHTML = ""; 
-        create.createUser(create.global);
+        create.createUser(create.global, "connected");
         getFriends(1).then(users=>{
             for (let i = 0; i < users.length; i++)
-                create.createUser(users[i]);
+                create.createUser(users[i], users[i].status);
         })
-        alert("friend removed")
         return;
     }
     if (res.status == 401 && recursionProtection)
@@ -657,7 +690,6 @@ export async function sendFriendRequest(recursionProtection, username){
         credentials: "include",
     });
     if (res.ok) {
-        alert("request sent!")
         return {};
     }
     if (res.status == 401 && recursionProtection)
@@ -694,10 +726,10 @@ export async function acceptRequest(recursionProtection, token){
     });
     if (res.ok) {
         document.querySelector(".chatSideList").innerHTML = ""; 
-        create.createUser(create.global);
+        create.createUser(create.global, "connected");
         getFriends(1).then(users=>{
             for (let i = 0; i < users.length; i++)
-                create.createUser(users[i]);
+                create.createUser(users[i], users[i].status);
         })
         let parsed = await res.json();
         return (parsed);
@@ -739,7 +771,6 @@ export async function getFriends(recursionProtection){
     }
     if (res.status == 401 && recursionProtection)
         return await refreshAndRetry(getFriends, 0);
-    alert("error ha occured..")
     return ({})
 }
 
@@ -757,11 +788,11 @@ export async function getUsers(recursionProtection){
     }
     if (res.status == 401 && recursionProtection)
         return await refreshAndRetry(getUsers, 0);
-    alert("error ha occured..")
     return ({})
 }
-export async function getTicket(recursionProtection){
-    const res = await fetch(URL.socket.GET_TICKET, {
+
+export async function getTicket(recursionProtection, url){
+    const res = await fetch(url, {
         method: "GET",
         headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -773,10 +804,7 @@ export async function getTicket(recursionProtection){
         return (parsed);
     }
     if (res.status == 401 && recursionProtection)
-    {
-        console.log(res.status, recursionProtection)        
-        return await refreshAndRetry(getTicket, 0);
-    }
+        return await refreshAndRetry(getTicket, 0, url);
     return ({})
 }
 export async function startQueque(recursionProtection){
@@ -792,9 +820,400 @@ export async function startQueque(recursionProtection){
         return (parsed);
     }
     if (res.status == 401 && recursionProtection)
-    {
-        console.log(res.status, recursionProtection)        
         return await refreshAndRetry(startQueque, 0);
-    }
     return ({})
 }
+
+export async function adminGetUsers(recursionProtection, page, size){
+    const res = await fetch(`${URL.general.GET_USERS}?page=${page}&size=${size}&role=U`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        credentials: "include",
+    });
+    if (res.ok) {
+        let parsed = await res.json();
+        return (parsed);
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(adminGetUsers, 0, page, size);
+    return ({})
+}
+export async function adminGetBannedUsers(recursionProtection, page, size){
+    const res = await fetch(`${URL.general.GET_USERS}?search=False&page=${page}&size=${size}&active=false`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        credentials: "include",
+    });
+    if (res.ok) {
+        let parsed = await res.json();
+        return (parsed);
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(adminGetBannedUsers, 0, page, size);
+    return ({})
+}
+export async function adminGetModerator(recursionProtection, page, size){
+    const res = await fetch(`${URL.general.GET_USERS}?search=M&page=${page}&size=${size}&role=M
+    `, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        credentials: "include",
+    });
+    if (res.ok) {
+        let parsed = await res.json();
+        return (parsed);
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(adminGetModerator, 0, page, size);
+    return ({})
+}
+export async function removeUser(recursionProtection, username){
+    const res = await fetch(`${URL.manageUsers.DELETE_USER}${username}/`, {
+        method: "DELETE",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        credentials: "include",
+    });
+    if (res.ok) {
+        alert(`user ${username} has been removed!`);
+        return ;
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(removeUser, 0, username);
+    alert("error ha occured..")
+    return ({})
+}
+export async function manageUserBan(recursionProtection, username, banState){
+    const res = await fetch(`${URL.manageUsers.MANAGE_BAN}`, {
+        method: "PATCH",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            username: username,
+            banned: banState
+        }),
+        credentials: "include",
+    });
+    if (res.ok) {
+        //alert(banState ? `${username} has been banned!` : `${username} is no longer banned!`);
+        return ;
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(manageUserBan, 0, username, banState);
+    alert("error ha occured..")
+    return ({})
+}
+export async function manageModerator(recursionProtection, username, moderatorState){
+    const res = await fetch(`${URL.manageUsers.MANAGE_MODERATOR}`, {
+        method: "PATCH",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            username: username,
+            role: moderatorState
+        }),
+        credentials: "include",
+    });
+    if (res.ok) {
+        //alert(moderatorState == "M" ? `${username} is now a moderator!` : `${username} is no more a moderator!`);
+        return ;
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(manageModerator, 0, username, moderatorState);
+    alert("error ha occured..")
+    return ({})
+}
+
+//still dummy call need to be implemente with real backEnd
+
+export async function getTournamentsList(recursionProtection, page, size, options){
+    let url = `${URL.tournaments.GET_TOURNAMENTS_LIST}?page=${page}&size=${size}${options.title}${options.participants}&finished=False`
+    
+    const res = await fetch(url, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        // credentials: "include",
+    });
+    if (res.ok) {
+        let parsed = await res.json();
+        return (parsed);
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(getTournamentsList, 0, page, size);
+    return ([])
+}
+
+export async function tournamentSubmit(recursionProtection, displayName, id){
+    const res = await fetch(URL.tournaments.REGISTER, {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            display_name: displayName,
+            tournament_id: Number(id)
+        }),
+        credentials: "include",
+
+    });
+    if (res.ok) {
+        return (true);
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(tournamentSubmit, 0, displayName, id);
+    return (false)
+}
+export async function unsubscribeTournament(recursionProtection, tournamentId){
+    const res = await fetch(URL.tournaments.UNREGISTER, {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            tournament_id: tournamentId,
+        }),
+        credentials: "include",
+
+    });
+    if (res.ok) {
+        return (true);
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(unsubscribeTournament, 0, tournamentId);
+    return (false)
+}
+
+export async function createTournament(recursionProtection, form){
+    const res = await fetch(URL.tournaments.CREATE, {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            title: form.tName,
+            display_name: form.tDisplayName,
+            description: form.tDescription,
+            participants: form.tPartecipants,
+            start_date: form.tDateTime,
+        }),
+        credentials: "include",
+
+    });
+    if (res.ok) {
+        let parsed = await res.json();
+        return (parsed);
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(createTournament, 0, form);
+    return ([])
+}
+
+export async function validateEmail(token){
+    const res = await fetch(`${URL.auth.VALIDATE_EMAIL}?token=${token}`, {
+        method: "GET",
+    });
+    if (res.ok) {
+        return (true);
+    }
+    return (false)
+}
+export async function getMatchHistory(recursionProtection, username){
+    const res = await fetch(`${URL.tournaments.GET_MATCH_HISTORY}?username=${username}`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json"
+        },
+        credentials: "include",
+
+    });
+    if (res.ok){
+        let parsed = await res.json();
+        return (parsed);
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(getMatchHistory, 0, username);
+    return ([])
+}
+export async function getTournamentInfo(recursionProtection, tournamentId){
+    const res = await fetch(`${URL.tournaments.GET_TOURNAMENT_HISTORY}${tournamentId}/`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json"
+        },
+        credentials: "include",
+    });
+    if (res.ok){
+        let parsed = await res.json();
+        return (parsed);
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(getTournamentInfo, 0, tournamentId);
+    return ([])
+}
+
+export async function sendMatchReq(recursionProtection, username){
+    const res = await fetch(URL.matchReq.SEND_REQUEST, {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            requested: username,
+        }),
+        credentials: "include",
+
+    });
+    if (res.ok) {
+        let parsed = await res.json();
+        return (parsed);
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(sendMatchReq, 0, username);
+    return ({})
+}
+export async function deleteMatchReq(recursionProtection){
+    const res = await fetch(URL.matchReq.DELETE_REQUEST, {
+        method: "DELETE",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        credentials: "include",
+
+    });
+    if (res.ok) {
+        return (true);
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(deleteMatchReq, 0);
+    return (false)
+}
+export async function acceptMatchReq(recursionProtection, token){
+    const res = await fetch(URL.matchReq.ACCEPT_REQUEST, {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            token: token,
+        }),
+        credentials: "include",
+
+    });
+    if (res.ok) {
+        let parsed = await res.json();
+        return (parsed);
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(acceptMatchReq, 0, token);
+    return ({})
+}
+export async function rejectMatchReq(recursionProtection, token){
+    const res = await fetch(URL.matchReq.REJECT_REQUEST, {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            token: token,
+        }),
+        credentials: "include",
+
+    });
+    if (res.ok) {
+        return (true);
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(rejectMatchReq, 0, token);
+    return (false)
+}
+
+export async function getChatHistory(recursionProtection){
+    const res = await fetch(URL.socket.GET_CHAT_HISTORY, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        credentials: "include",
+    });
+    if (res.ok){
+        let parsed = await res.json();
+        return (parsed);
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(getChatHistory, 0);
+    return ({})
+}
+
+export async function getPongMaestry(recursionProtection, username){
+    const res = await fetch(`${URL.stats.RADAR_CHART}?username=${username}`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        credentials: "include",
+    });
+    if (res.ok){
+        let parsed = await res.json();
+        return parsed;
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(getPongMaestry, 0, username);
+    return ({});
+}
+
+export async function getDonutChart(recursionProtection, username, tournament){
+    const res = await fetch(`${URL.stats.PIE_STATS}?username=${username}${tournament}`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        credentials: "include",
+    });
+    if (res.ok){
+        let parsed = await res.json();
+        return parsed;
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(getDonutChart, 0, username, tournament);
+    return ({});
+}
+
+export async function getIstogram(recursionProtection, username){
+    const res = await fetch(`${URL.stats.ISTOGRAM_CHART}?username=${username}`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        credentials: "include",
+    });
+    if (res.ok){
+        let parsed = await res.json();
+        return parsed;
+    }
+    if (res.status == 401 && recursionProtection)
+        return await refreshAndRetry(getIstogram, 0, username);
+    return ({});
+}
+
+//end of Dummy call

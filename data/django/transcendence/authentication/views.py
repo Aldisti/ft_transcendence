@@ -1,162 +1,183 @@
-from django.core.exceptions import ValidationError
-from django.conf import settings
+import logging
 
-from rest_framework import status
-from rest_framework.decorators import APIView, api_view, permission_classes, throttle_classes
+from django.conf import settings
+from requests import get
+from requests import post
+from rest_framework.decorators import api_view, permission_classes, throttle_classes
 from rest_framework.response import Response
 
-from rest_framework_simplejwt.exceptions import TokenError
-from rest_framework_simplejwt.tokens import RefreshToken
-
-from authentication.throttles import LowLoadThrottle, MediumLoadThrottle
-
-from two_factor_auth.models import UserTFA
-
-from authentication.serializers import TokenPairSerializer
-from authentication.models import JwtToken, UserTokens, WebsocketTicket
-from authentication.permissions import IsUser
-from authentication.settings import MATCHMAKING_TOKEN
-
-from accounts.models import User
-from accounts.serializers import UserSerializer
-
-from requests import post as post_request
-from datetime import datetime
-import logging
+from email_manager.email_sender import send_password_reset_email
+from transcendence.decorators import get_func_credentials
+from transcendence.permissions import IsUser
+from transcendence.throttles import LowLoadThrottle, MediumLoadThrottle, EmailThrottle, HighLoadThrottle
 
 logger = logging.getLogger(__name__)
 
 
-@api_view(['GET'])
-@permission_classes([IsUser])
-def generate_ticket(request) -> Response:
-    user = request.user
-    websocket_ticket = WebsocketTicket.objects.create(user.user_tokens)
-    return Response({"ticket": websocket_ticket.ticket}, status=200)
+def post_request(*args, **kwargs):
+    return post(*args, **kwargs, verify=False)
 
 
-class LoginView(APIView):
-    throttle_classes = [MediumLoadThrottle]
-    permission_classes = []
-
-    def post(self, request) -> Response:
-        error_response = Response(data={
-            'message': 'invalid username or password'
-        }, status=400)
-        user_serializer = UserSerializer(data=request.data)
-        user_serializer.is_valid(raise_exception=True)
-        try:
-            user = User.objects.get(pk=user_serializer.validated_data['username'])
-        except User.DoesNotExist:
-            return error_response
-        if not user.check_password(user_serializer.validated_data['password']):
-            return error_response
-        # TODO: turn back on this check
-        # if not user.verified:
-        #     return Response(data={'message': 'user not verified yet'}, status=400)
-        if not user.active:
-            return Response(data={'message': "user isn't active"}, status=400)
-        UserTokens.objects.clear_password_token(user.user_tokens)
-        if user.user_tfa.is_active():
-            user_tfa = UserTFA.objects.generate_url_token(user.user_tfa)
-            return Response(data={
-                'token': user_tfa.url_token,
-                'type': user_tfa.type,
-            }, status=200)
-        user = User.objects.update_last_login(user)
-        refresh_token = TokenPairSerializer.get_token(user)
-        # TODO: timezone thing
-        exp = datetime.fromtimestamp(refresh_token['exp'], tz=settings.TZ) - datetime.now(tz=settings.TZ)
-        response = Response(data={
-            'access_token': str(refresh_token.access_token)
-        }, status=200)
-        response.set_cookie(
-            key='refresh_token',
-            value=str(refresh_token),
-            max_age=exp.seconds,
-            secure=False,
-            httponly=True,
-            samesite=None,
-        )
-        return response
+def get_request(*args, **kwargs):
+    return get(*args, **kwargs, verify=False)
 
 
 @api_view(['POST'])
-@throttle_classes([LowLoadThrottle])
-def logout(request) -> Response:
-    error_response = Response(data={'message': 'invalid token'}, status=400)
-    error_response.set_cookie(key="refresh_token", value="deleted", max_age=0)
-    try:
-        refresh_token = RefreshToken(request.COOKIES.get('refresh_token'))
-    except TokenError:
-        return error_response
-    try:
-        JwtToken.objects.create(refresh_token)
-    except TokenError or ValidationError:
-        return error_response
-    if request.path.strip("/").split('/')[-1] == 'all':
-        User.objects.update_last_logout(request.user)
+@permission_classes([])
+@throttle_classes([HighLoadThrottle])
+def login(request) -> Response:
+    api_response = post_request(settings.MS_URLS['AUTH']['LOGIN'], json=request.data)
+    if api_response.status_code != 200:
+        return Response(data=api_response.json(), status=api_response.status_code)
+    data = api_response.json()
+    if 'token' in data:
+        return Response(data=data, status=200)
     response = Response(status=200)
-    response.set_cookie(key="refresh_token", value="deleted", max_age=0)
+    response.set_cookie(
+        key='refresh_token',
+        value=data.pop('refresh_token'),
+        max_age=data.pop('exp'),
+        secure=True,
+        httponly=True,
+        samesite='Lax',
+    )
+    response.data = data
     return response
 
 
-class RefreshView(APIView):
-    throttle_classes = [MediumLoadThrottle]
-    permission_classes = []
+@api_view(['POST'])
+@throttle_classes([MediumLoadThrottle])
+@get_func_credentials
+def logout(request) -> Response:
+    url = settings.MS_URLS['AUTH']['LOGOUT']
+    if request.path.endswith('all/'):
+        url = settings.MS_URLS['AUTH']['LOGOUT_ALL']
+    api_response = post_request(url, headers=request.api_headers, cookies=request.api_cookies)
+    if api_response.status_code != 200:
+        response = Response(data=api_response.json(), status=api_response.status_code)
+    else:
+        response = Response(status=200)
+    response.set_cookie('refresh_token', 'deleted', max_age=0)
+    return response
 
-    def get(self, request) -> Response:
-        error_response = Response(status=403)
-        error_response.set_cookie('refresh_token', 'deleted', max_age=0)
-        if request.user.is_authenticated:
-            return Response(data={
-                'message': 'cannot refresh with valid access token'
-            }, status=400)
-        try:
-            refresh_token = RefreshToken(request.COOKIES.get('refresh_token'))
-            if refresh_token is None:
-                raise TokenError()
-            try:
-                if JwtToken.objects.filter(token=refresh_token['csrf']).exists():
-                    raise TokenError()
-            except KeyError:
-                logger.warning(f"token received: {str(refresh_token)}")
-        except TokenError:
-            error_response.data = {'message': 'invalid refresh token'}
-            return error_response
-        try:
-            user = User.objects.get(pk=refresh_token['username'])
-        except User.DoesNotExist:
-            error_response.data = {'message': 'user not found'}
-            error_response.status_code = 404
-            return error_response
-        if not user.active:
-            error_response.data({'message': "user isn't active"})
-            return error_response
-        # TODO: timezone thing
-        token_exp = datetime.fromtimestamp(refresh_token['exp'], tz=settings.TZ)
-        if user.last_logout > user.last_login and user.last_logout > token_exp:
-            return error_response
-        return Response({'access_token': str(refresh_token.access_token)}, status=200)
+
+@api_view(['POST'])
+@permission_classes([])
+@throttle_classes([MediumLoadThrottle])
+def refresh(request) -> Response:
+    if request.user.is_authenticated:
+        return Response(data={'message': 'access_token not expired yet'}, status=400)
+    cookies = {'refresh_token': request.COOKIES.get('refresh_token')}
+    api_response = post_request(settings.MS_URLS['AUTH']['REFRESH'], cookies=cookies)
+    response = Response(data=api_response.json(), status=api_response.status_code)
+    if api_response.status_code != 200:
+        response.set_cookie('refresh_token', 'deleted', max_age=0)
+    return response
+
+
+@api_view(['POST'])
+@permission_classes([])
+@throttle_classes([HighLoadThrottle])
+def password_recovery(request) -> Response:
+    api_response = post_request(settings.MS_URLS['AUTH']['PASSWORD_RECOVERY'], json=request.data)
+    if api_response.status_code != 200:
+        return Response(data=api_response.json(), status=api_response.status_code)
+    kwargs = api_response.json()
+    if 'type' in kwargs:
+        return Response(data=kwargs, status=200)
+    send_password_reset_email(**kwargs)
+    return Response(status=200)
+
+
+@api_view(['POST'])
+@permission_classes([])
+@throttle_classes([MediumLoadThrottle])
+def password_reset(request) -> Response:
+    body = request.data
+    body.update({'token': request.query_params.get('token', '')})
+    api_response = post_request(settings.MS_URLS['AUTH']['PASSWORD_RESET'], json=body)
+    if api_response.status_code != 200:
+        return Response(data=api_response.json(), status=api_response.status_code)
+    return Response(status=200)
 
 
 @api_view(['GET'])
+@permission_classes([IsUser])
+@throttle_classes([HighLoadThrottle])
+def generate_ntf_ticket(request) -> Response:
+    user = request.user
+    # websocket_ticket = WebsocketTicket.objects.create(user.user_tokens)
+    data = {"username": user.username}
+    api_response = post_request(settings.MS_URLS['NTF_TICKET'], json=data)
+    if api_response.status_code >= 300:
+        return Response(api_response.json(), status=503)
+    return Response(api_response.json(), status=200)
+
+
+@api_view(['GET'])
+@permission_classes([IsUser])
+@throttle_classes([HighLoadThrottle])
+def generate_chat_ticket(request) -> Response:
+    user = request.user
+    # websocket_ticket = WebsocketTicket.objects.create(user.user_tokens)
+    data = {"username": user.username}
+    api_response = post_request(settings.MS_URLS['CHAT_TICKET'], json=data)
+    if api_response.status_code >= 300:
+        return Response(api_response.json(), status=503)
+    return Response(api_response.json(), status=200)
+
+
+@api_view(['GET'])
+@permission_classes([IsUser])
+@throttle_classes([MediumLoadThrottle])
 def get_queue_ticket(request) -> Response:
     username = request.user.username
     data = {'username': username}
-    #logger.warning("#" * 50)
-    api_response = post_request(MATCHMAKING_TOKEN, json=data)
-    #logger.warning("#" * 50)
+    # logger.warning("#" * 50)
+    api_response = post_request(settings.MS_URLS['MATCHMAKING_TOKEN'], json=data)
+    # logger.warning("#" * 50)
     if api_response.status_code != 200:
-        #logger.warning(f"status code: {api_response.status_code}")
-        #logger.warning(f"json: {api_response.json()}")
+        # logger.warning(f"status code: {api_response.status_code}")
+        # logger.warning(f"json: {api_response.json()}")
         return Response(data={'message': f'api: {api_response.status_code}'}, status=503)
-    #logger.warning(f"\n\n\n\n\nDJANGO API RESPONSE: {api_response.json()}")
+    # logger.warning(f"\n\n\n\n\nDJANGO API RESPONSE: {api_response.json()}")
     return Response(data=api_response.json(), status=200)
 
 
-# @api_view(['GET', 'POST'])
-# @permission_classes([])
-# def test(request) -> Response:
-#     from os import environ
-#     return Response(data=environ)
+@api_view(['GET'])
+@permission_classes([])
+@throttle_classes([LowLoadThrottle])
+def retrieve_pubkey(request) -> Response:
+    api_response = get_request(settings.MS_URLS['AUTH']['RETRIEVE_PUBKEY'])
+    if api_response.status_code != 200:
+        return Response(data=api_response.text, status=api_response.status_code)
+    return Response(data=api_response.json(), status=200)
+
+
+@api_view(['GET'])
+@permission_classes([HighLoadThrottle])
+def email_token_validation(request) -> Response:
+    token = request.query_params.get("token", "")
+    if token == '':
+        return Response(data={'message': 'missing token'}, status=400)
+    api_response = post_request(
+        settings.MS_URLS['AUTH']['VERIFY_EMAIL'],
+        json={'token': token}
+    )
+    if api_response.status_code != 200:
+        return Response(api_response.json(), status=api_response.status_code)
+    return Response(status=200)
+
+
+@api_view(['GET'])
+@throttle_classes([EmailThrottle])
+@get_func_credentials
+def send_verification_email(request) -> Response:
+    api_response = get_request(
+        settings.MS_URLS['AUTH']['EMAIL_DETAILS'],
+        headers=request.api_headers,
+    )
+    if api_response.status_code != 200:
+        return Response(data=api_response.text, status=api_response.status_code)
+    send_verification_email(**api_response.json())
+    return Response(status=200)

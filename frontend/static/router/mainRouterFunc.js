@@ -1,6 +1,7 @@
 import Routes from "/router/initRoutes.js"
 import * as styleH from "/router/styleSheetsHandling.js"
 import Spinner from "/views/Spinner.js"
+import createNavbar from "/views/NavBar.js"
 
 let fRoute = 0;
 let cloneDocument = document.cloneNode(true);
@@ -10,6 +11,12 @@ const Router =()=>{
 	setTimeout(() => {
 		let matechedLocation = 0;
 	
+		if(fRoute != 0){
+			let temp = new fRoute.view;
+
+			temp.destroy()
+		}
+
 		styleH.disableStyleSheet(fRoute);
 		for (let route of Routes)
 		{
@@ -26,13 +33,23 @@ const Router =()=>{
 			matechedLocation = new Routes[0].view;
 			fRoute = Routes[0];
 		}
-		matechedLocation.getLanguage();
 		styleH.enableStyleSheet(fRoute);
 		setTimeout(() => {
+			createNavbar();
+			matechedLocation.getLanguage();
 			document.querySelector("#app").innerHTML = matechedLocation.getHtml();
+			
 			matechedLocation.setup();
-			document.querySelector(".loaderOverlay").style.left = "-100%";
+			document.querySelector(".loaderOverlay").style.left = "100%";
 		}, 300);
+		setTimeout(() => {
+			document.querySelector(".loaderOverlay").style.display = "none";
+			setTimeout(() => {
+				document.querySelector(".loaderOverlay").style.left = "-100%";
+				document.querySelector(".loaderOverlay").style.display = "flex";
+			}, 200);
+			
+		}, 600);
 	}, 300);
 	
 	//setup the listener for submit button

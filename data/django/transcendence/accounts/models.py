@@ -1,29 +1,23 @@
-from django.db import models
-from django.core import validators
-from django.core.files.storage import default_storage
-from django.contrib.auth.base_user import AbstractBaseUser
-from django.dispatch import receiver
-
-from accounts.utils import Roles
-from accounts.validators import validate_birthdate
-from accounts.managers import (UserManager,
-                               UserInfoManager,
-                               UserWebsocketsManager,
-                               ChatChannelManager,
-                               NtfChannelManager,
-							   UserGameManager)
-
 import logging
 
-from django.core.files import File
+from django.contrib.auth.base_user import AbstractBaseUser
+from django.core import validators
+from django.core.files.storage import default_storage
+from django.db import models
+from django.dispatch import receiver
 
+from accounts.managers import (UserManager,
+                               UserInfoManager,
+                               UserGameManager)
+from accounts.utils import Roles
+from accounts.validators import validate_birthdate
 
 logger = logging.getLogger(__name__)
 
 
-# Create your models here.
-
 class User(AbstractBaseUser):
+    password = None
+    last_login = None
     username = models.CharField(
         db_column="username",
         max_length=32,
@@ -42,25 +36,6 @@ class User(AbstractBaseUser):
         choices=Roles.ROLES_CHOICES,
         default=Roles.USER,
     )
-    active = models.BooleanField(
-        db_column="active",
-        db_comment="False when user is banned",
-        default=True,
-    )
-    verified = models.BooleanField(
-        db_column="verified",
-        db_comment="True when email is verified",
-        default=False,
-    )
-    linked = models.BooleanField(
-        db_column="linked",
-        db_comment="True when oauth2 is active",
-        default=False,
-    )
-    last_logout = models.DateTimeField(
-        db_column="last_logout",
-        db_comment="the datetime of the last logout from all devices",
-    )
 
     USERNAME_FIELD = "username"
     EMAIL_FIELD = "email"
@@ -69,16 +44,6 @@ class User(AbstractBaseUser):
 
     class Meta:
         db_table = "user_auth"
-
-    def get_status(self):
-        if self.user_websockets.chat_channels.all():
-            return True
-        return False
-
-    def get_ntf_status(self):
-        if self.user_websockets.ntf_channels.all():
-            return True
-        return False
 
     def get_picture(self):
         return self.user_info.picture
@@ -146,74 +111,8 @@ class UserInfo(models.Model):
             default_storage.delete(instance.user_info.picture.path)
 
     def __str__(self):
-        return f"user: {self.user.username}, first_name: {self.first_name}, last_name: {self.last_name}, joined:{self.date_joined}"
-
-
-# TODO: connect another websocket used only to detect status and save it in UserWebsockets
-
-class UserWebsockets(models.Model):
-    class Meta:
-        db_table = "user_websockets"
-
-
-    user = models.OneToOneField(
-        to=User,
-        on_delete=models.CASCADE,
-        related_name="user_websockets",
-        primary_key=True,
-        db_column="username",
-    )
-
-    objects = UserWebsocketsManager()
-
-    def __str__(self):
-        return f"username: {self.user.username}, chat_channel: {self.chat_channel}, ntf_channel: {self.ntf_channel}"
-
-
-class ChatChannel(models.Model):
-    class Meta:
-        db_table="chat_channel"
-
-    channel_name = models.CharField(
-        primary_key=True,
-        db_column="channel_name",
-        max_length=255,
-    )
-
-    user_websockets = models.ForeignKey(
-        UserWebsockets,
-        on_delete=models.CASCADE,
-        db_column="user_websockets",
-        related_name="chat_channels",
-    )
-
-    objects = ChatChannelManager()
-
-    def __str__(self):
-        return f"user: {self.user_websockets_id}, chat_channel: {self.channel_name}"
-
-
-class NtfChannel(models.Model):
-    class Meta:
-        db_table="ntf_channel"
-
-    channel_name = models.CharField(
-        primary_key=True,
-        db_column="channel_name",
-        max_length=255,
-    )
-
-    user_websockets = models.ForeignKey(
-        UserWebsockets,
-        on_delete=models.CASCADE,
-        db_column="user_websockets",
-        related_name="ntf_channels",
-    )
-
-    objects = NtfChannelManager()
-
-    def __str__(self):
-        return f"user: {self.user_websockets_id}, ntf_channel: {self.channel_name}"
+        return (f"user: {self.user.username}, first_name: {self.first_name}, "
+                f"last_name: {self.last_name}, joined:{self.date_joined}")
 
 
 class UserGame(models.Model):
@@ -238,4 +137,3 @@ class UserGame(models.Model):
 
     def __str__(self) -> str:
         return f"username: {self.user.username}, display_name: {self.display_name}"
-

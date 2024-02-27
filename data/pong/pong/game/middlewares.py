@@ -56,6 +56,7 @@ class CustomAuthMiddleware(BaseMiddleware):
         # get user from database
         scope["user"] = await get_user(scope["query_params"])
         scope["ticket"] = scope['query_params']['ticket']
+        scope["token"] = scope['query_params'].get('token', '')
         #logger.warning(f"user: {scope['user']}")
         return await super().__call__(scope, receive, send)
 

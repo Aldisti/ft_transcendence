@@ -1,7 +1,6 @@
 import sha256 from "/scripts/crypto.js";
 
 export function preparePasswordForm(form, dupThis) {
-    //console.log(form)
     let ret = {
         password: sha256(form[dupThis.language.update.oldPassword[1]].value),
         new_password: sha256(form[dupThis.language.update.newPassword[1]].value),

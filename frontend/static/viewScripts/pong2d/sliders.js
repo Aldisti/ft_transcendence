@@ -15,14 +15,12 @@ export default function handleSlider(slider, next, imgs, type, textures){
     })
     document.querySelector(nextClass).addEventListener("click", ()=>{
         stepCounter++;
-        console.log(stepCounter)
         if (stepCounter == imgs.length)
         {
             sliderIncrease = 0;
             stepCounter = 0;
         }
         textures[type] = imgs[stepCounter];
-        console.log(document.querySelector(className))
         document.querySelector(className).style.transform = `translateX(-${sliderIncrease}px)`;
         sliderIncrease += containerWidth;
     })

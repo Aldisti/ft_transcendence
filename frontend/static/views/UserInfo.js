@@ -9,9 +9,8 @@ import handleClick from "/viewScripts/userInfo/handleClick.js"
 import * as prepare from "/viewScripts/userInfo/prepareForms.js"
 
 window.goHome = ()=>{
-    history.pushState(null, null, "/home");
+    history.pushState(null, null, "/");
     Router();
-    window.location.reload(); 
 }
 
 export default class extends Aview {
@@ -24,7 +23,7 @@ export default class extends Aview {
     }
 
     async getGeneralForm() {
-        API.getUserInfo(localStorage.getItem("username")).then(res => {
+        API.getUserInfo(1, localStorage.getItem("username")).then(res => {
             res = res.user_info
             document.querySelector(".formMenu").innerHTML = `
                 <div class="formContainer">
@@ -65,6 +64,8 @@ export default class extends Aview {
                     <button class="submit importantSubmit">${this.language.update.submit}</button>
                 </div>
             `
+        }).catch(e=>{
+            console.log(e)
         })
     }
 
@@ -164,7 +165,7 @@ export default class extends Aview {
                     </div>
                     <div class="inputLineFile">
                         <label id="labelInpFile" for="inpFile"><img class="fileIcon" src="/imgs/fileIcon.png"><span class="selectFileText">${this.language.update.selectPhoto}</span></label>
-                        <input onchange="window.test()" class="inputData" id="inpFile" type="file" id="${this.language.update.profilePicture[1]}">
+                        <input onchange="window.test()" class="inputData" id="inpFile" accept=".jpg, .jpeg, .png, .gif" type="file" id="${this.language.update.profilePicture[1]}">
                     </div>
                 </div>
                     <button class="submit importantSubmit">${this.language.update.submit}</button>
@@ -377,13 +378,13 @@ export default class extends Aview {
     getHtml() {
         return `
             <div class="userInfoContainer bg-lg">
-                <div class="leftSide bg-dark">
-                    <h6 class="formLink info generalForm">${this.language.update.generalTitle}</h6>
-                    <h6 class="formLink password passwordForm">${this.language.update.passwordTitle}</h6>
-                    <h6 class="formLink email emailForm">${this.language.update.emailTitle}</h6>
-                    <h6 class="formLink twofa twofaForm">${this.language.update.security}</h6>
-                    <h6 class="formLink picture pictForm">${this.language.update.pictureTitle}</h6>
-                    <h6 class="formLink logout">${this.language.update.logout}</h6>
+                <div class="leftSide">
+                    <h4 class="formLink info generalForm">${this.language.update.generalTitle}</h4>
+                    <h4 class="formLink password passwordForm">${this.language.update.passwordTitle}</h4>
+                    <h4 class="formLink email emailForm">${this.language.update.emailTitle}</h4>
+                    <h4 class="formLink twofa twofaForm">${this.language.update.security}</h4>
+                    <h4 class="formLink picture pictForm">${this.language.update.pictureTitle}</h4>
+                    <h4 class="formLink logout">${this.language.update.logout}</h4>
                 </div>
                 <div class="handle">
                     >
@@ -403,23 +404,32 @@ export default class extends Aview {
                     return;
                 this.errors = res.user_info;
                 controls.checkChangeInfoForm(form, this.errors);
+            }).catch(e=>{
+                console.log(e)
             })
         }
 
         //will perfom check for EMAIL
         if (localStorage.getItem("selectedForm") == "email" && await controls.checkChangeEmailForm(form, this.errors)) {
-            API.updateEmail(prepare.prepareEmailForm(form, this)).then((res) => {})
+            API.updateEmail(prepare.prepareEmailForm(form, this)).then((res) => {
+                Router();
+            }).catch(e=>{
+                console.log(e)
+            })
         }
 
         //will perfom check for PASSWORD
         if (localStorage.getItem("selectedForm") == "password"&& controls.checkChangePasswordForm(form, this.errors)) {
-            //console.log(prepare.preparePasswordForm(form, this))
-            API.updatePassword(1, prepare.preparePasswordForm(form, this), this).then((res) => {});
+            API.updatePassword(1, prepare.preparePasswordForm(form, this), this).then((res) => {}).catch(e=>{
+                console.log(e)
+            });
         }
 
         //will perfom check for PICTURE
         if (localStorage.getItem("selectedForm") == "picture")
-            API.uploadImage(1, form.inpFile)
+            API.uploadImage(1, form.inpFile).catch(e=>{
+                console.log(e)
+            })
     }
 
     changeForm(e, byPass) {
@@ -468,7 +478,6 @@ export default class extends Aview {
     }
 
     highlightFormMenu(formName) {
-        //console.log(formName)
         //first all the button is turned the same
         document.querySelectorAll(".formLink").forEach(el => {
             el.style.backgroundColor = localStorage.getItem("darkMode") == "true" ? "var(--bs-gray)" : "white";
@@ -481,7 +490,10 @@ export default class extends Aview {
     }
 
     setup() { 
-        this.defineWallpaper("/imgs/backLogin.png", "/imgs/secondModernBack.jpeg")
+        this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpeg")
+
+        const urlParams = new URLSearchParams(window.location.search);
+
 
         //defining the start menu item that need to be highlighted
         if (localStorage.getItem("selectedForm") == null)
