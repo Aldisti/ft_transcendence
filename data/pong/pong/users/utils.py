@@ -1,7 +1,7 @@
 class Results:
     WIN = "win"
     LOSE = "lose"
-    DRAW = "DRAW"
+    DRAW = "draw"
     RESULTS_CHOICES = [
         (WIN, "win"),
         (LOSE, "lose"),

@@ -1,5 +1,4 @@
 window.switchVisibility = (e)=>{
-    //console.log(e.parentNode.children[2], e.children[0])
     if (e.parentNode.children[0].type == "text")
     {
         e.parentNode.children[0].type = "password"
@@ -23,19 +22,17 @@ window.setToken = function (token){
 
 window.decode64 = function (base64String) {
     const decodedData = atob(base64String);
+    
     return decodeURIComponent(escape(decodedData));
 }
 
 window.test = function()
 {
-    //console.log("test")
     const reader = new FileReader();
     let file = document.querySelector("#inpFile").files[0];
     document.querySelector("#labelInpFile").innerHTML = `<img class="fileIcon" src="/imgs/fileIcon.png"><span class="selectFileText">${file.name}</span>`
     reader.onload = function (event){
-        //console.log(event)
         document.querySelector(".updateImgForm").src = event.target.result;
-
     }
     reader.readAsDataURL(file);
 }
@@ -100,4 +97,28 @@ window.downloadFile = (fileName, content)=>{
                 return match;
         }
     });
+}
+
+window.playFile = (soundTrack)=>{
+    let clip = new Audio(soundTrack);
+
+    clip.play();
+    return clip;
+}
+window.playFileLoop = (soundTrack)=>{
+    let clip = new Audio(soundTrack);
+
+    clip.volume = 0.3;
+    clip.play();
+    return clip;
+}
+
+window.remapValue = (value, inputMin, inputMax, outputMin, outputMax)=>{
+    // First, normalize the value to a range between 0 and 1
+    const normalizedValue = (value - inputMin) / (inputMax - inputMin);
+    
+    // Then, remap the normalized value to the output range
+    const remappedValue = normalizedValue * (outputMax - outputMin) + outputMin;
+    
+    return remappedValue;
 }

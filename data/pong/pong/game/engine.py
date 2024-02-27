@@ -1,14 +1,21 @@
 from itertools import combinations
 import time
 import logging
+import math
 
 logger = logging.getLogger(__name__)
 
 
 def newton_dynamics(obj, delta_time):
     delta_time_sec = delta_time / 1000 # convert to seconds
-    obj.pos_x = obj.pos_x + obj.vel_x * delta_time_sec + 0.5 * obj.acc_x * (delta_time_sec ** 2)
-    obj.pos_y = obj.pos_y + obj.vel_y * delta_time_sec + 0.5 * obj.acc_y * (delta_time_sec ** 2)
+    obj.dynamics_constraints()
+    obj.vel_x = obj.vel_x + 0.5 * obj.acc_x * delta_time_sec
+    obj.pos_x = obj.pos_x + obj.vel_x * delta_time_sec #+ 0.5 * obj.acc_x * (delta_time_sec ** 2)
+    #logger.warning(f"LOG ENGINE: pos_x = {obj.pos_x}")
+    #logger.warning(f"LOG ENGINE: vel_x = {obj.vel_x}")
+    #logger.warning(f"LOG ENGINE: acc_x = {obj.acc_x}")
+    obj.vel_y = obj.vel_y + 0.5 * obj.acc_y * delta_time_sec
+    obj.pos_y = obj.pos_y + obj.vel_y * delta_time_sec #+ 0.5 * obj.acc_y * (delta_time_sec ** 2)
 
 
 class Collider:
@@ -49,16 +56,19 @@ class MyObject:
     def on_hit(self, hitted):
         pass
 
-    def hit_left_wall(self, wall_pos):
+    def hit_left_wall(self, wall_pos, **kwargs):
         pass
 
-    def hit_right_wall(self, wall_pos):
+    def hit_right_wall(self, wall_pos, **kwargs):
         pass
 
-    def hit_bottom_wall(self, wall_pos):
+    def hit_bottom_wall(self, wall_pos, **kwargs):
         pass
 
-    def hit_top_wall(self, wall_pos):
+    def hit_top_wall(self, wall_pos, **kwargs):
+        pass
+
+    def dynamics_constraints(self):
         pass
 
 
@@ -109,13 +119,13 @@ class Field:
         bottom_pos = obj.pos_y + obj.collider.box_height
 
         if left_pos < 0:
-            obj.hit_left_wall(0)
+            obj.hit_left_wall(0, width=self.width, height=self.height)
         elif right_pos > self.width:
-            obj.hit_right_wall(self.width)
+            obj.hit_right_wall(self.width, width=self.width, height=self.height)
         if top_pos < 0:
-            obj.hit_top_wall(0)
+            obj.hit_top_wall(0, width=self.width, height=self.height)
         elif bottom_pos > self.height:
-            obj.hit_bottom_wall(self.height)
+            obj.hit_bottom_wall(self.height, width=self.width, height=self.height)
 
     def resolve_collisions(self):
         for pair in combinations(self.objs, 2):
@@ -216,39 +226,84 @@ class Paddle(MyObject):
     def on_hit(self, hitted):
         pass
 
-    def hit_bottom_wall(self, wall_pos):
+    def hit_bottom_wall(self, wall_pos, **kwargs):
         self.pos_y = wall_pos - self.collider.box_height
         self.vel_y = 0
 
-    def hit_top_wall(self, wall_pos):
+    def hit_top_wall(self, wall_pos, **kwargs):
         self.pos_y = wall_pos + self.collider.box_height
         self.vel_y = 0
 
 
 class Ball(MyObject):
-    def __init__(self, object_id, radius=1, pos_x=0, pos_y=0, vel_x=0, vel_y=0, acc_x=0, acc_y=0):
+    def __init__(self, object_id, radius=1, pos_x=0, pos_y=0, vel_x=0, vel_y=0, acc_x=0, acc_y=0, max_mod_vel=700):
         circle_collider = CircleCollider(radius=radius)
+        self.scores = [0, 0]
+        self.last_score = "left"
+        self.max_mod_vel = max_mod_vel
         super().__init__(object_id=object_id, collider=circle_collider, pos_x=pos_x, pos_y=pos_y, vel_x=vel_x, vel_y=vel_y, acc_x=acc_x, acc_y=acc_y)
 
     def on_hit(self, hitted):
         if isinstance(hitted, Paddle):
-            self.vel_x = - self.vel_x
 
-    def hit_left_wall(self, wall_pos):
-        self.pos_x = wall_pos + self.collider.box_width
-        self.vel_x = - self.vel_x
+            # calculate alpha
+            hit_zone = self.pos_y - hitted.pos_y
+            sign_y = 1 if hit_zone > 0 else -1
+            hit_zone = abs(hit_zone)
+            mapped = 5 * hit_zone / hitted.collider.box_height
+            mapped = 4 if mapped == 5 else mapped
+            alpha = int(mapped) * 15
+            alpha_rad = alpha * math.pi / 180
 
-    def hit_right_wall(self, wall_pos):
-        self.pos_x = wall_pos - self.collider.box_width
-        self.vel_x = - self.vel_x
+            # calculate new velocity
+            mod_vel = math.sqrt(self.vel_x ** 2 + self.vel_y ** 2)
+            mod_acc = math.sqrt(self.acc_x ** 2 + self.acc_y ** 2)
+            sign_x = (-1) * (self.vel_x / abs(self.vel_x))
+            self.vel_x = mod_vel * math.cos(alpha_rad) * sign_x
+            self.acc_x = mod_acc * math.cos(alpha_rad) * sign_x
+            self.vel_y = mod_vel * math.sin(alpha_rad) * sign_y
+            self.acc_y = mod_acc * math.sin(alpha_rad) * sign_y
+            
 
-    def hit_bottom_wall(self, wall_pos):
+    def hit_left_wall(self, wall_pos, **kwargs):
+        self.scores[1] += 1
+        self.last_score = "right"
+        width = kwargs["width"]
+        height = kwargs["height"]
+        self.pos_x = width / 2
+        self.pos_y = height / 2
+        self.vel_x = 0
+        self.vel_y = 0
+        self.acc_x = 0
+        self.acc_y = 0
+
+    def hit_right_wall(self, wall_pos, **kwargs):
+        self.scores[0] += 1
+        self.last_score = "left"
+        width = kwargs["width"]
+        height = kwargs["height"]
+        self.pos_x = width / 2
+        self.pos_y = height / 2
+        self.vel_x = 0
+        self.vel_y = 0
+        self.acc_x = 0
+        self.acc_y = 0
+
+    def hit_bottom_wall(self, wall_pos, **kwargs):
         self.pos_y = wall_pos - self.collider.box_height
         self.vel_y = - self.vel_y
+        self.acc_y = - self.acc_y
 
-    def hit_top_wall(self, wall_pos):
+    def hit_top_wall(self, wall_pos, **kwargs):
         self.pos_y = wall_pos + self.collider.box_height
         self.vel_y = - self.vel_y
+        self.acc_y = - self.acc_y
+
+    def dynamics_constraints(self):
+        mod_vel = self.vel_x ** 2 + self.vel_y ** 2
+        if mod_vel > self.max_mod_vel ** 2:
+            self.acc_x = 0
+            self.acc_y = 0
 
 
 def main_game():

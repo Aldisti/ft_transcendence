@@ -60,12 +60,8 @@ export default class extends Aview {
         `
     }
     setup(){
-        if (localStorage.getItem("style") == "modern")
-            document.querySelector("#app").style.backgroundImage = "url('https://c4.wallpaperflare.com/wallpaper/105/526/545/blur-gaussian-gradient-multicolor-wallpaper-preview.jpg')";
-        else
-            document.querySelector("#app").style.backgroundImage = "url('/imgs/backLogin.png')";
-        document.querySelector("#app").style.backgroundSize = "cover"
-        document.querySelector("#app").style.backgroundRepeat = "repeat"
+        this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpeg")
+
         const urlParams = new URLSearchParams(window.location.search);
         document.querySelector("#sendBtn").addEventListener("click", ()=>{
             let list = document.querySelectorAll(".data");
@@ -78,7 +74,9 @@ export default class extends Aview {
             }
             for (let el of list)
                 toSend[el.name] = sha256(el.value);
-            API.recoveryPassword(toSend, urlParams.get("token"));
+            API.recoveryPassword(toSend, urlParams.get("token")).catch(e=>{
+                console.log(e)
+            });
         })
     }
 }

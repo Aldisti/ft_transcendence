@@ -1,21 +1,25 @@
+
+input {
+    box-shadow: 6px 6px black; border: 4px solid black;
+}
+
 .userInfoContainer {
     width: 100svw;
     height: 92svh;
     position: relative;
     display: flex;
     align-items: center;
+    padding: 20px;
+    
 }
 
 .imageForm {
-    background-color: white;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
     width: 90%;
     height: 60svh;
-    border: 2px solid black;
-    box-shadow: 15px 15px black;
 }
 
 .formLink {
@@ -24,7 +28,7 @@
 
 .intraInfo,
 .googleInfo {
-    width: 60%;
+    width: 70%;
     margin: 0;
 }
 
@@ -53,14 +57,9 @@
 .imgWrap {
     width: 15%;
     height: 100%;
-    padding: 5px;
+    padding: 3px;
     background-color: white;
-    border-right: 2px solid black;
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
-}
-
-.retroBtn:hover .imgWrap {
-    animation: slide 1s;
+    border-right: 4px solid black;
 }
 
 .imgWrap img {
@@ -94,25 +93,26 @@
     transition: 0.6s;
     width: 30%;
     height: 100%;
-    border-right: 2px solid black;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    gap: 40px;
+    justify-content: space-evenly;
+    gap: 20px;
     align-items: center;
     padding: 20px;
-    background-color: white;
-    background-color: #6c584c;
-    border: 2px solid black;
+    background-color: var(--retro-red);
+    box-shadow: 6px 6px black; border: 4px solid black;
 }
 
-.leftSide h6 {
+.leftSide h4 {
     padding: 10px;
-    width: 90%;
-    height: fit-content;
-    border: 2px solid black;
+    width: 100%;
+    height: 15%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     box-shadow: 15px 15px black;
     background-color: #f0ead2;
+    box-shadow: 6px 6px black; border: 4px solid black;
 }
 
 .title {
@@ -125,20 +125,18 @@
 
 .formContainer,
 .imageContainer {
-    background: url("/imgs/backUpdate.jpg");
-    background-size: cover;
-    background-repeat: no-repeat;
+    
     width: 90%;
     height: fit-content;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
-    background-color: white;
-    border: 3px solid black;
     box-shadow: 15px 15px black;
     padding: 20px;
     margin-bottom: 40px;
+    box-shadow: 6px 6px black; border: 4px solid black;
+    background-color: var(--retro-sky-blue);
 }
 
 .showForm {
@@ -160,19 +158,21 @@
 }
 
 .formMenu {
+    padding: 20px;
     overflow: scroll;
     width: 70%;
-    height: 92svh;
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    padding: 20px;
     overflow: scroll;
+    background-color: var(--retro-blue);
+    box-shadow: 6px 6px black; border: 4px solid black;
 }
 
 .inputLine {
-    background-color: white;
+    color: white;
     padding: 10px;
     font-size: 20px;
     width: 90%;
@@ -181,13 +181,11 @@
     flex-direction: column;
     justify-content: space-between;
     align-items: flex-start;
-    border: 2px solid black;
-    box-shadow: 15px 15px black;
     margin: 15px;
 }
 
 .inputLineFile {
-    background-color: white;
+    color: white;
     padding: 10px;
     font-size: 20px;
     width: 90%;
@@ -195,8 +193,6 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 2px solid black;
-    box-shadow: 7px 7px black;
 }
 
 .inputLine label {
@@ -204,9 +200,8 @@
 }
 
 .inputLine input {
-    border: 2px solid black;
     width: 100%;
-    height: 3.5svh;
+    height: 5svh;
     margin: 2px 0 2px 0;
     outline: none;
     transition: 0.6s;
@@ -244,12 +239,16 @@
 .passwordSwitch {
     width: 4svh;
     height: 4svh;
-    border: 2px solid black;
+    box-shadow: 3px 3px black; border: 4px solid black;
     padding: 5px;
     background-color: white;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.passwordSwitch:hover {
+    cursor: pointer;
 }
 
 .passwordSwitch img {
@@ -260,27 +259,26 @@
 
 .submit {
     background-color: var(--bs-success);
-    border: 2px solid black;
     width: 90%;
     height: fit-content;
-    color: white;
     padding: 10px;
-    box-shadow: 15px 15px black;
+    border: none;
+    box-shadow: 6px 6px black; border: 4px solid black;
     margin: 30px;
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
+    color: white;
 }
 
 .profilePict {
     width: 90%;
     height: 70%;
     padding: 10px;
-    background-color: white;
-    border: 2px solid black;
+    background-color: var(--retro-orange);
+    box-shadow: 6px 6px black; border: 4px solid black;
 }
 
 .profilePict img {
     object-fit: contain;
-    background-color: black;
+    background-color: var(--retro-orange);
     width: 100%;
     height: 100%;
 }
@@ -388,6 +386,7 @@
     justify-content: center;
     align-items: center;
     color: white;
+    z-index: 10000;
 }
 
 .f-line {
@@ -399,6 +398,7 @@
 
 .line {
     width: 100%;
+    height: fit-content;
     margin-top: 10px;
     margin-bottom: 10px;
     padding: 20px;
@@ -406,8 +406,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 2px solid black;
     gap: 20px;
+    box-shadow: 6px 6px black; border: 4px solid black;
 }
 
 .formContainer {
@@ -426,23 +426,25 @@
 
 .retroBtn {
     width: 30%;
-    height: 4svh;
+    height: 6svh;
     padding: 5px;
     border: none;
     display: flex;
     justify-content: center;
     align-items: center;
     color: white;
-    border: 2px solid black;
-    box-shadow: 7px 7px black;
+    box-shadow: 6px 6px black; border: 4px solid black;
     font-weight: bolder;
     text-decoration: none;
     font-size: 10px;
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important;
 }
 
 .retroBtn:hover {
     cursor: pointer;
+}
+
+.retroBtn:hover .imgWrap {
+    animation: slide 1s;
 }
 
 .submitLine {
@@ -464,19 +466,18 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: white;
-    border: 2px solid black;
-    padding: 10px;
+    padding: 20px;
     margin: 20px;
+    color: white;
 }
 
 .qrInfo {
     background-color: var(--bs-success);
     flex-grow: 1;
     height: 250px;
-    border: 2px solid black;
+    box-shadow: 6px 6px black; border: 4px solid black;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     color: white;
 }
@@ -502,9 +503,27 @@
     .userInfoContainer {
         justify-content: center;
         align-items: center;
+        padding: 10px;
     }
-    .formContainer {
-        width: 90svw;
+    .formContainer, .imageContainer {
+        width: 100%;
+        box-shadow: none !important;
+        background-color: white;
+        margin-top: 20;
+        box-shadow: 6px 6px black; border: 4px solid black;
+
+        /* border-radius: 8px; */
+    }
+
+    .decisionBox{
+        margin: 0;
+        box-shadow: none !important;
+        justify-content: space-evenly;
+    }
+    .inputLine{
+        margin: 0;
+        width: 100%;
+        margin-top: 20px;
     }
     .formMenu {
         width: 100%;
@@ -513,19 +532,21 @@
     .leftSide {
         width: 90%;
         position: absolute;
+        background-color: var(--bs-dark);
         top: 0;
         left: 0;
         transform: translateX(-91svw);
     }
     .imageContainer {
-        width: 90% !important;
+        padding: 5px;
+        width: 100% !important;
     }
     .googleInfo,
     .intraInfo {
         display: none;
     }
     .retroBtn {
-        width: 45%;
+        width: 40%;
     }
     .intra,
     .google,

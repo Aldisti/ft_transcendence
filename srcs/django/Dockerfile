@@ -1,30 +1,37 @@
 FROM python:3.12.0
 
-RUN apt update && apt upgrade -y 
-RUN apt install vim -y
-RUN apt install gettext -y
+ARG USERNAME
+ARG GROUPNAME
+ARG UID
+ARG GID
 
-RUN pip install django
-RUN pip install djangorestframework
-# for jwt
-RUN pip install djangorestframework-simplejwt
-# postgres connection
-RUN pip install psycopg
-# for testing reasons
-RUN pip install httpie
-RUN pip install django-cors-headers
-# for two factor authentication
-RUN pip install pyotp
-# for jwts
-RUN pip install pyjwt && pip install pyjwt[crypto]
-# for asgi server and channels
-RUN pip install -U channels["daphne"]
+RUN apt update && apt upgrade -y
+RUN apt install vim curl -y
 
+RUN pip install -U \
+	django==5.0.2 \
+	djangorestframework==3.14.0 \
+	djangorestframework-simplejwt==5.3.1 \
+	psycopg==3.1.18 \
+	requests==2.31.0 \
+	django-cors-headers==4.3.1 \
+	pyotp==2.9.0 \
+	pyjwt['crypto']==2.8.0 \
+	channels['daphne']==4.0.0 \
+	gunicorn==21.2.0 \
+	pika==1.3.2
 
-RUN mkdir /etc/develop
-RUN mkdir /static
+RUN groupadd -g $GID $GROUPNAME
+RUN useradd -m -u $UID -g $GID $USERNAME
 
-COPY ./tools/setting.sh /etc/setting.sh
+USER $USERNAME
 
-ENTRYPOINT ["/bin/bash", "/etc/setting.sh"]
+RUN mkdir -p /home/$USERNAME/develop
+RUN mkdir -p /home/$USERNAME/certs
+
+WORKDIR /home/$USERNAME
+
+COPY ./tools/setting.sh ../setting.sh
+
+ENTRYPOINT ["/bin/bash", "../setting.sh"]
 

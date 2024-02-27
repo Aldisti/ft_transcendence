@@ -1,8 +1,10 @@
-* {
-    border-radius: 8px !important;
+*:not(#navbar, nav, .navbar, #app, body){
+    border-radius: 8px ;
+}
+
+*{
     font-family: 'Arial', sans-serif;
     font-weight: bold;
-    border: none;
 }
 
 .account {
@@ -17,7 +19,7 @@
     backdrop-filter: blur(10px);
     background-color: rgba(255, 255, 255, 0.1);
     color: white;
-    width: 40svw;
+    width: 50svw;
     height: fit-content;
     display: flex;
     justify-content: space-between;

@@ -1,5 +1,8 @@
+*:not(#navbar, nav, .navbar, #app, body){
+    border-radius: 8px ;
+}
+
 *{
-    border-radius: 8px !important;
     font-family: 'Arial', sans-serif;
     font-weight: bold;
 }

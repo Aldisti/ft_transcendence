@@ -1,15 +1,54 @@
 #!/bin/bash
 
-PROJECT="./data/django/transcendence/"
-DEL_PATH="migrations/0"
+RED="\033[31;1m"
+GREEN="\033[32;1m"
+PURPLE="\033[36;1m"
+RESET="\033[0m"
 
-APPS=('accounts' 'authentication' 'email_manager' 'oauth2' \
-		'two_factor_auth' 'chat' 'notifications' 'friends' 'pong')
+bash_version=$(bash --version | grep release | awk '{print $4}' | cut -d '.' -f1)
+if [ $bash_version -lt 4 ]; then
+	echo "Error: bash version too old."
+	echo "Try to update to version 4 or later."
+	exit 1
+fi
 
-for app in ${APPS[@]}; do
-	if ! echo "$PROJECT$app/$DEL_PATH"* | grep -q '*'; then
-		echo "$PROJECT$app/$DEL_PATH"*
-		rm -f "$PROJECT$app/$DEL_PATH"*
-	fi
+DEL_PATH="/migrations/0"
+
+declare -A PROJECTS_PATH=(
+	['transcendence']='./data/django/transcendence' 
+	['pong']='./data/pong/pong' 
+	['auth']='./data/authentication/authentication'
+	['chat']='./data/chat/chat'
+	['ntf']='./data/ntf/ntf'
+)
+
+declare -A APPS_PATH=(
+	['transcendence']="/accounts /authentication /chat /email_manager /friends /notifications /oauth2 /two_factor_auth /pong"
+	['pong']="/users /matchmaking /game /tournaments"
+	['auth']="/users /authorization /oauth2 /two_factor_auth"
+	['chat']="/users /friends /messages"
+	['ntf']="/users /notifications"
+)
+
+remove_migrations()
+{
+	local project="$1"
+	shift
+	while [ $# -gt 0 ]; do
+		local app=$1
+		local migration_path="${project}${app}${DEL_PATH}"
+		if ! echo "${migration_path}"* | grep -q '*'; then
+			echo -e "${GREEN}${migration_path}"*"${RESET}"
+			rm -f "${migration_path}"*
+		else
+			echo -e "${RED}${migration_path}*${RESET}"
+		fi
+		shift
+	done
+}
+
+for project in ${!PROJECTS_PATH[@]}; do
+	echo -e "${PURPLE}${project}${RESET}"
+	remove_migrations "${PROJECTS_PATH[$project]}" ${APPS_PATH[$project]}
 done
 

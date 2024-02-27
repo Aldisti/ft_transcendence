@@ -1,3 +1,5 @@
+from users.models import PongUser
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -17,7 +19,13 @@ class MyMiddleware:
         #    logger.warning(f"\t{header[0]}: {header[1]}")
         #logger.warning(f"request client: {request.scope['client']}")
         #logger.warning(f"request server: {request.scope['server']}")
-
+        
+        # get user from query params
+        username = request.GET.get("username", "")
+        try:
+            request.pong_user = PongUser.objects.get(pk=username)
+        except PongUser.DoesNotExist:
+            request.pong_user = None
 
         response = self.get_response(request)
         

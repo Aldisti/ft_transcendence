@@ -1,18 +1,19 @@
 import * as API from "/API/APICall.js"
 import Router from "/router/mainRouterFunc.js";
+import allLanguage from "/language/language.js"
+
+let language = allLanguage[localStorage.getItem("language")];
 
 export let emailError = `
     <ul style="margin: 0;">
-        <li>An Email has been sent Check you Inbox!</li>
-        <li>insert the Code in the box below</li>
-        <li>Submit and activate your 2FA</li>
+        <li>${language.update.emailSuggest[0]}</li>
+        <li>${language.update.emailSuggest[1]}</li>
+        <li>${language.update.emailSuggest[2]}</li>
     </ul>
 `
 export let qrError = `
     <ul style="margin: 0;">
-        <li>Open your app and look for your code</li>
-        <li>insert it in the box below</li>
-        <li>submit and login</li>
+        <li>${language.update.qrSuggest[0]}</li>
     </ul>
 `
 
@@ -27,6 +28,8 @@ function validateCodeRecovery(token)
                 history.pushState(null, null, `/password/recovery/?token=${res.token}`);
                 Router();
             }
+        }).catch(e=>{
+            console.log(e)
         });
     }
 }
@@ -60,18 +63,23 @@ export function start()
     API.sendRecoveryEmail(document.querySelector(".data").value).then(res=>{
         if (Object.keys(res).length > 0)
         {
-            //console.log(res)
             document.querySelector("#app").innerHTML = disableTfaPage(res.type);
             if (res.type == "EM")
             {
-                API.getEmailCode(1, res.token);
+                API.getEmailCode(1, res.token).catch(e=>{
+                    console.log(e)
+                });
                 document.querySelector(".resendBtn").addEventListener("click", ()=>{
-                    API.getEmailCode(1, res.token);
+                    API.getEmailCode(1, res.token).catch(e=>{
+                        console.log(e)
+                    });
                 })
             }
             document.querySelector(".sendCode").addEventListener("click", ()=>{
                 validateCodeRecovery(res.token);
             })
         }
+    }).catch(e=>{
+        console.log(e)
     })
 }

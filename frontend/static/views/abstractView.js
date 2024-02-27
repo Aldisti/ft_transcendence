@@ -42,4 +42,7 @@ export default class Aview{
     setup(){
 
     }
+    destroy(){
+
+    }
 }

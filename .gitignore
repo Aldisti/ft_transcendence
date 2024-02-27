@@ -15,9 +15,11 @@ Pipfile*
 .**bkp
 data/django/transcendence/APIDocs.md
 data/postgres
-data/postgres/*
-data/pongdb
-data/pongdb/*
+data/*db/
+**/image.jpg
+certs
+rsa
+media
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -143,6 +145,7 @@ celerybeat.pid
 # Environments
 .env
 .venv
+**/.env*
 env/
 venv/
 ENV/

@@ -12,19 +12,19 @@ function validateLoginCode()
             if (Object.keys(token).length  > 0)
             {
                 localStorage.setItem("token", token.access_token)
-                history.pushState(null, null, "/home");
+                history.pushState(null, null, "/");
                 Router();
-                window.location.reload();
             }
+        }).catch(e=>{
+            console.log(e)
         })
     }
 }
 
 export function normal(res){
     localStorage.setItem("token", res.access_token)
-    history.pushState(null, null, "/home");
+    history.pushState(null, null, "/");
     Router();
-    window.location.reload();
 }
 
 export function Tfa(dupThis, res){
@@ -32,13 +32,17 @@ export function Tfa(dupThis, res){
     {
         document.querySelector(".loginForm").innerHTML = dupThis.getTfaForm();
         document.querySelector(".resendBtn").addEventListener("click", ()=>{
-            API.getEmailCode(1, res.token)
+            API.getEmailCode(1, res.token).catch(e=>{
+                console.log(e)
+            })
         })
         API.getEmailCode(1, res.token).then(res=>{
             document.querySelector(".sendCode").addEventListener("click", ()=>{
                 if (res.ok)
                     validateLoginCode();
             })
+        }).catch(e=>{
+            console.log(e)
         })
     }
     if (res.type == "SW")

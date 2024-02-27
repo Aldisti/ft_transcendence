@@ -1,24 +1,38 @@
 #!/bin/bash
 
-cd /etc/develop
-if ! test -d images
-then
-	mkdir images
-fi
+GUNICORN_SERVERS="transcendence authentication"
+DAPHNE_SERVERS="pong chat ntf"
 
-cd ${PROJECT_NAME}
-
-python manage.py makemigrations
-python manage.py migrate
-#python manage.py runserver 0.0.0.0:8000
-
-# export python setting settings
-# https://docs.djangoproject.com/en/5.0/topics/settings/#designating-the-settings
-
+export USERNAME=$(whoami)
+export CERTS_DIR="/home/$USERNAME/certs"
 export DJANGO_SETTINGS_MODULE=${PROJECT_NAME}.settings
 
-# TODO: use an env var in order to save static folder path
-#python manage.py collectstatic
+cd develop/$PROJECT_NAME
 
-daphne -b 0.0.0.0 -p 8000 ${PROJECT_NAME}.asgi:application
-#python manage.py runserver 0.0.0.0:8000
+./manage.py makemigrations
+./manage.py migrate
+./manage.py create_admin
+if ! [ $? -eq 0 ]; then
+	echo "\033[31;1;5mCouldn't create admin in $PROJECT_NAME\033[0m"
+fi
+
+
+if [ $DEPLOY -eq 0 ]; then
+	# development
+	./manage.py runserver 0.0.0.0:8000
+elif grep $PROJECT_NAME <<< "$GUNICORN_SERVERS"; then # GUNICORN
+	# https
+	# gunicorn -w 4 -b 0.0.0.0 -p 8000 --keyfile $CERTS_DIR/transcendence.key --certfile $CERTS_DIR/transcendence.crt ${PROJECT_NAME}.wsgi:application
+
+	# http
+	gunicorn -w 4 -b 0.0.0.0 -p 8000 ${PROJECT_NAME}.wsgi:application
+elif grep $PROJECT_NAME <<< "$DAPHNE_SERVERS"; then # DAPHNE
+	# https
+	# daphne -b 0.0.0.0 -p 8001 -e ssl:8000:privateKey=$CERTS_DIR/transcendence.key:certKey=$CERTS_DIR/transcendence.crt ${PROJECT_NAME}.asgi:application
+	# http
+	daphne -b 0.0.0.0 -p 8000 ${PROJECT_NAME}.asgi:application
+else
+	echo "$PROJECT_NAME not in daphne or gunicorn lists"
+	exit 101
+fi
+

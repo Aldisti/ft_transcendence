@@ -9,10 +9,10 @@ source "$ENV_FILE"
 export PGPASSFILE="$PGPASS_FILE"
 
 psql -nqw \
-	-h "$DB_HOST" \
-	-p "$DB_PORT" \
-	-d "$DB_NAME" \
-	-U "$DB_USER" \
+	-h "$DJANGO_DB_HOST" \
+	-p "$DJANGO_DB_PORT" \
+	-d "$DJANGO_DB_NAME" \
+	-U "$DJANGO_DB_USER" \
 	-L "$LOG_FILE" \
 	-c "$QUERY"
 

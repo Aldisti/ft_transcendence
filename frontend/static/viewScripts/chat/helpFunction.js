@@ -5,8 +5,10 @@ export function chatInitializer(userArray){
     let chatHistory;
 
     //check if chat is already setted in localstorage
-    if (localStorage.getItem("chat") == null)
+    if (localStorage.getItem("chat") == null){
         localStorage.setItem("chat", "{}");
+
+    }
 
     //parse the chat item in localstorage to be updated
     chatHistory = JSON.parse(localStorage.getItem("chat"));
@@ -27,7 +29,6 @@ export function localStoragePush(obj){
     let chatString = localStorage.getItem("chat") != null ? localStorage.getItem("chat") : "{}";
     let toAdd = JSON.parse(chatString);
     let username = obj.sender == localStorage.getItem("username") ? document.querySelector(".chatBox").getAttribute('name') : obj.sender;
-
 
     if (obj.type == "global")
         username = "global";

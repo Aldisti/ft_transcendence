@@ -5,6 +5,8 @@ import sha256 from "/scripts/crypto.js"
 import * as oauth2 from "/viewScripts/login/oauth2Handle.js";
 import * as handleLogin from "/viewScripts/login/handleLogin.js";
 import * as triggerRecovery from "/viewScripts/login/recoverPassword.js";
+import Router from "/router/mainRouterFunc.js";
+
 
 export default class extends Aview {
     constructor() {
@@ -14,21 +16,21 @@ export default class extends Aview {
         this.field = {};
     }
 
-    showRecoveryPage(){
+    showRecoveryPage(dupthis, e){
         document.querySelector("#app").innerHTML = `
         <div class="passwordPage">
             <div class="passwordContainer">
                 <div class="line">
-                    <h1 style="margin: 0;">${this.language.login.passwordRecovery}</h1>
+                    <h1 style="margin: 0;">${dupthis.language.login.passwordRecovery}</h1>
                 </div>
                 <div class="line">
-                    <h3>${this.language.login.enetrUsername}</h3>
+                    <h3>${dupthis.language.login.enterUsername}</h3>
                     <div class="passInp">
                         <input type="text" class="data retroShade" name="username">
                     </div>
                 </div>
                 <div class=" btnLeft">
-                    <button id="recoveryBtn" class="retroBtn retroShade btnColor-green importantSubmit">${this.language.login.getEmail}</button>
+                    <button id="recoveryBtn" class="retroBtn retroShade btnColor-green importantSubmit">${dupthis.language.login.getEmail}</button>
                 </div>
             </div>
         </div>
@@ -68,7 +70,7 @@ export default class extends Aview {
                 	</div>
                     <div class="extra">
                         <a class="retroShade registerLink" href="/register/" data-link>${this.language.login.register}</a>
-                        <span class="recovery" href="#">Password Dimenticata?</span>
+                        <span class="recovery" href="#">${this.language.login.forgotPassword}</span>
                     </div>
             	</div>
    		    </div>
@@ -95,11 +97,25 @@ export default class extends Aview {
         `
     }
     setup() {
+        const urlParams = new URLSearchParams(window.location.search)
+
+        if (urlParams.get("token") != null){
+            API.validateEmail(urlParams.get("token")).then(res=>{
+                setTimeout(() => {
+                    if (res)
+                        alert(this.language.login.emailValidated);
+                    else
+                        alert(this.language.login.emailValidatedError);
+                }, 300);
+            }).catch(e=>{
+                console.log(e)
+            })
+        }
         //do all the necessary stuff to manage the login with intra if user is already linked
         oauth2.intraLoginHandle();
         oauth2.googleLoginHandle();
 
-        document.querySelector(".recovery").addEventListener("click", this.showRecoveryPage)
+        document.querySelector(".recovery").addEventListener("click", this.showRecoveryPage.bind(null, this))
 
         //defining what to do in case of login button is pressed
         document.querySelector("#loginBtn").addEventListener("click", (e) => {
@@ -108,16 +124,19 @@ export default class extends Aview {
 
             //send username and password to the server to be validated
             API.login(this.field).then(res=>{
-                //perform a normal login justi redirect to HOME and refresh the page
-                if (Object.keys(res).length == 1)
-                    handleLogin.normal(res);
-                
-                //perform a login with TFA on so the user is asked to insert verification code to be redirected
-                else if (Object.keys(res).length > 1)
-                    handleLogin.Tfa(this, res)
+                if (res != undefined){
+                    //perform a normal login justi redirect to HOME and refresh the page
+                    if (Object.keys(res).length == 1)
+                        handleLogin.normal(res);
+                    
+                    //perform a login with TFA on so the user is asked to insert verification code to be redirected
+                    else if (Object.keys(res).length > 1)
+                        handleLogin.Tfa(this, res)
+                }
+            }).catch(e=>{
+                console.log(e)
             })
         })
-        this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpg")
+        this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpeg")
     }
-
 }

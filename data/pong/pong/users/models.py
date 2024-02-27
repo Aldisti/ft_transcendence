@@ -25,6 +25,19 @@ class PongUser(models.Model):
         blank=True,
     )
 
+    tournament_ticket = models.CharField(
+        max_length=16,
+        db_column="tournament_ticket",
+        blank=True,
+    )
+
+    match_token = models.CharField(
+        max_length=16,
+        db_column="match_request",
+        blank=True,
+        default="",
+    )
+
     objects = PongUserManager()
 
     def __str__(self):
@@ -60,14 +73,14 @@ class Participant(models.Model):
     player = models.ForeignKey(
         PongUser,
         on_delete=models.CASCADE,
-        related_name="+",
+        related_name="participant",
         db_column="player"
     )
     
     game = models.ForeignKey(
         Game,
         on_delete=models.CASCADE,
-        related_name="+",
+        related_name="participant",
         db_column="game_id"
     )
 

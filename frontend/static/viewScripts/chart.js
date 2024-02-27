@@ -23,7 +23,7 @@ function drawVerticalChart(canvas, data){
     for (let step = 0; step <= data.maxValue; step+=data.maxValue/4)
     {
         //drawing scale number on the left
-        ctx.font = "10px Arial";
+        ctx.font = "15px Arial";
         let x  = mapValue(step, 0, data.maxValue, 0, canvas.clientHeight) + 10
         if (step > 0)
             x -= 30; 
@@ -45,10 +45,10 @@ function drawVerticalChart(canvas, data){
         ctx.strokeRect(xPos, canvas.clientHeight - mappedVal - 30, blockWidth, mappedVal)
 
         //drwaing label for values
-        ctx.font = "20px Arial";
+        ctx.font = "10px Arial";
         ctx.save();
         ctx.translate(xPos + 20, canvas.height - 15);
-        ctx.rotate(Math.PI / 8);
+        // ctx.rotate(Math.PI / 8);
         ctx.textAlign = 'center';
         ctx.fillText(key, 0, 15 / 2);
         ctx.restore();
@@ -129,7 +129,7 @@ function drawPieChart(canvas, data)
     //drawing rect as color reference and label for relative value on the left
     for (let key of Object.keys(data.values))
     {
-        ctx.font = "20pkeyx Arial";
+        ctx.font = "20px Arial";
         if (i == data.colors.length)
             i = 1;
         ctx.fillStyle = data.colors[i++];
@@ -234,6 +234,7 @@ function drawDonutChart(canvas, data)
     ctx.beginPath();
     ctx.moveTo(center.x + centerOffset,center.y);
     ctx.fillStyle = getComputedStyle(canvas).backgroundColor;
+    if (radius >= 0)
     ctx.arc((center.x + centerOffset), center.y, radius / 2, 0, 2 * Math.PI);
 
     //drawing border for inner circle
@@ -255,7 +256,7 @@ function drawLine(ctx, startX, startY, endX, endY, color, lw)
 function drawRadarChart(canvas, data){
     let ctx = canvas.getContext("2d");
     let center_x = (canvas.clientWidth / 2), center_y = (canvas.clientHeight / 2) + ((canvas.clientHeight / 8));
-    let side_length = (canvas.clientWidth / 2) / 2, x1, y1, x2, y2, x3, y3;
+    let side_length = (canvas.clientWidth / 2) / 3, x1, y1, x2, y2, x3, y3;
     let x11, y11, x22, y22, x33, y33;
     let keys = Object.keys(data.values);
     let rotationAngle = Math.PI / 6;
