@@ -24,7 +24,7 @@ export default class extends Aview{
                 name: "Pong 2D",
                 url: "/games/pong2d/",
                 tournamentUrl: "/games/pong2d/tournaments/",
-                imgUrl: "/imgs/pong-thumbnail.png",
+                imgUrl: "/imgs/groundTexture/pong-thumbnail.jpg",
                 category: "Arcade",
                 multiplayer: false
             }
