@@ -141,9 +141,9 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Europe/Rome'
 TZ = timezone(TIME_ZONE)
 
-USE_I18N = True
+USE_I18N = False
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -177,6 +177,8 @@ G_GROUP = "global_group"
 RABBIT = {
     "host": environ['RABBIT_HOST'],
     "port": int(environ['RABBIT_PORT']),
+    "user": environ['RABBITMQ_DEFAULT_USER'],
+    "pass": environ['RABBITMQ_DEFAULT_PASS'],
     "heartbeat": int(environ['RABBIT_HEARTBEAT']),
     "bc_timeout": int(environ['RABBIT_BC_TIMEOUT']),
     "exchange": environ['EXCHANGE'],
