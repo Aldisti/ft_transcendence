@@ -20,7 +20,7 @@ class PongConsumer(AsyncWebsocketConsumer):
     PLAYER_VELOCITY = 500
     GAME_TIME = 60
     START_TIME = 5
-    WINNING = 3
+    WINNING = 6
     CLOSE_CODES = [1001, 3002]
 
     start_lock = asyncio.Lock()

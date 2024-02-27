@@ -237,14 +237,14 @@ def get_stats(request):
             total_draws += 1
         else:
             total_loses += 1
-    pong_mastery = ((total_score / len(games) / 11) * 0.1)
-    pong_mastery += ((1 - total_taken / len(games) / 11) * 0.1) 
+    pong_mastery = ((total_score / len(games) / 6) * 0.1)
+    pong_mastery += ((1 - total_taken / len(games) / 6) * 0.1) 
     pong_mastery += ((total_victories / len(games)) * 0.4) 
     pong_mastery += ((1 - total_loses / len(games)) * 0.3) 
     pong_mastery += ((1 - total_draws / (len(games) ** 2)) * 0.1) 
     body = {
-        "avg score": round(total_score / len(games) / 11 * 100),
-        "avg taken": round(total_taken / len(games) / 11 * 100),
+        "avg score": round(total_score / len(games) / 6 * 100),
+        "avg taken": round(total_taken / len(games) / 6 * 100),
         "P.M.": round(pong_mastery * 100),
     }
     return Response(body, status=200)
