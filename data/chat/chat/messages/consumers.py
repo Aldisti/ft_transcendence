@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 class ChatConsumer(WebsocketConsumer):
     def connect(self):
         user = self.scope["user"]
-        logger.warning(f"{user.username} connected")
+        # logger.warning(f"{user.username} connected")
         # save chat_channel in database
         ChatChannel.objects.create(user, self.channel_name)
         # add websocket to global group (this can be a dedicated websocket)
@@ -49,14 +49,14 @@ class ChatConsumer(WebsocketConsumer):
         # delete chat_channel from database
         chat_channel = ChatChannel.objects.get(channel_name=self.channel_name)
         chat_channel.delete()
-        logger.warning(f"[{close_code}]: {user.username} disconnected")
+        # logger.warning(f"[{close_code}]: {user.username} disconnected")
 
     def chat_message(self, event):
         self.send(text_data=event["text"])
 
     def receive(self, text_data):
         user = self.scope["user"]
-        logger.warning(f"Something arrived from {user.username}")
+        # logger.warning(f"Something arrived from {user.username}")
         data = json.loads(text_data)
         message_builder = (MessageBuilder().builder(user)
                            .set_msg_type(data.get("type", ""))

@@ -35,7 +35,7 @@ websocket_urlpatterns.extend(game_urlpatterns)
 websocket_urlpatterns.extend(queue_urlpatterns)
 websocket_urlpatterns.extend(tournaments_urlpatterns)
 
-logger.warning(f"websocket_urlpatterns: {websocket_urlpatterns}")
+# logger.warning(f"websocket_urlpatterns: {websocket_urlpatterns}")
 
 application = ProtocolTypeRouter({
         "http": django_asgi_app,

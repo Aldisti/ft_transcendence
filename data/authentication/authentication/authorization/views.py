@@ -100,7 +100,7 @@ def refresh(request) -> Response:
             if JwtBlackList.objects.filter(token=refresh_token['csrf']).exists():
                 raise TokenError()
         except KeyError as e:
-            logger.warning(f"\n{str(e)}\ntoken received: {str(refresh_token)}\n\n")
+            # logger.warning(f"\n{str(e)}\ntoken received: {str(refresh_token)}\n\n")
             return Response(status=status.HTTP_418_IM_A_TEAPOT)
     except TokenError:
         return Response(data={'message': 'invalid refresh token'}, status=403)

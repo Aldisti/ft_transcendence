@@ -28,13 +28,13 @@ class NotificationManager(models.Manager):
     def send_notification(self, notification):
         #logger.warning(f"SENDING NOTIFICATION")
         user_websocket = notification.user
-        logger.warning(f"sending notification to: {user_websocket}")
+        # logger.warning(f"sending notification to: {user_websocket}")
         ntf_channels = user_websocket.ntf_channels.all()
         channel_layer = layers.get_channel_layer()
         for ntf_channel in ntf_channels:
             json_data = [notification.to_json()]
-            logger.warning(f"data to send: {json_data}")
-            logger.warning(f"notification will be sent at {ntf_channel.channel_name}")
+            # logger.warning(f"data to send: {json_data}")
+            # logger.warning(f"notification will be sent at {ntf_channel.channel_name}")
             async_to_sync(channel_layer.send)(
                 ntf_channel.channel_name,
                 {"type": "notification.message", "text": json.dumps(json_data)})
@@ -52,14 +52,14 @@ class NotificationManager(models.Manager):
         })
 
     def send_tournament_req(self, receiver, body):
-        logger.warning("TOURNAMENT REQ NTF MANAGER")
+        # logger.warning("TOURNAMENT REQ NTF MANAGER")
         ntf_body = body
         ntf_type = NtfTypes.TOURNAMENT_REQ
         notification = self.create(receiver, body=ntf_body, ntf_type=ntf_type)
         self.send_notification(notification)
 
     def send_match_req(self, sender, receiver, token):
-        logger.warning("MATCH REQ NTF MANAGER")
+        # logger.warning("MATCH REQ NTF MANAGER")
         ntf_body = json.dumps({"token":token ,"opponent": sender.username})
         ntf_type = NtfTypes.MATCH_REQ
         notification = self.create(receiver, body=ntf_body, ntf_type=ntf_type)

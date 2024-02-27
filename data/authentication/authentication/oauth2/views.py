@@ -119,7 +119,7 @@ class IntraLink(APIView):
         try:
             user.user_intra.delete()
         except Exception as e:
-            logger.warning(f"\nexception: {str(e)}\n")
+            # logger.warning(f"\nexception: {str(e)}\n")
             return Response(data={'message': str(e)}, status=400)
         return Response(status=200)
 

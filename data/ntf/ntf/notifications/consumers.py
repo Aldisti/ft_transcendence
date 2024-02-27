@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 class NotificationConsumer(WebsocketConsumer):
     def connect(self):
         user_websockets = self.scope["user"]
-        logger.warning(f"{user_websockets.username} connected to ntf sock")
+        # logger.warning(f"{user_websockets.username} connected to ntf sock")
         # update channel name when client connects
         NtfChannel.objects.create(user_websockets=user_websockets, channel_name=self.channel_name)
         # add client to global group
@@ -39,8 +39,8 @@ class NotificationConsumer(WebsocketConsumer):
         # update channel name when client disconnects
         ntf_channel = NtfChannel.objects.get(channel_name=self.channel_name)
         ntf_channel.delete()
-        logger.warning(f"[{close_code}]: {user_websockets.username} disconnected from ntf sock")
+        # logger.warning(f"[{close_code}]: {user_websockets.username} disconnected from ntf sock")
 
     def notification_message(self, event):
-        #logger.warning(f"NOTIFICATION: {event['text']}")
+        # logger.warning(f"NOTIFICATION: {event['text']}")
         self.send(text_data=event["text"])

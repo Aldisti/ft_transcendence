@@ -96,8 +96,8 @@ class Field:
     def update(self):
         self.current_time = time.time_ns() // 1_000_000 # convert to millisencods
         self.delta_time = self.current_time - self.last_time
-        if self.delta_time < 25:
-            logger.warning(f"DELTA_TIME_PRE: {self.delta_time}")
+        # if self.delta_time < 25:
+        # logger.warning(f"DELTA_TIME_PRE: {self.delta_time}")
         if self.delta_time > self.DELTA_LOW_LIMIT:
             self.delta_time = self.DELTA_LOW_LIMIT
         elif self.delta_time < self.DELTA_HIGH_LIMIT:

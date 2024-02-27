@@ -30,7 +30,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'chat.settings')
 websocket_urlpatterns = []
 websocket_urlpatterns.extend(chat_urlpatterns)
 
-logger.warning(f"websocket_urlpatterns: {websocket_urlpatterns}")
+# logger.warning(f"websocket_urlpatterns: {websocket_urlpatterns}")
 
 application = ProtocolTypeRouter({
         "http": django_asgi_app,

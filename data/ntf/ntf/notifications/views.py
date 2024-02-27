@@ -28,7 +28,7 @@ def group_ntf(request):
 # url: /notification/tournament_req/
 @api_view(['POST'])
 def tournament_req_ntf(request):
-    logger.warning("TOURNAMENT REQ NTF")
+    # logger.warning("TOURNAMENT REQ NTF")
     data = request.data
     try:
         requested = UserWebsockets.objects.get(pk=data.get("requested", ""))

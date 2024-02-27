@@ -90,13 +90,13 @@ def check_tournaments(request):
         if tournament.is_full():
             # start tournament
             Tournament.objects.start_tournament(tournament)
-            logger.warning("STARTING TOURNAMENT {tournament.name}")
+            # logger.warning("STARTING TOURNAMENT {tournament.name}")
             thread = threading.Thread(target=tournament_loop, kwargs={"tournament": tournament})
             thread.start()
 
         else:
             # send a message to subscribed users that the tournament will be deleted
-            logger.warning("DELETING TOURNAMENT {tournament.name}")
+            # logger.warning("DELETING TOURNAMENT {tournament.name}")
             participants = tournament.participant.all()
             games = []
             for participant in participants:

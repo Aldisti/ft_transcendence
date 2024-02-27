@@ -25,9 +25,9 @@ class QueueConsumer(WebsocketConsumer):
         self.group_name = f"{user.username}_group"
         self.accept()
         self.close_code = 1000
-        logger.warning(f"{user.username} connected")
+        # logger.warning(f"{user.username} connected")
         if user.username in QueueConsumer.users_queue:
-            logger.warning(f"{user.username} already connected")
+            # logger.warning(f"{user.username} already connected")
             self.close_code = 3042
             self.close(code=3042)
             return
@@ -57,12 +57,12 @@ class QueueConsumer(WebsocketConsumer):
         )
 
     def disconnect(self, close_code):
-        logger.warning(f"STILL CONNECTED: {self.users_queue}")
-        logger.warning(f"CLOSE CODE: {close_code}")
-        logger.warning(f"SELF CLOSE CODE: {self.close_code}")
+        # logger.warning(f"STILL CONNECTED: {self.users_queue}")
+        # logger.warning(f"CLOSE CODE: {close_code}")
+        # logger.warning(f"SELF CLOSE CODE: {self.close_code}")
         if self.close_code == 3042:
             return
-        logger.warning(f"STILL CONNECTED: {self.users_queue}")
+        # logger.warning(f"STILL CONNECTED: {self.users_queue}")
 
         user = self.scope["user"]
 

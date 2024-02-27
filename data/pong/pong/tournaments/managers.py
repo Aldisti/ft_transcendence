@@ -74,12 +74,12 @@ class TournamentManager(models.Manager):
 
     def start_tournament_level(self, tournament, level):
         participants = tournament.participant.filter(level=level).order_by("column")
-        logger.warning(f"PARTICIPANTS: {participants}")
+        # logger.warning(f"PARTICIPANTS: {participants}")
 
         for i in range(math.ceil(participants.count() / 2)):
             # get users
-            logger.warning(f"COLUMN: {(i * 2)}")
-            logger.warning(f"COLUMN: {(i * 2 + 1)}")
+            # logger.warning(f"COLUMN: {(i * 2)}")
+            # logger.warning(f"COLUMN: {(i * 2 + 1)}")
             try:
                 participant_1 = participants.get(column=(i * 2 + 1))
                 user_1 = participant_1.player

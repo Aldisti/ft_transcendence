@@ -34,12 +34,12 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
 
     async def connect(self):
-        logger.warning(f"LOG: someone connected")
+        # logger.warning(f"LOG: someone connected")
         self.player = self.scope["user"]
         self.ticket = self.scope["token"]
         self.participant = self.scope["participant"]
-        logger.warning(f"LOG: TOKEN: {self.ticket}")
-        logger.warning(f"LOG: TOKEN TYPE: {type(self.ticket)}")
+        # logger.warning(f"LOG: TOKEN: {self.ticket}")
+        # logger.warning(f"LOG: TOKEN TYPE: {type(self.ticket)}")
         if self.ticket is None or self.participant is None:
             await self.close(code=3011)
             return
@@ -51,8 +51,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
         # update entered value
         await self.update_entered(self.participant)
-        logger.warning(f"LOG: user {self.player}")
-        logger.warning(f"LOG: ticket {self.ticket}")
+        # logger.warning(f"LOG: user {self.player}")
+        # logger.warning(f"LOG: ticket {self.ticket}")
         await self.accept()
 
         # add player to the group
@@ -65,7 +65,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         #    {"type": "test.message", "objects": ""}
         #)
 
-        logger.warning(f"LOG: user added to channel_name")
+        # logger.warning(f"LOG: user added to channel_name")
 
         # check if someone has connected with the same ticket
         async with self.start_lock:

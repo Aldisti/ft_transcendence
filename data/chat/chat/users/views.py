@@ -26,7 +26,7 @@ def generate_ticket(request) -> Response:
     try:
         user_websockets = UserWebsockets.objects.get(pk=username)
     except UserWebsockets.DoesNotExist:
-        logger.warning(f"{username} not found")
+        # logger.warning(f"{username} not found")
         return Response(data={'message': 'user not found'}, status=404)
     websocket_ticket = WebsocketTicket.objects.create(user_websockets)
     return Response(data={'ticket': websocket_ticket.ticket}, status=201)

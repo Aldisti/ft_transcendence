@@ -57,7 +57,7 @@ class MyThread(threading.Thread):
         return message
 
     def callback(self, ch, method, properties, body):
-        logger.warning(f"{self.name} received: [{properties.content_type}]: {body.decode()}")
+        # logger.warning(f"{self.name} received: [{properties.content_type}]: {body.decode()}")
 
         # get body informations
         body = json.loads(body.decode())
@@ -79,7 +79,7 @@ class MyThread(threading.Thread):
 
     def run(self):
         try:
-            logger.warning("Created listener")
+            # logger.warning("Created listener")
             self.channel.start_consuming()
         except:
             return
@@ -92,10 +92,10 @@ def my_main():
 
         for thread in threads:
             thread.start()
-        logger.warning("all threads started")
+        # logger.warning("all threads started")
         for thread in threads:
             thread.join()
-        logger.warning("all threads terminated")
+        # logger.warning("all threads terminated")
 
 
 if __name__=="__main__":
