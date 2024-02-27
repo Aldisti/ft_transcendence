@@ -36,6 +36,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 
         self.other = False
         self.other_lock = asyncio.Lock()
+        self.game_id = None
 
         self.player = self.scope["user"]
 
@@ -272,6 +273,8 @@ class PongConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         #logger.warning(f"LOG: user {self.player} received")
+        if self.game_id is None:
+            return
         text_data_json = json.loads(text_data)
         message_type = text_data_json.get("type", "")
         update_lock = self.games[self.game_id]["update_lock"]

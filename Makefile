@@ -41,7 +41,7 @@ demo:
 	./manage.py demo -c 35
 
 test:
-	@docker exec -w /home/$(shell id -nu)/develop/transcendence django \
+	@docker exec -w /home/root/develop/transcendence django \
 	./manage.py demo -c 16 -t
 
 clean: down

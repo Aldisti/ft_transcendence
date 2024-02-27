@@ -4,7 +4,7 @@ import os
 import re
 
 
-APP_ENV: dict[str, dict[str, str]] = {
+APP_ENV = {
     'DJANGO': {
         'path': './srcs/transcendence/.env',
         'db_path': './srcs/postgres/.env_django',
@@ -119,7 +119,7 @@ DB_VARS = {
 class EnvFile:
 
     @staticmethod
-    def str_to_json(text: str) -> dict[str, str]:
+    def str_to_json(text):
         """
         input:
         key1="value1"
@@ -130,7 +130,7 @@ class EnvFile:
         return {key: value for key, value in [line.split('=') for line in text.replace('\"', "").splitlines() if line != ""]}
 
     @staticmethod
-    def json_to_str(json: dict[str, str]) -> str:
+    def json_to_str(json):
         """
         input:
         {'key1': 'value1', 'key2': 'value2'}
@@ -141,14 +141,14 @@ class EnvFile:
         return "".join([f"{key}=\"{value}\"\n" for key, value in json.items()])
 
     @staticmethod
-    def add_prefix_to_json(prefix: str, json: dict[str, str]) -> dict[str, str]:
+    def add_prefix_to_json(prefix, json):
         new_json = {}
         for key, value in json.items():
             new_json[prefix + key] = value
         return new_json
 
     @staticmethod
-    def remove_lower_keys(json: dict[str, any]) -> dict[str, any]:
+    def remove_lower_keys(json):
         new_json = {}
         for key, value in json.items():
             if re.match(r'^[A-Z_]+$', key) is None:
@@ -157,21 +157,21 @@ class EnvFile:
         return new_json
 
     @staticmethod
-    def fill_var(name: str, default: str) -> str:
+    def fill_var(name, default):
         message = f"{'*' if default == '' else ' '} Insert `{name}` value: "
         user_value = ""
         while user_value == "":
             user_value = (input(message) if 'PASSWORD' not in name else getpass(message)) or default
         return default
 
-    def __create_env(self) -> None:
+    def __create_env(self):
         print(f"> creating {self.name} env file")
         for key, value in self.def_vars.items():
             self.new_vars[key] = self.fill_var(key, value)
         with open(self.path, 'w') as file:
             file.write(self.json_to_str(self.new_vars))
 
-    def __update_env(self) -> None:
+    def __update_env(self):
         if (list(self.def_vars.keys()) in list(self.env_vars.keys())
             and not any(set(map(lambda value: value == '', self.env_vars.values())))):
             self.new_vars = self.env_vars
@@ -185,7 +185,7 @@ class EnvFile:
         with open(self.path, 'w') as file:
             file.write(self.json_to_str(self.new_vars))
 
-    def __create_db_env(self) -> None:
+    def __create_db_env(self):
         if self.db_path is None:
             return
         if self.new_vars == {}:
@@ -203,21 +203,21 @@ class EnvFile:
             self.__create_env()
         self.__create_db_env()
 
-    def load_env(self) -> None:
+    def load_env(self):
         if not os.path.exists(self.path):
             return
         with open(self.path, 'r') as file:
             text = file.read()
         self.env_vars.update(self.str_to_json(text))
 
-    def load_vars(self, vars: dict[str, str]) -> None:
+    def load_vars(self, vars):
         vars = vars.copy()
         self.path = vars.pop('path', '') or self.path
         self.db_path = vars.pop('db_path', '') or None
         self.def_vars.update(vars)
 
 
-    def __init__(self, name: str = "", path: str = "") -> None:
+    def __init__(self, name = "", path = ""):
         self.name = name
         self.path = path
         self.env_vars = {}
@@ -225,11 +225,11 @@ class EnvFile:
         self.new_vars = {}
         self.db_path = None
 
-    def __str__(self) -> str:
+    def __str__(self):
         return (f"{self.name}\t{self.path}\n\n{self.json_to_str(self.new_vars)}")
 
 
-def main() -> None:
+def main():
     for app, vars in APP_ENV.items():
         env_file = EnvFile(name=app, path=vars.get('path', ''))
         env_file.load_env()

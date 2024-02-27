@@ -14,7 +14,7 @@ services:
     image: trinity/nginx
     restart: always
     ports:
-      - "4242:4242" # front
+      - "4200:4200" # front
       - "9001:6000" # chat
       - "7000:7000" # pong
       - "8000:8000" # django
@@ -185,7 +185,7 @@ services:
     depends_on:
       pongdb:
         condition: service_healthy
-        restart: true
+#        restart: true
 
 
   chat:
@@ -334,9 +334,9 @@ services:
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
       retries: 3
-      interval: 5m
-      start_period: 30s
-      start_interval: 30s
+      interval: 10s
+#      start_period: 30s
+#      start_interval: 30s
 
 
   postgres:
@@ -348,9 +348,9 @@ services:
     healthcheck:
       test: "pg_isready -p$$POSTGRES_PORT -d$$POSTGRES_DB -U$$POSTGRES_USER"
       retries: 3
-      interval: 5m
-      start_period: 60s
-      start_interval: 5s
+      interval: 15s
+#      start_period: 60s
+#      start_interval: 5s
     env_file:
       - ./postgres/.env_django
     environment:
@@ -369,9 +369,9 @@ services:
     healthcheck:
       test: "pg_isready -p$$POSTGRES_PORT -d$$POSTGRES_DB -U$$POSTGRES_USER"
       retries: 3
-      interval: 5m
-      start_period: 60s
-      start_interval: 5s
+      interval: 15s
+#      start_period: 60s
+#      start_interval: 5s
     env_file:
       - ./postgres/.env_auth
     environment:
@@ -398,9 +398,9 @@ services:
     healthcheck:
       test: "pg_isready -p$$POSTGRES_PORT -d$$POSTGRES_DB -U$$POSTGRES_USER"
       retries: 3
-      interval: 5m
-      start_period: 60s
-      start_interval: 5s
+      interval: 15s
+#      start_period: 60s
+#      start_interval: 5s
     env_file:
       - ./postgres/.env_chat
     environment:
@@ -418,9 +418,9 @@ services:
     healthcheck:
       test: "pg_isready -p$$POSTGRES_PORT -d$$POSTGRES_DB -U$$POSTGRES_USER"
       retries: 3
-      interval: 5m
-      start_period: 60s
-      start_interval: 5s
+      interval: 15s
+#      start_period: 60s
+#      start_interval: 5s
     env_file:
       - ./postgres/.env_ntf
     environment:
@@ -438,9 +438,9 @@ services:
     healthcheck:
       test: "pg_isready -p$$POSTGRES_PORT -d$$POSTGRES_DB -U$$POSTGRES_USER"
       retries: 3
-      interval: 5m
-      start_period: 60s
-      start_interval: 5s
+      interval: 15s
+#      start_period: 60s
+#      start_interval: 5s
     env_file:
       - ./postgres/.env_pong
     environment:
@@ -493,42 +493,42 @@ volumes:
   postgres:
     name: "postgres"
     driver: local
-    driver_opts:
-      type: "none"
-      o: "bind"
-      device: "$PWD/data/postgres"
+#    driver_opts:
+#      type: "none"
+#      o: "bind"
+#      device: "$PWD/data/postgres"
 
   pongdb:
     name: "pongdb"
     driver: local
-    driver_opts:
-      type: "none"
-      o: "bind"
-      device: "$PWD/data/pongdb"
+#    driver_opts:
+#      type: "none"
+#      o: "bind"
+#      device: "$PWD/data/pongdb"
 
   chatdb:
     name: "chatdb"
     driver: local
-    driver_opts:
-      type: "none"
-      o: "bind"
-      device: "$PWD/data/chatdb"
+#    driver_opts:
+#      type: "none"
+#      o: "bind"
+#      device: "$PWD/data/chatdb"
 
   authdb:
     name: "authdb"
     driver: local
-    driver_opts:
-      type: "none"
-      o: "bind"
-      device: "$PWD/data/authdb"
+#    driver_opts:
+#      type: "none"
+#      o: "bind"
+#      device: "$PWD/data/authdb"
 
   ntfdb:
     name: "ntfdb"
     driver: local
-    driver_opts:
-      type: "none"
-      o: "bind"
-      device: "$PWD/data/ntfdb"
+#    driver_opts:
+#      type: "none"
+#      o: "bind"
+#      device: "$PWD/data/ntfdb"
 
 #  rsa:
 #    name: "rsa"

@@ -38,6 +38,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         self.player = self.scope["user"]
         self.ticket = self.scope["token"]
         self.participant = self.scope["participant"]
+        self.game_id = None
         # logger.warning(f"LOG: TOKEN: {self.ticket}")
         # logger.warning(f"LOG: TOKEN TYPE: {type(self.ticket)}")
         if self.ticket is None or self.participant is None:
@@ -290,6 +291,10 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         #logger.warning(f"LOG: user {self.player} received")
+
+        if self.game_id is None:
+            return
+
         text_data_json = json.loads(text_data)
         message_type = text_data_json.get("type", "")
         update_lock = self.games[self.game_id]["update_lock"]

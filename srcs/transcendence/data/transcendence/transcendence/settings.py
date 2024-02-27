@@ -199,7 +199,7 @@ AUTH_USER_MODEL = "accounts.User"
 # tmp for testing reasons
 SERVER_FRONTEND_IP = environ['SERVER_FRONTEND_IP'] or 'localhost'
 # CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOWED_ORIGINS = [f"https://{SERVER_FRONTEND_IP}:4242"]
+CORS_ALLOWED_ORIGINS = [f"https://{SERVER_FRONTEND_IP}:4200"]
 CORS_ALLOW_CREDENTIALS = True
 APPEND_SLASH = False
 
@@ -330,8 +330,8 @@ MS_URLS = {
     },
     # emails
     # TODO: use variables instead of localhost and 4200
-    "CLIENT_RESET_PAGE": f"{CLIENT_PROT}://{SERVER_FRONTEND_IP}:4242/password/reset/",
-    "CLIENT_LOGIN_PAGE": f"{CLIENT_PROT}://{SERVER_FRONTEND_IP}:4242/login/",
+    "CLIENT_RESET_PAGE": f"{CLIENT_PROT}://{SERVER_FRONTEND_IP}:4200/password/reset/",
+    "CLIENT_LOGIN_PAGE": f"{CLIENT_PROT}://{SERVER_FRONTEND_IP}:4200/login/",
 }
 
 # these are the urls used in the registration endpoint
