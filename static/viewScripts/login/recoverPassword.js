@@ -25,7 +25,7 @@ function validateCodeRecovery(token)
         API.validateRecover(token, code).then(res=>{
             if (Object.keys(res).length == 1)
             {
-                history.pushState(null, null, `/password/recovery/?token=${res.token}`);
+                history.pushState(null, null, `/password/reset/?token=${res.token}`);
                 Router();
             }
         }).catch(e=>{

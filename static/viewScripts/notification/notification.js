@@ -216,7 +216,7 @@ export function simple(notificationContent, callback){
             </div>
             <h4>${notificationContent.title}</h4>
             <div class="notificationBody">
-                <span>
+            <span>
                     ${notificationContent.body}
                 </span>
             </div>

@@ -90,7 +90,7 @@ function infoNotification(notification){
     NOTIFICATION.simple({title: "Info", body: notification.body})
 
     //handle the case of someone removed the user form friend
-    if (notification.body.substring(notification.body.indexOf(" ")) == " is no more your friend")
+    if (notification.body.substring(notification.body.indexOf(" ")) == " is no longer your friend")
     {
         //change friend button inner text if the current user display is the same of the one who removed the current user from friend
         if (currentSearchedUser == notification.body.split(" ")[0])

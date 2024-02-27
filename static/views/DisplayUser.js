@@ -112,17 +112,26 @@ export default class extends Aview {
                     <div class="stats">
                         <div class="chart">
                         <h3>Ranked</h3>
+                            <div class="statsOverlay" id="matchOverlay">
+                                <h2>No Data</h2>
+                            </div>
                             <div class="canvContainer">
                                 <canvas id="fourth">
                             </div>
                         </div>
                         <div class="chart">
-                        <h3>Tournaments</h3>
-                            <div class="canvContainer">
-                                <canvas id="second">
+                            <div class="statsOverlay" id="tournamentOverlay">
+                                <h2>No Data</h2>
                             </div>
+                            <h3>Tournaments</h3>
+                                <div class="canvContainer">
+                                    <canvas id="second">
+                                </div>
                         </div>
                         <div class="chart">
+                            <div class="statsOverlay" id="istogramOverlay">
+                                <h2>No Data</h2>
+                            </div>
                             <h3>Win History</h3>
                             <div class="canvContainer">
                                 <canvas id="first">
@@ -130,6 +139,9 @@ export default class extends Aview {
                         </div>
                         <div class="chart">
                             <div class="canvContainer">
+                                <div class="statsOverlay" id="radarOverlay">
+                                    <h2>No Data</h2>
+                                </div>
                                 <h3>Skills</h3>
                                 <canvas id="third">
                             </div>
@@ -143,9 +155,17 @@ export default class extends Aview {
         this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpeg")
         let params = new URLSearchParams(window.location.search);
 
-        let radarChart = {type: "radar", colors: ["#00afb9", "#f07167", "#2a9d8f"], maxValue: 100};
+        let radarChart = {type: "radar", colors: ["#bc4749", "#6a994e", "#2a9d8f"], maxValue: 100};
         API.getPongMaestry(1, params.get("username")).then(res=>{
             let flag = true;
+            let flag2 = true;
+            Object.keys(res).forEach(el=>{
+                console.log(res[el].win)
+                if (res[el] != 0)
+                    flag2 = false;
+            })
+            if (flag2)
+                document.querySelector("#radarOverlay").style.display = "flex";
             if (Object.keys(res).length == 0)
                 return ;
 
@@ -165,9 +185,16 @@ export default class extends Aview {
         })
 
 
-        let donutChartMatch = {type: "donut", colors: ["#00afb9", "#f07167", "#2a9d8f"]};
+        let donutChartMatch = {type: "donut", colors: ["#4c956c", "#e63946", "#457b9d"]};
         API.getDonutChart(1, params.get("username"), "").then(res=>{
-
+            let flag = true;
+            Object.keys(res).forEach(el=>{
+                console.log(res[el].win)
+                if (res[el] != 0)
+                    flag = false;
+            })
+            if (flag)
+                document.querySelector("#matchOverlay").style.display = "flex";
             if (Object.keys(res).length == 0)
                 return ;
             let valueSum = 0;
@@ -186,10 +213,17 @@ export default class extends Aview {
             console.log(e)
         })
 
-        let verticalChart = {type: "vertical", colors: ["#00afb9", "#f07167", "#2a9d8f"]};
+        let verticalChart = {type: "vertical", colors: ["#4c956c", "#4c956c", "#4c956c"]};
         API.getIstogram(1, params.get("username")).then(res=>{
-            if (Object.keys(res).length == 0)
-                return ;
+            let flag = true;
+            console.log(res)
+            Object.keys(res).forEach(el=>{
+                console.log(res[el].win)
+                if (res[el].win != 0)
+                    flag = false;
+            })
+            if (flag)
+                document.querySelector("#istogramOverlay").style.display = "flex";
             let maxValue = 0;
             let obj = {};
             Object.keys(res).forEach(el=>{
@@ -200,16 +234,23 @@ export default class extends Aview {
             if (maxValue == 0)
                 return
             verticalChart.maxValue = maxValue;
-            console.log(obj)
-
             verticalChart.values = obj;
             chart(document.querySelector("#first"), verticalChart, true);
         }).catch(e=>{
             console.log(e)
         })
 
-        let donutChartTournament = {type: "donut", colors: ["#00afb9", "#f07167", "#2a9d8f"]};
+        let donutChartTournament = {type: "donut", colors: ["#4c956c", "#e63946", "#457b9d"]};
         API.getDonutChart(1, params.get("username"), "&tournament=true").then(res=>{
+            let flag = true;
+            Object.keys(res).forEach(el=>{
+                console.log(res[el].win)
+                if (res[el] != 0)
+                    flag = false;
+            })
+            if (flag)
+                document.querySelector("#tournamentOverlay").style.display = "flex";
+            
             if (Object.keys(res).length == 0)
                 return ;
 

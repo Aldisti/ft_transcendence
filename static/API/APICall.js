@@ -6,6 +6,7 @@ import allLanguage from "/language/language.js"
 import * as  notificationSocket from "/viewScripts/notification/notificatioSocket.js";
 import * as  chatSocket from "/viewScripts/chat/chatSocket.js";
 import * as listener from "/viewScripts/chat/handleMovement.js"
+import * as NOTIFICATION from "/viewScripts/notification/notification.js"
 
 
 
@@ -390,7 +391,7 @@ export async function activateTfa(recursionProtection, type) {
         let resJson = await res.json();
 
         if (resJson.message == "user's email not verified")
-            alert("You need to verify your email!");
+            NOTIFICATION.simple({title: "TFA", body: "You need to verify your email!"});
         Router();
     }
     return ({})
@@ -413,7 +414,7 @@ export async function getEmailCode(recursionProtection, token) {
     {
         let resJson = await res.json();
         let errMsg = resJson.detail.split(" ")
-        alert(`You made too many request you will be able to request another code in ${errMsg[errMsg.length - 2]} seconds`)
+        NOTIFICATION.simple({title: "TFA", body:`You made too many request you will be able to request another code in ${errMsg[errMsg.length - 2]} seconds`})
     }
     return (res);
 

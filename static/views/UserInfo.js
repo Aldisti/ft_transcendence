@@ -411,7 +411,9 @@ export default class extends Aview {
 
         //will perfom check for EMAIL
         if (localStorage.getItem("selectedForm") == "email" && await controls.checkChangeEmailForm(form, this.errors)) {
-            API.updateEmail(prepare.prepareEmailForm(form, this)).then((res) => {}).catch(e=>{
+            API.updateEmail(prepare.prepareEmailForm(form, this)).then((res) => {
+                Router();
+            }).catch(e=>{
                 console.log(e)
             })
         }
