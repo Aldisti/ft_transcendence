@@ -89,16 +89,14 @@ REST_FRAMEWORK = {
 # Django SimpleJWT
 # https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html
 
-RSA_PRIVATE_KEY_PATH = f"/home/{environ['USERNAME']}/rsa/rsa.pem"
-RSA_PUBLIC_KEY_PATH = f"/home/{environ['USERNAME']}/rsa/rsa.crt"
+RSA_PUBLIC_KEY_PATH = f"/home/{environ.get('USERNAME')}/rsa/rsa.crt"
 
 SIMPLE_JWT = {
     "ALGORITHM": "RS256",
-    "SIGNING_KEY": open(RSA_PRIVATE_KEY_PATH, 'r').read(),
-    "VERIFYING_KEY": open(RSA_PUBLIC_KEY_PATH, 'r').read(),
+    "VERIFYING_KEY": ,
     "AUDIENCE": "transcendence",
     "ISSUER": "transcendence.auth",
-
+	"VERIFYING_KEY": open(RSA_PUBLIC_KEY_PATH, 'r').read(),
     "USER_ID_FIELD": "username",
     "USER_ID_CLAIM": "username",
     "USER_AUTHENTICATION_RULE": "rest_framework_simplejwt.authentication.default_user_authentication_rule",
@@ -194,6 +192,8 @@ APPEND_SLASH = False
 RABBIT = {
     "host": environ['RABBIT_HOST'],
     "port": int(environ['RABBIT_PORT']),
+    "user": environ['RABBITMQ_DEFAULT_USER'],
+    "pass": environ['RABBITMQ_DEFAULT_PASS'],
     "heartbeat": int(environ['RABBIT_HEARTBEAT']),
     "bc_timeout": int(environ['RABBIT_BC_TIMEOUT']),
     "exchange": environ['EXCHANGE'],
@@ -204,3 +204,7 @@ RABBIT = {
         "ntf": environ['VHOST_NTF']
     },
 }
+
+# tournament
+TOURNAMENT_INTERVAL = 10
+TOURNAMENT_GAME_TIME = 30
