@@ -27,6 +27,7 @@ declare -A VOLUMES=(
 	["chat_db"]="/data/chatdb"
 	["ntf"]="/data/ntf"
 	["ntf_db"]="/data/ntfdb"
+	["media"]="/media"
 )
 
 create_env()
@@ -56,6 +57,8 @@ create_env()
 	else
 		echo "DEPLOY=\"$1\"" >> "$ENV_FILE"
 	fi
+	local ip=$(grep 'SERVER_FRONTEND_IP' "$ENV_FILE" | cut -d '=' -f2 | tr '"' ' ' | awk '{print $1}')
+	sed -i "s/^let ip = .*/let ip = \"$ip\"\;/" "./frontend/static/API/URL.js"
 }
 
 create_volume_dirs()

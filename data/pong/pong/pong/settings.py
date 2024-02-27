@@ -179,11 +179,10 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # cors settings
-
+SERVER_FRONTEND_IP = environ['SERVER_FRONTEND_IP'] or 'localhost'
+CORS_ALLOWED_ORIGINS = [f"https://{SERVER_FRONTEND_IP}:4242"]
 CORS_ALLOW_CREDENTIALS = True
 # CORS_ALLOW_ALL_ORIGINS = True
-# CORS_ALLOWED_ORIGINS = ["http://172.23.0.3", "http://localhost:4200"]
-CORS_ALLOWED_ORIGINS = []
 APPEND_SLASH = False
 
 # rabbitMq
@@ -205,5 +204,5 @@ RABBIT = {
 }
 
 # tournament
-TOURNAMENT_INTERVAL = 15
+TOURNAMENT_INTERVAL = 10
 TOURNAMENT_GAME_TIME = 30

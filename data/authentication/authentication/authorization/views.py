@@ -77,7 +77,7 @@ def logout(request) -> Response:
     exp = datetime.fromtimestamp(refresh_token['exp'], tz=settings.TZ)
     try:
         JwtBlackList.objects.create(token=refresh_token['csrf'], exp=exp)
-    except ValidationError or ValueError:
+    except ValidationError or ValueError or KeyError:
         return error_response
     if 'all' in request.path:
         User.objects.update_last_logout(request.user)
