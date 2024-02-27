@@ -233,7 +233,7 @@ def get_stats(request):
         total_taken += opponent_score
         if result == Results.WIN:
             total_victories += 1
-        if result == Results.DRAW:
+        elif result == Results.DRAW:
             total_draws += 1
         else:
             total_loses += 1
@@ -241,7 +241,8 @@ def get_stats(request):
     pong_mastery += ((1 - total_taken / len(games) / 6) * 0.1) 
     pong_mastery += ((total_victories / len(games)) * 0.4) 
     pong_mastery += ((1 - total_loses / len(games)) * 0.3) 
-    pong_mastery += ((1 - total_draws / (len(games) ** 2)) * 0.1) 
+    pong_mastery += ((1 - total_draws / (len(games) ** 2)) * 0.1)
+
     body = {
         "avg score": round(total_score / len(games) / 6 * 100),
         "avg taken": round(total_taken / len(games) / 6 * 100),
