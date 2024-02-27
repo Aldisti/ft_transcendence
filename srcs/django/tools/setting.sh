@@ -23,15 +23,15 @@ if [ $DEPLOY -eq 0 ]; then
 	./manage.py runserver 0.0.0.0:8000
 elif grep $PROJECT_NAME <<< "$GUNICORN_SERVERS"; then # GUNICORN
 	# https
-	# gunicorn -w 4 -b 0.0.0.0 -p 8000 --keyfile $CERTS_DIR/transcendence.key --certfile $CERTS_DIR/transcendence.crt ${PROJECT_NAME}.wsgi:application
+	gunicorn -w 4 -b 0.0.0.0 -p 8000 --keyfile $CERTS_DIR/transcendence.key --certfile $CERTS_DIR/transcendence.crt ${PROJECT_NAME}.wsgi:application
 
 	# http
-	gunicorn -w 4 -b 0.0.0.0 -p 8000 ${PROJECT_NAME}.wsgi:application
+	# gunicorn -w 4 -b 0.0.0.0 -p 8000 ${PROJECT_NAME}.wsgi:application
 elif grep $PROJECT_NAME <<< "$DAPHNE_SERVERS"; then # DAPHNE
 	# https
-	# daphne -b 0.0.0.0 -p 8001 -e ssl:8000:privateKey=$CERTS_DIR/transcendence.key:certKey=$CERTS_DIR/transcendence.crt ${PROJECT_NAME}.asgi:application
+	daphne -b 0.0.0.0 -p 8001 -e ssl:8000:privateKey=$CERTS_DIR/transcendence.key:certKey=$CERTS_DIR/transcendence.crt ${PROJECT_NAME}.asgi:application
 	# http
-	daphne -b 0.0.0.0 -p 8000 ${PROJECT_NAME}.asgi:application
+	# daphne -b 0.0.0.0 -p 8000 ${PROJECT_NAME}.asgi:application
 else
 	echo "$PROJECT_NAME not in daphne or gunicorn lists"
 	exit 101

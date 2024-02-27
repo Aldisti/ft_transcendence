@@ -9,6 +9,28 @@ import allLanguage from "/language/language.js"
 
 let language = allLanguage[localStorage.getItem("language")];
 
+function createDate(dateString){
+    // Split the string into date and time parts
+    let parts = dateString.split(":");
+    let datePart = parts[0];
+    let timePart = parts[1];
+
+    // Split the date part into year, month, and day
+    let dateParts = datePart.split("/");
+    let year = parseInt(dateParts[0]);
+    let month = parseInt(dateParts[1]) - 1; // Months are 0-indexed in JS
+    let day = parseInt(dateParts[2]);
+
+    // Split the time part into hour, minute, and second
+    let timeParts = timePart.split(".");
+    let hour = parseInt(timeParts[0]);
+    let minute = parseInt(timeParts[1]);
+    let second = parseInt(timeParts[2]);
+
+    // Create the Date object
+    return new Date(year, month, day, hour, minute, second);
+}
+
 function removeNotification(body){
     let parsedNotification = JSON.parse(localStorage.getItem("notification"));
 
@@ -68,7 +90,7 @@ function infoNotification(notification){
     NOTIFICATION.simple({title: "Info", body: notification.body})
 
     //handle the case of someone removed the user form friend
-    if (notification.body.substring(notification.body.indexOf(" ")) == " is no more your friend")
+    if (notification.body.substring(notification.body.indexOf(" ")) == " is no longer your friend")
     {
         //change friend button inner text if the current user display is the same of the one who removed the current user from friend
         if (currentSearchedUser == notification.body.split(" ")[0])
@@ -127,7 +149,19 @@ function tournamentCallback(config, notificationElement){
     let opponentDisplay = config.notification.body.opponent_display;
     let opponent = config.notification.body.opponent;
     let userDisplay = config.notification.body.user_display;
+    console.log(createDate(config.notification.sent_time));
+    let currDate = new Date();
+    let difference = Math.abs(currDate - createDate(config.notification.sent_time));
+    console.log(difference)
 
+    if (difference >= 10000){
+        document.body.removeChild(notificationElement);
+    }
+    else{
+        setTimeout(() => {
+            document.body.removeChild(notificationElement);
+        }, 10000 - difference);
+    }
     notificationElement.querySelector(".notificationAccept").addEventListener("click", ()=>{
         history.pushState(null, null, `/games/pong2d/?token=${token}&tournamentId=${tournamentId}&opponentDisplay=${opponentDisplay}&opponent=${opponent}&userDisplay=${userDisplay}`);
         Router();

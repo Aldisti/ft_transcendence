@@ -2,10 +2,7 @@ import logging
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from requests import delete as delete_request
-from requests import get as get_request
-from requests import patch as patch_request
-from requests import post as post_request
+
 from rest_framework.decorators import api_view, permission_classes, throttle_classes
 from rest_framework.generics import RetrieveDestroyAPIView
 from rest_framework.response import Response
@@ -17,7 +14,28 @@ from transcendence.decorators import get_func_credentials
 from transcendence.permissions import IsAdmin, IsModerator, IsUser, IsActualUser
 from transcendence.throttles import HighLoadThrottle, MediumLoadThrottle, LowLoadThrottle
 
+from requests import delete
+from requests import get
+from requests import patch
+from requests import post
+
 logger = logging.getLogger(__name__)
+
+
+def delete_request(*args, **kwargs):
+    return delete(*args, **kwargs, verify=False)
+
+
+def post_request(*args, **kwargs):
+    return post(*args, **kwargs, verify=False)
+
+
+def get_request(*args, **kwargs):
+    return get(*args, **kwargs, verify=False)
+
+
+def patch_request(*args, **kwargs):
+    return patch(*args, **kwargs, verify=False)
 
 
 def create_user(data) -> tuple[User, dict[str, str]] | tuple[None, None]:

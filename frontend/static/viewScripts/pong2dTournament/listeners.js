@@ -57,9 +57,7 @@ export function handleTournamentSubscription(dupThis, e){
         setTimeout(() => {
             if (confirm("Do You really want to unsubscribe this event?")){
                 API.unsubscribeTournament(1, e.target.getAttribute("tournamentId")).then(res=>{
-                    if (res)
-                        alert(dupThis.language.tournament.tournamentUnSubscribed);
-                    else
+                    if (!res)
                         alert(dupThis.language.tournament.tournamentUnSubscribedError);
                     Router()
                 }).catch(e=>{
@@ -102,8 +100,7 @@ function validateDateTime(dateTimeString){
     const timeDifference = inputDateTime.getTime() - currentDateTime.getTime();
 
     // Check if the time difference is at least one hour (in milliseconds)
-    // return timeDifference >= 60 * 60 * 1000;
-    return true;
+    return timeDifference >= 5 * 60 * 1000;
 }
 
 /**
@@ -140,7 +137,7 @@ export function handleTournamentCreation(dupThis, e){
     }
     else{
         flag = false;
-        alert("date and time must be later that one hour from now...")
+        alert("date and time must be later than 5 minutes from now...")
     }
     if (!flag)
         return

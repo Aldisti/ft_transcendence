@@ -2,9 +2,9 @@
 import logging
 
 from django.conf import settings
-from requests import delete as delete_request
-from requests import get as get_request
-from requests import post as post_request
+from requests import delete
+from requests import get
+from requests import post
 from rest_framework.decorators import api_view, permission_classes, throttle_classes
 from rest_framework.response import Response
 
@@ -12,6 +12,18 @@ from transcendence.decorators import get_func_credentials
 from transcendence.throttles import LowLoadThrottle
 
 logger = logging.getLogger(__name__)
+
+
+def delete_request(*args, **kwargs):
+    return delete(*args, **kwargs, verify=False)
+
+
+def post_request(*args, **kwargs):
+    return post(*args, **kwargs, verify=False)
+
+
+def get_request(*args, **kwargs):
+    return get(*args, **kwargs, verify=False)
 
 
 @api_view(['GET'])

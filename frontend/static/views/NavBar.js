@@ -64,7 +64,6 @@ export default function createNavBar(){
                   <option value="ita">ita</option>
                   <option value="fr">fr</option>
                   <option value="esp">esp</option>
-                  <option value="de">de</option>
                 </select>
               </li>
               <li id="darkMode">

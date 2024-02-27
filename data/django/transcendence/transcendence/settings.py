@@ -240,19 +240,19 @@ CLIENT_PROT = 'https'
 
 CHAT_HOST = environ['CHAT_HOST']
 CHAT_PORT = 8000
-CHAT_PROT = 'http'
+CHAT_PROT = 'https'
 
 PONG_HOST = environ['PONG_HOST']
 PONG_PORT = 8000
-PONG_PROT = 'http'
+PONG_PROT = 'https'
 
 NTF_HOST = environ['NTF_HOST']
 NTF_PORT = 8000
-NTF_PROT = 'http'
+NTF_PROT = 'https'
 
 AUTH_HOST = environ['AUTH_HOST']
 AUTH_PORT = 8000
-AUTH_PROT = 'http'
+AUTH_PROT = 'https'
 
 MS_URLS = {
     # chat urls

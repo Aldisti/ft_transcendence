@@ -1,10 +1,14 @@
 from django.conf import settings
-from requests import get as get_request
+from requests import get
 from rest_framework.decorators import api_view, permission_classes, throttle_classes
 from rest_framework.response import Response
 
 from transcendence.permissions import IsUser
 from transcendence.throttles import HighLoadThrottle
+
+
+def get_request(*args, **kwargs):
+    return get(*args, **kwargs, verify=False)
 
 
 @api_view(["GET"])

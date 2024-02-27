@@ -1,9 +1,9 @@
 import logging
 
 from django.conf import settings
-from requests import get as get_request
-from requests import post as post_request
-from requests import put as put_request
+from requests import get
+from requests import post
+from requests import put
 from rest_framework.decorators import APIView, api_view, permission_classes, throttle_classes
 from rest_framework.response import Response
 
@@ -12,6 +12,18 @@ from transcendence.decorators import get_func_credentials, get_class_credentials
 from transcendence.throttles import HighLoadThrottle, MediumLoadThrottle, LowLoadThrottle, EmailThrottle
 
 logger = logging.getLogger(__name__)
+
+
+def post_request(*args, **kwargs):
+    return post(*args, **kwargs, verify=False)
+
+
+def get_request(*args, **kwargs):
+    return get(*args, **kwargs, verify=False)
+
+
+def put_request(*args, **kwargs):
+    return put(*args, **kwargs, verify=False)
 
 
 class ManageView(APIView):

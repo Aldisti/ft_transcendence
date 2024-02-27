@@ -11,9 +11,9 @@ from transcendence.throttles import MediumLoadThrottle, LowLoadThrottle, HighLoa
 from base64 import b64decode
 from json import loads
 
-from requests import post as post_request
-from requests import get as get_request
-from requests import delete as delete_request
+from requests import post
+from requests import get
+from requests import delete
 
 from accounts.models import User
 
@@ -22,6 +22,18 @@ from operator import itemgetter
 import logging
 
 logger = logging.getLogger(__name__)
+
+
+def delete_request(*args, **kwargs):
+    return delete(*args, **kwargs, verify=False)
+
+
+def post_request(*args, **kwargs):
+    return post(*args, **kwargs, verify=False)
+
+
+def get_request(*args, **kwargs):
+    return get(*args, **kwargs, verify=False)
 
 
 @api_view(['GET', 'POST'])

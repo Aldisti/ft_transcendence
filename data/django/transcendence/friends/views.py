@@ -10,12 +10,20 @@ from transcendence.throttles import MediumLoadThrottle, LowLoadThrottle
 
 from friends.serializers import FriendsSerializer
 
-from requests import post as post_request
-from requests import get as get_request
+from requests import post
+from requests import get
 
 import logging
 
 logger = logging.getLogger(__name__)
+
+
+def post_request(*args, **kwargs):
+    return post(*args, **kwargs, verify=False)
+
+
+def get_request(*args, **kwargs):
+    return get(*args, **kwargs, verify=False)
 
 
 # TODO: change api methods
@@ -88,9 +96,9 @@ def get_all_friends(request):
     friends = [User.objects.get(pk=username) for username in usernames]
     friends_serializer = FriendsSerializer(friends, many=True, context={"request": request})
     json_response = friends_serializer.data
-    protocol = request.headers.get('X-Forwarded-Proto', settings.PROTOCOL)
+    # protocol = request.headers.get('X-Forwarded-Proto', settings.PROTOCOL)
     for data, ser_data in zip(api_response.json(), json_response):
         ser_data["status"] = data["status"]
-        if ser_data["picture"] is not None:
-            ser_data["picture"] = ser_data["picture"].replace("http", protocol)
+        # if ser_data["picture"] is not None:
+        #     ser_data["picture"] = ser_data["picture"].replace("http:", protocol + ':')
     return Response(json_response, status=api_response.status_code)

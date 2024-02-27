@@ -5,9 +5,9 @@ import handleSlider from "/viewScripts/pong2d/sliders.js"
 import * as API from"/API/APICall.js"
 import * as URL from"/API/URL.js"
 
-let pills = [ "/imgs/pillsTexture/pill1.png", "/imgs/pillsTexture/pill.png"]
-let grounds = [ "/imgs/groundTexture/ground1.jpg", "/imgs/groundTexture/ground2.avif", "/imgs/groundTexture/ground3.jpg"]
-let balls = [ "/imgs/ballTexture/tennis.png", "/imgs/ballTexture/basket.png", "/imgs/ballTexture/soccer.png"]
+let pills = ["/imgs/pillsTexture/classicPong.png", "/imgs/pillsTexture/pill1.png", "/imgs/pillsTexture/pill.png"]
+let grounds = ["/imgs/groundTexture/pong-thumbnail.jpg", "/imgs/groundTexture/ground1.jpg", "/imgs/groundTexture/ground2.avif", "/imgs/groundTexture/ground3.jpg"]
+let balls = ["/imgs/ballTexture/classicBall.png", "/imgs/ballTexture/tennis.png", "/imgs/ballTexture/basket.png", "/imgs/ballTexture/soccer.png"]
 let gameObj = 0;
 let socket = 0;
 

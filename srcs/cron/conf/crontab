@@ -5,8 +5,8 @@
 # 0 0 * * *
 
 
-0 * * * * /usr/local/bin/query.sh >> /var/log/query.log 2 >> /var/log/query.error
+# 0 * * * * /usr/local/bin/query.sh >> /var/log/query.log 2 >> /var/log/query.error
 
-* * * * * /usr/bin/curl --silent http://pong:8000/tournaments/check/ >> /var/log/curl.log 2 >> /var/log/curl.error
+* * * * * /usr/bin/curl -ks https://pong:8000/tournaments/check/ >> /var/log/curl.log 2 >> /var/log/curl.error
 
 

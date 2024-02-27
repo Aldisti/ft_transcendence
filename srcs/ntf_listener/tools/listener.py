@@ -5,7 +5,7 @@ import pika
 import os
 import logging
 import json
-from requests import post as post_request
+from requests import post
 
 logger = logging.getLogger(__name__)
 
@@ -18,6 +18,10 @@ EXCHANGE = os.environ['EXCHANGE']
 NTF_ROUTING_KEY = os.environ['NTF_ROUTING_KEY']
 THREAD = os.environ['THREAD']
 QUEUE_NAME = os.environ['QUEUE_NAME']
+
+
+def post_request(*args, **kwargs):
+    return post(*args, **kwargs, verify=False)
 
 
 class MyThread(threading.Thread):
@@ -35,7 +39,7 @@ class MyThread(threading.Thread):
 
     def callback(self, ch, method, properties, body):
         # logger.warning(f"{self.name} received: [{properties.content_type}]: {body.decode()}")
-        url = "http://ntf:8000/notification/"
+        url = "https://ntf:8000/notification/"
         match properties.content_type:
             case "group_ntf":
                 url += "group/"

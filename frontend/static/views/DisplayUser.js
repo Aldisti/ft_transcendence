@@ -77,18 +77,23 @@ export default class extends Aview {
                 </div>
             `
             this.username = document.querySelector(".friendRequest").getAttribute("name");
-            API.friendStatus(1, this.username).then(res=>{
-                if (res.is_friend)
-                {
-                    document.querySelector(".friendRequest").children[0].innerHTML = this.language.displayUser.userInfo.removeFriend;
-                    this.friendStatus = true;
-                }
-                else
-                    this.friendStatus = false;
-                document.querySelector(".friendRequest").addEventListener("click", this.handleFriendRequest.bind(null, this));
-            }).catch(e=>{
-                console.log(e)
-            })
+            if (this.username == localStorage.getItem("username"))
+                this.friendStatus = false;
+            else{
+                console.log("heyy ho controllato lo status")
+                API.friendStatus(1, this.username).then(res=>{
+                    if (res.is_friend)
+                    {
+                        document.querySelector(".friendRequest").children[0].innerHTML = this.language.displayUser.userInfo.removeFriend;
+                        this.friendStatus = true;
+                    }
+                    else
+                        this.friendStatus = false;
+                    document.querySelector(".friendRequest").addEventListener("click", this.handleFriendRequest.bind(null, this));
+                }).catch(e=>{
+                    console.log(e)
+                })
+            }              
         }).catch(e=>{
             console.log(e)
         })
@@ -107,17 +112,26 @@ export default class extends Aview {
                     <div class="stats">
                         <div class="chart">
                         <h3>Ranked</h3>
+                            <div class="statsOverlay" id="matchOverlay">
+                                <h2>No Data</h2>
+                            </div>
                             <div class="canvContainer">
                                 <canvas id="fourth">
                             </div>
                         </div>
                         <div class="chart">
-                        <h3>Tournaments</h3>
-                            <div class="canvContainer">
-                                <canvas id="second">
+                            <div class="statsOverlay" id="tournamentOverlay">
+                                <h2>No Data</h2>
                             </div>
+                            <h3>Tournaments</h3>
+                                <div class="canvContainer">
+                                    <canvas id="second">
+                                </div>
                         </div>
                         <div class="chart">
+                            <div class="statsOverlay" id="istogramOverlay">
+                                <h2>No Data</h2>
+                            </div>
                             <h3>Win History</h3>
                             <div class="canvContainer">
                                 <canvas id="first">
@@ -125,6 +139,9 @@ export default class extends Aview {
                         </div>
                         <div class="chart">
                             <div class="canvContainer">
+                                <div class="statsOverlay" id="radarOverlay">
+                                    <h2>No Data</h2>
+                                </div>
                                 <h3>Skills</h3>
                                 <canvas id="third">
                             </div>
@@ -138,19 +155,29 @@ export default class extends Aview {
         this.defineWallpaper("/imgs/backLogin.png", "/imgs/modernBack.jpeg")
         let params = new URLSearchParams(window.location.search);
 
-        let radarChart = {type: "radar", colors: ["#00afb9", "#f07167", "#2a9d8f"], maxValue: 100};
+        let radarChart = {type: "radar", colors: ["#bc4749", "#6a994e", "#2a9d8f"], maxValue: 100};
         API.getPongMaestry(1, params.get("username")).then(res=>{
             let flag = true;
+            let flag2 = true;
+            Object.keys(res).forEach(el=>{
+                console.log(res[el].win)
+                if (res[el] != 0)
+                    flag2 = false;
+            })
+            if (flag2)
+                document.querySelector("#radarOverlay").style.display = "flex";
             if (Object.keys(res).length == 0)
                 return ;
 
             Object.keys(res).forEach(el=>{
-                if (rel[el] != 0)
+                if (res[el] != 0)
                     flag = false;
             })
             if (flag){
                 
             }
+            console.log(res)
+
             radarChart.values = res
             chart(document.querySelector("#third"), radarChart, true);
         }).catch(e=>{
@@ -158,25 +185,45 @@ export default class extends Aview {
         })
 
 
-        let donutChartMatch = {type: "donut", colors: ["#00afb9", "#f07167", "#2a9d8f"]};
-        API.getDonutChart(1, params.get("username"), "&tournament=true").then(res=>{
+        let donutChartMatch = {type: "donut", colors: ["#4c956c", "#e63946", "#457b9d"]};
+        API.getDonutChart(1, params.get("username"), "").then(res=>{
+            let flag = true;
+            Object.keys(res).forEach(el=>{
+                console.log(res[el].win)
+                if (res[el] != 0)
+                    flag = false;
+            })
+            if (flag)
+                document.querySelector("#matchOverlay").style.display = "flex";
             if (Object.keys(res).length == 0)
                 return ;
             let valueSum = 0;
             Object.keys(res).forEach(el=>{
+                res[el] *= 100;
                 valueSum += res[el];
+            })
+            Object.keys(res).forEach(el=>{
+                if (res[el] == 0)
+                    res[el] = valueSum / 500;
             })
             donutChartMatch.maxValue = valueSum;
             donutChartMatch.values = res;
-            chart(document.querySelector("#second"), donutChartMatch, true);
+            chart(document.querySelector("#fourth"), donutChartMatch, true);
         }).catch(e=>{
             console.log(e)
         })
 
-        let verticalChart = {type: "vertical", colors: ["#00afb9", "#f07167", "#2a9d8f"]};
+        let verticalChart = {type: "vertical", colors: ["#4c956c", "#4c956c", "#4c956c"]};
         API.getIstogram(1, params.get("username")).then(res=>{
-            if (Object.keys(res).length == 0)
-                return ;
+            let flag = true;
+            console.log(res)
+            Object.keys(res).forEach(el=>{
+                console.log(res[el].win)
+                if (res[el].win != 0)
+                    flag = false;
+            })
+            if (flag)
+                document.querySelector("#istogramOverlay").style.display = "flex";
             let maxValue = 0;
             let obj = {};
             Object.keys(res).forEach(el=>{
@@ -193,18 +240,35 @@ export default class extends Aview {
             console.log(e)
         })
 
-        let donutChartTournament = {type: "donut", colors: ["#00afb9", "#f07167", "#2a9d8f"]};
-        API.getDonutChart(1, params.get("username"), "").then(res=>{
+        let donutChartTournament = {type: "donut", colors: ["#4c956c", "#e63946", "#457b9d"]};
+        API.getDonutChart(1, params.get("username"), "&tournament=true").then(res=>{
+            let flag = true;
+            Object.keys(res).forEach(el=>{
+                console.log(res[el].win)
+                if (res[el] != 0)
+                    flag = false;
+            })
+            if (flag)
+                document.querySelector("#tournamentOverlay").style.display = "flex";
+            
             if (Object.keys(res).length == 0)
                 return ;
 
             let valueSum = 0;
             Object.keys(res).forEach(el=>{
+                res[el] *= 100;
                 valueSum += res[el];
             })
+            Object.keys(res).forEach(el=>{
+                if (res[el] == 0)
+                    res[el] = valueSum / 500;
+            })
+
             donutChartTournament.maxValue = valueSum;
+            console.log(res)
+
             donutChartTournament.values = res;
-            chart(document.querySelector("#fourth"), donutChartTournament, true);
+            chart(document.querySelector("#second"), donutChartTournament, true);
         }).catch(e=>{
             console.log(e)
         })

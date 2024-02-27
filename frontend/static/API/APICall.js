@@ -6,6 +6,7 @@ import allLanguage from "/language/language.js"
 import * as  notificationSocket from "/viewScripts/notification/notificatioSocket.js";
 import * as  chatSocket from "/viewScripts/chat/chatSocket.js";
 import * as listener from "/viewScripts/chat/handleMovement.js"
+import * as NOTIFICATION from "/viewScripts/notification/notification.js"
 
 
 
@@ -390,7 +391,7 @@ export async function activateTfa(recursionProtection, type) {
         let resJson = await res.json();
 
         if (resJson.message == "user's email not verified")
-            alert("You need to verify your email!");
+            NOTIFICATION.simple({title: "TFA", body: "You need to verify your email!"});
         Router();
     }
     return ({})
@@ -413,7 +414,7 @@ export async function getEmailCode(recursionProtection, token) {
     {
         let resJson = await res.json();
         let errMsg = resJson.detail.split(" ")
-        alert(`You made too many request you will be able to request another code in ${errMsg[errMsg.length - 2]} seconds`)
+        NOTIFICATION.simple({title: "TFA", body:`You made too many request you will be able to request another code in ${errMsg[errMsg.length - 2]} seconds`})
     }
     return (res);
 
@@ -673,7 +674,6 @@ export async function removeFriend(recursionProtection, username){
             for (let i = 0; i < users.length; i++)
                 create.createUser(users[i], users[i].status);
         })
-        alert("friend removed")
         return;
     }
     if (res.status == 401 && recursionProtection)
@@ -690,7 +690,6 @@ export async function sendFriendRequest(recursionProtection, username){
         credentials: "include",
     });
     if (res.ok) {
-        alert("request sent!")
         return {};
     }
     if (res.status == 401 && recursionProtection)
@@ -791,21 +790,6 @@ export async function getUsers(recursionProtection){
         return await refreshAndRetry(getUsers, 0);
     return ({})
 }
-
-export async function getDummyUsers(recursionProtection, pageSize, pageNumber){
-    const res = await fetch(`http://localhost:3000/objects?page=${pageNumber}&size=${pageSize}`, {
-        method: "GET",
-    });
-    if (res.ok) {
-        let parsed = await res.json();
-        return (parsed);
-    }
-    if (res.status == 401 && recursionProtection)
-        return await refreshAndRetry(getUsers, 0);
-    alert("error ha occured..")
-    return ({})
-}
-
 
 export async function getTicket(recursionProtection, url){
     const res = await fetch(url, {
