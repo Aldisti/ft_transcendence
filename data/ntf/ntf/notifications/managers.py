@@ -28,12 +28,13 @@ class NotificationManager(models.Manager):
     def send_notification(self, notification):
         #logger.warning(f"SENDING NOTIFICATION")
         user_websocket = notification.user
+        logger.warning(f"sending notification to: {user_websocket}")
         ntf_channels = user_websocket.ntf_channels.all()
         channel_layer = layers.get_channel_layer()
         for ntf_channel in ntf_channels:
             json_data = [notification.to_json()]
             logger.warning(f"data to send: {json_data}")
-            #logger.warning(f"notification will be sent at {ntf_channel.channel_name}")
+            logger.warning(f"notification will be sent at {ntf_channel.channel_name}")
             async_to_sync(channel_layer.send)(
                 ntf_channel.channel_name,
                 {"type": "notification.message", "text": json.dumps(json_data)})
