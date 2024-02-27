@@ -145,7 +145,6 @@ export default class extends Aview {
 
         let radarChart = {type: "radar", colors: ["#00afb9", "#f07167", "#2a9d8f"], maxValue: 100};
         API.getPongMaestry(1, params.get("username")).then(res=>{
-            console.log(res)
             let flag = true;
             if (Object.keys(res).length == 0)
                 return ;
@@ -157,6 +156,8 @@ export default class extends Aview {
             if (flag){
                 
             }
+            console.log(res)
+
             radarChart.values = res
             chart(document.querySelector("#third"), radarChart, true);
         }).catch(e=>{
@@ -165,18 +166,22 @@ export default class extends Aview {
 
 
         let donutChartMatch = {type: "donut", colors: ["#00afb9", "#f07167", "#2a9d8f"]};
-        API.getDonutChart(1, params.get("username"), "&tournament=true").then(res=>{
-            console.log(res)
+        API.getDonutChart(1, params.get("username"), "").then(res=>{
 
             if (Object.keys(res).length == 0)
                 return ;
             let valueSum = 0;
             Object.keys(res).forEach(el=>{
+                res[el] *= 100;
                 valueSum += res[el];
+            })
+            Object.keys(res).forEach(el=>{
+                if (res[el] == 0)
+                    res[el] = valueSum / 500;
             })
             donutChartMatch.maxValue = valueSum;
             donutChartMatch.values = res;
-            chart(document.querySelector("#second"), donutChartMatch, true);
+            chart(document.querySelector("#fourth"), donutChartMatch, true);
         }).catch(e=>{
             console.log(e)
         })
@@ -195,6 +200,8 @@ export default class extends Aview {
             if (maxValue == 0)
                 return
             verticalChart.maxValue = maxValue;
+            console.log(obj)
+
             verticalChart.values = obj;
             chart(document.querySelector("#first"), verticalChart, true);
         }).catch(e=>{
@@ -202,17 +209,25 @@ export default class extends Aview {
         })
 
         let donutChartTournament = {type: "donut", colors: ["#00afb9", "#f07167", "#2a9d8f"]};
-        API.getDonutChart(1, params.get("username"), "").then(res=>{
+        API.getDonutChart(1, params.get("username"), "&tournament=true").then(res=>{
             if (Object.keys(res).length == 0)
                 return ;
 
             let valueSum = 0;
             Object.keys(res).forEach(el=>{
+                res[el] *= 100;
                 valueSum += res[el];
             })
+            Object.keys(res).forEach(el=>{
+                if (res[el] == 0)
+                    res[el] = valueSum / 500;
+            })
+
             donutChartTournament.maxValue = valueSum;
+            console.log(res)
+
             donutChartTournament.values = res;
-            chart(document.querySelector("#fourth"), donutChartTournament, true);
+            chart(document.querySelector("#second"), donutChartTournament, true);
         }).catch(e=>{
             console.log(e)
         })
