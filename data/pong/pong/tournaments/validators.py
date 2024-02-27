@@ -28,6 +28,6 @@ class StartDateValidator:
         self.message = message
 
     def __call__(self, value):
-        #if value - datetime.now() < timedelta(hours=1):
-        #    raise ValidationError(self.message)
+        if value - datetime.now() < timedelta(minutes=5):
+            raise ValidationError(self.message)
         pass
