@@ -358,6 +358,8 @@ RABBIT = {
     "heartbeat": int(environ['RABBIT_HEARTBEAT']),
     "bc_timeout": int(environ['RABBIT_BC_TIMEOUT']),
     "exchange": environ['EXCHANGE'],
+	"user": environ['RABBITMQ_DEFAULT_USER'],
+	"pass": environ['RABBITMQ_DEFAULT_PASS'],
     "R_KEYS": {
         "ntf": environ['NTF_ROUTING_KEY'],
         "email": environ['EMAIL_ROUTING_KEY'],

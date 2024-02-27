@@ -5,10 +5,13 @@ import pika
 
 class NotificationProducer:
     def __init__(self) -> None:
+		# credentials used to connect to rabbitmq
+		credentials = pika.PlainCredentials(settings.RABBIT['user'], settings.RABBIT['pass'])
         # params used to create a connection with rabbitMq
         params = pika.ConnectionParameters(
             host=settings.RABBIT['host'],
             port=settings.RABBIT['port'],
+			credentials=credentials,
             # virtual_host=settings.RABBIT['VHOSTS']['ntf'],
             heartbeat=settings.RABBIT['heartbeat'],
             blocked_connection_timeout=settings.RABBIT['bc_timeout']
@@ -31,10 +34,13 @@ class NotificationProducer:
 
 class EmailProducer:
     def __init__(self) -> None:
+		# credentials used to connect to rabbitmq
+		credentials = pika.PlainCredentials(settings.RABBIT['user'], settings.RABBIT['pass'])
         # params used to create a connection with rabbitMq
         params = pika.ConnectionParameters(
             host=settings.RABBIT['host'],
             port=settings.RABBIT['port'],
+			credentials=credentials,
             # virtual_host=settings.RABBIT['VHOSTS']['ntf'],
             heartbeat=settings.RABBIT['heartbeat'],
             blocked_connection_timeout=settings.RABBIT['bc_timeout']
