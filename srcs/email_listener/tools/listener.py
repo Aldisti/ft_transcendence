@@ -14,6 +14,8 @@ logger = logging.getLogger(__name__)
 
 RABBIT_HOST = os.environ['RABBIT_HOST']
 RABBIT_PORT = int(os.environ['RABBIT_PORT'])
+RABBIT_USER = os.environ['RABBITMQ_DEFAULT_USER']
+RABBIT_PASS = os.environ['RABBITMQ_DEFAULT_PASS']
 VHOST = os.environ['VHOST']
 EXCHANGE = os.environ['EXCHANGE']
 EMAIL_ROUTING_KEY = os.environ['EMAIL_ROUTING_KEY']
@@ -28,7 +30,8 @@ SENDER_MAIL = os.environ['EMAIL_HOST_USER']
 class MyThread(threading.Thread):
     def __init__(self, *args, **kwargs):
         super().__init__(group=None, *args, **kwargs)
-        params = pika.ConnectionParameters(host=RABBIT_HOST, port=RABBIT_PORT)
+        credentials = pika.PlainCredentials(RABBIT_USER, RABBIT_PASS)
+        params = pika.ConnectionParameters(host=RABBIT_HOST, port=RABBIT_PORT, credentials=credentials)
         connection = pika.BlockingConnection(params)
         self.channel = connection.channel()
         self.channel.exchange_declare(exchange=EXCHANGE, exchange_type='direct')
@@ -72,25 +75,28 @@ class MyThread(threading.Thread):
         with smtplib.SMTP_SSL(EMAIL_HOST, EMAIL_PORT, context=context) as server:
             server.login(SENDER_MAIL, EMAIL_PASSWORD)
             server.sendmail(SENDER_MAIL, receiver_mail, message.as_string())
+        ch.basic_ack(delivery_tag=method.delivery_tag)
 
     def run(self):
-        logger.warning("Created listener")
-        self.channel.start_consuming()
+        try:
+            logger.warning("Created listener")
+            self.channel.start_consuming()
+        except:
+            return
 
 def my_main():
-    threads = []
-    for n in  range(THREAD):
-        threads.append(MyThread(name=f"thread_{n + 1}"))
+    while True:
+        threads = []
+        for n in  range(THREAD):
+            threads.append(MyThread(name=f"thread_{n + 1}"))
 
-    for thread in threads:
-        thread.start()
-    logger.warning("start")
+        for thread in threads:
+            thread.start()
+        logger.warning("all threads started")
+        for thread in threads:
+            thread.join()
+        logger.warning("all threads terminated")
+
 
 if __name__=="__main__":
-    print(RABBIT_HOST)
-    print(RABBIT_PORT)
-    print(EXCHANGE)
-    print(EMAIL_ROUTING_KEY)
-    print(THREAD)
-    print(QUEUE_NAME)
     my_main()
