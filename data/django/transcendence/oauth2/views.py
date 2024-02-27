@@ -28,7 +28,7 @@ def is_user_linked(request) -> Response:
 
 @api_view(['GET'])
 @permission_classes([])
-@throttle_classes([])
+@throttle_classes([LowLoadThrottle])
 def intra_get_url(request) -> Response:
     api_response = get_request(
         settings.MS_URLS['AUTH']['INTRA_URL'],
@@ -51,7 +51,7 @@ def intra_get_url(request) -> Response:
 
 @api_view(['POST'])
 @permission_classes([])
-@throttle_classes([])
+@throttle_classes([LowLoadThrottle])
 @get_func_credentials
 def intra_login(request) -> Response:
     """
@@ -80,7 +80,7 @@ def intra_login(request) -> Response:
 
 
 @api_view(['POST'])
-@throttle_classes([])
+@throttle_classes([LowLoadThrottle])
 @get_func_credentials
 def intra_link(request) -> Response:
     """
@@ -100,7 +100,7 @@ def intra_link(request) -> Response:
 
 
 @api_view(['DELETE'])
-@throttle_classes([])
+@throttle_classes([LowLoadThrottle])
 @get_func_credentials
 def intra_unlink(request) -> Response:
     """
@@ -142,7 +142,7 @@ def get_google_url(request) -> Response:
 
 
 @api_view(['POST'])
-@throttle_classes([])
+@throttle_classes([LowLoadThrottle])
 @get_func_credentials
 def google_link(request) -> Response:
     api_response = post_request(
@@ -160,7 +160,7 @@ def google_link(request) -> Response:
 
 @api_view(['POST'])
 @permission_classes([])
-@throttle_classes([])
+@throttle_classes([LowLoadThrottle])
 @get_func_credentials
 def google_login(request) -> Response:
     api_response = post_request(

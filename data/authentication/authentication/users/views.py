@@ -8,18 +8,19 @@ from rest_framework import status
 from rest_framework import pagination
 
 from rest_framework.generics import ListAPIView 
-from rest_framework.decorators import APIView, api_view, permission_classes, throttle_classes
+from rest_framework.decorators import APIView, api_view, permission_classes
 from rest_framework.response import Response
 
 from authorization.models import EmailVerificationToken
 from authorization.serializers import TokenPairSerializer
 from authorization.views import get_exp
+
 from two_factor_auth.models import UserTFA
+
 from .models import User
 from .serializers import UserSerializer, ListUserSerializer
 from .filters import MyFilterBackend
 
-from authentication.throttles import LowLoadThrottle, MediumLoadThrottle, HighLoadThrottle
 from authentication.permissions import IsActualUser, IsAdmin, IsModerator
 
 import logging
@@ -62,7 +63,6 @@ def register_user(request) -> Response:
 
 @api_view(['DELETE'])
 @permission_classes([IsActualUser | IsAdmin])
-@throttle_classes([LowLoadThrottle])
 def delete_user(request, username: str) -> Response:
     """
     url param: <username>
@@ -79,7 +79,6 @@ def delete_user(request, username: str) -> Response:
 
 @api_view(['PATCH'])
 @permission_classes([IsAdmin])
-@throttle_classes([LowLoadThrottle])
 def update_role(request) -> Response:
     """
     body: {"username": <username>, "role": <[U, M]>}
@@ -100,7 +99,6 @@ def update_role(request) -> Response:
 
 
 @api_view(['PATCH'])
-@throttle_classes([MediumLoadThrottle])
 def update_password(request) -> Response:
     """
     body: {"password": <password>, "new_password": <new_password>}
@@ -119,7 +117,6 @@ def update_password(request) -> Response:
 
 
 @api_view(['PATCH'])
-@throttle_classes([HighLoadThrottle])
 def update_username(request) -> Response:
     """
     body: {"username": <username>, "password": <password>}
@@ -132,7 +129,6 @@ def update_username(request) -> Response:
 
 
 @api_view(['PATCH'])
-@throttle_classes([MediumLoadThrottle])
 def update_email(request) -> Response:
     """
     body: {"email": <email>, "password": <password>}
@@ -155,7 +151,6 @@ def update_email(request) -> Response:
 
 @api_view(['PATCH'])
 @permission_classes([IsModerator])
-@throttle_classes([MediumLoadThrottle])
 def update_active(request) -> Response:
     """
     body: {"username": <username>, "banned": <[True, False]>}
@@ -195,7 +190,6 @@ def verify_email(request) -> Response:
 
 
 @api_view(['GET'])
-@throttle_classes([MediumLoadThrottle])
 def get_user(request, username: str) -> Response:
     try:
         user = User.objects.get(username=username)
@@ -210,7 +204,6 @@ class ListUser(ListAPIView):
     serializer_class = ListUserSerializer
     pagination_class = MyPageNumberPagination
     permission_classes = [IsModerator]
-    throttles_classes = [MediumLoadThrottle]
     filter_backends = [MyFilterBackend, filters.OrderingFilter]
     search_fields = ["username", "role"]
     bool_fields = ["active"]

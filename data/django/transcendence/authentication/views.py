@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 @api_view(['POST'])
 @permission_classes([])
-@throttle_classes([MediumLoadThrottle])
+@throttle_classes([HighLoadThrottle])
 def login(request) -> Response:
     api_response = post_request(settings.MS_URLS['AUTH']['LOGIN'], json=request.data)
     if api_response.status_code != 200:
@@ -38,7 +38,7 @@ def login(request) -> Response:
 
 
 @api_view(['POST'])
-@throttle_classes([LowLoadThrottle])
+@throttle_classes([MediumLoadThrottle])
 @get_func_credentials
 def logout(request) -> Response:
     url = settings.MS_URLS['AUTH']['LOGOUT']
@@ -95,6 +95,7 @@ def password_reset(request) -> Response:
 
 @api_view(['GET'])
 @permission_classes([IsUser])
+@throttle_classes([HighLoadThrottle])
 def generate_ntf_ticket(request) -> Response:
     user = request.user
     # websocket_ticket = WebsocketTicket.objects.create(user.user_tokens)
@@ -107,6 +108,7 @@ def generate_ntf_ticket(request) -> Response:
 
 @api_view(['GET'])
 @permission_classes([IsUser])
+@throttle_classes([HighLoadThrottle])
 def generate_chat_ticket(request) -> Response:
     user = request.user
     # websocket_ticket = WebsocketTicket.objects.create(user.user_tokens)
@@ -118,6 +120,8 @@ def generate_chat_ticket(request) -> Response:
 
 
 @api_view(['GET'])
+@permission_classes([IsUser])
+@throttle_classes([MediumLoadThrottle])
 def get_queue_ticket(request) -> Response:
     username = request.user.username
     data = {'username': username}
@@ -143,7 +147,7 @@ def retrieve_pubkey(request) -> Response:
 
 
 @api_view(['GET'])
-@permission_classes([])
+@permission_classes([HighLoadThrottle])
 def email_token_validation(request) -> Response:
     token = request.query_params.get("token", "")
     if token == '':

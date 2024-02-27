@@ -3,19 +3,12 @@ from rest_framework.decorators import APIView, api_view, permission_classes, thr
 from rest_framework.response import Response
 
 from django.core.exceptions import ValidationError
-from django.conf import settings
 
 from authorization.views import get_exp
 from two_factor_auth.models import UserTFA, OtpCode, TFATypes
 
-from authentication.throttles import HighLoadThrottle, MediumLoadThrottle, LowLoadThrottle
-
 from authorization.serializers import TokenPairSerializer
-from authorization.models import PasswordResetToken
 
-from users.models import User
-
-from datetime import datetime
 import logging
 
 
@@ -23,8 +16,6 @@ logger = logging.getLogger(__name__)
 
 
 class ManageView(APIView):
-    throttle_classes = [LowLoadThrottle]
-
     def get(self, request) -> Response:
         user_tfa = request.user.user_tfa
         return Response(data=user_tfa.to_data(), status=200)
@@ -68,7 +59,6 @@ class ManageView(APIView):
 
 @api_view(['POST'])
 @permission_classes([])
-@throttle_classes([HighLoadThrottle])
 def validate_login(request) -> Response:
     """
     json: {'token': <token>, 'code': <code>}
@@ -104,7 +94,6 @@ def validate_login(request) -> Response:
 
 @api_view(['POST'])
 @permission_classes([])
-@throttle_classes([HighLoadThrottle])
 def validate_recover(request) -> Response:
     """
     json: {'token': <token>, 'code': <code>}
@@ -132,7 +121,6 @@ def validate_recover(request) -> Response:
 
 
 @api_view(['POST'])
-@throttle_classes([MediumLoadThrottle])
 def validate_activate(request) -> Response:
     """
     header: 'Authorization: Bearer <access_token>'

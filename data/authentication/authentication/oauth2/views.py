@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.conf import settings
 
 from rest_framework import status
-from rest_framework.decorators import APIView, api_view, permission_classes, throttle_classes
+from rest_framework.decorators import APIView, api_view, permission_classes
 from rest_framework.response import Response
 
 from authorization.views import get_exp
@@ -12,8 +12,6 @@ from .models import IntraUser, GoogleUser
 from users.models import User
 
 from authorization.serializers import TokenPairSerializer
-
-from authentication.throttles import HighLoadThrottle, MediumLoadThrottle, LowLoadThrottle
 
 from secrets import token_urlsafe
 from datetime import datetime
@@ -27,7 +25,6 @@ logger = logging.getLogger(__name__)
 
 
 @api_view(['GET'])
-@throttle_classes([LowLoadThrottle])
 def is_user_linked(request) -> Response:
     user: User = request.user
     return Response(data={
@@ -52,7 +49,6 @@ def v2_intra_get_url(request) -> Response:
 
 @api_view(['POST'])
 @permission_classes([])
-@throttle_classes([HighLoadThrottle])
 def v2_intra_login(request) -> Response:
     request_body = settings.OAUTH2['INTRA_REQUEST_BODY'].copy()
     request_body['code'] = request.data['code']
@@ -110,8 +106,6 @@ def v2_intra_link(request) -> Response:
 
 
 class IntraLink(APIView):
-    throttle_classes = [MediumLoadThrottle]
-
     def delete(self, request) -> Response:
         user = request.user
         if not user.has_intra():
@@ -126,7 +120,6 @@ class IntraLink(APIView):
 
 @api_view(['GET'])
 @permission_classes([])
-@throttle_classes([LowLoadThrottle])
 def get_google_url(request) -> Response:
     state = token_urlsafe(32)
     url = (
@@ -142,7 +135,6 @@ def get_google_url(request) -> Response:
 
 
 class GoogleLink(APIView):
-    throttle_classes = [MediumLoadThrottle]
     def post(self, request) -> Response:
         request_body = settings.OAUTH2['GOOGLE_REQUEST_BODY'].copy()
         request_body['code'] = request.data.get('code')
@@ -179,7 +171,6 @@ class GoogleLink(APIView):
 
 @api_view(['POST'])
 @permission_classes([])
-@throttle_classes([])
 def google_login(request) -> Response:
     request_body = settings.OAUTH2['GOOGLE_REQUEST_BODY'].copy()
     request_body['code'] = request.data.get('code')

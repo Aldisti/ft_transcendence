@@ -5,6 +5,8 @@ from rest_framework.decorators import api_view, permission_classes, throttle_cla
 from rest_framework.response import Response
 
 from transcendence.permissions import IsUser
+from transcendence.throttles import MediumLoadThrottle, LowLoadThrottle, HighLoadThrottle
+
 
 from base64 import b64decode
 from json import loads
@@ -33,6 +35,7 @@ def matchmaking(request):
 
 @api_view(['GET'])
 @permission_classes([IsUser])
+@throttle_classes([LowLoadThrottle])
 def list_tournaments(request):
     query_params = "?" + "&".join([f"{key}={value}" for key, value in request.query_params.items()])
     url = settings.MS_URLS["TOURNAMENT_LIST"] + query_params
@@ -43,6 +46,7 @@ def list_tournaments(request):
 
 @api_view(['GET'])
 @permission_classes([IsUser])
+@throttle_classes([LowLoadThrottle])
 def retrieve_tournament(request, tour_id):
     url = settings.MS_URLS['TOURNAMENT_RETRIEVE'].replace("<pk>", str(tour_id))
     api_response = get_request(url)
@@ -51,6 +55,7 @@ def retrieve_tournament(request, tour_id):
 
 @api_view(['POST'])
 @permission_classes([IsUser])
+@throttle_classes([HighLoadThrottle])
 def create_tournament(request):
     user = request.user
     url = settings.MS_URLS['TOURNAMENT_CREATE'] + f"?username={user.username}"
@@ -61,6 +66,7 @@ def create_tournament(request):
 
 @api_view(['POST'])
 @permission_classes([IsUser])
+@throttle_classes([MediumLoadThrottle])
 def register_tournament(request):
     user = request.user
     url = settings.MS_URLS['TOURNAMENT_REGISTER'] + f"?username={user.username}"
@@ -71,6 +77,7 @@ def register_tournament(request):
 
 @api_view(['POST'])
 @permission_classes([IsUser])
+@throttle_classes([MediumLoadThrottle])
 def unregister_tournament(request):
     user = request.user
     url = settings.MS_URLS['TOURNAMENT_UNREGISTER'] + f"?username={user.username}"
@@ -81,6 +88,7 @@ def unregister_tournament(request):
 
 @api_view(['GET'])
 @permission_classes([IsUser])
+@throttle_classes([MediumLoadThrottle])
 def get_schema_tournament(request, tournament_id):
     url = settings.MS_URLS['TOURNAMENT_GET_SCHEMA'].replace("<pk>", str(tournament_id))
     api_response = get_request(url)
@@ -109,6 +117,7 @@ def get_schema_tournament(request, tournament_id):
 
 @api_view(['GET'])
 @permission_classes([IsUser])
+@throttle_classes([LowLoadThrottle])
 def get_matches(request):
     # get user from query params
     username = request.query_params.get("username", "")
@@ -135,6 +144,7 @@ def get_matches(request):
 
 @api_view(['POST'])
 @permission_classes([IsUser])
+@throttle_classes([MediumLoadThrottle])
 def send_match_req(request):
     """
     {"requested": "<username>"}
@@ -148,6 +158,7 @@ def send_match_req(request):
 
 @api_view(['DELETE'])
 @permission_classes([IsUser])
+@throttle_classes([MediumLoadThrottle])
 def delete_match_req(request):
     user = request.user
     url = settings.MS_URLS['DELETE_MATCH_REQ'] + f"?username={user.username}"
@@ -157,6 +168,7 @@ def delete_match_req(request):
 
 @api_view(['POST'])
 @permission_classes([IsUser])
+@throttle_classes([MediumLoadThrottle])
 def accept_match_req(request):
     """
     {"token": "<match_token>"}
@@ -170,6 +182,7 @@ def accept_match_req(request):
 
 @api_view(['POST'])
 @permission_classes([IsUser])
+@throttle_classes([MediumLoadThrottle])
 def reject_match_req(request):
     """
     {"token": "<match_token>"}
@@ -183,7 +196,7 @@ def reject_match_req(request):
 
 @api_view(['GET'])
 @permission_classes([IsUser])
-@throttle_classes([])
+@throttle_classes([MediumLoadThrottle])
 def get_results(request):
     query_params = "?" + "&".join([f"{key}={value}" for key, value in request.query_params.items()])
     url = settings.MS_URLS["GAME_GET_RESULTS"] + query_params
@@ -193,7 +206,7 @@ def get_results(request):
 
 @api_view(['GET'])
 @permission_classes([IsUser])
-@throttle_classes([])
+@throttle_classes([MediumLoadThrottle])
 def get_all_results(request):
     query_params = "?" + "&".join([f"{key}={value}" for key, value in request.query_params.items()])
     url = settings.MS_URLS["GAME_GET_ALL_RESULTS"] + query_params
@@ -203,7 +216,7 @@ def get_all_results(request):
 
 @api_view(['GET'])
 @permission_classes([IsUser])
-@throttle_classes([])
+@throttle_classes([MediumLoadThrottle])
 def get_stats(request):
     username = request.query_params.get("username", "")
     url = settings.MS_URLS["GAME_GET_STATS"] + f"?username={username}"

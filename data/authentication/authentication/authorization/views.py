@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.conf import settings
 
 from rest_framework import status
-from rest_framework.decorators import APIView, api_view, permission_classes, throttle_classes
+from rest_framework.decorators import APIView, api_view, permission_classes
 from rest_framework.response import Response
 
 from rest_framework_simplejwt.exceptions import TokenError
@@ -12,8 +12,6 @@ from rest_framework_simplejwt.tokens import RefreshToken, Token
 from two_factor_auth.models import UserTFA
 from .models import JwtBlackList, PasswordResetToken, EmailVerificationToken
 from .serializers import TokenPairSerializer
-
-from authentication.throttles import HighLoadThrottle, MediumLoadThrottle, LowLoadThrottle
 
 from users.models import User
 from users.serializers import UserSerializer
@@ -118,7 +116,6 @@ def refresh(request) -> Response:
 
 @api_view(['GET'])
 @permission_classes([])
-@throttle_classes([LowLoadThrottle])
 def retrieve_pubkey(request) -> Response:
     return Response(data={'public_key': settings.SIMPLE_JWT['VERIFYING_KEY']}, status=200)
 

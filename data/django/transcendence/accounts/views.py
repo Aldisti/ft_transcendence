@@ -6,7 +6,7 @@ from requests import delete as delete_request
 from requests import get as get_request
 from requests import patch as patch_request
 from requests import post as post_request
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, throttle_classes
 from rest_framework.generics import RetrieveDestroyAPIView
 from rest_framework.response import Response
 
@@ -14,7 +14,8 @@ from accounts.models import User, UserInfo, UserGame
 from accounts.serializers import CompleteUserSerializer, UploadImageSerializer, UserInfoSerializer
 from email_manager.email_sender import send_verify_email
 from transcendence.decorators import get_func_credentials
-from transcendence.permissions import IsAdmin, IsModerator, IsUser
+from transcendence.permissions import IsAdmin, IsModerator, IsUser, IsActualUser
+from transcendence.throttles import HighLoadThrottle, MediumLoadThrottle, LowLoadThrottle
 
 logger = logging.getLogger(__name__)
 
@@ -44,6 +45,7 @@ def create_user(data) -> tuple[User, dict[str, str]] | tuple[None, None]:
 
 @api_view(['POST'])
 @permission_classes([IsUser])
+@throttle_classes([HighLoadThrottle])
 def upload_profile_picture(request):
     user = request.user
     # logger.warning(f"data: {request.data}")
@@ -57,6 +59,7 @@ def upload_profile_picture(request):
 
 @api_view(['POST'])
 @permission_classes([])
+@throttle_classes([HighLoadThrottle])
 def registration(request):
     try:
         user, email_info = create_user(request.data)
@@ -71,6 +74,7 @@ def registration(request):
 
 @api_view(['PATCH'])
 @permission_classes([IsAdmin])
+@throttle_classes([MediumLoadThrottle])
 @get_func_credentials
 def change_role(request):
     """
@@ -94,6 +98,7 @@ def change_role(request):
 
 @api_view(['PATCH'])
 @permission_classes([IsUser])
+@throttle_classes([HighLoadThrottle])
 @get_func_credentials
 def update_password(request):
     """
@@ -122,6 +127,7 @@ def update_password(request):
 
 @api_view(['PATCH'])
 @permission_classes([IsModerator])
+@throttle_classes([MediumLoadThrottle])
 @get_func_credentials
 def change_active(request):
     """
@@ -138,7 +144,8 @@ def change_active(request):
 
 
 @api_view(['PUT'])
-# @permission_classes([IsUser])
+@permission_classes([IsUser])
+@throttle_classes([LowLoadThrottle])
 def update_user_info(request):
     """
     Request: {"first_name": <first_name>, etc...}
@@ -151,8 +158,8 @@ def update_user_info(request):
 
 
 class RetrieveDestroyUser(RetrieveDestroyAPIView):
-    # permission_classes = [IsActualUser|IsAdmin]
-    permission_classes = []
+    permission_classes = [IsActualUser | IsAdmin]
+    throttle_classes = [MediumLoadThrottle]
     queryset = User.objects.all()
     serializer_class = CompleteUserSerializer
     lookup_field = "username"
@@ -181,6 +188,7 @@ class RetrieveDestroyUser(RetrieveDestroyAPIView):
 
 @api_view(['GET'])
 @permission_classes([IsUser])
+@throttle_classes([LowLoadThrottle])
 def get_user_info(request):
     username = request.query_params.get("username", "")
     try:
@@ -225,6 +233,8 @@ def change_display_name(request) -> Response:
 
 
 @api_view(['PATCH'])
+@permission_classes([IsUser])
+@throttle_classes([HighLoadThrottle])
 @get_func_credentials
 def update_email(request) -> Response:
     email = request.data.get("email", "")
@@ -247,6 +257,7 @@ def update_email(request) -> Response:
 
 @api_view(['GET'])
 @permission_classes([IsModerator])
+@throttle_classes([LowLoadThrottle])
 @get_func_credentials
 def list_users(request):
     query_params = "?" + "&".join([f"{key}={value}" for key, value in request.query_params.items()])

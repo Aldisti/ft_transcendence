@@ -94,10 +94,10 @@ REST_FRAMEWORK = {
         "transcendence.throttles.DefaultThrottle",
     ],
     "DEFAULT_THROTTLE_RATES": {
-        "default": "120/minute",
-        "high_load": "10/minute",
-        "medium_load": "30/minute",
-        "low_load": "60/minute",
+        "default": "180/minute",
+        "low_load": "120/minute",
+        "medium_load": "60/minute",
+        "high_load": "30/minute",
         "email": "1/minute",
     }
 }

@@ -1,11 +1,12 @@
 from django.conf import settings
 
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, throttle_classes
 from rest_framework.response import Response
 
 from accounts.models import User
 
 from transcendence.permissions import IsUser
+from transcendence.throttles import MediumLoadThrottle, LowLoadThrottle
 
 from friends.serializers import FriendsSerializer
 
@@ -20,6 +21,7 @@ logger = logging.getLogger(__name__)
 # TODO: change api methods
 @api_view(['GET'])
 @permission_classes([IsUser])
+@throttle_classes([MediumLoadThrottle])
 def make_friends_request(request):
     user = request.user
     r_username = request.query_params.get("username", "")
@@ -30,6 +32,7 @@ def make_friends_request(request):
 
 @api_view(['GET'])
 @permission_classes([IsUser])
+@throttle_classes([MediumLoadThrottle])
 def delete_friends(request):
     user = request.user
     r_username = request.query_params.get("username", "")
@@ -40,6 +43,7 @@ def delete_friends(request):
 
 @api_view(['GET'])
 @permission_classes([IsUser])
+@throttle_classes([MediumLoadThrottle])
 def accept_friends_request(request):
     user = request.user
     token = request.query_params.get("token", "")
@@ -50,6 +54,7 @@ def accept_friends_request(request):
 
 @api_view(['GET'])
 @permission_classes([IsUser])
+@throttle_classes([MediumLoadThrottle])
 def reject_friends_request(request):
     user = request.user
     token = request.query_params.get("token", "")
@@ -60,6 +65,7 @@ def reject_friends_request(request):
 
 @api_view(['GET'])
 @permission_classes([IsUser])
+@throttle_classes([MediumLoadThrottle])
 def are_friends(request):
     user = request.user
     other_username = request.query_params.get("username", "")
@@ -70,6 +76,7 @@ def are_friends(request):
 
 @api_view(['GET'])
 @permission_classes([IsUser])
+@throttle_classes([LowLoadThrottle])
 def get_all_friends(request):
     user = request.user
     url = f"{settings.MS_URLS['FRIENDS_ALL']}?username={user.username}"
