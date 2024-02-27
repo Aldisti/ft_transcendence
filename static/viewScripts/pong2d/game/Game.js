@@ -137,6 +137,12 @@ function handleKeyUp(game, e){
 function checkMessage(game, msg){
     if (msg.message == "game starts")
     {
+        if (window.innerWidth > 900){
+            document.addEventListener("keyup", game.upHandler)
+            document.addEventListener("keydown", game.downHandler)
+        }else{
+            handleTouchCommands(this);
+        }
         document.querySelector(".gameOverlay").style.transform = "translateX(100%)";
         game.currentUser = msg.player_pos == "right" ? "paddleRight" : "paddleLeft";
         game.activeUser.initPlayer(msg.player_pos);
@@ -250,14 +256,6 @@ export default class {
         this.activeUser = new User(localStorage.getItem("username"), gameCfg.userDisplayName)
         this.opponent = new User(gameCfg.opponentName, gameCfg.opponentDisplayName)
         this.gameOst = window.playFileLoop("/sound/gameOst.mp3")
-
-
-        if (window.innerWidth > 900){
-            document.addEventListener("keyup", this.upHandler)
-            document.addEventListener("keydown", this.downHandler)
-        }else{
-            handleTouchCommands(this);
-        }
 
         API.startQueque(1).then(res=>{
             if (gameCfg.opponentDisplayName == undefined)
