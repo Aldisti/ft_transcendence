@@ -592,8 +592,8 @@ body {
 }
 
 select{
-    background-color: var(--bsdark);
-    color: var(--white);
+    background-color: var(--bs-dark);
+    color: white;
     border: none;
     min-width: 20%;
     padding: 0;
