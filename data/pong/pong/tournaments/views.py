@@ -237,11 +237,11 @@ def tournament_loop(tournament):
         Tournament.objects.start_tournament_level(tournament, level)
         participants = tournament.participant.filter(level=level).order_by("column")
         # wait that everyone is connected
-        time.sleep(10)
+        time.sleep(settings.TOURNAMENT_INTERVAL)
         # delete all tickets from database
         delete_tournament_tickets(participants)
         # wait that everyone played
-        time.sleep(40)
+        time.sleep(settings.TOURNAMENT_GAME_TIME + 10)
         #logger.warning(f"PARTICIPANTS BEFORE CHECK: {participants}")
         # get info about games and create the new participants
         for i in range(math.ceil(participants.count() / 2)):
