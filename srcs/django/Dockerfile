@@ -21,10 +21,7 @@ RUN pip install -U \
 	gunicorn==21.2.0 \
 	pika==1.3.2
 
-RUN groupadd -g $GID $GROUPNAME
-RUN useradd -m -u $UID -g $GID $USERNAME
-
-USER $USERNAME
+#USER $USERNAME
 
 RUN mkdir -p /home/$USERNAME/develop
 RUN mkdir -p /home/$USERNAME/certs

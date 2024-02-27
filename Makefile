@@ -11,14 +11,14 @@ $(NAME): init build
 
 build:
 	@docker build \
-	--build-arg USERNAME=$(shell id -nu) \
-	--build-arg GROUPNAME=$(shell id -ng) \
+	--build-arg USERNAME=root \
+	--build-arg GROUPNAME=root \
 	--build-arg UID=$(shell id -u) \
 	--build-arg GID=$(shell id -g) \
 	-t trinity/django:latest $(DJANGO_IMG)
 	@docker build \
-	--build-arg USERNAME=$(shell id -nu) \
-	--build-arg GROUPNAME=$(shell id -ng) \
+	--build-arg USERNAME=root \
+	--build-arg GROUPNAME=root \
 	--build-arg UID=$(shell id -u) \
 	--build-arg GID=$(shell id -g) \
 	-t trinity/postgres:latest $(POSTGRES_IMG)

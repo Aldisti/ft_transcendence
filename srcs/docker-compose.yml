@@ -20,10 +20,10 @@ services:
       - "8000:8000" # django
       - "9000:9000" # ntf
     volumes:
-      - certs:/home/${USERNAME}/certs
+#      - certs:/home/${USERNAME}/certs
       - media:/home/${USERNAME}/images/media
-      - nginx_templates:/etc/nginx/templates
-      - frontend:/home/${USERNAME}/frontend
+#      - nginx_templates:/etc/nginx/templates
+#      - frontend:/home/${USERNAME}/frontend
     environment:
       - USERNAME=${USERNAME}
       - FRONT_HOST=${SERVER_FRONTEND_IP}
@@ -52,16 +52,15 @@ services:
     container_name: django
     build:
       context: ./transcendence
-    user: ${UID}:${GID}
     image: trinity/transcendence
     restart: always
 #    ports:
 #      - "8000-8020:8000-8020"
     volumes:
-      - django:/home/${USERNAME}/develop
+#      - django:/home/${USERNAME}/develop
       - media:/home/${USERNAME}/media
-      - certs:/home/${USERNAME}/certs
-      - rsa:/home/${USERNAME}/rsa
+#      - certs:/home/${USERNAME}/certs
+#      - rsa:/home/${USERNAME}/rsa
     env_file:
       - ./transcendence/.env
     environment:
@@ -100,10 +99,10 @@ services:
       - NTF_PORT=${NTF_PORT}
     healthcheck:
       test: curl -ksf https://localhost:8000/auth/retrieve/public-key/ -o /dev/null
-      retries: 3
-      interval: 5m
-      start_period: 60s
-      start_interval: 5s
+      retries: 5
+      interval: 15s
+#      start_period: 60s
+#      start_interval: 5s
     networks:
       - django-net
       - postgres-net
@@ -117,19 +116,18 @@ services:
     container_name: auth
     build:
       context: ./auth
-    user: ${UID}:${GID}
     image: trinity/auth
     restart: unless-stopped
     healthcheck:
       test: curl -ksf https://localhost:8000/auth/retrieve/public-key/ -o /dev/null
       retries: 3
-      interval: 5m
-      start_period: 60s
-      start_interval: 5s
-    volumes:
-      - auth:/home/${USERNAME}/develop
-      - certs:/home/${USERNAME}/certs
-      - rsa:/home/${USERNAME}/rsa
+      interval: 15s
+#      start_period: 60s
+#      start_interval: 5s
+#    volumes:
+#      - auth:/home/${USERNAME}/develop
+#      - certs:/home/${USERNAME}/certs
+#      - rsa:/home/${USERNAME}/rsa
     env_file:
       - ./auth/.env
     environment:
@@ -151,15 +149,14 @@ services:
     container_name: pong
     build:
       context: ./pong
-    user: ${UID}:${GID}
     image: trinity/pong
     restart: always
 #    ports:
 #      - "7000-7020:8000-8020"
-    volumes:
-      - pong:/home/$USERNAME/develop
-      - certs:/home/${USERNAME}/certs
-      - rsa:/home/${USERNAME}/rsa
+#    volumes:
+#      - pong:/home/$USERNAME/develop
+#      - certs:/home/${USERNAME}/certs
+#      - rsa:/home/${USERNAME}/rsa
     env_file:
       - ./pong/.env
     environment:
@@ -195,14 +192,13 @@ services:
     container_name: chat
     build:
       context: ./chat
-    user: ${UID}:${GID}
     image: trinity/chat
     restart: always
 #    ports:
 #      - "9001:8000"
-    volumes:
-      - chat:/home/$USERNAME/develop
-      - certs:/home/${USERNAME}/certs
+#    volumes:
+#      - chat:/home/$USERNAME/develop
+#      - certs:/home/${USERNAME}/certs
     env_file:
       - ./chat/.env
     environment:
@@ -232,14 +228,13 @@ services:
     container_name: ntf
     build:
       context: ./ntf
-    user: ${UID}:${GID}
     image: trinity/ntf
     restart: always
 #    ports:
 #      - "9000:8000"
-    volumes:
-      - ntf:/home/$USERNAME/develop
-      - certs:/home/${USERNAME}/certs
+#    volumes:
+#      - ntf:/home/$USERNAME/develop
+#      - certs:/home/${USERNAME}/certs
     env_file:
       - ./ntf/.env
     environment:
@@ -455,45 +450,45 @@ services:
 
 
 volumes:
-  django:
-    name: "django"
-    driver: local
-    driver_opts:
-      type: "none"
-      o: "bind"
-      device: "$PWD/data/django"
+#  django:
+#    name: "django"
+#    driver: local
+#    driver_opts:
+#      type: "none"
+#      o: "bind"
+#      device: "$PWD/data/django"
 
-  pong:
-    name: "pong"
-    driver: local
-    driver_opts:
-      type: "none"
-      o: "bind"
-      device: "$PWD/data/pong"
+#  pong:
+#    name: "pong"
+#    driver: local
+#    driver_opts:
+#      type: "none"
+#      o: "bind"
+#      device: "$PWD/data/pong"
 
-  chat:
-    name: "chat"
-    driver: local
-    driver_opts:
-      type: "none"
-      o: "bind"
-      device: "$PWD/data/chat"
+#  chat:
+#    name: "chat"
+#    driver: local
+#    driver_opts:
+#      type: "none"
+#      o: "bind"
+#      device: "$PWD/data/chat"
 
-  auth:
-    name: "auth"
-    driver: local
-    driver_opts:
-      type: "none"
-      o: "bind"
-      device: "$PWD/data/authentication"
+#  auth:
+#    name: "auth"
+#    driver: local
+#    driver_opts:
+#      type: "none"
+#      o: "bind"
+#      device: "$PWD/data/authentication"
 
-  ntf:
-    name: "ntf"
-    driver: local
-    driver_opts:
-      type: "none"
-      o: "bind"
-      device: "$PWD/data/ntf"
+#  ntf:
+#    name: "ntf"
+#    driver: local
+#    driver_opts:
+#      type: "none"
+#      o: "bind"
+#      device: "$PWD/data/ntf"
 
   postgres:
     name: "postgres"
@@ -535,45 +530,45 @@ volumes:
       o: "bind"
       device: "$PWD/data/ntfdb"
 
-  rsa:
-    name: "rsa"
-    driver: local
-    driver_opts:
-      type: "none"
-      o: "bind"
-      device: "$PWD/rsa"
+#  rsa:
+#    name: "rsa"
+#    driver: local
+#    driver_opts:
+#      type: "none"
+#      o: "bind"
+#      device: "$PWD/rsa"
 
-  certs:
-    name: "certs"
-    driver: local
-    driver_opts:
-      type: "none"
-      o: "bind"
-      device: "$PWD/certs"
+#  certs:
+#    name: "certs"
+#    driver: local
+#    driver_opts:
+#      type: "none"
+#      o: "bind"
+#      device: "$PWD/certs"
 
-  frontend:
-    name: "frontend"
-    driver: local
-    driver_opts:
-      type: "none"
-      o: "bind"
-      device: "$PWD/frontend"
+#  frontend:
+#    name: "frontend"
+#    driver: local
+#    driver_opts:
+#      type: "none"
+#      o: "bind"
+#      device: "$PWD/frontend"
 
   media:
     name: "media"
     driver: local
-    driver_opts:
-      type: "none"
-      o: "bind"
-      device: "$PWD/media"
+#    driver_opts:
+#      type: "none"
+#      o: "bind"
+#      device: "$PWD/media"
 
-  nginx_templates:
-    name: "nginx_templates"
-    driver: local
-    driver_opts:
-      type: "none"
-      o: "bind"
-      device: "$PWD/srcs/nginx/conf"
+#  nginx_templates:
+#    name: "nginx_templates"
+#    driver: local
+#    driver_opts:
+#      type: "none"
+#      o: "bind"
+#      device: "$PWD/srcs/nginx/conf"
 
 networks:
   nginx-net:

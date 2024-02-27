@@ -1,0 +1,717 @@
+.base
+{
+    height: 92svh;
+    width: 100svw;
+    padding: 20px;
+    margin: 0;
+    gap: 30px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+select{
+    height: 50%;
+    color: white;
+    background-color: var(--retro-brown);
+    border: none;
+    outline: none;
+}
+
+/* .left, .right{
+    width: 15%;
+    height: 80%;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.center{
+    width: 60%;
+    height: 80%;
+    display: flex;
+    padding: 0 20px 0 20px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#usersDisplay{
+    height: fit-content;
+    display: flex;
+    justify-content: space-between;
+    color: white;
+    padding: 10px;
+    margin-bottom: 5svh;
+    margin: 20px;
+}
+
+#startQueque{
+    width: 100%;
+    height: fit-content;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border: none;
+    box-shadow: 6px 6px black; border: 4px solid black;
+}
+
+.btnContainer{
+    width: 40%;
+    height: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.mobileControl, .display{
+    display: none;
+}
+
+.gameContainer{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.gameContainerPadding{
+    width: 100%;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 6px 6px black; border: 4px solid black;
+}
+
+.info{
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 6px 6px black; border: 4px solid black;
+
+}
+#opponentDisplay, #currentUserDisplay{
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+    padding: 20px;
+    box-shadow: 6px 6px black; border: 4px solid black;
+
+}
+#waitCanv
+{
+    border: 4px solid black;
+}
+
+.themeContainer{
+    width: 30%;
+    height: 90%;
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.2);
+    overflow: scroll;
+}
+
+.pillsTheme, .groundTheme, .ballTheme{
+    width: 100%;
+    height: 31%;
+    box-shadow: 6px 6px black; border: 4px solid black;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 20px;
+    flex-shrink: 0;
+}
+
+.themeDisplay{
+    background-color: var(--bs-dark);
+    box-shadow: 6px 6px black; border: 4px solid black;
+    width: 40%;
+    height: 100%;
+    display: flex;
+    justify-content: flex-start;
+    overflow-x: scroll;
+    padding: 20px;
+}
+
+.nextPill, .nextGround, .nextBall{
+    height: 40%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--bs-dark);
+    color: white;
+    box-shadow: 6px 6px black; border: 4px solid black;
+    font-size: xx-large;
+}
+
+.nextPill:hover{
+    cursor: pointer;
+    box-shadow: none;
+}
+
+.sliderPill{
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+.nextGround:hover{
+    cursor: pointer;
+    box-shadow: none;
+}
+.nextBall:hover{
+    cursor: pointer;
+    box-shadow: none;
+}
+
+.sliderGround{
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+.sliderBall{
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+
+.sliderGround img, .sliderPill img, .sliderBall img{
+    width: 100%;
+    height: 100%;
+    margin-right: 40px;
+    flex-shrink: 0;
+    background-color: white;
+    box-shadow: 6px 6px black; border: 4px solid black;
+    padding: 10px;
+} */
+
+h3{
+    font-size: medium;
+}
+h2{
+    font-size: larger;
+}
+
+button{
+    font-size: xx-small;
+}
+
+input{
+    box-shadow: 6px 6px black; border: 4px solid black !important;
+}
+
+.tournamentManager{
+    width: 47svw;
+    height: 84svh;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+}
+
+.allTournaments{
+    width: 45svw;
+    height: 80svh;
+    display: flex;
+    margin-left: 1svw;
+    position: relative;
+    flex-direction: column;
+    padding: 10px;
+    gap: 15px;
+    box-shadow: 6px 6px black; border: 4px solid black;
+    background-color: var(--retro-brown);
+    z-index: 21;
+}
+
+.tournamentsTitle{
+    display: flex;
+    align-items: flex-end;
+    width: 100%;
+    height: 10%;
+    padding: 0 10px 0 10px;
+    position: relative;
+    z-index: 21;
+    color: white;
+    gap: 20px;
+
+    & select{
+        height: 100%;
+    }
+    & .titleLeft{
+        width: 50%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: center;
+    }
+    & .titleRight{
+        width: 50%;
+        height: 100%;
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-start;
+    }
+
+    & h3{
+        width: 100%;
+        height: 50%;
+        margin: 0;
+    }
+
+    & .tournamentSearchBar{
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        width: 100%;
+        gap: 10px;
+        padding-left: 10px;
+        height: 50%;
+    }
+
+    & .showNewTournamentForm{
+        background-color: var(--bs-warning);
+        width: 30%;
+        height: 100%;
+        border: none;
+        outline: none;
+        color: white;
+        font-size: xx-large;
+        box-shadow: 6px 6px black; border: 4px solid black;
+    }
+
+    & input{
+        border: none;
+        outline: none;
+        width: 70%;
+        height: 100%;
+        padding: 4px;
+        box-shadow: 6px 6px black; border: 4px solid black;
+    }
+    & .search{
+        background-color: var(--retro-green);
+        width: 50%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    & .restoreBtn{
+        background-color: var(--retro-red);
+        width: 30%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+    }
+
+    & .restoreBtn, .search{
+        border: none;
+        outline: none;
+        box-shadow: 6px 6px black; border: 4px solid black;
+        color: white;
+        padding: 5px;
+    }
+
+}
+
+.tournamentsList{
+    width: 100%;
+    height: 90%;
+    overflow: scroll;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    padding: 10px;
+    position: relative;
+    z-index: 21;
+
+}
+
+.cardWrap{
+    width: 100%;
+    height: 30%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tournamentCard{
+    width: 80%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--bs-dark);
+    /* background: linear-gradient(to right, var(--bs-dark), var(--bs-secondary)); */
+    gap: 20px;
+    padding: 15px;
+    border-top-left-radius: 0px !important;
+    border-bottom-left-radius: 0px !important;
+    border-left: 10px dashed var(--bs-success);
+    /* box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important; */
+
+}
+
+.startDateContainer{
+    width: 20%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px 0 10px;
+    padding: 10px;
+    background-color: var(--bs-success);
+    color: white;
+    border-right: 10px dashed var(--bs-dark);
+    border-top-right-radius: 0px !important;
+    border-bottom-right-radius: 0px !important;
+    /* box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset !important; */
+    & h4{
+        width: fit-content;
+        font-size: medium;
+    }
+    & .spanLine{
+        font-size: xx-small;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+.tournamentCardTitle{
+    width: 100%;
+    height: 25%;
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    & h5{
+        width: 70%;
+        height: 100%;
+        text-align: start;
+        margin: 0;
+        display: flex;
+        align-items: center;
+    }
+    & .partecipants{
+        width: 30%;
+        height: 100%;
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        padding: 10px;
+        color: white;
+        box-shadow: 6px 6px black; border: 4px solid black;
+    }
+
+}
+
+.tournamentBody{
+    width: 60%;
+    height: 100%;
+    font-size: x-small;
+    color: white;
+    text-justify: justify;
+    display: flex;
+    overflow: scroll;
+    justify-content: center;
+    align-items: flex-start;
+
+}
+
+.bottomLine{
+    width: 100%;
+    height: 60%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+
+    & button{
+        width: 30%;
+        height: 60%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: none;
+        outline: none;
+        color: white;
+        box-shadow: 6px 6px black; border: 4px solid black;
+
+    }
+}
+
+.displayBodyAndSubbmit{
+    width: 40%;
+    height: 30%;
+    position: absolute;
+    left: 1svw;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    padding: 20px;
+    z-index: 10;
+    background: transparent;
+}
+
+
+.displayNameAndSubmit{
+    width: 80%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--retro-red);
+    box-shadow: 6px 6px black; border: 4px solid black;
+    padding: 10px;
+
+    & h3{
+        color: white;
+    }
+
+    & input{
+        border: none;
+        outline: none;
+        height: 20%;
+        width: 100%;
+    }
+
+    & button{
+        border: none;
+        outline: none;
+        width: 100%;
+        height: 30%;
+        background-color: var(--bs-success);
+        color: white;
+        box-shadow: 6px 6px black; border: 4px solid black;
+    }
+}
+
+.showCard{
+    transform: translateX(140%);
+}
+
+.newTournament{
+    width: 40%;
+    height: 80svh;
+    background: var(--retro-orange);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    position: absolute;
+    left: 1svw;
+    box-shadow: 6px 6px black; border: 4px solid black;
+    z-index: 10;
+
+    & h2{
+        width: 100%;
+        margin: 0;
+    }
+
+    & form{
+        width: 100%;
+        height: 90%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        & .inputContainer{
+            width: 100%;
+            height: 80%;
+            display: flex;
+            justify-content: center;
+
+            & .leftSide{
+                width: 100%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                gap: 10px;
+            }
+        }
+        & .inputLine{
+            width: 100%;
+            height: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-end;
+        }
+        .specialLine{
+            display: flex;
+            height: 50%;
+            width: 100%;
+            gap: 20px;
+        }
+
+        & .halfInputLine{
+            width: 50%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-end;
+        }
+    }
+    
+    & .dateTimeInput{
+        display: flex;
+        gap: 20px;
+        width: 100%;
+        height: 45%;
+        & input{
+            height: 100%;
+        }
+        & input[type="date"]{
+            width: 65%;
+        }
+        & input[type="time"]{
+            width: fit-content;
+        }
+    }
+
+    & input, textarea{
+        border: none;
+        outline: none;
+        width: 100%;
+        min-height: 45%;
+        box-shadow: 6px 6px black; border: 4px solid black;
+    }
+
+    & textarea{
+        height: 70%;
+    }
+
+    & button{
+        border: none;
+        outline: none;
+        background-color: var(--bs-success);
+        margin-top: 20px;
+        height: 15%;
+        color: white;
+        box-shadow: 6px 6px black; border: 4px solid black;
+    }
+
+}
+
+.createTournamentBtn{
+    font-size: large;
+}
+
+
+.inputAndSelect{
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+}
+
+
+@media screen and (max-width: 900px) {
+
+    h5, label, input{
+        font-size: smaller;
+    }
+
+    .inputAndSelect{
+        width: 100%;
+    }
+
+    .base{
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 10px;
+        overflow: scroll;
+        scroll-behavior: smooth;
+        justify-content: flex-start;
+    }
+
+    .tournamentManager{
+        width: 100%;
+        height: fit-content;
+        flex-direction: column-reverse;
+        justify-content: flex-start;  
+        align-items: flex-start;
+        overflow: visible;
+        gap: 20px;
+    }
+
+    .allTournaments{
+        width: 100%;
+        height: 80svh;
+        margin: 0;
+    }
+    .newTournament{
+        width: 100%;
+        height: 60svh;
+        position: relative;
+        left: 0;
+
+        height: 50svh;
+    }
+    .displayBodyAndSubbmit{
+        display: none;
+    }
+    .displayNameAndSubmit{
+        width: 100%;
+        height: 100%;
+    }
+    .tournamentsTitle{
+        flex-direction: column;
+        justify-content: center;
+        height: 20%;
+        & .titleLeft{
+            width: 100%;
+        }
+        & .titleRight{
+            align-items: center;
+            width: 100%;
+        }
+        & .showNewTournamentForm{
+            display: none;
+        }
+        & .tournamentSearchBar{
+            height: 100%;
+            padding-left: 0;
+        }
+        select{
+            height: 100%;
+        }
+    }
+    .tournamentBody{
+        overflow: scroll;
+    }
+    .bottomLine{
+        & button{
+            font-size: 6px;
+        }
+    }
+}

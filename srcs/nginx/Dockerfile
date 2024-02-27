@@ -21,10 +21,13 @@ RUN mkdir -p /home/$USERNAME
 
 WORKDIR /home/$USERNAME/
 
+COPY ./certs ./certs
+COPY ./frontend ./frontend
+COPY ./conf/default.conf.template /etc/nginx/templates/default.conf.template
+
 RUN mkdir -p images/media
 RUN chown -R $UID:$GID images/media
-RUN mkdir /home/$USERNAME/certs \
-		/home/$USERNAME/django \
+RUN mkdir /home/$USERNAME/django \
 		/home/$USERNAME/auth \
 		/home/$USERNAME/pong \
 		/home/$USERNAME/chat \

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-wkldsdvnwkl8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 ">
+    <link class="baseStyle" rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="/style/bootstrap.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="/imgs/logo.png">
+    <style>
+      .loaderOverlay{
+        width: 100svw;
+        height: 100%;
+        background-color: var(--bs-dark);
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 20000000000000000000000000;
+        transition: 0.4s !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    </style>
+    <script type="importmap">
+      {
+        "imports": {
+        "three": "/three/three.module.js",
+        "three/addons/": "/three/"
+        }
+      }
+      </script>
+    <title>Transcendence</title>
+</head>
+<body>
+  <div class="loaderOverlay">
+  </div>
+    <div id="navbar">
+
+    </div>
+    <div tabindex="-1" class="chat chatContainer">
+      <div tabindex="-1" class="chat chatSideList">
+
+      </div>
+      <div tabindex="-1" class="chat chatFull">
+        <div class="chatTitle chat">
+
+        </div>
+        <div tabindex="-1" class="chat chatBox">
+        </div>
+        <div tabindex="-1" class="chat chatInput">
+          <textarea maxlength="300"  tabindex="-1" class="chat" name="message" id="chatInputElement" cols="30" rows="1"></textarea>
+          <button tabindex="-1" class="chat submitChatInput importantSubmit">></button>
+        </div>
+      </div>
+    </div>
+    <div id="app">
+    </div>
+      <footer class="py-3 my-4">
+        <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+          <li class="nav-item"><a href="https://github.com/Ukudot" class="nav-link px-2 text-body-secondary">Gpanico</a></li>
+          <li class="nav-item"><a href="https://github.com/Aldisti/" class="nav-link px-2 text-body-secondary">Adi-Stef</a></li>
+          <li class="nav-item"><a href="https://github.com/marcopf" class="nav-link px-2 text-body-secondary">Mpaterno</a></li>
+        </ul>
+        <p class="text-center text-body-secondary">© 2024 Transcendence, Inc</p>
+      </footer>
+    <script>
+      if (localStorage.getItem("language") == null)
+        localStorage.setItem("language", "en");
+      if (localStorage.getItem("style") == null)
+        localStorage.setItem("style", "modern");
+      if (localStorage.getItem("darkMode") == null)
+        localStorage.setItem("darkMode", "false");
+    </script>
+    <script type="module" src="/router/router.js"></script>
+    <script src="/globalFunction/globalFunction.js"></script>
+    <script src="/scripts/bootstrap.bundle.min.js"></script>
+    <script type="module" src="/viewScripts/chat/chat.js"></script>
+    <script type="module" src="/viewScripts/chat/chatSocket.js"></script>
+    <script type="module" src="/viewScripts/notification/notificatioSocket.js"></script>
+    <script src="/viewScripts/touchHandler.js"></script>
+    <script src="/qrCode.js"></script>
+    <script>
+      function getClosestSubmit(){
+        let focusedElement = document.activeElement;
+
+        while (focusedElement != null){
+          focusedElement = focusedElement.parentNode
+          if (focusedElement.querySelector(".importantSubmit") != null)
+            return (focusedElement.querySelector(".importantSubmit"))
+        }
+        return (null);
+      }
+      document.addEventListener("keypress", e=>{
+        if (e.key == "Enter")
+        {
+          let el = document.activeElement.nextElementSibling
+
+          if (el != null && el.tagName == "BUTTON")
+            el.click()
+          else if(document.querySelector(".importantSubmit") != null){
+            getClosestSubmit().click()
+          }
+        }
+      })
+    </script>
+</body>
+</html>

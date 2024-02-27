@@ -1,0 +1,89 @@
+.base {
+    width: 100svw;
+    height: 92svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.firstLine,
+.secondLine {
+    display: flex;
+    justify-content: space-between;
+    background-color: purple;
+    width: 80%;
+    height: 45%;
+    color: white;
+}
+
+.text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 60%;
+    height: 100%;
+    padding: 30px;
+    font-size: 23px !important;
+    text-shadow: none !important;
+}
+
+.text p {
+    text-shadow: none !important;
+    font-size: x-small;
+}
+
+.retroShade {
+    border: 4px solid black;
+    box-shadow: 7px 7px black;
+    transition: 0.2s;
+}
+
+.title {
+    width: 100%;
+    text-align: start;
+    font-size: 40px;
+}
+
+#padle,
+#ground {
+    width: 40% !important;
+    height: 100% !important;
+}
+
+@media screen and (max-width: 900px) {
+    .title {
+        color: white;
+    }
+    .base {
+        justify-content: flex-start;
+        overflow: scroll;
+    }
+    .text {
+        width: 100%;
+        padding: 15px;
+    }
+    .firstLine,
+    .secondLine {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        background-color: purple;
+        width: 100%;
+        height: 95%;
+    }
+    .secondLine {
+        flex-direction: column-reverse;
+    }
+    .text p {
+        width: 100%;
+        color: white !important;
+    }
+    #padle,
+    #ground {
+        width: 100% !important;
+        height: 30% !important;
+    }
+}
