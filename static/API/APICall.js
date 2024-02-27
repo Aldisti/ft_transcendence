@@ -674,7 +674,6 @@ export async function removeFriend(recursionProtection, username){
             for (let i = 0; i < users.length; i++)
                 create.createUser(users[i], users[i].status);
         })
-        alert("friend removed")
         return;
     }
     if (res.status == 401 && recursionProtection)
@@ -691,7 +690,6 @@ export async function sendFriendRequest(recursionProtection, username){
         credentials: "include",
     });
     if (res.ok) {
-        alert("request sent!")
         return {};
     }
     if (res.status == 401 && recursionProtection)
@@ -792,21 +790,6 @@ export async function getUsers(recursionProtection){
         return await refreshAndRetry(getUsers, 0);
     return ({})
 }
-
-export async function getDummyUsers(recursionProtection, pageSize, pageNumber){
-    const res = await fetch(`http://localhost:3000/objects?page=${pageNumber}&size=${pageSize}`, {
-        method: "GET",
-    });
-    if (res.ok) {
-        let parsed = await res.json();
-        return (parsed);
-    }
-    if (res.status == 401 && recursionProtection)
-        return await refreshAndRetry(getUsers, 0);
-    alert("error ha occured..")
-    return ({})
-}
-
 
 export async function getTicket(recursionProtection, url){
     const res = await fetch(url, {
