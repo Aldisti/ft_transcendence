@@ -212,7 +212,8 @@ class ListUser(ListAPIView):
     permission_classes = [IsModerator]
     throttles_classes = [MediumLoadThrottle]
     filter_backends = [MyFilterBackend, filters.OrderingFilter]
-    search_fields = ["username", "active", "role"]
+    search_fields = ["username", "role"]
+	bool_fields = ["active"]
     ordering_filters = ["username"]
     ordering = ["username"]
 
