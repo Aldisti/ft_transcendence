@@ -213,3 +213,7 @@ RABBIT = {
         "ntf": environ['VHOST_NTF']
     },
 }
+
+# tournament
+TOURNAMENT_INTERVAL = 10
+TOURNAMENT_GAME_TIME = 30

@@ -167,7 +167,7 @@ def get_results(request):
             stats = getattr(participant, "stats", None)
             result = getattr(stats, "result", None)
             winner = getattr(participant, "winner", None)
-            if winner is not None:
+            if winner:
                 continue
             if result is None:
                 continue
@@ -197,7 +197,7 @@ def get_all_results(request):
         stats = getattr(participant, "stats", None)
         result = getattr(stats, "result", None)
         winner = getattr(participant, "winner", None)
-        if winner is not None:
+        if winner:
             continue
         if result is None:
             scores[Results.LOSE] += 1

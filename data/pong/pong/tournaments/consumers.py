@@ -6,6 +6,7 @@ import logging
 import time
 import random
 
+from django.conf import settings
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import async_to_sync, sync_to_async
@@ -19,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 class TournamentConsumer(AsyncWebsocketConsumer):
     PLAYER_VELOCITY = 500
-    GAME_TIME = 30
+    GAME_TIME = settings.TOURNAMENT_GAME_TIME
     START_TIME = 5
     WINNING = 3
     CLOSE_CODES = [1001, 3002]
