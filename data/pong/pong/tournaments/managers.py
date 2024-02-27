@@ -68,7 +68,7 @@ class TournamentManager(models.Manager):
 
     def start_tournament(self, tournament):
         tournament.started = True
-        tournament.full_clean()
+        #tournament.full_clean()
         tournament.save()
         return tournament
 
@@ -138,7 +138,7 @@ class TournamentManager(models.Manager):
             body = {"receiver": participant.player.username, "body": message}
             NotificationProducer().publish(method="info_ntf", body=json.dumps(body))
         tournament.finished = True
-        tournament.full_clean()
+        #tournament.full_clean()
         tournament.save()
         return tournament
 

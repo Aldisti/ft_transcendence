@@ -6,6 +6,7 @@ import logging
 import time
 import random
 
+from django.conf import settings
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import async_to_sync, sync_to_async
@@ -19,7 +20,8 @@ logger = logging.getLogger(__name__)
 
 class TournamentConsumer(AsyncWebsocketConsumer):
     PLAYER_VELOCITY = 500
-    GAME_TIME = 30
+    GAME_TIME = settings.TOURNAMENT_GAME_TIME
+    START_TIME = 5
     WINNING = 3
     CLOSE_CODES = [1001, 3002]
 
@@ -175,7 +177,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         logger.warning(f"LOG: user {self.player} disconnected with code {close_code}")
         if close_code == 3011:
             return
-        update_lock = self.games[self.game_id]["update_lock"]
 
         await self.channel_layer.group_discard(
             self.ticket, self.channel_name
@@ -188,6 +189,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             await self.update_exited(self.participant)
             return
 
+        update_lock = self.games[self.game_id]["update_lock"]
         async with update_lock:
             ball = self.games[self.game_id]["ball"]
             score = ball.scores[0] if self.pos == "left" else ball.scores[1]
@@ -274,6 +276,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             self.games[self.game_id]["setted"][0] = 1
         else:
             self.games[self.game_id]["setted"][1] = 1
+        self.first_start = False
         logger.warning(f"LOG: {self.player} ends setting up")
 
 
@@ -301,6 +304,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             elif message_type == "stop":
                 paddle.vel_y = 0
             elif message_type == "start" and self.pos != ball.last_score and ball.vel_x == 0 and ball.vel_y == 0:
+                self.first_start = True
                 direction = 1 if self.pos == "left" else -1
                 ball.vel_x = direction * 360
                 ball.acc_x = direction * 100
@@ -323,9 +327,14 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
         # game loop
         start_time = time.time()
+        self.first_start = False
         current_time = time.time() - start_time
         while max(ball.scores) < self.WINNING and self.games[self.game_id]["connected"] and current_time < self.GAME_TIME:
             async with update_lock:
+                if not self.first_start and current_time > self.START_TIME and self.pos == "right":
+                    self.first_start = True
+                    ball.vel_x = -360
+                    ball.acc_x = -100
                 self.game.update()
                 current_time = time.time() - start_time
                 data = self.raw_to_json(ball, paddle_left, paddle_right, current_time)

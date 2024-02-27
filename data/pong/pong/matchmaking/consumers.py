@@ -23,12 +23,15 @@ class QueueConsumer(WebsocketConsumer):
     def connect(self):
         user = self.scope["user"]
         self.group_name = f"{user.username}_group"
+        self.accept()
+        self.close_code = 1000
+        logger.warning(f"{user.username} connected")
         if user.username in QueueConsumer.users_queue:
             logger.warning(f"{user.username} already connected")
-            self.close(code=42)
+            self.close_code = 3042
+            self.close(code=3042)
             return
 
-        self.accept()
         if len(QueueConsumer.users_queue) == 0:
             QueueConsumer.users_queue.append(user.username)
             async_to_sync(self.channel_layer.group_add)(
@@ -54,8 +57,12 @@ class QueueConsumer(WebsocketConsumer):
         )
 
     def disconnect(self, close_code):
-        if close_code == 42:
+        logger.warning(f"STILL CONNECTED: {self.users_queue}")
+        logger.warning(f"CLOSE CODE: {close_code}")
+        logger.warning(f"SELF CLOSE CODE: {self.close_code}")
+        if self.close_code == 3042:
             return
+        logger.warning(f"STILL CONNECTED: {self.users_queue}")
 
         user = self.scope["user"]
 
@@ -83,12 +90,14 @@ class MatchConsumer(WebsocketConsumer):
 
         if self.match_token is None:
             logger.warning(f"{self.pong_user.username} has an invalid token, connection refused")
-            self.close(code=42)
+            self.close_code = 3042
+            self.close(code=3042)
             return
 
         if self.pong_user.username in self.users.values():
             logger.warning(f"{self.pong_user.username} already connected")
-            self.close(code=42)
+            self.close_code = 3042
+            self.close(code=3042)
             return
 
         self.accept()
@@ -113,7 +122,7 @@ class MatchConsumer(WebsocketConsumer):
         )
 
     def disconnect(self, close_code):
-        if close_code == 42:
+        if self.close_code == 3042:
             return
 
         if self.users.get(self.match_token, "") != "":
