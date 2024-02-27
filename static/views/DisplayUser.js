@@ -77,18 +77,23 @@ export default class extends Aview {
                 </div>
             `
             this.username = document.querySelector(".friendRequest").getAttribute("name");
-            API.friendStatus(1, this.username).then(res=>{
-                if (res.is_friend)
-                {
-                    document.querySelector(".friendRequest").children[0].innerHTML = this.language.displayUser.userInfo.removeFriend;
-                    this.friendStatus = true;
-                }
-                else
-                    this.friendStatus = false;
-                document.querySelector(".friendRequest").addEventListener("click", this.handleFriendRequest.bind(null, this));
-            }).catch(e=>{
-                console.log(e)
-            })
+            if (this.username == localStorage.getItem("username"))
+                this.friendStatus = false;
+            else{
+                console.log("heyy ho controllato lo status")
+                API.friendStatus(1, this.username).then(res=>{
+                    if (res.is_friend)
+                    {
+                        document.querySelector(".friendRequest").children[0].innerHTML = this.language.displayUser.userInfo.removeFriend;
+                        this.friendStatus = true;
+                    }
+                    else
+                        this.friendStatus = false;
+                    document.querySelector(".friendRequest").addEventListener("click", this.handleFriendRequest.bind(null, this));
+                }).catch(e=>{
+                    console.log(e)
+                })
+            }              
         }).catch(e=>{
             console.log(e)
         })
@@ -140,12 +145,13 @@ export default class extends Aview {
 
         let radarChart = {type: "radar", colors: ["#00afb9", "#f07167", "#2a9d8f"], maxValue: 100};
         API.getPongMaestry(1, params.get("username")).then(res=>{
+            console.log(res)
             let flag = true;
             if (Object.keys(res).length == 0)
                 return ;
 
             Object.keys(res).forEach(el=>{
-                if (rel[el] != 0)
+                if (res[el] != 0)
                     flag = false;
             })
             if (flag){
@@ -160,6 +166,8 @@ export default class extends Aview {
 
         let donutChartMatch = {type: "donut", colors: ["#00afb9", "#f07167", "#2a9d8f"]};
         API.getDonutChart(1, params.get("username"), "&tournament=true").then(res=>{
+            console.log(res)
+
             if (Object.keys(res).length == 0)
                 return ;
             let valueSum = 0;

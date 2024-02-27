@@ -102,8 +102,7 @@ function validateDateTime(dateTimeString){
     const timeDifference = inputDateTime.getTime() - currentDateTime.getTime();
 
     // Check if the time difference is at least one hour (in milliseconds)
-    // return timeDifference >= 60 * 60 * 1000;
-    return true;
+    return timeDifference >= 5 * 60 * 1000;
 }
 
 /**
