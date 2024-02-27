@@ -68,9 +68,9 @@ def validate_login(request) -> Response:
         key='refresh_token',
         value=data.pop('refresh_token'),
         max_age=data.pop('exp'),
-        secure=False,
-        httponly=False,
-        samesite=None,
+        secure=True,
+        httponly=True,
+        samesite='Lax',
     )
     response.data = data
     return response
@@ -115,7 +115,7 @@ def get_email_code(request) -> Response:
     data = request.data
     if 'token' not in data:
         data['token'] = request.query_params.get('token', '')
-    if data.get('token', '') == '':
+    if data.get('token', '') == '' and not request.user.is_authenticated:
         return Response(data={'message': 'missing token'}, status=400)
     api_response = get_request(
         settings.MS_URLS['AUTH']['TFA_EMAIL'],

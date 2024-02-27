@@ -236,7 +236,7 @@ MAX_MESSAGES = 500
 MAX_MESSAGE_LENGTH = 512
 
 # microservices urls
-CLIENT_PROT = 'http'
+CLIENT_PROT = 'https'
 
 CHAT_HOST = environ['CHAT_HOST']
 CHAT_PORT = 8000
@@ -330,8 +330,8 @@ MS_URLS = {
     },
     # emails
     # TODO: use variables instead of localhost and 4200
-    "CLIENT_RESET_PAGE": f"{CLIENT_PROT}://{SERVER_FRONTEND_IP}:4200/password/reset/",
-    "CLIENT_LOGIN_PAGE": f"{CLIENT_PROT}://{SERVER_FRONTEND_IP}:4200/login/",
+    "CLIENT_RESET_PAGE": f"{CLIENT_PROT}://{SERVER_FRONTEND_IP}:4242/password/reset/",
+    "CLIENT_LOGIN_PAGE": f"{CLIENT_PROT}://{SERVER_FRONTEND_IP}:4242/login/",
 }
 
 # these are the urls used in the registration endpoint
@@ -358,8 +358,8 @@ RABBIT = {
     "heartbeat": int(environ['RABBIT_HEARTBEAT']),
     "bc_timeout": int(environ['RABBIT_BC_TIMEOUT']),
     "exchange": environ['EXCHANGE'],
-	"user": environ['RABBITMQ_DEFAULT_USER'],
-	"pass": environ['RABBITMQ_DEFAULT_PASS'],
+    "user": environ['RABBITMQ_DEFAULT_USER'],
+    "pass": environ['RABBITMQ_DEFAULT_PASS'],
     "R_KEYS": {
         "ntf": environ['NTF_ROUTING_KEY'],
         "email": environ['EMAIL_ROUTING_KEY'],

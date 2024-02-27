@@ -42,9 +42,9 @@ def intra_get_url(request) -> Response:
         key='intra_state',
         value=state,
         max_age=7200,
-        secure=False,
-        httponly=False,
-        samesite=None,
+        secure=True,
+        httponly=True,
+        samesite='Lax',
     )
     return response
 
@@ -71,9 +71,9 @@ def intra_login(request) -> Response:
         key='refresh_token',
         value=data.pop('refresh_token'),
         max_age=data.pop('exp'),
-        secure=False,
-        httponly=False,
-        samesite=None,
+        secure=True,
+        httponly=True,
+        samesite='Lax',
     )
     response.data = data
     return response
@@ -134,9 +134,9 @@ def get_google_url(request) -> Response:
         key='google_state',
         value=state,
         max_age=7200,
-        secure=False,
-        httponly=False,
-        samesite=None,
+        secure=True,
+        httponly=True,
+        samesite='Lax',
     )
     return response
 
@@ -178,9 +178,9 @@ def google_login(request) -> Response:
         key='refresh_token',
         value=data.pop('refresh_token'),
         max_age=data.pop('exp'),
-        secure=False,
-        httponly=False,
-        samesite=None,
+        secure=True,
+        httponly=True,
+        samesite='Lax',
     )
     response.data = data
     return response

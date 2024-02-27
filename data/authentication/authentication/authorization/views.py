@@ -110,8 +110,8 @@ def refresh(request) -> Response:
         return Response(data={'message': 'user not found'}, status=404)
     if not user.active:
         return Response(data={'message': "user is not active"}, status=403)
-    token_iat = datetime.fromtimestamp(refresh_token['iat'], tz=settings.TZ) + timedelta(seconds=15)
-    if user.last_logout > user.last_login and user.last_logout > token_iat:
+    token_iat = datetime.fromtimestamp(refresh_token['iat']) + timedelta(seconds=15)
+    if user.last_login is None or (user.last_logout > user.last_login and user.last_logout > token_iat):
         return Response(data={'message': "invalid refresh token"}, status=403)
     return Response(data={'access_token': str(refresh_token.access_token)}, status=200)
 
@@ -164,9 +164,10 @@ def password_reset(request) -> Response:
     user.password_token.delete()
     password = request.data.get('password', '')
     try:
-        User.objects.reset_password(user, password)
+        user = User.objects.reset_password(user, password)
     except ValueError as e:
         return Response(data={'message': str(e)}, status=400)
+    User.objects.update_last_logout(user)
     return Response(status=200)
 
 

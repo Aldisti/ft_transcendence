@@ -36,6 +36,14 @@ down:
 	docker compose -f $(COMPOSE) down; \
 	fi
 
+demo:
+	@docker exec -w /home/$(shell id -nu)/develop/transcendence django \
+	./manage.py demo -c 35
+
+test:
+	@docker exec -w /home/$(shell id -nu)/develop/transcendence django \
+	./manage.py demo -c 16 -t
+
 clean: down
 	@docker rmi -f \
 		trinity/nginx \

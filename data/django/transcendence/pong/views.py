@@ -88,9 +88,9 @@ def get_schema_tournament(request, tournament_id):
         return Response(data=api_response.json(), status=api_response.status_code)
     # logger.warning(f"RESPONSE: {api_response.json()}")
     body = api_response.json()
-	protocol = request.headers.get('X-Forwarded-Proto', '')
-	if protocol == '':
-		protocol = settings.PROTOCOL
+    protocol = request.headers.get('X-Forwarded-Proto', '')
+    if protocol == '':
+        protocol = settings.PROTOCOL
     host = request.headers.get("Host", "")
     for layer in body:
         for participant in layer:

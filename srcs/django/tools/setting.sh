@@ -19,6 +19,7 @@ fi
 
 if [ $DEPLOY -eq 0 ]; then
 	# development
+	echo -e "---> Running in development mode"
 	./manage.py runserver 0.0.0.0:8000
 elif grep $PROJECT_NAME <<< "$GUNICORN_SERVERS"; then # GUNICORN
 	# https

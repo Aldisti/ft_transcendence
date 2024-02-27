@@ -20,6 +20,7 @@ data/*db/
 certs
 rsa
 media
+**/8000
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

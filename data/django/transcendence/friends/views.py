@@ -81,6 +81,9 @@ def get_all_friends(request):
     friends = [User.objects.get(pk=username) for username in usernames]
     friends_serializer = FriendsSerializer(friends, many=True, context={"request": request})
     json_response = friends_serializer.data
+    protocol = request.headers.get('X-Forwarded-Proto', settings.PROTOCOL)
     for data, ser_data in zip(api_response.json(), json_response):
         ser_data["status"] = data["status"]
+        if ser_data["picture"] is not None:
+            ser_data["picture"] = ser_data["picture"].replace("http", protocol)
     return Response(json_response, status=api_response.status_code)
