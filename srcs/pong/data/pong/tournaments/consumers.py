@@ -332,14 +332,19 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
         # game loop
         start_time = time.time()
+        rest_time = self.START_TIME
         self.first_start = False
         current_time = time.time() - start_time
         while max(ball.scores) < self.WINNING and self.games[self.game_id]["connected"] and current_time < self.GAME_TIME:
             async with update_lock:
-                if not self.first_start and current_time > self.START_TIME and self.pos == "right":
+                if not self.first_start and current_time > rest_time and self.pos == "right":
                     self.first_start = True
                     ball.vel_x = -360
                     ball.acc_x = -100
+                if self.first_start and ball.vel_x == 0 and ball.vel_y == 0:
+                    self.first_start = False
+                    rest_time = current_time + 5
+
                 self.game.update()
                 current_time = time.time() - start_time
                 data = self.raw_to_json(ball, paddle_left, paddle_right, current_time)
