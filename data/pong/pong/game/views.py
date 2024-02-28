@@ -245,7 +245,7 @@ def get_stats(request):
 
     body = {
         "avg score": round(total_score / len(games) / 6 * 100),
-        "avg taken": round(total_taken / len(games) / 6 * 100),
+        "avg taken": round((1 - (total_taken / len(games) / 6)) * 100),
         "P.M.": round(pong_mastery * 100),
     }
     return Response(body, status=200)
