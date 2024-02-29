@@ -108,7 +108,7 @@ function handleKeyDown(game, e){
         game[game.currentUser].downInterval = setInterval(() => {
             if (downMsg){
                 try{
-                    game.socket.send(JSON.stringify({type: `up`}))
+                    game.socket.send(JSON.stringify({type: `down`}))
                 }catch(e){
                     console.log(e);
                 }
