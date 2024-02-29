@@ -152,7 +152,10 @@ export async function loadSecurityPage(dupThis) {
 export function triggerLogout(dupThis) {
     if (!confirm(dupThis.language.update.confirmRemove))
         return;
-    API.removeUser(1, localStorage.getItem("username")).catch(e=>{
+    API.removeUser(1, localStorage.getItem("username")).then(el=>{
+        history.pushState(null, null, "/register/");
+        Router();
+    }).catch(e=>{
         console.log(e);
     });
 }
