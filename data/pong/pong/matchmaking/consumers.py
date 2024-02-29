@@ -85,6 +85,7 @@ class MatchConsumer(WebsocketConsumer):
     users = {}
 
     def connect(self):
+        self.close_code = 1000
         self.pong_user = self.scope["user"]
         self.match_token = self.scope["match_token"]
 
