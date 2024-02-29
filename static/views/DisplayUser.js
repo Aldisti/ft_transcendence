@@ -21,7 +21,7 @@ export default class extends Aview {
                 });
                 document.querySelector(".friendRequest").children[0].innerHTML = "Add Friend"
             }
-            else if (!res.is_friend && confirm(`Do you really want to add ${username} to your friends?`))
+            else if (!res.is_friend)
             {
                 API.sendFriendRequest(1, username).catch(e=>{
                     console.log(e)

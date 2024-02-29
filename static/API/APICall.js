@@ -184,7 +184,7 @@ export async function login(data) {
         let body = await res.json();
 
         document.querySelector(".loginError").style.display = "flex";
-        if (body.message == "user isn't active")
+        if (body.message == "user is not active")
             document.querySelector(".loginError p").innerHTML = language.login.bannedLogin;
     }
     if (res.ok) {
@@ -882,7 +882,6 @@ export async function removeUser(recursionProtection, username){
         credentials: "include",
     });
     if (res.ok) {
-        alert(`user ${username} has been removed!`);
         return ;
     }
     if (res.status == 401 && recursionProtection)
