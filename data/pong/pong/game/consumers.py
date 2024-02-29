@@ -320,7 +320,7 @@ class PongConsumer(AsyncWebsocketConsumer):
                 if self.first_start and ball.vel_x == 0 and ball.vel_y == 0:
                     self.first_start = False
                     rest_time = current_time + 5
-                if not self.first_start and current_time > rest_time and self.pos == "right":
+                if not self.first_start and current_time > rest_time and self.pos == "right" and ball.vel_x == 0 and ball.vel_y == 0:
                     self.first_start = True
                     ball.vel_x = -360
                     ball.acc_x = -100
