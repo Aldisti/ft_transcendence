@@ -30,6 +30,14 @@ declare -A VOLUMES=(
 	["media"]="/media"
 )
 
+declare -A APPS_PATHS=(
+	["django"]="./srcs/transcendence"
+	["auth"]="./srcs/auth"
+	["pong"]="./srcs/pong"
+	["chat"]="./srcs/chat"
+	["ntf"]="./srcs/ntf"
+)
+
 create_env()
 {
 	echo -e "${RED_LAMP}WARNING: remove default sensible data${RESET}"
@@ -106,6 +114,18 @@ check_rsa ()
 	echo -e "$PURPLE new rsa pair created$RESET"
 }
 
+check_django_keys ()
+{
+	for app in ${!APPS_PATHS[@]}; do
+		if [ -f "${APPS_PATHS[$app]}/rsa/secret_key" ];then
+			continue
+		fi
+		mkdir -p "${APPS_PATHS[$app]}/rsa/"
+		key=$(python3 -c 'from secrets import token_hex; print(token_hex(32))')
+		echo $key > "${APPS_PATHS[$app]}/rsa/secret_key"
+	done
+}
+
 create_env 1
 if ! [ $? -eq 0 ]; then
 	echo -e "$RED create_env failed with code: $?"
@@ -119,4 +139,5 @@ if ! [ $? -eq 0 ]; then
 fi
 check_certs
 check_rsa
+check_django_keys
 
