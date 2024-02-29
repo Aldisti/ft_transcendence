@@ -12,7 +12,7 @@
     <style>
       .loaderOverlay{
         width: 100svw;
-        height: 100%;
+      height: 100%;
         background-color: var(--bs-dark);
         position: absolute;
         top: 0;
@@ -93,18 +93,18 @@
         }
         return (null);
       }
-      document.addEventListener("keypress", e=>{
-        if (e.key == "Enter")
-        {
-          let el = document.activeElement.nextElementSibling
+      // document.addEventListener("keypress", e=>{
+      //   if (e.key == "Enter")
+      //   {
+      //     let el = document.activeElement.nextElementSibling
 
-          if (el != null && el.tagName == "BUTTON")
-            el.click()
-          else if(document.querySelector(".importantSubmit") != null){
-            getClosestSubmit().click()
-          }
-        }
-      })
+      //     if (el != null && el.tagName == "BUTTON")
+      //       el.click()
+      //     else if(document.querySelector(".importantSubmit") != null){
+      //       getClosestSubmit().click()
+      //     }
+      //   }
+      // })
     </script>
 </body>
 </html>

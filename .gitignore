@@ -18,6 +18,7 @@ data/postgres
 data/*db/
 **/image.jpg
 **/.env*
+srcs/postgres/.env**
 certs
 rsa
 media

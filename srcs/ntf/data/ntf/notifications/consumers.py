@@ -37,7 +37,10 @@ class NotificationConsumer(WebsocketConsumer):
         # remove client to global group
         async_to_sync(self.channel_layer.group_discard)(settings.G_N_GROUP, self.channel_name)
         # update channel name when client disconnects
-        ntf_channel = NtfChannel.objects.get(channel_name=self.channel_name)
+        try:
+            ntf_channel = NtfChannel.objects.get(channel_name=self.channel_name)
+        except NtfChannel.DoesNotExist:
+            return
         ntf_channel.delete()
         # logger.warning(f"[{close_code}]: {user_websockets.username} disconnected from ntf sock")
 

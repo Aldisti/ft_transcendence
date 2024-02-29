@@ -150,29 +150,32 @@ export async function loadSecurityPage(dupThis) {
 }
 
 export function triggerLogout(dupThis) {
-    if (!confirm(dupThis.language.update.confirmLogout))
+    if (!confirm(dupThis.language.update.confirmRemove))
         return;
-    API.logout(1).catch(e=>{
+    API.removeUser(1, localStorage.getItem("username")).then(el=>{
+        history.pushState(null, null, "/register/");
+        Router();
+    }).catch(e=>{
         console.log(e);
     });
 }
 
 export function triggerIntraLink(dupThis) {
-    if (localStorage.getItem("intraLinked") == null && confirm(dupThis.language.update.intraLinkConfirm)) {
+    if (localStorage.getItem("intraLinked") == null) {
         window.location.href = dupThis.intraUrl;
-    } else if (localStorage.getItem("intraLinked") != null && confirm(dupThis.language.update.intraUnlinkConfirm)) {
+    } else if (localStorage.getItem("intraLinked") != null) {
         API.unlinkIntra(1).then(() => {
             document.querySelector(".intra").style.backgroundColor = "var(--bs-warning)"
         }).catch(e=>{
             console.log(e);
-        });;
+        });
     }
 }
 
 export function triggerGoogleLink(dupThis) {
-    if (localStorage.getItem("googleLinked") == null && confirm(dupThis.language.update.googleLinkConfirm))
+    if (localStorage.getItem("googleLinked") == null)
         window.location.href = dupThis.googleUrl;
-    else if (localStorage.getItem("googleLinked") != null && confirm(dupThis.language.update.googleUnlinkConfirm)) {
+    else if (localStorage.getItem("googleLinked") != null) {
         API.unlinkGoogle(1).then(() => {
             history.pushState(null, null, "/account/");
             Router();

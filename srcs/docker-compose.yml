@@ -58,7 +58,7 @@ services:
 #      - "8000-8020:8000-8020"
     volumes:
 #      - django:/home/${USERNAME}/develop
-      - media:/home/${USERNAME}/media
+      - media:/home/root/media
 #      - certs:/home/${USERNAME}/certs
 #      - rsa:/home/${USERNAME}/rsa
     env_file:

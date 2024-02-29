@@ -37,7 +37,10 @@ class ChatConsumer(WebsocketConsumer):
 
     def disconnect(self, close_code):
         user = self.scope["user"]
-        user = UserWebsockets.objects.get(pk=user.username)
+        try:
+            user = UserWebsockets.objects.get(pk=user.username)
+        except UserWebsockets.DoesNotExist:
+            return
 
         # send status to all friends
         if user.get_channels().count() == 1:
@@ -47,7 +50,10 @@ class ChatConsumer(WebsocketConsumer):
         # remove websocket from global group
         async_to_sync(self.channel_layer.group_discard)(settings.G_GROUP, self.channel_name)
         # delete chat_channel from database
-        chat_channel = ChatChannel.objects.get(channel_name=self.channel_name)
+        try:
+            chat_channel = ChatChannel.objects.get(channel_name=self.channel_name)
+        except ChatChannel.DoesNotExist:
+            return
         chat_channel.delete()
         # logger.warning(f"[{close_code}]: {user.username} disconnected")
 
