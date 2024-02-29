@@ -155,7 +155,8 @@ def retrieve_pubkey(request) -> Response:
 
 
 @api_view(['GET'])
-@permission_classes([HighLoadThrottle])
+@permission_classes([])
+@throttle_classes([HighLoadThrottle])
 def email_token_validation(request) -> Response:
     token = request.query_params.get("token", "")
     if token == '':
@@ -170,6 +171,7 @@ def email_token_validation(request) -> Response:
 
 
 @api_view(['GET'])
+@permission_classes([])
 @throttle_classes([EmailThrottle])
 @get_func_credentials
 def send_verification_email(request) -> Response:

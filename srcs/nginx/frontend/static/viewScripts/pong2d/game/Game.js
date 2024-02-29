@@ -46,7 +46,7 @@ function handleTouchCommands(game){
                     upMsg = false;
                 }
                 game[game.currentUser].calculatePosition(false)
-            }, game.frameInterval / 10);
+            }, 100);
         }
     })
 
@@ -64,7 +64,7 @@ function handleTouchCommands(game){
                     downMsg = false;
                 }
                 game[game.currentUser].calculatePosition(true)
-            }, game.frameInterval / 10);
+            }, 100);
         }
     })
 
@@ -100,7 +100,7 @@ function handleKeyDown(game, e){
                 upMsg = false;
             }
             game[game.currentUser].calculatePosition(false)
-        }, game.frameInterval / 10);
+        }, 100);
     }
     if ((e.key == "s" || e.key == "ArrowDown") && downFlag){
         e.preventDefault()
@@ -115,7 +115,7 @@ function handleKeyDown(game, e){
                 downMsg = false;
             }
             game[game.currentUser].calculatePosition(true)
-        }, game.frameInterval / 10);
+        }, 100);
     }
     if (e.key == "p"){
         game.socket.send(JSON.stringify({type: "start"}))

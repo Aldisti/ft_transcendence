@@ -87,6 +87,7 @@ class MatchConsumer(WebsocketConsumer):
     def connect(self):
         self.pong_user = self.scope["user"]
         self.match_token = self.scope["match_token"]
+        self.close_code = 1000
 
         if self.match_token is None:
             logger.warning(f"{self.pong_user.username} has an invalid token, connection refused")
