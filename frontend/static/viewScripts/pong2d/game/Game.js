@@ -46,7 +46,7 @@ function handleTouchCommands(game){
                     upMsg = false;
                 }
                 game[game.currentUser].calculatePosition(false)
-            }, game.frameInterval / 10);
+            }, 10);
         }
     })
 
@@ -64,7 +64,7 @@ function handleTouchCommands(game){
                     downMsg = false;
                 }
                 game[game.currentUser].calculatePosition(true)
-            }, game.frameInterval / 10);
+            }, 10);
         }
     })
 
@@ -92,22 +92,30 @@ function handleKeyDown(game, e){
         upFlag = false;
         game[game.currentUser].upInterval = setInterval(() => {
             if (upMsg){
-                game.socket.send(JSON.stringify({type: `up`}))
+                try{
+                    game.socket.send(JSON.stringify({type: `up`}))
+                }catch(e){
+                    console.log(e);
+                }
                 upMsg = false;
             }
             game[game.currentUser].calculatePosition(false)
-        }, game.frameInterval / 10);
+        }, 10);
     }
     if ((e.key == "s" || e.key == "ArrowDown") && downFlag){
         e.preventDefault()
         downFlag = false;
         game[game.currentUser].downInterval = setInterval(() => {
             if (downMsg){
-                game.socket.send(JSON.stringify({type: `down`}))
+                try{
+                    game.socket.send(JSON.stringify({type: `down`}))
+                }catch(e){
+                    console.log(e);
+                }
                 downMsg = false;
             }
             game[game.currentUser].calculatePosition(true)
-        }, game.frameInterval / 10);
+        }, 10);
     }
     if (e.key == "p"){
         game.socket.send(JSON.stringify({type: "start"}))
@@ -137,6 +145,12 @@ function handleKeyUp(game, e){
 function checkMessage(game, msg){
     if (msg.message == "game starts")
     {
+        if (window.innerWidth > 900){
+            document.addEventListener("keyup", game.upHandler)
+            document.addEventListener("keydown", game.downHandler)
+        }else{
+            handleTouchCommands(this);
+        }
         document.querySelector(".gameOverlay").style.transform = "translateX(100%)";
         game.currentUser = msg.player_pos == "right" ? "paddleRight" : "paddleLeft";
         game.activeUser.initPlayer(msg.player_pos);
@@ -250,14 +264,6 @@ export default class {
         this.activeUser = new User(localStorage.getItem("username"), gameCfg.userDisplayName)
         this.opponent = new User(gameCfg.opponentName, gameCfg.opponentDisplayName)
         this.gameOst = window.playFileLoop("/sound/gameOst.mp3")
-
-
-        if (window.innerWidth > 900){
-            document.addEventListener("keyup", this.upHandler)
-            document.addEventListener("keydown", this.downHandler)
-        }else{
-            handleTouchCommands(this);
-        }
 
         API.startQueque(1).then(res=>{
             if (gameCfg.opponentDisplayName == undefined)

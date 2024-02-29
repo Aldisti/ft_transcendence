@@ -244,8 +244,10 @@ export default class extends Aview{
         if (socket != 0){
             socket.close();
         }
-        if (gameObj != 0)
+        if (gameObj != 0){
             gameObj.socket.close(3002);
+            gameObj.gameOst.pause();
+        }
         document.removeEventListener("keyup", gameObj.upHandler)
         document.removeEventListener("keydown", gameObj.downHandler)
         localStorage.setItem("stop", "true")

@@ -66,7 +66,8 @@ function choiceCallback(config, notificationElement){
             document.querySelector(".askFriend h3").innerHTML = "Remove Friend";
 
         //make the notification disappear
-        document.body.removeChild(notificationElement);
+        if (notificationElement != null && notificationElement.parentNode)
+            document.body.removeChild(notificationElement);
     })
 
     //setting up a listener for DENY button
@@ -78,7 +79,8 @@ function choiceCallback(config, notificationElement){
         removeNotification(config.fullBody)
 
         //make the notification disappear
-        document.body.removeChild(notificationElement);
+        if (notificationElement != null && notificationElement.parentNode)
+            document.body.removeChild(notificationElement);
     })
 }
 
@@ -155,20 +157,24 @@ function tournamentCallback(config, notificationElement){
     console.log(difference)
 
     if (difference >= 10000){
-        document.body.removeChild(notificationElement);
+        if (notificationElement != null && notificationElement.parentNode)
+            document.body.removeChild(notificationElement);
     }
     else{
         setTimeout(() => {
-            document.body.removeChild(notificationElement);
+            if (notificationElement != null && notificationElement.parentNode)
+                document.body.removeChild(notificationElement);
         }, 10000 - difference);
     }
     notificationElement.querySelector(".notificationAccept").addEventListener("click", ()=>{
         history.pushState(null, null, `/games/pong2d/?token=${token}&tournamentId=${tournamentId}&opponentDisplay=${opponentDisplay}&opponent=${opponent}&userDisplay=${userDisplay}`);
         Router();
-        document.body.removeChild(notificationElement);
+        if (notificationElement != null && notificationElement.parentNode)
+            document.body.removeChild(notificationElement);
     });
     notificationElement.querySelector(".notificationDeny").addEventListener("click", ()=>{
-        document.body.removeChild(notificationElement);
+        if (notificationElement != null && notificationElement.parentNode)
+            document.body.removeChild(notificationElement);
     });
 }
 
@@ -183,7 +189,8 @@ function matchReqCallback(config, notificationElement){
         });
         history.pushState(null, null, `/games/pong2d/match/?token=${token}`);
         Router();
-        document.body.removeChild(notificationElement);
+        if (notificationElement != null && notificationElement.parentNode)
+            document.body.removeChild(notificationElement);
     });
     notificationElement.querySelector(".notificationDeny").addEventListener("click", ()=>{
         API.rejectMatchReq(1, token).catch(e=>{
@@ -191,7 +198,8 @@ function matchReqCallback(config, notificationElement){
         }).catch(e=>{
             console.log(e)
         });
-        document.body.removeChild(notificationElement);
+        if (notificationElement != null && notificationElement.parentNode)
+            document.body.removeChild(notificationElement);
     });
 }
 
@@ -224,13 +232,15 @@ function alertNotification(notification){
         NOTIFICATION.simple({title: "Alert", body: notification.body})
         history.pushState(null, null, `/games/pong2d/match/?token=${localStorage.getItem("matchReqToken")}`);
         localStorage.removeItem("matchReqToken");
-        document.body.removeChild(document.querySelector("#matchReqOverlay"))
+        if (document.querySelector("#matchReqOverlay") != null && document.querySelector("#matchReqOverlay").parentNode)
+            document.body.removeChild(document.querySelector("#matchReqOverlay"))
         Router();
     }
     else{
         NOTIFICATION.simple({title: "Alert", body: notification.body})
         document.querySelector(".matchReq h3").innerHTML = "Invite";
-        document.body.removeChild(document.querySelector("#matchReqOverlay"));
+        if (document.querySelector("#matchReqOverlay") != null && document.querySelector("#matchReqOverlay").parentNode)
+            document.body.removeChild(document.querySelector("#matchReqOverlay"));
     }
 }
 
