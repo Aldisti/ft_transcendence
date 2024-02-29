@@ -92,7 +92,11 @@ function handleKeyDown(game, e){
         upFlag = false;
         game[game.currentUser].upInterval = setInterval(() => {
             if (upMsg){
-                game.socket.send(JSON.stringify({type: `up`}))
+                try{
+                    game.socket.send(JSON.stringify({type: `up`}))
+                }catch(e){
+                    console.log(e);
+                }
                 upMsg = false;
             }
             game[game.currentUser].calculatePosition(false)
@@ -103,7 +107,11 @@ function handleKeyDown(game, e){
         downFlag = false;
         game[game.currentUser].downInterval = setInterval(() => {
             if (downMsg){
-                game.socket.send(JSON.stringify({type: `down`}))
+                try{
+                    game.socket.send(JSON.stringify({type: `up`}))
+                }catch(e){
+                    console.log(e);
+                }
                 downMsg = false;
             }
             game[game.currentUser].calculatePosition(true)
