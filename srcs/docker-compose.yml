@@ -136,6 +136,7 @@ services:
       - ADMIN_PASSWORD=${ADMIN_PASSWORD}
       - USERNAME=${USERNAME}
       - SERVER_FRONTEND_IP=${SERVER_FRONTEND_IP}
+      - FRONT_PORT=${FRONT_PORT}
       - DEPLOY=${DEPLOY}
     networks:
       - django-net

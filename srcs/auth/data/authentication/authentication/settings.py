@@ -144,14 +144,14 @@ SIMPLE_JWT = {
 
 OAUTH2 = {
     "SERVER": {
-        "PROTOCOL": "http",
-        "HOST": "localhost",
-        "PORT": 6969,
+        "PROTOCOL": "https",
+        "HOST": "auth",
+        "PORT": 8000,
     },
     "CLIENT": {
         "PROTOCOL": "https",
         "HOST": environ.get('SERVER_FRONTEND_IP'),
-        "PORT": 4242,
+        "PORT": environ.get('FRONT_PORT'),
     },
     "INTRA": {
         "ID": environ['INTRA_ID'],
