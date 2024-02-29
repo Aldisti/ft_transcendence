@@ -196,9 +196,9 @@ export function choice(notificationContent, callback){
         notificationElement.style.transform = "translateX(0)"
     }, 500);
     if (notificationContent.permanent == undefined){
-        setTimeout(() => {
-            document.body.removeChild(notificationElement);
-        }, 5000);
+       // setTimeout(() => {
+         //   document.body.removeChild(notificationElement);
+        //}, 5000);
     }
     if (callback == undefined)
         defaultChoiceCallback(notificationContent, notificationElement)
@@ -237,8 +237,8 @@ export function simple(notificationContent, callback){
         document.body.removeChild(notificationElement);
         removed = true;
     })
-    setTimeout(() => {
-        if (!removed)
-        document.body.removeChild(notificationElement);
-    }, 5000);
+    //setTimeout(() => {
+     //   if (!removed)
+       // document.body.removeChild(notificationElement);
+    //}, 5000);
 }

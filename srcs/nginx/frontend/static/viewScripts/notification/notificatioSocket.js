@@ -162,6 +162,7 @@ function tournamentCallback(config, notificationElement){
     }
     else{
         setTimeout(() => {
+		console.log(notificationElement.parentNode, notificationElement)
             if (notificationElement != null && notificationElement.parentNode)
                 document.body.removeChild(notificationElement);
         }, 10000 - difference);
@@ -303,3 +304,4 @@ export function close(){
         console.log("ntf closed")
     }
 }
+
