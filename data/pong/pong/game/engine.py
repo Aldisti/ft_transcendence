@@ -240,6 +240,7 @@ class Ball(MyObject):
         circle_collider = CircleCollider(radius=radius)
         self.scores = [0, 0]
         self.last_score = "left"
+        self.first_start = False
         self.max_mod_vel = max_mod_vel
         super().__init__(object_id=object_id, collider=circle_collider, pos_x=pos_x, pos_y=pos_y, vel_x=vel_x, vel_y=vel_y, acc_x=acc_x, acc_y=acc_y)
 

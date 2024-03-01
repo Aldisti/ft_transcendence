@@ -277,7 +277,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             self.games[self.game_id]["setted"][0] = 1
         else:
             self.games[self.game_id]["setted"][1] = 1
-        self.first_start = False
         logger.warning(f"LOG: {self.player} ends setting up")
 
 
@@ -307,7 +306,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             elif message_type == "stop":
                 paddle.vel_y = 0
             elif message_type == "start" and self.pos != ball.last_score and ball.vel_x == 0 and ball.vel_y == 0:
-                self.first_start = True
+                ball.first_start = True
                 direction = 1 if self.pos == "left" else -1
                 ball.vel_x = direction * 360
                 ball.acc_x = direction * 100
@@ -329,17 +328,16 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         )
 
         # game loop
-        start_time = time.time()
         rest_time = self.START_TIME
-        self.first_start = False
+        start_time = time.time()
         current_time = time.time() - start_time
         while max(ball.scores) < self.WINNING and self.games[self.game_id]["connected"] and current_time < self.GAME_TIME:
             async with update_lock:
-                if self.first_start and ball.vel_x == 0 and ball.vel_y == 0:
-                    self.first_start = False
+                if ball.first_start and ball.vel_x == 0 and ball.vel_y == 0:
+                    ball.first_start = False
                     rest_time = current_time + 5
-                if not self.first_start and current_time > rest_time and self.pos == "right" and ball.vel_x == 0 and ball.vel_y == 0:
-                    self.first_start = True
+                if not ball.first_start and current_time > rest_time and self.pos == "right" and ball.vel_x == 0 and ball.vel_y == 0:
+                    ball.first_start = True
                     ball.vel_x = -360
                     ball.acc_x = -100
 
