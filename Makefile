@@ -61,7 +61,8 @@ clean: down
 		trinity/ntf 2> /dev/null
 
 fclean: clean
-	@docker volume rm -f django postgres pong pongdb auth authdb chat chatdb ntf ntfdb 2> /dev/null
+	@docker volume rm -f django postgres pong pongdb auth \
+		authdb frontend media nginx_templates rsa certs chat chatdb ntf ntfdb 2> /dev/null
 	@rm -rf ./data/postgres ./data/pongdb ./data/authdb ./data/chatdb ./data/ntfdb
 	@rm -rf ./data/django/images
 
