@@ -3,6 +3,7 @@
 Transcendence is the last and most important project of the 42 Common core. In this project you have to create a single page **web app** that will allow users to play between them the ol' Pong game.
 For more information about the project we suggest you to read the [subject](resources/subject.en.pdf).
 
+
 ## Installation
 
 Clone this repository.
@@ -36,6 +37,16 @@ In order to make the project easy to deploy we wrote a Makefile that contains so
 This project will most likely no longer be maintained, therefore in the case of pull requests or issues they will probably be ignored.
 
 
+## Requirements
+- [ ] Python v3.10+
+- [ ] Bash v5+
+- [ ] Docker v25+
+
+
+## Modules
+Look [here](resources/ModulesList.md) to see what modules we did.
+
+
 ## Authors
 
 * ![Aldisti github profile image](https://avatars.githubusercontent.com/u/76822748?s=25) [adi-stef](https://github.com/Aldisti)
@@ -48,13 +59,3 @@ This project will most likely no longer be maintained, therefore in the case of 
 A big thanks to two people in particular who patiently helped us test different parts of the project.
 * ![lde-mich github profile image](https://avatars.githubusercontent.com/u/113907143?s=25) [lde-mich](https://github.com/lde-mich)
 * ![dcastagn42 github profile image](https://avatars.githubusercontent.com/u/112878659?s=25) [dcastagn](https://github.com/DarioCastagnola)
-
-
-## Requirements
-- [ ] Python v3.10+
-- [ ] Bash v5+
-- [ ] Docker v25+
-
-
-## Modules
-Look [here](resources/ModulesList.md) to see what modules we did.
