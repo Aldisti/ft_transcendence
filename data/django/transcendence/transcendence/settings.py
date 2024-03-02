@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-from os import environ, path
+from os import environ
 
 from datetime import timedelta
 from pytz import timezone
@@ -26,7 +26,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-&1ve_f1=v5e9=n$(u=@dfjxh)a93!&#39qi9f2atxuqn%mafyj'
+with open(f"/home/{environ.get('USERNAME')}/.django_secret", 'r') as file:
+    SECRET_KEY = file.read()
 
 # HTTPS
 # SECURE_SSL_REDIRECT = True
@@ -35,7 +36,7 @@ SECRET_KEY = 'django-insecure-&1ve_f1=v5e9=n$(u=@dfjxh)a93!&#39qi9f2atxuqn%mafyj
 PROTOCOL = "http"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 # DEFAULT_HOST = "http://localhost:8000"

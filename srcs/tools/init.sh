@@ -116,9 +116,10 @@ check_rsa ()
 check_django_secrets ()
 {
 	for app in ${!APPS_PATHS[@]}; do
-		if [ -f "${APPS_PATHS[$app]}/.django_secret" ];then
+		if [ -f "${APPS_PATHS[$app]}/.django_secret" ]; then
 			continue
 		fi
+		echo "${APPS_PATHS[$app]}/.django_secret"
 		key=$(python3 -c 'from secrets import token_hex; print(token_hex(32))')
 		echo "$key" > "${APPS_PATHS[$app]}/.django_secret"
 	done
