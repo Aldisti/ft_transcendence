@@ -30,6 +30,14 @@ declare -A VOLUMES=(
 	["media"]="/media"
 )
 
+declare -A APPS_PATHS=(
+	["django"]="./srcs/transcendence"
+	["auth"]="./srcs/auth"
+	["pong"]="./srcs/pong"
+	["chat"]="./srcs/chat"
+	["ntf"]="./srcs/ntf"
+)
+
 create_env()
 {
 	echo -e "${RED_LAMP}WARNING: remove default sensible data${RESET}"
@@ -45,7 +53,7 @@ create_env()
 	if ! grep -q 'GID' "$ENV_FILE"; then
 		echo "GID=\"$(id -g)\"" >> "$ENV_FILE"
 	fi
-	if ! grep -q 'USERNAME' "$ENV_FILE"; then
+	if ! grep -q '^USERNAME' "$ENV_FILE"; then
 		echo "USERNAME=\"$(id -nu)\"" >> "$ENV_FILE"
 	fi
 	if ! grep -q 'GROUPNAME' "$ENV_FILE"; then
@@ -87,8 +95,7 @@ check_certs ()
 		return 0
 	fi
 	openssl req -x509 -noenc -out "$cert_path.crt" -keyout "$cert_path.key" \
-	-subj "/C=IT/ST=Italy/L=Rome/O=42/OU=Trinity/CN=transcendence/UID=trinity" \
-	> /dev/null 2>&1
+	-subj "/C=IT/ST=Italy/L=Rome/O=42/OU=Trinity/CN=Transcendence/UID=Trinity" > /dev/null 2>&1
 	echo -e "$PURPLE new certs created$RESET"
 }
 
@@ -106,17 +113,30 @@ check_rsa ()
 	echo -e "$PURPLE new rsa pair created$RESET"
 }
 
+check_django_secrets ()
+{
+	for app in ${!APPS_PATHS[@]}; do
+		if [ -f "${APPS_PATHS[$app]}/.django_secret" ];then
+			continue
+		fi
+		key=$(python3 -c 'from secrets import token_hex; print(token_hex(32))')
+		echo "$key" > "${APPS_PATHS[$app]}/.django_secret"
+	done
+}
+
 create_env 1
 if ! [ $? -eq 0 ]; then
 	echo -e "$RED create_env failed with code: $?"
 	exit 1
 fi
+
 create_volume_dirs
 $SHELL ./srcs/tools/cron_env.sh
 if ! [ $? -eq 0 ]; then
 	echo -e "$RED cron_env failed with code: $?"
 	exit 1
 fi
+
 check_certs
 check_rsa
-
+check_django_secrets

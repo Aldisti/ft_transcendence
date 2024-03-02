@@ -10,8 +10,8 @@ APP_ENV: dict[str, dict[str, str]] = {
         'db_path': './srcs/postgres/.env_django',
         'PROJECT_NAME': 'transcendence',
         'DB_NAME': 'transcendence',
-        'DB_USER': os.environ.get('USERNAME', ''),
-        'DB_PASSWORD': 'password',
+        'DB_USER': '',
+        'DB_PASSWORD': '',
         'DB_HOST': 'postgres',
         'DB_PORT': '5432',
     },
@@ -20,22 +20,22 @@ APP_ENV: dict[str, dict[str, str]] = {
         'db_path': './srcs/postgres/.env_auth',
         'PROJECT_NAME': 'authentication',
         'DB_NAME': 'authentication',
-        'DB_USER': os.environ.get('USERNAME', ''),
-        'DB_PASSWORD': 'password',
+        'DB_USER': '',
+        'DB_PASSWORD': '',
         'DB_HOST': 'authdb',
         'DB_PORT': '5432',
-        'INTRA_ID': 'u-s4t2ud-eff0cd3d5bfca5625c1acb7d97431e26ec2965c19596f83a6e2428d0870432d0',
-        'INTRA_SECRET': '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',
-        'GOOGLE_ID': '608692791188-2nkebjcfel5f7n5mlsvmtd1662i6bebl.apps.googleusercontent.com',
-        'GOOGLE_SECRET': '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',
+        'INTRA_ID': '',
+        'INTRA_SECRET': '',
+        'GOOGLE_ID': '',
+        'GOOGLE_SECRET': '',
     },
     'PONG': {
         'path': './srcs/pong/.env',
         'db_path': './srcs/postgres/.env_pong',
         'PROJECT_NAME': 'pong',
         'DB_NAME': 'pong',
-        'DB_USER': os.environ.get('USERNAME', ''),
-        'DB_PASSWORD': 'password',
+        'DB_USER': '',
+        'DB_PASSWORD': '',
         'DB_HOST': 'pongdb',
         'DB_PORT': '5432',
     },
@@ -44,8 +44,8 @@ APP_ENV: dict[str, dict[str, str]] = {
         'db_path': './srcs/postgres/.env_chat',
         'PROJECT_NAME': 'chat',
         'DB_NAME': 'chat',
-        'DB_USER': os.environ.get('USERNAME', ''),
-        'DB_PASSWORD': 'password',
+        'DB_USER': '',
+        'DB_PASSWORD': '',
         'DB_HOST': 'chatdb',
         'DB_PORT': '5432',
     },
@@ -54,14 +54,11 @@ APP_ENV: dict[str, dict[str, str]] = {
         'db_path': './srcs/postgres/.env_ntf',
         'PROJECT_NAME': 'ntf',
         'DB_NAME': 'ntf',
-        'DB_USER': os.environ.get('USERNAME', ''),
-        'DB_PASSWORD': 'password',
+        'DB_USER': '',
+        'DB_PASSWORD': '',
         'DB_HOST': 'ntfdb',
         'DB_PORT': '5432',
     },
-    # 'NGINX': {
-	# 	'path': './srcs/nginx/.env',
-	# },
     'ALL': {
         'path': './srcs/.env',
         # dbs
@@ -88,8 +85,8 @@ APP_ENV: dict[str, dict[str, str]] = {
         'RABBIT_HEARTBEAT': '20',
         'RABBIT_BC_TIMEOUT': '10',
         'THREAD': '5',
-		'RABBITMQ_DEFAULT_USER': os.environ.get('USERNAME'),
-		'RABBITMQ_DEFAULT_PASS': 'password',
+		'RABBITMQ_DEFAULT_USER': '',
+		'RABBITMQ_DEFAULT_PASS': '',
         # ntf
         'NTF_ROUTING_KEY': 'notification',
         'NTF_QUEUE': 'ntf_queue',
@@ -97,14 +94,14 @@ APP_ENV: dict[str, dict[str, str]] = {
         # email
         'EMAIL_PORT': '465',
         'EMAIL_HOST': 'smtp.gmail.com',
-        'EMAIL_HOST_USER': 'transcendence.trinity@gmail.com',
-        'EMAIL_HOST_PASSWORD': 'awmvotojcdvmdwge',
+        'EMAIL_HOST_USER': '',
+        'EMAIL_HOST_PASSWORD': '',
         'EMAIL_QUEUE': 'email_queue',
         'EMAIL_ROUTING_KEY': 'email',
 		# admin
-		'ADMIN_USERNAME': os.environ['USERNAME'],
-		'ADMIN_EMAIL': f"{os.environ['USERNAME']}@localhost",
-		'ADMIN_PASSWORD': 'password',
+		'ADMIN_USERNAME': '',
+		'ADMIN_EMAIL': '',
+		'ADMIN_PASSWORD': '',
     }
 }
 
@@ -161,8 +158,8 @@ class EnvFile:
         message = f"{'*' if default == '' else ' '} Insert `{name}` value: "
         user_value = ""
         while user_value == "":
-            user_value = (input(message) if 'PASSWORD' not in name else getpass(message)) or default
-        return default
+            user_value = (input(message) if 'PASS' not in name else getpass(message)) or default
+        return user_value
 
     def __create_env(self) -> None:
         print(f"> creating {self.name} env file")

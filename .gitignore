@@ -19,6 +19,7 @@ data/*db/
 **/image.jpg
 certs
 rsa
+**/.*secret*
 media
 **/8000
 

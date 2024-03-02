@@ -64,7 +64,7 @@ fclean: clean
 	@docker volume rm -f django postgres pong pongdb auth \
 		authdb frontend media nginx_templates rsa certs chat chatdb ntf ntfdb 2> /dev/null
 	@rm -rf ./data/postgres ./data/pongdb ./data/authdb ./data/chatdb ./data/ntfdb
-	@rm -rf ./data/django/images
+	@rm -rf ./data/django/images ./media
 
 clean_env:
 	@rm -f ./srcs/.env ./srcs/*/.env ./srcs/postgres/.env*

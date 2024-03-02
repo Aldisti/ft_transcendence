@@ -171,6 +171,7 @@ def email_token_validation(request) -> Response:
 
 
 @api_view(['GET'])
+@permission_classes([])
 @throttle_classes([EmailThrottle])
 @get_func_credentials
 def send_verification_email(request) -> Response:
