@@ -8,7 +8,7 @@ For more information about the project we suggest you to read the [subject](reso
 
 Clone this repository.
 
-`git clone *this_repository_https_link*`
+`git clone https://github.com/Aldisti/ft_transcendence.git`
 
 
 ## Usage
